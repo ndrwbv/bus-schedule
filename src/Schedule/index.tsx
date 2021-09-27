@@ -1,7 +1,8 @@
 import React from "react";
 
 import styled from "styled-components";
-import { DayKeys, SCHEDULE, StopKeys } from "./consts";
+
+import { SCHEDULE, StopKeys } from "./consts";
 import {
   calculateHowMuchIsLeft,
   findClosesTime,
@@ -32,13 +33,10 @@ const OtherTime = styled.div`
 `;
 const TimeStamp = styled.p``;
 
-const currentDate = new Date();
-const currentDay = currentDate
-  .toLocaleString("default", { weekday: "long" })
-  .toLocaleLowerCase() as DayKeys;
+const currentDay = new Date().getDay();
 
 function Schedule() {
-  const [busStop, setBusStop] = React.useState<StopKeys>("маяковского");
+  const [busStop] = React.useState<StopKeys>("маяковского");
   const [left, setLeft] = React.useState<ITime>({
     hours: 0,
     minutes: 0,
@@ -49,6 +47,7 @@ function Schedule() {
   const [_everyMinuteUpdate, _setUpdate] = React.useState(0);
 
   React.useEffect(() => {
+    console.log("in interval");
     const int = setInterval(() => _setUpdate(Date.now()), 1000);
 
     return () => {
@@ -119,6 +118,7 @@ function Schedule() {
         >
           Расписание
         </a>
+        <TextWrapper>День {currentDay}</TextWrapper>
       </LinksBlock>
     </>
   );
