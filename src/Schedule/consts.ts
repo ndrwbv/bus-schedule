@@ -9,8 +9,8 @@ export type DayKeys =
 
 export const Stops = [
   {
-    label: "маяковского",
-    value: "мояковского",
+    label: "В. Маяковского",
+    value: "В. Маяковского",
   },
   {
     label: "сосновый бор",
@@ -18,11 +18,11 @@ export const Stops = [
   },
 ];
 
-export type StopKeys = "маяковского" | "сосновый бор";
+export type StopKeys = "В. Маяковского" | "сосновый бор";
 
 export const SCHEDULE: Record<number, Record<StopKeys, string[]>> = {
   1: {
-    маяковского: [
+    "В. Маяковского": [
       "6:37",
       "07:07",
       "07:22",
@@ -50,7 +50,7 @@ export const SCHEDULE: Record<number, Record<StopKeys, string[]>> = {
     "сосновый бор": [],
   },
   2: {
-    маяковского: [
+    "В. Маяковского": [
       "6:37",
       "07:07",
       "07:22",
@@ -78,7 +78,7 @@ export const SCHEDULE: Record<number, Record<StopKeys, string[]>> = {
     "сосновый бор": [],
   },
   3: {
-    маяковского: [
+    "В. Маяковского": [
       "6:37",
       "07:07",
       "07:22",
@@ -106,7 +106,7 @@ export const SCHEDULE: Record<number, Record<StopKeys, string[]>> = {
     "сосновый бор": [],
   },
   4: {
-    маяковского: [
+    "В. Маяковского": [
       "6:37",
       "07:07",
       "07:22",
@@ -134,7 +134,7 @@ export const SCHEDULE: Record<number, Record<StopKeys, string[]>> = {
     "сосновый бор": [],
   },
   5: {
-    маяковского: [
+    "В. Маяковского": [
       "6:37",
       "07:07",
       "07:22",
@@ -162,7 +162,7 @@ export const SCHEDULE: Record<number, Record<StopKeys, string[]>> = {
     "сосновый бор": [],
   },
   6: {
-    маяковского: [
+    "В. Маяковского": [
       "07:07",
       "08:17",
       "09:12",
@@ -181,7 +181,7 @@ export const SCHEDULE: Record<number, Record<StopKeys, string[]>> = {
     "сосновый бор": [],
   },
   0: {
-    маяковского: [
+    "В. Маяковского": [
       "08:17",
       "09:12",
       "10:12",
