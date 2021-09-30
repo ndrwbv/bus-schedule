@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/bus-schedule/static/css/main.e8c4a9ab.chunk.css",
-    "main.js": "/bus-schedule/static/js/main.c8bc33d8.chunk.js",
-    "main.js.map": "/bus-schedule/static/js/main.c8bc33d8.chunk.js.map",
+    "main.js": "/bus-schedule/static/js/main.b83a24c7.chunk.js",
+    "main.js.map": "/bus-schedule/static/js/main.b83a24c7.chunk.js.map",
     "runtime-main.js": "/bus-schedule/static/js/runtime-main.217a1f43.js",
     "runtime-main.js.map": "/bus-schedule/static/js/runtime-main.217a1f43.js.map",
     "static/js/2.5837e3cd.chunk.js": "/bus-schedule/static/js/2.5837e3cd.chunk.js",
@@ -22,6 +22,6 @@
     "static/js/runtime-main.217a1f43.js",
     "static/js/2.5837e3cd.chunk.js",
     "static/css/main.e8c4a9ab.chunk.css",
-    "static/js/main.c8bc33d8.chunk.js"
+    "static/js/main.b83a24c7.chunk.js"
   ]
 }
