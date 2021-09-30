@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/bus-schedule/static/css/main.6dea0f05.chunk.css",
+    "main.css": "/bus-schedule/static/css/main.e8c4a9ab.chunk.css",
     "main.js": "/bus-schedule/static/js/main.f24b591d.chunk.js",
     "main.js.map": "/bus-schedule/static/js/main.f24b591d.chunk.js.map",
     "runtime-main.js": "/bus-schedule/static/js/runtime-main.217a1f43.js",
@@ -8,8 +8,9 @@
     "static/js/2.58d2afa0.chunk.js": "/bus-schedule/static/js/2.58d2afa0.chunk.js",
     "static/js/2.58d2afa0.chunk.js.map": "/bus-schedule/static/js/2.58d2afa0.chunk.js.map",
     "index.html": "/bus-schedule/index.html",
-    "static/css/main.6dea0f05.chunk.css.map": "/bus-schedule/static/css/main.6dea0f05.chunk.css.map",
+    "static/css/main.e8c4a9ab.chunk.css.map": "/bus-schedule/static/css/main.e8c4a9ab.chunk.css.map",
     "static/js/2.58d2afa0.chunk.js.LICENSE.txt": "/bus-schedule/static/js/2.58d2afa0.chunk.js.LICENSE.txt",
+    "static/media/index.css": "/bus-schedule/static/media/Roboto-Regular.03523cf5.ttf",
     "static/media/bus-stop.a03f158e.svg": "/bus-schedule/static/media/bus-stop.a03f158e.svg",
     "static/media/green-heart.26c7c028.svg": "/bus-schedule/static/media/green-heart.26c7c028.svg",
     "static/media/next-bus.530f63af.svg": "/bus-schedule/static/media/next-bus.530f63af.svg",
@@ -20,7 +21,7 @@
   "entrypoints": [
     "static/js/runtime-main.217a1f43.js",
     "static/js/2.58d2afa0.chunk.js",
-    "static/css/main.6dea0f05.chunk.css",
+    "static/css/main.e8c4a9ab.chunk.css",
     "static/js/main.f24b591d.chunk.js"
   ]
 }
