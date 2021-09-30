@@ -16,6 +16,8 @@ import TelegramLogo from "../img/telegram-logo.svg";
 import UpcomingBus from "../img/upcoming-bus.svg";
 import Write from "../img/write.svg";
 
+import SVG, { Props as SVGProps } from "react-inlinesvg";
+
 const MAIN_GREY = "#F4F4F4";
 const MainLayout = styled.div`
   padding: 15px;
@@ -114,7 +116,15 @@ const Header: React.FC<IHeaderProps> = ({ text, imgSrc, children = null }) => {
     <HeaderContainer>
       <HeaderItem>
         <ImageWrapper w={20} h={20}>
-          <Icon src={imgSrc}></Icon>
+          <SVG
+            src={imgSrc}
+            width={20}
+            height="auto"
+            title="Menu"
+            uniqueHash={text}
+            uniquifyIDs={true}
+          />
+          {/* <Icon src={imgSrc}></Icon> */}
         </ImageWrapper>
 
         <HeaderText>{text}</HeaderText>
@@ -172,7 +182,14 @@ const TelegramButton = () => {
   return (
     <TelegramContainer>
       <ImageWrapper w={20} h={20}>
-        <Icon src={TelegramLogo}></Icon>
+        <SVG
+          src={TelegramLogo}
+          width={20}
+          height="auto"
+          title="Menu"
+          uniquifyIDs={true}
+        />
+        {/* <Icon src={TelegramLogo}></Icon> */}
       </ImageWrapper>
 
       <TelegramText>Написать в телеграм</TelegramText>
@@ -272,7 +289,14 @@ function Schedule() {
 
         <HowMuchLeftContainer>
           <ImageWrapper w={29} h={29}>
-            <Icon src={NextBus}></Icon>
+            <SVG
+              src={NextBus}
+              width={29}
+              height="auto"
+              title="Menu"
+              uniquifyIDs={true}
+            />
+            {/* <Icon src={NextBus}></Icon> */}
           </ImageWrapper>
 
           <BusEstimation>{renderLeftToString()}</BusEstimation>
