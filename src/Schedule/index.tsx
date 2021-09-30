@@ -4,7 +4,7 @@ import styled from "styled-components";
 import SVG from "react-inlinesvg";
 import Select from "react-select";
 
-import { MAIN_GREY, SCHEDULE, StopKeys, Stops } from "./consts";
+import { Directions, MAIN_GREY, SCHEDULE, StopKeys, Stops } from "./consts";
 import {
   calculateHowMuchIsLeft,
   findClosesTime,
@@ -109,8 +109,6 @@ const TelegramContainer = styled.div`
 
 const currentDay = new Date().getDay();
 
-type Directions = "in" | "out";
-
 function Schedule() {
   const [busStop, setBusStop] = React.useState<StopKeys>("В. Маяковского");
   const [left, setLeft] = React.useState<ITime>({
@@ -122,7 +120,16 @@ function Schedule() {
 
   const [_everyMinuteUpdate, _setUpdate] = React.useState(0);
   const [direction, setDirection] = React.useState<Directions>("in");
-  const [favoriteBusStops, setFavoriteBusStops] = React.useState([]);
+  const [favoriteBusStops, setFavoriteBusStops] = React.useState<StopKeys[]>(
+    []
+  );
+
+  React.useEffect(() => {
+    const localStorageItem = localStorage.getItem("favoriteStops");
+    const favoriteStops = localStorageItem ? JSON.parse(localStorageItem) : [];
+
+    setFavoriteBusStops(favoriteStops);
+  }, []);
 
   React.useEffect(() => {
     const int = setInterval(() => _setUpdate(Date.now()), 1000);
@@ -133,16 +140,20 @@ function Schedule() {
   }, [_everyMinuteUpdate]);
 
   React.useEffect(() => {
-    const _closestTime = findClosesTime(SCHEDULE[currentDay][busStop]);
+    const _closestTime = findClosesTime(
+      SCHEDULE[direction][currentDay][busStop]
+    );
 
     if (
       _closestTime?.getMinutes() !== closestTime?.getMinutes() &&
       _closestTime?.getHours() !== closestTime?.getHours()
     ) {
-      setClossestTimeArray(findClosesTimeArray(SCHEDULE[currentDay][busStop]));
+      setClossestTimeArray(
+        findClosesTimeArray(SCHEDULE[direction][currentDay][busStop])
+      );
       setClossestTime(_closestTime);
     }
-  }, [_everyMinuteUpdate, closestTime, busStop]);
+  }, [_everyMinuteUpdate, closestTime, busStop, direction]);
 
   React.useEffect(() => {
     const left = calculateHowMuchIsLeft(closestTime);
@@ -169,9 +180,38 @@ function Schedule() {
     );
   };
 
-  const handleChangeFavoriteStatus = () => {
-    // todo
+  const saveFavoriteBusStops = (stops: StopKeys[]) => {
+    setFavoriteBusStops(stops);
+    localStorage.setItem("favoriteStops", JSON.stringify(stops));
   };
+
+  const getFavoriteBusStop = (): StopKeys[] => {
+    const localStorageItem = localStorage.getItem("favoriteStops");
+    const favoriteStops = localStorageItem ? JSON.parse(localStorageItem) : [];
+
+    return favoriteStops;
+  };
+
+  const handleAddFavoriteStatus = () => {
+    const stops = getFavoriteBusStop();
+
+    if (stops.includes(busStop)) return;
+
+    const newStops: StopKeys[] = [busStop, ...stops];
+    saveFavoriteBusStops(newStops);
+  };
+
+  const handleRemoveFavoriteStatus = () => {
+    const stops = getFavoriteBusStop();
+
+    if (!stops.includes(busStop)) return;
+
+    const newStops: StopKeys[] = stops.filter((stop) => stop !== busStop);
+
+    saveFavoriteBusStops(newStops);
+  };
+
+  const isBusStopFavorite = favoriteBusStops.includes(busStop);
 
   return (
     <MainLayout>
@@ -195,11 +235,11 @@ function Schedule() {
       <Container>
         <Header text={"Мои остановки"} imgSrc={GreenHeart} />
         <FavoriteBusStopList
-          stopList={[
-            { id: "d", label: "В. маяк" },
-            { id: "v", label: "ТГУ" },
-          ]}
-          activeId={"d"}
+          stopList={Stops.filter((stop) =>
+            favoriteBusStops.includes(stop.value)
+          )}
+          activeId={busStop}
+          onClick={(busStop) => setBusStop(busStop)}
         />
       </Container>
 
@@ -208,6 +248,7 @@ function Schedule() {
           <Select
             options={Stops}
             onChange={(e) => setBusStop(e?.value as StopKeys)}
+            value={Stops.find((stop) => stop.value === busStop)}
             defaultValue={Stops[0]}
           />
         </Header>
@@ -231,10 +272,16 @@ function Schedule() {
         </OtherTime>
 
         <AddToFavoriteButton
-          status={"add"}
-          onClick={handleChangeFavoriteStatus}
+          status={isBusStopFavorite ? "remove" : "add"}
+          onClick={
+            isBusStopFavorite
+              ? handleRemoveFavoriteStatus
+              : handleAddFavoriteStatus
+          }
         >
-          Добавить остановку в избранное
+          {isBusStopFavorite
+            ? "Удалить остановку из избранного"
+            : "Добавить остановку в избранное"}
         </AddToFavoriteButton>
       </Container>
 

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { MAIN_GREY } from "./Schedule/consts";
+import { IStop, MAIN_GREY, StopKeys } from "./Schedule/consts";
 
 const FavoriteBusStopItem = styled.div<{ active: boolean }>`
   padding: 8px 17px;
@@ -19,13 +19,18 @@ const FavoriteBusStopContainer = styled.div`
 `;
 
 const FavoriteBusStopList: React.FC<{
-  stopList: { id: string; label: string }[];
+  stopList: IStop[];
   activeId: string;
-}> = ({ stopList, activeId }) => {
+  onClick: (busStop: StopKeys) => void;
+}> = ({ stopList, activeId, onClick }) => {
   return (
     <FavoriteBusStopContainer>
       {stopList.map((stop) => (
-        <FavoriteBusStopItem active={stop.id === activeId} key={stop.id}>
+        <FavoriteBusStopItem
+          active={stop.value === activeId}
+          key={stop.value}
+          onClick={() => onClick(stop.value)}
+        >
           {stop.label}
         </FavoriteBusStopItem>
       ))}
