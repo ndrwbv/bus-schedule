@@ -1,3 +1,5 @@
+export const MAIN_GREY = "#F4F4F4";
+
 export type DayKeys =
   | "monday"
   | "tuesday"

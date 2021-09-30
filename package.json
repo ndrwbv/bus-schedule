@@ -46,6 +46,7 @@
   },
   "devDependencies": {
     "@types/styled-components": "^5.1.14",
-    "gh-pages": "^3.2.3"
+    "gh-pages": "^3.2.3",
+    "react-select": "^5.0.0"
   }
 }
