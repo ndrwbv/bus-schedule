@@ -4,6 +4,12 @@ object-assign
 @license MIT
 */
 
+/*!
+  Copyright (c) 2015 Jed Watson.
+  Based on code that is Copyright 2013-2015, Facebook, Inc.
+  All rights reserved.
+*/
+
 /** @license React v0.20.2
  * scheduler.production.min.js
  *

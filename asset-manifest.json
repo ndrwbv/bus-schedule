@@ -1,27 +1,27 @@
 {
   "files": {
     "main.css": "/bus-schedule/static/css/main.e8c4a9ab.chunk.css",
-    "main.js": "/bus-schedule/static/js/main.f24b591d.chunk.js",
-    "main.js.map": "/bus-schedule/static/js/main.f24b591d.chunk.js.map",
+    "main.js": "/bus-schedule/static/js/main.95b3aac9.chunk.js",
+    "main.js.map": "/bus-schedule/static/js/main.95b3aac9.chunk.js.map",
     "runtime-main.js": "/bus-schedule/static/js/runtime-main.217a1f43.js",
     "runtime-main.js.map": "/bus-schedule/static/js/runtime-main.217a1f43.js.map",
-    "static/js/2.58d2afa0.chunk.js": "/bus-schedule/static/js/2.58d2afa0.chunk.js",
-    "static/js/2.58d2afa0.chunk.js.map": "/bus-schedule/static/js/2.58d2afa0.chunk.js.map",
+    "static/js/2.49fdb166.chunk.js": "/bus-schedule/static/js/2.49fdb166.chunk.js",
+    "static/js/2.49fdb166.chunk.js.map": "/bus-schedule/static/js/2.49fdb166.chunk.js.map",
     "index.html": "/bus-schedule/index.html",
     "static/css/main.e8c4a9ab.chunk.css.map": "/bus-schedule/static/css/main.e8c4a9ab.chunk.css.map",
-    "static/js/2.58d2afa0.chunk.js.LICENSE.txt": "/bus-schedule/static/js/2.58d2afa0.chunk.js.LICENSE.txt",
+    "static/js/2.49fdb166.chunk.js.LICENSE.txt": "/bus-schedule/static/js/2.49fdb166.chunk.js.LICENSE.txt",
     "static/media/index.css": "/bus-schedule/static/media/Roboto-Regular.03523cf5.ttf",
-    "static/media/bus-stop.a03f158e.svg": "/bus-schedule/static/media/bus-stop.a03f158e.svg",
-    "static/media/green-heart.26c7c028.svg": "/bus-schedule/static/media/green-heart.26c7c028.svg",
-    "static/media/next-bus.530f63af.svg": "/bus-schedule/static/media/next-bus.530f63af.svg",
-    "static/media/telegram-logo.06cf38ae.svg": "/bus-schedule/static/media/telegram-logo.06cf38ae.svg",
-    "static/media/upcoming-bus.3988527c.svg": "/bus-schedule/static/media/upcoming-bus.3988527c.svg",
-    "static/media/write.fe751479.svg": "/bus-schedule/static/media/write.fe751479.svg"
+    "static/media/bus-stop.3189510d.svg": "/bus-schedule/static/media/bus-stop.3189510d.svg",
+    "static/media/green-heart.4f9f3b02.svg": "/bus-schedule/static/media/green-heart.4f9f3b02.svg",
+    "static/media/next-bus.d9e4ed7a.svg": "/bus-schedule/static/media/next-bus.d9e4ed7a.svg",
+    "static/media/telegram-logo.b27302a3.svg": "/bus-schedule/static/media/telegram-logo.b27302a3.svg",
+    "static/media/upcoming-bus.2b458b3e.svg": "/bus-schedule/static/media/upcoming-bus.2b458b3e.svg",
+    "static/media/write.4065a583.svg": "/bus-schedule/static/media/write.4065a583.svg"
   },
   "entrypoints": [
     "static/js/runtime-main.217a1f43.js",
-    "static/js/2.58d2afa0.chunk.js",
+    "static/js/2.49fdb166.chunk.js",
     "static/css/main.e8c4a9ab.chunk.css",
-    "static/js/main.f24b591d.chunk.js"
+    "static/js/main.95b3aac9.chunk.js"
   ]
 }
