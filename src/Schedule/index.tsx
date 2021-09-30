@@ -61,10 +61,10 @@ const GoButton = styled.button<{ active?: boolean }>`
   border-radius: 6px;
   background-color: ${(props) => (props.active ? "#336CFF" : MAIN_GREY)};
   color: ${(props) => (props.active ? "white" : "black")};
-  padding: 12px 17px;
+  padding: 12px 10px;
 
   & + & {
-    margin-left: 10px;
+    margin-left: 6px;
   }
 `;
 
@@ -221,13 +221,13 @@ function Schedule() {
             active={direction === "in"}
             onClick={() => setDirection("in")}
           >
-            в сторону парка
+            в северный парк
           </GoButton>
           <GoButton
             active={direction === "out"}
             onClick={() => setDirection("out")}
           >
-            из парка
+            из северного парка
           </GoButton>
         </GoButtonContainer>
       </Container>
