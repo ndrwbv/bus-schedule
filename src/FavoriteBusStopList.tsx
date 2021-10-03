@@ -19,7 +19,7 @@ const FavoriteBusStopContainer = styled.div`
 `;
 
 const FavoriteBusStopList: React.FC<{
-  stopList: IStop[];
+  stopList: IStop<any>[];
   activeId: string;
   onClick: (busStop: StopKeys) => void;
 }> = ({ stopList, activeId, onClick }) => {

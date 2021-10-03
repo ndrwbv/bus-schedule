@@ -2,7 +2,7 @@
  * находит ближайшее время в расписании
  * @param hours
  */
-export const findClosesTime = (hours: string[]): Date | null => {
+export const findClosesTime = (hours: string[]): string | undefined => {
   let closestTime: Date | null = null;
 
   for (let i = 0; i < hours.length; i++) {
@@ -17,7 +17,8 @@ export const findClosesTime = (hours: string[]): Date | null => {
     }
   }
 
-  return closestTime;
+
+  return closestTime?.toString();
 };
 
 /**
@@ -60,7 +61,7 @@ const getTimeFromMins = (mins: number): ITime => {
  * @currentDate
  */
 export const calculateHowMuchIsLeft = (
-  closestTime: Date | null
+  closestTime: string | null
 ): ITime => {
   if (!closestTime)
     return {
@@ -69,7 +70,8 @@ export const calculateHowMuchIsLeft = (
     };
 
   const left =
-    Math.abs(closestTime.getTime() - new Date().getTime()) / 1000 / 60;
+    Math.abs(new Date(closestTime).getTime() - new Date().getTime()) / 1000 / 60;
 
+    console.log(left, new Date(closestTime), closestTime)
   return getTimeFromMins(left);
 };

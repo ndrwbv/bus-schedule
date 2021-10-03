@@ -19,13 +19,13 @@
     "typescript": "^4.1.2",
     "web-vitals": "^1.0.1"
   },
-  "homepage": "https://ndrwbv.github.io/bus-schedule",
+  "homepage": "https://severbus.ru",
   "scripts": {
     "start": "react-scripts start",
     "build": "NODE_ENV=production react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "gh-pages -d build"
+    "deploy": "echo 'severbus.ru' > ./build/CNAME && gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [

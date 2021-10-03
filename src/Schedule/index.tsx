@@ -4,7 +4,17 @@ import styled from "styled-components";
 import SVG from "react-inlinesvg";
 import Select from "react-select";
 
-import { Directions, MAIN_GREY, SCHEDULE, StopKeys, Stops } from "./consts";
+import {
+  Directions,
+  IStop,
+  MAIN_GREY,
+  SCHEDULE,
+  StopKeys,
+  StopKeysIn,
+  StopKeysOut,
+  StopsInOptions,
+  StopsOutOptions,
+} from "./consts";
 import {
   calculateHowMuchIsLeft,
   findClosesTime,
@@ -54,6 +64,14 @@ const TimeStamp = styled.div`
     margin-top: 8px;
   }
 `;
+
+const selectStyles = {
+  container: (p: any, s: any) => ({
+    ...p,
+    width: "200px",
+  }),
+};
+//2021-10-03T11:52:11.690Z 2021-10-03T11:52:11.695Z true 1633261931690 1633261931695
 
 const GoButton = styled.button<{ active?: boolean }>`
   width: 100%;
@@ -116,13 +134,17 @@ function Schedule() {
     minutes: 0,
   });
   const [closestTimeArray, setClossestTimeArray] = React.useState<string[]>([]);
-  const [closestTime, setClossestTime] = React.useState<Date | null>(null);
+  const [closestTime, setClossestTime] = React.useState<string>("");
 
   const [_everyMinuteUpdate, _setUpdate] = React.useState(0);
   const [direction, setDirection] = React.useState<Directions>("in");
   const [favoriteBusStops, setFavoriteBusStops] = React.useState<StopKeys[]>(
     []
   );
+  const [stopsOptions, setStopsOptions] =
+    React.useState<IStop<StopKeysIn | StopKeysOut>[]>(StopsInOptions);
+
+  React.useEffect(() => {}, []);
 
   React.useEffect(() => {
     const localStorageItem = localStorage.getItem("favoriteStops");
@@ -144,9 +166,18 @@ function Schedule() {
       SCHEDULE[direction][currentDay][busStop]
     );
 
+    if (!_closestTime) return;
+
+    console.log(
+      closestTime,
+      _closestTime,
+      new Date(closestTime).getTime() !== new Date(_closestTime).getTime(),
+      new Date(closestTime).getTime(),
+      new Date(_closestTime).getTime()
+    );
     if (
-      _closestTime?.getMinutes() !== closestTime?.getMinutes() &&
-      _closestTime?.getHours() !== closestTime?.getHours()
+      !closestTime ||
+      new Date(closestTime).getTime() !== new Date(_closestTime).getTime()
     ) {
       setClossestTimeArray(
         findClosesTimeArray(SCHEDULE[direction][currentDay][busStop])
@@ -160,6 +191,16 @@ function Schedule() {
 
     setLeft(left);
   }, [_everyMinuteUpdate, closestTime]);
+
+  const handleChangeDirection = (_direction: Directions) => {
+    const scheduleKeys = Object.keys(SCHEDULE[_direction][currentDay]);
+    if (!scheduleKeys.includes(busStop)) {
+      setBusStop(scheduleKeys[0] as StopKeys);
+    }
+
+    setStopsOptions(_direction === "in" ? StopsInOptions : StopsOutOptions);
+    setDirection(_direction);
+  };
 
   const renderLeftToString = () => {
     if (left.hours === null && left.minutes === null)
@@ -219,13 +260,13 @@ function Schedule() {
         <GoButtonContainer>
           <GoButton
             active={direction === "in"}
-            onClick={() => setDirection("in")}
+            onClick={() => handleChangeDirection("in")}
           >
             в северный парк
           </GoButton>
           <GoButton
             active={direction === "out"}
-            onClick={() => setDirection("out")}
+            onClick={() => handleChangeDirection("out")}
           >
             из северного парка
           </GoButton>
@@ -235,7 +276,7 @@ function Schedule() {
       <Container>
         <Header text={"Мои остановки"} imgSrc={GreenHeart} />
         <FavoriteBusStopList
-          stopList={Stops.filter((stop) =>
+          stopList={stopsOptions.filter((stop) =>
             favoriteBusStops.includes(stop.value)
           )}
           activeId={busStop}
@@ -246,10 +287,11 @@ function Schedule() {
       <Container>
         <Header text={"Остановка"} imgSrc={BusStop}>
           <Select
-            options={Stops}
+            styles={selectStyles}
+            options={stopsOptions}
             onChange={(e) => setBusStop(e?.value as StopKeys)}
-            value={Stops.find((stop) => stop.value === busStop)}
-            defaultValue={Stops[0]}
+            value={stopsOptions.find((stop) => stop.value === busStop)}
+            defaultValue={stopsOptions[0]}
           />
         </Header>
 
@@ -268,7 +310,9 @@ function Schedule() {
         <OtherTime>
           {closestTimeArray.length === 0
             ? "Автобусов на сегодня нет"
-            : closestTimeArray.map((d) => <TimeStamp key={d}>{d}</TimeStamp>)}
+            : closestTimeArray.map((d, index) => (
+                <TimeStamp key={`${d}-${index}`}>{d}</TimeStamp>
+              ))}
         </OtherTime>
 
         <AddToFavoriteButton
