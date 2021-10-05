@@ -71,7 +71,6 @@ const selectStyles = {
     width: "200px",
   }),
 };
-//2021-10-03T11:52:11.690Z 2021-10-03T11:52:11.695Z true 1633261931690 1633261931695
 
 const GoButton = styled.button<{ active?: boolean }>`
   width: 100%;
@@ -168,13 +167,6 @@ function Schedule() {
 
     if (!_closestTime) return;
 
-    console.log(
-      closestTime,
-      _closestTime,
-      new Date(closestTime).getTime() !== new Date(_closestTime).getTime(),
-      new Date(closestTime).getTime(),
-      new Date(_closestTime).getTime()
-    );
     if (
       !closestTime ||
       new Date(closestTime).getTime() !== new Date(_closestTime).getTime()

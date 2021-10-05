@@ -6,7 +6,8 @@ const FavoriteBusStopItem = styled.div<{ active: boolean }>`
   border-radius: 30px;
   background-color: ${(props) => (props.active ? "#336CFF" : MAIN_GREY)};
   color: ${(props) => (props.active ? "white" : "black")};
-
+  margin-top: 12px;
+  
   & + & {
     margin-left: 12px;
   }
