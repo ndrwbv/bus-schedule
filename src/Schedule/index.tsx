@@ -279,6 +279,7 @@ function Schedule() {
       <Container>
         <Header text={"Остановка"} imgSrc={BusStop}>
           <Select
+            isSearchable={false}
             styles={selectStyles}
             options={stopsOptions}
             onChange={(e) => setBusStop(e?.value as StopKeys)}
