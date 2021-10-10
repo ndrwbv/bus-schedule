@@ -72,6 +72,5 @@ export const calculateHowMuchIsLeft = (
   const left =
     Math.abs(new Date(closestTime).getTime() - new Date().getTime()) / 1000 / 60;
 
-    console.log(left, new Date(closestTime), closestTime)
   return getTimeFromMins(left);
 };

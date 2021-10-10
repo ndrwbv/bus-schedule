@@ -32,6 +32,7 @@ import FavoriteBusStopList from "../FavoriteBusStopList";
 import Header from "../Header";
 import { ImageWrapper } from "../ImageWrapper";
 import TelegramButton from "../TelegramButton";
+import ym from "react-yandex-metrika";
 
 const MainLayout = styled.div`
   padding: 15px;
@@ -126,6 +127,8 @@ const TelegramContainer = styled.div`
 
 const currentDay = new Date().getDay();
 
+const isProd = process.env.NODE_ENV === "production";
+
 function Schedule() {
   const [busStop, setBusStop] = React.useState<StopKeys>("В. Маяковского");
   const [left, setLeft] = React.useState<ITime>({
@@ -143,7 +146,18 @@ function Schedule() {
   const [stopsOptions, setStopsOptions] =
     React.useState<IStop<StopKeysIn | StopKeysOut>[]>(StopsInOptions);
 
-  React.useEffect(() => {}, []);
+  React.useEffect(() => {
+    const utmIndex = window.location.href.indexOf("utm");
+    if (utmIndex === -1) return;
+
+    const localStorageUtm = localStorage.getItem("utm");
+    if (localStorageUtm) return;
+
+    const utm = window.location.href.slice(utmIndex + 4);
+
+    localStorage.setItem("utm", utm);
+    isProd && ym("reachGoal", "fromUtm", { utm });
+  }, []);
 
   React.useEffect(() => {
     const localStorageItem = localStorage.getItem("favoriteStops");
@@ -232,6 +246,7 @@ function Schedule() {
 
     const newStops: StopKeys[] = [busStop, ...stops];
     saveFavoriteBusStops(newStops);
+    isProd && ym("reachGoal", "addStop", { stop: busStop });
   };
 
   const handleRemoveFavoriteStatus = () => {
