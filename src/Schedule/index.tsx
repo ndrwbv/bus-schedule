@@ -259,6 +259,11 @@ function Schedule() {
     saveFavoriteBusStops(newStops);
   };
 
+  const handleChangeBusStop = (busStop: StopKeys) => {
+    isProd && ym("reachGoal", "selectBusStop");
+    setBusStop(busStop)
+  }
+  
   const isBusStopFavorite = favoriteBusStops.includes(busStop);
 
   return (
@@ -297,7 +302,7 @@ function Schedule() {
             isSearchable={false}
             styles={selectStyles}
             options={stopsOptions}
-            onChange={(e) => setBusStop(e?.value as StopKeys)}
+            onChange={(e) => handleChangeBusStop(e?.value as StopKeys)}
             value={stopsOptions.find((stop) => stop.value === busStop)}
             defaultValue={stopsOptions[0]}
           />
