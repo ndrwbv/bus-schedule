@@ -127,7 +127,13 @@ const TelegramContainer = styled.div`
   padding-left: 31px;
 `;
 
+const getNextDay = (currentDay: number) => {
+  if (currentDay === 6) return 0;
+  return currentDay + 1;
+};
+
 const currentDay = new Date().getDay();
+const nextDay = getNextDay(currentDay);
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -263,9 +269,9 @@ function Schedule() {
 
   const handleChangeBusStop = (busStop: StopKeys) => {
     isProd && ym("reachGoal", "selectBusStop");
-    setBusStop(busStop)
-  }
-  
+    setBusStop(busStop);
+  };
+
   const isBusStopFavorite = favoriteBusStops.includes(busStop);
 
   return (
@@ -348,7 +354,9 @@ function Schedule() {
         <Header text={"Автобусы на завтра"} imgSrc={UpcomingBus} />
 
         <OtherTime>
-            {SCHEDULE[direction][currentDay][busStop].map((d, index) => <TimeStamp key={`${d}-${index}`}>{d}</TimeStamp>)}
+          {SCHEDULE[direction][nextDay][busStop].map((d, index) => (
+            <TimeStamp key={`${d}-${index}`}>{d}</TimeStamp>
+          ))}
         </OtherTime>
       </Container>
 
