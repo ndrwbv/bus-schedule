@@ -59,6 +59,8 @@ const OtherTime = styled.div`
   padding: 22px 26px;
   background-color: ${MAIN_GREY};
   border-radius: 6px;
+  max-height: 200px;
+  overflow: scroll;
 `;
 const TimeStamp = styled.div`
   & + & {
@@ -322,7 +324,7 @@ function Schedule() {
 
         <OtherTime>
           {closestTimeArray.length === 0
-            ? "Автобусов на сегодня нет"
+            ? "Автобусов нет"
             : closestTimeArray.map((d, index) => (
                 <TimeStamp key={`${d}-${index}`}>{d}</TimeStamp>
               ))}
@@ -340,6 +342,14 @@ function Schedule() {
             ? "Удалить остановку из избранного"
             : "Добавить остановку в избранное"}
         </AddToFavoriteButton>
+      </Container>
+
+      <Container>
+        <Header text={"Автобусы на завтра"} imgSrc={UpcomingBus} />
+
+        <OtherTime>
+            {SCHEDULE[direction][currentDay][busStop].map((d, index) => <TimeStamp key={`${d}-${index}`}>{d}</TimeStamp>)}
+        </OtherTime>
       </Container>
 
       <Container>
