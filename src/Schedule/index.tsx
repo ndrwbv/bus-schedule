@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import styled from "styled-components";
 import SVG from "react-inlinesvg";
@@ -33,6 +33,7 @@ import Header from "../Header";
 import { ImageWrapper } from "../ImageWrapper";
 import TelegramButton from "../TelegramButton";
 import ym from "react-yandex-metrika";
+import Vote from "../Vote";
 
 const MainLayout = styled.div`
   padding: 15px;
@@ -153,6 +154,9 @@ function Schedule() {
   );
   const [stopsOptions, setStopsOptions] =
     React.useState<IStop<StopKeysIn | StopKeysOut>[]>(StopsInOptions);
+
+    const [isVoteVisible, setVoteVisible] = React.useState<boolean>(true);
+    
 
   React.useEffect(() => {
     const utmIndex = window.location.href.indexOf("utm");
@@ -277,6 +281,9 @@ function Schedule() {
   return (
     <MainLayout>
       <Container>
+  
+        {isVoteVisible && <Vote hideCross={false}/>}
+       
         <GoButtonContainer>
           <GoButton
             active={direction === "in"}
@@ -376,6 +383,8 @@ function Schedule() {
           <TelegramButton />
         </TelegramContainer>
       </Container>
+      {!isVoteVisible && <Vote hideCross={true}/>}
+      
 
       <Container>
         <LinksBlock>
