@@ -3,7 +3,6 @@ import SVG from "react-inlinesvg";
 
 import { ImageWrapper } from "./ImageWrapper";
 
-
 const HeaderContainer = styled.div`
   display: flex;
   align-items: center;
