@@ -64,22 +64,22 @@ export const VoteCloseButton = styled.div`
   }
 `;
 
-const Vote: React.FC<{ hideCross: boolean }> = ({ hideCross }) => {
+const Vote: React.FC<{ hideCross: boolean; onCrossClick?: () => void; onVoteClick: () => void }> = ({
+  hideCross,
+  onCrossClick,
+  onVoteClick,
+}) => {
   return (
     <VoteWrapper>
       <VoteText>Хочу улучшить приложение</VoteText>
-      <VoteButton
+      <VoteButton onClick={onVoteClick}
         href="https://docs.google.com/forms/d/1CIuACPCB373hVzxHdHsXbjFCkeEA2H7h7IK-CURqh2o/viewform?edit_requested=true"
         target="_blank"
       >
         Пройти опрос
       </VoteButton>
       {!hideCross && (
-        <VoteCloseButton
-          onClick={() => {
-            console.log("erga");
-          }}
-        >
+        <VoteCloseButton onClick={onCrossClick}>
           <SVG className="closebutton" src={VoteCloseCross} />
         </VoteCloseButton>
       )}

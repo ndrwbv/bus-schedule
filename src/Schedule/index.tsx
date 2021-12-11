@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import styled from "styled-components";
 import SVG from "react-inlinesvg";
@@ -155,8 +155,17 @@ function Schedule() {
   const [stopsOptions, setStopsOptions] =
     React.useState<IStop<StopKeysIn | StopKeysOut>[]>(StopsInOptions);
 
-    const [isVoteVisible, setVoteVisible] = React.useState<boolean>(true);
-    
+  const [isVoteVisible, setVoteVisible] = React.useState<boolean>(true);
+
+  const hideVote = () => {
+    setVoteVisible(false);
+    localStorage.setItem("vote_visible", "false");
+    isProd && ym("reachGoal", "voteClose");
+  };
+
+  const handleVoteClick = () => {
+    isProd && ym("reachGoal", "voteClick");
+  };
 
   React.useEffect(() => {
     const utmIndex = window.location.href.indexOf("utm");
@@ -209,6 +218,13 @@ function Schedule() {
 
     setLeft(left);
   }, [_everyMinuteUpdate, closestTime]);
+
+  React.useEffect(() => {
+    const localVisible = localStorage.getItem("vote_visible");
+    if (localVisible === "false") {
+      setVoteVisible(false);
+    }
+  }, []);
 
   const handleChangeDirection = (_direction: Directions) => {
     const scheduleKeys = Object.keys(SCHEDULE[_direction][currentDay]);
@@ -281,9 +297,15 @@ function Schedule() {
   return (
     <MainLayout>
       <Container>
-  
-        {isVoteVisible && <Vote hideCross={false}/>}
-       
+        {isVoteVisible && (
+          <Vote
+            key={1}
+            hideCross={false}
+            onCrossClick={hideVote}
+            onVoteClick={handleVoteClick}
+          />
+        )}
+
         <GoButtonContainer>
           <GoButton
             active={direction === "in"}
@@ -383,8 +405,9 @@ function Schedule() {
           <TelegramButton />
         </TelegramContainer>
       </Container>
-      {!isVoteVisible && <Vote hideCross={true}/>}
-      
+      {!isVoteVisible && (
+        <Vote key={2} hideCross={true} onVoteClick={handleVoteClick} />
+      )}
 
       <Container>
         <LinksBlock>
@@ -399,7 +422,7 @@ function Schedule() {
             </a>
           </GrayText>
 
-          <GrayText>© Andrew Boev</GrayText>
+          <GrayText>© Andrew Boev & Friends</GrayText>
         </LinksBlock>
       </Container>
     </MainLayout>
