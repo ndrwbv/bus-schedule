@@ -153,15 +153,7 @@ function Schedule() {
     []
   );
   const [stopsOptions, setStopsOptions] =
-    React.useState<IStop<StopKeysIn | StopKeysOut>[]>(StopsInOptions);
-
-  const [isVoteVisible, setVoteVisible] = React.useState<boolean>(true);
-
-  const hideVote = () => {
-    setVoteVisible(false);
-    localStorage.setItem("vote_visible", "false");
-    isProd && ym("reachGoal", "voteClose");
-  };
+    React.useState<IStop<StopKeysIn | StopKeysOut>[]>(StopsOutOptions);
 
   const handleVoteClick = () => {
     isProd && ym("reachGoal", "voteClick");
@@ -218,13 +210,6 @@ function Schedule() {
 
     setLeft(left);
   }, [_everyMinuteUpdate, closestTime]);
-
-  React.useEffect(() => {
-    const localVisible = localStorage.getItem("vote_visible");
-    if (localVisible === "false") {
-      setVoteVisible(false);
-    }
-  }, []);
 
   const handleChangeDirection = (_direction: Directions) => {
     const scheduleKeys = Object.keys(SCHEDULE[_direction][currentDay]);
@@ -297,15 +282,6 @@ function Schedule() {
   return (
     <MainLayout>
       <Container>
-        {isVoteVisible && (
-          <Vote
-            key={1}
-            hideCross={false}
-            onCrossClick={hideVote}
-            onVoteClick={handleVoteClick}
-          />
-        )}
-
         <GoButtonContainer>
           <GoButton
             active={direction === "in"}
@@ -380,6 +356,10 @@ function Schedule() {
       </Container>
 
       <Container>
+        <Vote key={2} hideCross={true} onVoteClick={handleVoteClick} />
+      </Container>
+
+      <Container>
         <Header text={"Автобусы на завтра"} imgSrc={UpcomingBus} />
 
         <OtherTime>
@@ -405,9 +385,6 @@ function Schedule() {
           <TelegramButton />
         </TelegramContainer>
       </Container>
-      {!isVoteVisible && (
-        <Vote key={2} hideCross={true} onVoteClick={handleVoteClick} />
-      )}
 
       <Container>
         <LinksBlock>
