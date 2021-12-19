@@ -148,7 +148,7 @@ function Schedule() {
   const [closestTime, setClossestTime] = React.useState<string>("");
 
   const [_everyMinuteUpdate, _setUpdate] = React.useState(0);
-  const [direction, setDirection] = React.useState<Directions>("in");
+  const [direction, setDirection] = React.useState<Directions>("out");
   const [favoriteBusStops, setFavoriteBusStops] = React.useState<StopKeys[]>(
     []
   );
