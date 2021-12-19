@@ -11,7 +11,7 @@ export const VoteWrapper = styled.div`
   padding: 14px;
   width: 100%;
 
-  background: linear-gradient(91.01deg, #0374f9 -21.64%, #35e0ff 97.87%);
+  background: linear-gradient(91.01deg, #9803f9 -21.64%, #35e0ff 97.87%);
   box-shadow: 0px 1px 22px -4px rgba(14, 139, 251, 0.46);
   border-radius: 8px;
 `;
