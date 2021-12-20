@@ -7,7 +7,7 @@ export const VoteWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   position: relative;
-  
+
   padding: 14px;
   width: 100%;
 
@@ -29,11 +29,11 @@ export const VoteButton = styled.a`
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   background: #336cff;
   border-radius: 6px;
   padding: 13px 20px;
-  
+
   white-space: nowrap;
 
   font-style: normal;
@@ -50,7 +50,7 @@ export const VoteCloseButton = styled.div`
 
   width: 27px;
   height: 27px;
-  
+
   background: rgba(255, 255, 255, 0.92);
   border-radius: 50px;
   outline: none;
@@ -63,8 +63,6 @@ export const VoteCloseButton = styled.div`
   }
 `;
 
-
-
 const Vote: React.FC<{
   hideCross: boolean;
   onCrossClick?: () => void;
@@ -72,11 +70,16 @@ const Vote: React.FC<{
 }> = ({ hideCross, onCrossClick, onVoteClick }) => {
   return (
     <VoteWrapper>
-      <VoteText>Мы добавили<br />новые остановки</VoteText>
+      <VoteText>
+        Мы добавили
+        <br />
+        новые остановки
+      </VoteText>
       <VoteButton
         onClick={onVoteClick}
         href="https://docs.google.com/forms/d/1CIuACPCB373hVzxHdHsXbjFCkeEA2H7h7IK-CURqh2o/viewform?edit_requested=true"
         target="_blank"
+        rel="noopener"
       >
         Оставить отзыв
       </VoteButton>
