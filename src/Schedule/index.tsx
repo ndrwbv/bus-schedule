@@ -363,7 +363,7 @@ function Schedule() {
         <Header text={"Автобусы на завтра"} imgSrc={UpcomingBus} />
 
         <OtherTime>
-          {SCHEDULE[direction][nextDay][busStop].map((d, index) => (
+          {SCHEDULE[direction][nextDay][busStop]?.map((d, index) => (
             <TimeStamp key={`${d}-${index}`}>{d}</TimeStamp>
           ))}
         </OtherTime>
