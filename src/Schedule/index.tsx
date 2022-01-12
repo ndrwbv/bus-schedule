@@ -1,14 +1,12 @@
 import React from "react";
 
-import styled from "styled-components";
 import SVG from "react-inlinesvg";
 import Select from "react-select";
 
 import {
   Directions,
   IStop,
-  MAIN_GREY,
-  SCHEDULE,
+  SCHEDULE as defaultSCHEDULE,
   StopKeys,
   StopKeysIn,
   StopKeysOut,
@@ -19,6 +17,7 @@ import {
   calculateHowMuchIsLeft,
   findClosesTime,
   findClosesTimeArray,
+  getNextDay,
   ITime,
 } from "./helpers";
 
@@ -34,104 +33,23 @@ import { ImageWrapper } from "../ImageWrapper";
 import TelegramButton from "../TelegramButton";
 import ym from "react-yandex-metrika";
 import Vote from "../Vote";
-
-const MainLayout = styled.div`
-  padding: 15px;
-`;
-const HowMuchLeftContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  padding: 15px 17px;
-  background-color: ${MAIN_GREY};
-  border-radius: 6px;
-`;
-const LinksBlock = styled.div``;
-const BusEstimation = styled.div`
-  font-size: 18px;
-  margin-left: 19px;
-`;
-const TextWrapper = styled.p``;
-const HighLighted = styled.span`
-  font-weight: bold;
-`;
-const OtherTime = styled.div`
-  padding: 22px 26px;
-  background-color: ${MAIN_GREY};
-  border-radius: 6px;
-  max-height: 200px;
-  overflow: scroll;
-`;
-const TimeStamp = styled.div`
-  & + & {
-    margin-top: 8px;
-  }
-`;
-
-const selectStyles = {
-  container: (p: any, s: any) => ({
-    ...p,
-    width: "200px",
-  }),
-};
-
-const GoButton = styled.button<{ active?: boolean }>`
-  width: 100%;
-  border: none;
-  border-radius: 6px;
-  background-color: ${(props) => (props.active ? "#336CFF" : MAIN_GREY)};
-  color: ${(props) => (props.active ? "white" : "black")};
-  padding: 12px 10px;
-
-  & + & {
-    margin-left: 6px;
-  }
-`;
-
-type FavoriteButtonStatuses = "add" | "remove";
-const AddToFavoriteButton = styled.button<{ status: FavoriteButtonStatuses }>`
-  width: 100%;
-  border: none;
-  border-radius: 6px;
-  background-color: ${(props) =>
-    props.status === "add" ? "#6BD756" : "#D75656"};
-  color: white;
-  padding: 12px 17px;
-
-  margin-top: 8px;
-`;
-const GoButtonContainer = styled.div`
-  display: flex;
-  align-items: center;
-`;
-const Container = styled.div`
-  & + & {
-    margin-top: 44px;
-  }
-`;
-
-const GrayText = styled.p`
-  margin: 0;
-  color: #b2b2b2;
-  font-size: 12px;
-  a {
-    color: inherit;
-  }
-
-  & + & {
-    margin-top: 12px;
-  }
-`;
-
-const TelegramContainer = styled.div`
-  padding-left: 31px;
-`;
-
-const getNextDay = (currentDay: number) => {
-  if (currentDay === 6) return 0;
-  return currentDay + 1;
-};
+import {
+  AddToFavoriteButton,
+  BusEstimation,
+  Container,
+  GoButton,
+  GoButtonContainer,
+  GrayText,
+  HighLighted,
+  HowMuchLeftContainer,
+  LinksBlock,
+  MainLayout,
+  OtherTime,
+  selectStyles,
+  TelegramContainer,
+  TextWrapper,
+  TimeStamp,
+} from "./styled";
 
 const currentDay = new Date().getDay();
 const nextDay = getNextDay(currentDay);
@@ -155,9 +73,24 @@ function Schedule() {
   const [stopsOptions, setStopsOptions] =
     React.useState<IStop<StopKeysIn | StopKeysOut>[]>(StopsOutOptions);
 
-  const handleVoteClick = () => {
-    isProd && ym("reachGoal", "voteClick");
-  };
+  const [SCHEDULE, setSchedule] = React.useState(defaultSCHEDULE);
+
+  React.useEffect(() => {
+    fetch(
+      "https://cdn.contentful.com/spaces/jms7gencs5gy/environments/master/entries/43nolroEBc5PNSMub6VR8G?access_token=qhkzg59i5IhlhFYUg-N4Pc9Qm1Dfx63wlGkOwOGhPXg"
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        if (res?.fields?.schedule) {
+          setSchedule(res?.fields?.schedule);
+        } else {
+          isProd && ym("reachGoal", "cannotLoad");
+        }
+      })
+      .catch(() => {
+        isProd && ym("reachGoal", "cannotLoad");
+      });
+  }, []);
 
   React.useEffect(() => {
     const utmIndex = window.location.href.indexOf("utm");
@@ -203,7 +136,7 @@ function Schedule() {
       );
       setClossestTime(_closestTime);
     }
-  }, [_everyMinuteUpdate, closestTime, busStop, direction]);
+  }, [_everyMinuteUpdate, closestTime, busStop, direction, SCHEDULE]);
 
   React.useEffect(() => {
     const left = calculateHowMuchIsLeft(closestTime);
@@ -238,6 +171,10 @@ function Schedule() {
         </HighLighted>
       </TextWrapper>
     );
+  };
+
+  const handleVoteClick = () => {
+    isProd && ym("reachGoal", "voteClick");
   };
 
   const saveFavoriteBusStops = (stops: StopKeys[]) => {

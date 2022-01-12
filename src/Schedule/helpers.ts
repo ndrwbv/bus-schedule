@@ -17,7 +17,6 @@ export const findClosesTime = (hours: string[]): string | undefined => {
     }
   }
 
-
   return closestTime?.toString();
 };
 
@@ -25,16 +24,16 @@ export const findClosesTime = (hours: string[]): string | undefined => {
  * Возвращает массив таймингов которые будут в будущем
  * @param hours
  */
- export const findClosesTimeArray = (hours: string[]): string[] => {
+export const findClosesTimeArray = (hours: string[]): string[] => {
   let closestTime: string[] = [];
-  
+
   for (let i = 0; i < hours.length; i++) {
     const splitted = hours[i].split(":").map((item) => parseInt(item, 10));
 
     const possibleDate = new Date().setHours(splitted[0], splitted[1]);
 
     if (possibleDate - new Date().getTime() > 0) {
-      closestTime.push(hours[i])
+      closestTime.push(hours[i]);
     }
   }
 
@@ -60,9 +59,7 @@ const getTimeFromMins = (mins: number): ITime => {
  * @param closestTime
  * @currentDate
  */
-export const calculateHowMuchIsLeft = (
-  closestTime: string | null
-): ITime => {
+export const calculateHowMuchIsLeft = (closestTime: string | null): ITime => {
   if (!closestTime)
     return {
       hours: null,
@@ -70,7 +67,14 @@ export const calculateHowMuchIsLeft = (
     };
 
   const left =
-    Math.abs(new Date(closestTime).getTime() - new Date().getTime()) / 1000 / 60;
+    Math.abs(new Date(closestTime).getTime() - new Date().getTime()) /
+    1000 /
+    60;
 
   return getTimeFromMins(left);
+};
+
+export const getNextDay = (currentDay: number) => {
+  if (currentDay === 6) return 0;
+  return currentDay + 1;
 };
