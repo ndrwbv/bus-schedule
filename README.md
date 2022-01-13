@@ -1,46 +1,37 @@
-# Getting Started with Create React App
+# Sever Bus
+Оригинал с картинками в [ноушене](https://wobbly-gauge-c1c.notion.site/Sever-Bus-9205a033327440b797956717f9fca366)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Идея
 
-## Available Scripts
+Однажды Андрею пришлось ездить на автобусе из Северного парка (микрорайон в Томске) в город. Оказалось, что 112с автобус никак не отслеживается в 2гисе, и ездит он по расписанию. Расписание представляло собой 4 таблицы, но по ним было ужасно не удобно искать нужное время. Поэтому появилась идея сделать сайт с понятным расписанием.
 
-In the project directory, you can run:
+## Про технологии
 
-### `yarn start`
+Как стек были выбраны React, Typescript, Styled-components. Макет был нарисован в [Фигме](https://www.figma.com/file/GzMU2THdH5wL74oGwQDrMM/severbus.ru?node-id=28%3A2). Для экономии на хостинге был выбран github pages с кастомным доменом. 
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Распространение
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+После того как сайт был готов, его нужно было как-то рекламировать, чтобы дать возможность не только Андрею им пользоваться. Как самый простой вариант было принято решение нарисовать листовки и расклеить их по микрорайону.
 
-### `yarn test`
+## Метрики
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Было расклеено 60 объявлений, преимущественно на остановках. За все время существования проекта на сайт пришел 761 пользователь.
 
-### `yarn build`
+Сейчас сайт в среднем посещают 25 человек в день.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Итоги
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Пользователи, с которым удалось поговорить, были очень довольны тем, что им не приходится смотреть расписание по таблицам. Значит наша цель была выполнена :)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Люди
 
-### `yarn eject`
+В проекте принимали участие: 
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+- [Евгений Еремин](https://github.com/EE78) - генерирование идей, помощь в реализации сайта, распространение
+- [Игорь Первушин](https://github.com/kapshn) -  генерирование идей, распространение
+- [Андрей Боев](https://github.com/ndrwbv) - идея, реализация сайта, дизайн, распространение
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Ссылки
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- [https://severbus.ru/](https://severbus.ru/)
+- [Дизайн](https://www.figma.com/file/GzMU2THdH5wL74oGwQDrMM/severbus.ru?node-id=28%3A2)
