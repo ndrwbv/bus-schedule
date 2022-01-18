@@ -235,16 +235,6 @@ function Schedule() {
         </GoButtonContainer>
       </Container>
 
-      <Container>
-        <Header text={"Мои остановки"} imgSrc={GreenHeart} />
-        <FavoriteBusStopList
-          stopList={stopsOptions.filter((stop) =>
-            favoriteBusStops.includes(stop.value)
-          )}
-          activeId={busStop}
-          onClick={(busStop) => setBusStop(busStop)}
-        />
-      </Container>
 
       <Container>
         <Header text={"Остановка"} imgSrc={BusStop}>
@@ -265,6 +255,21 @@ function Schedule() {
 
           <BusEstimation>{renderLeftToString()}</BusEstimation>
         </HowMuchLeftContainer>
+      </Container>
+
+      <Container>
+        <Header text={"Мои остановки"} imgSrc={GreenHeart} />
+        <FavoriteBusStopList
+          stopList={stopsOptions.filter((stop) =>
+            favoriteBusStops.includes(stop.value)
+          )}
+          activeId={busStop}
+          onClick={(busStop) => setBusStop(busStop)}
+        />
+      </Container>
+
+      <Container>
+        <hr style={{"opacity":0.3}}/>
       </Container>
 
       <Container>
