@@ -19,6 +19,10 @@ export const BusEstimation = styled.div`
   margin-left: 19px;
 `;
 export const TextWrapper = styled.p``;
+export const StyledHR = styled.hr`
+  opacity: 0.3;
+  margin: 0;
+`;
 export const HighLighted = styled.span`
   font-weight: bold;
 `;
