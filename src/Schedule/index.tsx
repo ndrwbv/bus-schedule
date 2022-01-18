@@ -46,6 +46,7 @@ import {
   MainLayout,
   OtherTime,
   selectStyles,
+  StyledHR,
   TelegramContainer,
   TextWrapper,
   TimeStamp,
@@ -269,7 +270,7 @@ function Schedule() {
       </Container>
 
       <Container>
-        <hr style={{"opacity":0.3}}/>
+        <StyledHR/>
       </Container>
 
       <Container>
