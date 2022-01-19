@@ -2,6 +2,7 @@ import React from "react";
 
 import SVG from "react-inlinesvg";
 import Select from "react-select";
+import ym from "react-yandex-metrika";
 
 import {
   Directions,
@@ -21,17 +22,16 @@ import {
   ITime,
 } from "./helpers";
 
-import GreenHeart from "../img/green-heart.svg";
-import BusStop from "../img/bus-stop.svg";
-import NextBus from "../img/next-bus.svg";
-import UpcomingBus from "../img/upcoming-bus.svg";
-import Write from "../img/write.svg";
+import GreenHeart from "../../img/green-heart.svg";
+import BusStop from "../../img/bus-stop.svg";
+import NextBus from "../../img/next-bus.svg";
+import UpcomingBus from "../../img/upcoming-bus.svg";
+import Write from "../../img/write.svg";
 
 import FavoriteBusStopList from "../FavoriteBusStopList";
 import Header from "../Header";
 import { ImageWrapper } from "../ImageWrapper";
 import TelegramButton from "../TelegramButton";
-import ym from "react-yandex-metrika";
 import Vote from "../Vote";
 import {
   AddToFavoriteButton,

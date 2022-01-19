@@ -1,6 +1,5 @@
 
-import React from 'react';
-import Schedule from './Schedule';
+import Schedule from './components/Schedule/Schedule';
 
 function App() {
   return (

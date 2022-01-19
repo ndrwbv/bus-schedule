@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import SVG from "react-inlinesvg";
-import VoteCloseCross from "./img/voteclosecross.svg";
+import VoteCloseCross from "../img/voteclosecross.svg";
 
 export const VoteWrapper = styled.div`
   display: flex;

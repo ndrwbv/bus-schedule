@@ -2,7 +2,7 @@ import SVG from "react-inlinesvg";
 import styled from "styled-components";
 
 import { ImageWrapper } from "./ImageWrapper";
-import TelegramLogo from "./img/telegram-logo.svg";
+import TelegramLogo from "../img/telegram-logo.svg";
 
 const TelegramContainer = styled.button`
   display: flex;
