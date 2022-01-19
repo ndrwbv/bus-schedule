@@ -1,6 +1,5 @@
 import React from "react";
 
-import SVG from "react-inlinesvg";
 import Select from "react-select";
 import ym from "react-yandex-metrika";
 
@@ -24,35 +23,30 @@ import {
 
 import GreenHeart from "../../img/green-heart.svg";
 import BusStop from "../../img/bus-stop.svg";
-import NextBus from "../../img/next-bus.svg";
 import UpcomingBus from "../../img/upcoming-bus.svg";
 import Write from "../../img/write.svg";
 
 import FavoriteBusStopList from "../FavoriteBusStopList";
 import Header from "../Header";
-import { ImageWrapper } from "../ImageWrapper";
 import TelegramButton from "../TelegramButton";
 import Vote from "../Vote";
 import Info from "../Info";
 import {
   AddToFavoriteButton,
-  BusEstimation,
   Container,
   GoButton,
   GoButtonContainer,
   GrayText,
-  HighLighted,
-  HowMuchLeftContainer,
   LinksBlock,
   MainLayout,
   OtherTime,
   selectStyles,
   StyledHR,
   TelegramContainer,
-  TextWrapper,
   TimeStamp,
 } from "./styled";
 import SelectBusStopText from "../SelectBusStopText";
+import HowMuchLeft from "../HowMuchLeft/HowMuchLeft";
 
 const currentDay = new Date().getDay();
 const nextDay = getNextDay(currentDay);
@@ -315,15 +309,7 @@ function Schedule() {
           />
         </Header>
 
-        <HowMuchLeftContainer>
-          {busStop && (
-            <ImageWrapper w={39} h={39}>
-              <SVG src={NextBus} width={39} height={39} uniquifyIDs={true} />
-            </ImageWrapper>
-          )}
-
-          <BusEstimation>{renderLeftToString()}</BusEstimation>
-        </HowMuchLeftContainer>
+        <HowMuchLeft busStop={busStop} left={left} />
       </Container>
 
       <Container>
