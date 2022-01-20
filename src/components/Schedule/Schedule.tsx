@@ -33,6 +33,7 @@ import Header from "../Header";
 import { ImageWrapper } from "../ImageWrapper";
 import TelegramButton from "../TelegramButton";
 import Vote from "../Vote";
+import Info from "../Info";
 import {
   AddToFavoriteButton,
   BusEstimation,
@@ -219,6 +220,9 @@ function Schedule() {
 
   return (
     <MainLayout>
+      <Container>
+        <Info></Info>
+      </Container>
       <Container>
         <GoButtonContainer>
           <GoButton
