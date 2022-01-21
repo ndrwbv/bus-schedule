@@ -1,13 +1,13 @@
 import styled from "styled-components";
 import SVG from "react-inlinesvg";
-import InfoCloseCross from "./img/infoclosecross.svg";
+import InfoCloseCross from "../img/infoclosecross.svg";
 
 export const InfoWrapper = styled.div`
   width: 100%;
   padding: 15px 30px 15px 15px;
 
   background: linear-gradient(100.09deg, #0374F9 -39.57%, #35E0FF 124.36%);
-  box-shadow: box-shadow: 0px 1px 22px -4px rgba(14, 139, 251, 0.46);
+  box-shadow: 0px 1px 22px -4px rgba(14, 139, 251, 0.46);
   border-radius: 18px;
   
   position: relative;
