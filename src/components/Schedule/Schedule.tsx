@@ -5,7 +5,7 @@ import ym from "react-yandex-metrika";
 
 import {
   Directions,
-  IStop,
+  IOption,
   SCHEDULE as defaultSCHEDULE,
   StopKeys,
   StopKeysIn,
@@ -26,7 +26,6 @@ import BusStop from "../../img/bus-stop.svg";
 import UpcomingBus from "../../img/upcoming-bus.svg";
 import Write from "../../img/write.svg";
 
-import FavoriteBusStopList from "../FavoriteBusStopList";
 import Header from "../Header";
 import TelegramButton from "../TelegramButton";
 import Vote from "../Vote";
@@ -47,6 +46,7 @@ import {
 } from "./styled";
 import SelectBusStopText from "../SelectBusStopText";
 import HowMuchLeft from "../HowMuchLeft/HowMuchLeft";
+import InlineOptions from "../InlineOptions";
 
 const currentDay = new Date().getDay();
 const nextDay = getNextDay(currentDay);
@@ -314,12 +314,12 @@ function Schedule() {
 
       <Container>
         <Header text={"Мои остановки"} imgSrc={GreenHeart} />
-        <FavoriteBusStopList
-          stopList={stopsOptions.filter((stop) =>
-            stop?.value ? favoriteBusStops.includes(stop?.value) : false
+        <InlineOptions
+          list={stopsOptions.filter((stop) =>
+            favoriteBusStops.includes(stop.value)
           )}
           activeId={busStop}
-          onClick={(busStop) => setBusStop(busStop)}
+          onClick={(busStop) => setBusStop(busStop as StopKeys)}
         />
       </Container>
 

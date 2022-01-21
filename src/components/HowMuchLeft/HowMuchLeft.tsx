@@ -3,6 +3,7 @@ import SVG from "react-inlinesvg";
 import NextBus from "../../img/next-bus.svg";
 
 import { ImageWrapper } from "../ImageWrapper";
+import InlineOptions, { InlineOptionsContainer } from "../InlineOptions";
 import { StopKeys } from "../Schedule/consts";
 import { ITime } from "../Schedule/helpers";
 import {
@@ -37,11 +38,17 @@ const HowMuchLeft: React.FC<{ left: ITime; busStop: StopKeys }> = ({
 
   return (
     <HowMuchLeftContainer>
+      <div>
       <ImageWrapper w={39} h={39}>
         <SVG src={NextBus} width={39} height={39} uniquifyIDs={true} />
       </ImageWrapper>
 
       <BusEstimation>{renderLeftToString()}</BusEstimation>
+</div>
+
+<InlineOptions 
+  list={[]}
+/>
     </HowMuchLeftContainer>
   );
 };

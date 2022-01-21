@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { MAIN_GREY } from "./Schedule/consts";
+import { IOption, MAIN_GREY } from "./Schedule/consts";
 
 export const InlineOptionsItem = styled.div<{ active: boolean }>`
   padding: 8px 17px;
@@ -18,3 +18,25 @@ export const InlineOptionsContainer = styled.div`
   align-items: center;
   flex-wrap: wrap;
 `;
+
+const InlineOptions: React.FC<{
+  list: IOption<string | number>[];
+  activeId: string;
+  onClick: (busStop: string | number) => void;
+}> = ({ list, activeId, onClick }) => {
+  return (
+    <InlineOptionsContainer>
+      {list.map((option) => (
+        <InlineOptionsItem
+          active={option.value === activeId}
+          key={option.value}
+          onClick={() => onClick(option.value)}
+        >
+          {option.label}
+        </InlineOptionsItem>
+      ))}
+    </InlineOptionsContainer>
+  );
+};
+
+export default InlineOptions;
