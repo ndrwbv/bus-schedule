@@ -3,20 +3,45 @@ import SVG from "react-inlinesvg";
 import NextBus from "../../img/next-bus.svg";
 
 import { ImageWrapper } from "../ImageWrapper";
-import InlineOptions, { InlineOptionsContainer } from "../InlineOptions";
+import InlineOptions from "../InlineOptions";
 import { StopKeys } from "../Schedule/consts";
 import { ITime } from "../Schedule/helpers";
 import {
   BusEstimation,
+  FastReplyContainer,
   HighLighted,
   HowMuchLeftContainer,
+  NextBusContainer,
   TextWrapper,
 } from "./styled";
+
+const FastReplyOptions = [
+  {
+    value: "Приехал раньше",
+    label: "Приехал раньше",
+  },
+  {
+    value: "Приехал позже",
+    label: "Приехал позже",
+  },
+  {
+    value: "Не приехал",
+    label: "Не приехал",
+  },
+];
 
 const HowMuchLeft: React.FC<{ left: ITime; busStop: StopKeys }> = ({
   left,
   busStop,
 }) => {
+  const [fastReplyOption, setFastReplyOption] = React.useState<string | null>(
+    null
+  );
+
+  const handleClickOption = (value: string | number) => {
+    setFastReplyOption(value as string);
+  };
+
   const renderLeftToString = () => {
     if (left.hours === null && left.minutes === null)
       return (
@@ -38,17 +63,22 @@ const HowMuchLeft: React.FC<{ left: ITime; busStop: StopKeys }> = ({
 
   return (
     <HowMuchLeftContainer>
-      <div>
-      <ImageWrapper w={39} h={39}>
-        <SVG src={NextBus} width={39} height={39} uniquifyIDs={true} />
-      </ImageWrapper>
+      <NextBusContainer>
+        <ImageWrapper w={39} h={39}>
+          <SVG src={NextBus} width={39} height={39} uniquifyIDs={true} />
+        </ImageWrapper>
 
-      <BusEstimation>{renderLeftToString()}</BusEstimation>
-</div>
+        <BusEstimation>{renderLeftToString()}</BusEstimation>
+      </NextBusContainer>
 
-<InlineOptions 
-  list={[]}
-/>
+      <FastReplyContainer>
+        <InlineOptions
+          list={FastReplyOptions}
+          activeId={fastReplyOption}
+          onClick={handleClickOption}
+          defaultColor={"white"}
+        />
+      </FastReplyContainer>
     </HowMuchLeftContainer>
   );
 };
