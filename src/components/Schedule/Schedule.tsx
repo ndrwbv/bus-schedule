@@ -49,9 +49,13 @@ import HowMuchLeft from "../HowMuchLeft/HowMuchLeft";
 import InlineOptions from "../InlineOptions";
 
 const currentDay = new Date().getDay();
+const userVisitTime = new Date();
 const nextDay = getNextDay(currentDay);
 
 const isProd = process.env.NODE_ENV === "production";
+
+// если до автобуса осталось меньше 15 минут и пользователь провел на сайте больше 1 минуты
+// если до автобуса осталось меньше 5 минут
 
 function Schedule() {
   const [busStop, setBusStop] = React.useState<StopKeys | null>(null);
@@ -69,7 +73,8 @@ function Schedule() {
   );
   const [stopsOptions, setStopsOptions] =
     React.useState<IStop<StopKeysIn | StopKeysOut | null>[]>(StopsOutOptions);
-
+    const [shouldShowFastReply, setShouldShowFastReply] = React.useState(false);
+    
   const [SCHEDULE, setSchedule] = React.useState(defaultSCHEDULE);
   const [infoMessage, setInfoMessage] = React.useState({
     message: null,
@@ -133,6 +138,31 @@ function Schedule() {
 
     setFavoriteBusStops(favoriteStops);
   }, []);
+
+  React.useEffect(() => {
+    const userVisitTimeLeft = calculateHowMuchIsLeft(
+      userVisitTime.toISOString()
+    );
+    const isUserVistSiteMoreThenOneMinute =
+      (userVisitTimeLeft.hours && userVisitTimeLeft.hours >= 1) ||
+      (userVisitTimeLeft.minutes && userVisitTimeLeft.minutes >= 1);
+
+    if (left.hours === null) return;
+
+    if (
+      left?.minutes &&
+      left?.minutes <= 15 &&
+      isUserVistSiteMoreThenOneMinute
+    ) {
+      return setShouldShowFastReply(true);
+    }
+
+    if (left?.minutes && left?.minutes <= 5) {
+      return setShouldShowFastReply(true);
+    }
+
+    return setShouldShowFastReply(false);
+  }, [left]);
 
   React.useEffect(() => {
     const int = setInterval(() => _setUpdate(Date.now()), 1000);
@@ -309,7 +339,11 @@ function Schedule() {
           />
         </Header>
 
-        <HowMuchLeft busStop={busStop} left={left} />
+        <HowMuchLeft
+          busStop={busStop}
+          left={left}
+          shouldShowFastReply={shouldShowFastReply}
+        />
       </Container>
 
       <Container>

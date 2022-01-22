@@ -30,15 +30,17 @@ const FastReplyOptions = [
   },
 ];
 
-const HowMuchLeft: React.FC<{ left: ITime; busStop: StopKeys }> = ({
-  left,
-  busStop,
-}) => {
+const HowMuchLeft: React.FC<{
+  left: ITime;
+  busStop: StopKeys;
+  shouldShowFastReply: boolean;
+}> = ({ left, busStop, shouldShowFastReply }) => {
   const [fastReplyOption, setFastReplyOption] = React.useState<string | null>(
     null
   );
 
   const handleClickOption = (value: string | number) => {
+    // todo anal
     setFastReplyOption(value as string);
   };
 
@@ -71,14 +73,16 @@ const HowMuchLeft: React.FC<{ left: ITime; busStop: StopKeys }> = ({
         <BusEstimation>{renderLeftToString()}</BusEstimation>
       </NextBusContainer>
 
-      <FastReplyContainer>
-        <InlineOptions
-          list={FastReplyOptions}
-          activeId={fastReplyOption}
-          onClick={handleClickOption}
-          defaultColor={"white"}
-        />
-      </FastReplyContainer>
+      {shouldShowFastReply && (
+        <FastReplyContainer>
+          <InlineOptions
+            list={FastReplyOptions}
+            activeId={fastReplyOption}
+            onClick={handleClickOption}
+            defaultColor={"white"}
+          />
+        </FastReplyContainer>
+      )}
     </HowMuchLeftContainer>
   );
 };
