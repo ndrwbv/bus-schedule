@@ -244,7 +244,7 @@ function Schedule() {
   };
 
   const isBusStopFavorite = favoriteBusStops.includes(busStop);
-  console.log(isInfoShow);
+  
   return (
     <MainLayout>
       {isInfoShow && (
