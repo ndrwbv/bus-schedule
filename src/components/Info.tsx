@@ -6,10 +6,10 @@ export const InfoWrapper = styled.div`
   width: 100%;
   padding: 15px 30px 15px 15px;
 
-  background: linear-gradient(100.09deg, #0374F9 -39.57%, #35E0FF 124.36%);
+  background: linear-gradient(100.09deg, #0374f9 -39.57%, #35e0ff 124.36%);
   box-shadow: 0px 1px 22px -4px rgba(14, 139, 251, 0.46);
   border-radius: 18px;
-  
+
   position: relative;
 `;
 
@@ -41,12 +41,19 @@ export const InfoCloseButton = styled.div`
   }
 `;
 
-const Info: React.FC<{}> = ({}) => {
+const Info: React.FC<{
+  text: string | any;
+  onInfoCrossClick: () => void;
+}> = ({ onInfoCrossClick, text }) => {
   return (
     <InfoWrapper>
-      <InfoText>С 1 по 10 января автобус ходит по субботнему расписанию</InfoText>
+      <InfoText>{text}</InfoText>
       <InfoCloseButton>
-        <SVG className="closebutton" src={InfoCloseCross} />
+        <SVG
+          className="closebutton"
+          src={InfoCloseCross}
+          onClick={onInfoCrossClick}
+        />
       </InfoCloseButton>
     </InfoWrapper>
   );
