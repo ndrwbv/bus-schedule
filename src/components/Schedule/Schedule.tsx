@@ -33,6 +33,7 @@ import Header from "../Header";
 import { ImageWrapper } from "../ImageWrapper";
 import TelegramButton from "../TelegramButton";
 import Vote from "../Vote";
+import Info from "../Info";
 import {
   AddToFavoriteButton,
   BusEstimation,
@@ -75,6 +76,21 @@ function Schedule() {
     React.useState<IStop<StopKeysIn | StopKeysOut>[]>(StopsOutOptions);
 
   const [SCHEDULE, setSchedule] = React.useState(defaultSCHEDULE);
+  const [infoMessage, setInfoMessage] = React.useState({
+    message: null,
+    id: null,
+  });
+  const [isInfoShow, setIsInfoShow] = React.useState(false);
+
+  React.useEffect(() => {
+    fetch(
+      "https://cdn.contentful.com/spaces/jms7gencs5gy/environments/master/entries/7IlPNcg50LiVUVbIe2FwYN?access_token=qhkzg59i5IhlhFYUg-N4Pc9Qm1Dfx63wlGkOwOGhPXg"
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        setInfoMessage(res?.fields);
+      });
+  }, []);
 
   React.useEffect(() => {
     fetch(
@@ -105,6 +121,13 @@ function Schedule() {
     localStorage.setItem("utm", utm);
     isProd && ym("reachGoal", "fromUtm", { utm });
   }, []);
+
+  React.useEffect(() => {
+    if (!infoMessage.id) return;
+
+    const _infoMessageId = localStorage.getItem("infoMessageId");
+    Number(_infoMessageId) !== infoMessage.id && setIsInfoShow(true);
+  }, [infoMessage.id]);
 
   React.useEffect(() => {
     const localStorageItem = localStorage.getItem("favoriteStops");
@@ -215,10 +238,23 @@ function Schedule() {
     setBusStop(busStop);
   };
 
-  const isBusStopFavorite = favoriteBusStops.includes(busStop);
+  const onInfoCrossClick = () => {
+    setIsInfoShow(false);
+    infoMessage.id && localStorage.setItem("infoMessageId", infoMessage.id);
+  };
 
+  const isBusStopFavorite = favoriteBusStops.includes(busStop);
+  
   return (
     <MainLayout>
+      {isInfoShow && (
+        <Container>
+          <Info
+            text={infoMessage.message}
+            onInfoCrossClick={onInfoCrossClick}
+          ></Info>
+        </Container>
+      )}
       <Container>
         <GoButtonContainer>
           <GoButton
@@ -235,7 +271,6 @@ function Schedule() {
           </GoButton>
         </GoButtonContainer>
       </Container>
-
 
       <Container>
         <Header text={"Остановка"} imgSrc={BusStop}>
@@ -270,7 +305,7 @@ function Schedule() {
       </Container>
 
       <Container>
-        <StyledHR/>
+        <StyledHR />
       </Container>
 
       <Container>
