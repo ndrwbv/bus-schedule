@@ -88,7 +88,9 @@ function Schedule() {
     )
       .then((res) => res.json())
       .then((res) => {
-        setInfoMessage(res?.fields);
+        if(res?.fields) {
+          setInfoMessage(res?.fields);
+        }
       });
   }, []);
 
