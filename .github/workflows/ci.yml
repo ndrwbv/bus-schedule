@@ -12,7 +12,12 @@ jobs:
     runs-on: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v2.4.0
+
+      - name: Install deps
+        run: yarn
+      
       - name: Build
         run: yarn build
+      
       - name: Deploy
         run: yarn deploy
