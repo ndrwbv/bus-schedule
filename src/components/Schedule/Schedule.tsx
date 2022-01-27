@@ -80,6 +80,7 @@ function Schedule() {
   const [infoMessage, setInfoMessage] = React.useState({
     message: null,
     id: null,
+    link: null,
   });
   const [isInfoShow, setIsInfoShow] = React.useState(false);
 
@@ -129,7 +130,7 @@ function Schedule() {
     if (!infoMessage.id) return;
 
     const _infoMessageId = localStorage.getItem("infoMessageId");
-    Number(_infoMessageId) !== infoMessage.id && setIsInfoShow(true);
+    Number(_infoMessageId) !== Number(infoMessage.id) && setIsInfoShow(true);
   }, [infoMessage.id]);
 
   React.useEffect(() => {
@@ -252,6 +253,11 @@ function Schedule() {
   const onInfoCrossClick = () => {
     setIsInfoShow(false);
     infoMessage.id && localStorage.setItem("infoMessageId", infoMessage.id);
+    isProd && ym("reachGoal", "infoBlockHide");
+  };
+
+  const onInfoBlockLinkClick = () => {
+    isProd && ym("reachGoal", "infoBlockLinkClick");
   };
 
   const renderTodaysBusContent = () => {
@@ -274,6 +280,8 @@ function Schedule() {
         <Container>
           <Info
             text={infoMessage.message}
+            link={infoMessage.link}
+            onLinkClick={onInfoBlockLinkClick}
             onInfoCrossClick={onInfoCrossClick}
           ></Info>
         </Container>

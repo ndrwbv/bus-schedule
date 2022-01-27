@@ -13,13 +13,29 @@ export const InfoWrapper = styled.div`
   position: relative;
 `;
 
-export const InfoText = styled.div`
+export const InfoText = styled.p`
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
   line-height: 19px;
 
   color: #ffffff;
+`;
+
+export const InfoLink = styled.a`
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 19px;
+
+  text-decoration: underline;
+  color: #ffffff;
+
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
 `;
 
 export const InfoCloseButton = styled.div`
@@ -42,12 +58,22 @@ export const InfoCloseButton = styled.div`
 `;
 
 const Info: React.FC<{
-  text: string | any;
+  onLinkClick: () => void;
+  text: string | null;
+  link: string | null;
   onInfoCrossClick: () => void;
-}> = ({ onInfoCrossClick, text }) => {
+}> = ({ onLinkClick, onInfoCrossClick, text, link }) => {
+  if (!text) return null;
+
   return (
     <InfoWrapper>
-      <InfoText>{text}</InfoText>
+      {link ? (
+        <InfoLink href={link} target="_blank" onClick={onLinkClick}>
+          {text}
+        </InfoLink>
+      ) : (
+        <InfoText>{text}</InfoText>
+      )}
       <InfoCloseButton>
         <SVG
           className="closebutton"
