@@ -8,7 +8,7 @@ const TextContainer = styled.p`
 const SelectBusStopText = () => {
   return (
     <TextContainer>
-      Выбери остановку, чтобы увидеть ближайший автобус
+      Выбери остановку, чтобы увидеть расписание
     </TextContainer>
   );
 };
