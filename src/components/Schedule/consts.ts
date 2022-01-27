@@ -13,7 +13,11 @@ export interface IStop<direction> {
   value: direction;
   label: string;
 }
-export const StopsInOptions: IStop<StopKeysIn>[] = [
+export const StopsInOptions: IStop<StopKeysIn | null>[] = [
+  {
+    label: "Не выбрано",
+    value: null,
+  },
   {
     label: "Интернационалистов",
     value: "Интернационалистов",
@@ -82,10 +86,13 @@ export const StopsInOptions: IStop<StopKeysIn>[] = [
     label: "Cеребряный бор",
     value: "Cеребряный бор",
   },
-
 ];
 
-export const StopsOutOptions: IStop<StopKeysOut>[] = [
+export const StopsOutOptions: IStop<StopKeysOut | null>[] = [
+  {
+    label: "Не выбрано",
+    value: null,
+  },
   {
     label: "Cеребряный бор",
     value: "Cеребряный бор",
@@ -162,7 +169,7 @@ export type StopKeysIn =
   | "Марины Цветаевой (Торта)"
   | "Марины Цветаевой"
   | "Анны Ахматовой"
-  | "Cеребряный бор"
+  | "Cеребряный бор";
 
 export type StopKeysOut =
   | "Cеребряный бор"

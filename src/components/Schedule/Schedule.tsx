@@ -52,6 +52,7 @@ import {
   TextWrapper,
   TimeStamp,
 } from "./styled";
+import SelectBusStopText from "../SelectBusStopText";
 
 const currentDay = new Date().getDay();
 const nextDay = getNextDay(currentDay);
@@ -59,7 +60,7 @@ const nextDay = getNextDay(currentDay);
 const isProd = process.env.NODE_ENV === "production";
 
 function Schedule() {
-  const [busStop, setBusStop] = React.useState<StopKeys>("В. Маяковского");
+  const [busStop, setBusStop] = React.useState<StopKeys | null>(null);
   const [left, setLeft] = React.useState<ITime>({
     hours: 0,
     minutes: 0,
@@ -73,7 +74,7 @@ function Schedule() {
     []
   );
   const [stopsOptions, setStopsOptions] =
-    React.useState<IStop<StopKeysIn | StopKeysOut>[]>(StopsOutOptions);
+    React.useState<IStop<StopKeysIn | StopKeysOut | null>[]>(StopsOutOptions);
 
   const [SCHEDULE, setSchedule] = React.useState(defaultSCHEDULE);
   const [infoMessage, setInfoMessage] = React.useState({
@@ -88,7 +89,7 @@ function Schedule() {
     )
       .then((res) => res.json())
       .then((res) => {
-        if(res?.fields) {
+        if (res?.fields) {
           setInfoMessage(res?.fields);
         }
       });
@@ -147,6 +148,8 @@ function Schedule() {
   }, [_everyMinuteUpdate]);
 
   React.useEffect(() => {
+    if (!busStop) return;
+
     const _closestTime = findClosesTime(
       SCHEDULE[direction][currentDay][busStop]
     );
@@ -172,7 +175,7 @@ function Schedule() {
 
   const handleChangeDirection = (_direction: Directions) => {
     const scheduleKeys = Object.keys(SCHEDULE[_direction][currentDay]);
-    if (!scheduleKeys.includes(busStop)) {
+    if (busStop && !scheduleKeys.includes(busStop)) {
       setBusStop(scheduleKeys[0] as StopKeys);
     }
 
@@ -181,6 +184,8 @@ function Schedule() {
   };
 
   const renderLeftToString = () => {
+    if (!busStop) return <SelectBusStopText />;
+
     if (left.hours === null && left.minutes === null)
       return (
         <TextWrapper>
@@ -216,6 +221,8 @@ function Schedule() {
   };
 
   const handleAddFavoriteStatus = () => {
+    if (!busStop) return;
+
     const stops = getFavoriteBusStop();
 
     if (stops.includes(busStop)) return;
@@ -226,6 +233,8 @@ function Schedule() {
   };
 
   const handleRemoveFavoriteStatus = () => {
+    if (!busStop) return;
+
     const stops = getFavoriteBusStop();
 
     if (!stops.includes(busStop)) return;
@@ -245,8 +254,20 @@ function Schedule() {
     infoMessage.id && localStorage.setItem("infoMessageId", infoMessage.id);
   };
 
-  const isBusStopFavorite = favoriteBusStops.includes(busStop);
-  
+  const renderTodaysBusContent = () => {
+    if (!busStop) return <SelectBusStopText />;
+
+    return closestTimeArray.length === 0
+      ? "Автобусов нет"
+      : closestTimeArray.map((d, index) => (
+          <TimeStamp key={`${d}-${index}`}>{d}</TimeStamp>
+        ));
+  };
+
+  const isBusStopFavorite = busStop
+    ? favoriteBusStops.includes(busStop)
+    : false;
+
   return (
     <MainLayout>
       {isInfoShow && (
@@ -287,9 +308,11 @@ function Schedule() {
         </Header>
 
         <HowMuchLeftContainer>
-          <ImageWrapper w={39} h={39}>
-            <SVG src={NextBus} width={39} height={39} uniquifyIDs={true} />
-          </ImageWrapper>
+          {busStop && (
+            <ImageWrapper w={39} h={39}>
+              <SVG src={NextBus} width={39} height={39} uniquifyIDs={true} />
+            </ImageWrapper>
+          )}
 
           <BusEstimation>{renderLeftToString()}</BusEstimation>
         </HowMuchLeftContainer>
@@ -299,7 +322,7 @@ function Schedule() {
         <Header text={"Мои остановки"} imgSrc={GreenHeart} />
         <FavoriteBusStopList
           stopList={stopsOptions.filter((stop) =>
-            favoriteBusStops.includes(stop.value)
+            stop?.value ? favoriteBusStops.includes(stop?.value) : false
           )}
           activeId={busStop}
           onClick={(busStop) => setBusStop(busStop)}
@@ -313,26 +336,22 @@ function Schedule() {
       <Container>
         <Header text={"Ещё автобусы на сегодня"} imgSrc={UpcomingBus} />
 
-        <OtherTime>
-          {closestTimeArray.length === 0
-            ? "Автобусов нет"
-            : closestTimeArray.map((d, index) => (
-                <TimeStamp key={`${d}-${index}`}>{d}</TimeStamp>
-              ))}
-        </OtherTime>
+        <OtherTime>{renderTodaysBusContent()}</OtherTime>
 
-        <AddToFavoriteButton
-          status={isBusStopFavorite ? "remove" : "add"}
-          onClick={
-            isBusStopFavorite
-              ? handleRemoveFavoriteStatus
-              : handleAddFavoriteStatus
-          }
-        >
-          {isBusStopFavorite
-            ? "Удалить остановку из избранного"
-            : "Добавить остановку в избранное"}
-        </AddToFavoriteButton>
+        {busStop && (
+          <AddToFavoriteButton
+            status={isBusStopFavorite ? "remove" : "add"}
+            onClick={
+              isBusStopFavorite
+                ? handleRemoveFavoriteStatus
+                : handleAddFavoriteStatus
+            }
+          >
+            {isBusStopFavorite
+              ? "Удалить остановку из избранного"
+              : "Добавить остановку в избранное"}
+          </AddToFavoriteButton>
+        )}
       </Container>
 
       <Container>
@@ -343,9 +362,13 @@ function Schedule() {
         <Header text={"Автобусы на завтра"} imgSrc={UpcomingBus} />
 
         <OtherTime>
-          {SCHEDULE[direction][nextDay][busStop]?.map((d, index) => (
-            <TimeStamp key={`${d}-${index}`}>{d}</TimeStamp>
-          ))}
+          {busStop ? (
+            SCHEDULE[direction][nextDay][busStop]?.map((d, index) => (
+              <TimeStamp key={`${d}-${index}`}>{d}</TimeStamp>
+            ))
+          ) : (
+            <SelectBusStopText />
+          )}
         </OtherTime>
       </Container>
 
