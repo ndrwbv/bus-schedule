@@ -1,23 +1,5 @@
-import styled from "styled-components";
-import { IStop, MAIN_GREY, StopKeys } from "./Schedule/consts";
-
-const FavoriteBusStopItem = styled.div<{ active: boolean }>`
-  padding: 8px 17px;
-  border-radius: 30px;
-  background-color: ${(props) => (props.active ? "#336CFF" : MAIN_GREY)};
-  color: ${(props) => (props.active ? "white" : "black")};
-  margin-top: 12px;
-  
-  & + & {
-    margin-left: 12px;
-  }
-`;
-
-const FavoriteBusStopContainer = styled.div`
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-`;
+import { InlineOptionsContainer, InlineOptionsItem } from "./InlineOptions";
+import { IStop, StopKeys } from "./Schedule/consts";
 
 const FavoriteBusStopList: React.FC<{
   stopList: IStop<any>[];
@@ -25,17 +7,17 @@ const FavoriteBusStopList: React.FC<{
   onClick: (busStop: StopKeys) => void;
 }> = ({ stopList, activeId, onClick }) => {
   return (
-    <FavoriteBusStopContainer>
+    <InlineOptionsContainer>
       {stopList.map((stop) => (
-        <FavoriteBusStopItem
+        <InlineOptionsItem
           active={stop.value === activeId}
           key={stop.value}
           onClick={() => onClick(stop.value)}
         >
           {stop.label}
-        </FavoriteBusStopItem>
+        </InlineOptionsItem>
       ))}
-    </FavoriteBusStopContainer>
+    </InlineOptionsContainer>
   );
 };
 

@@ -6,34 +6,20 @@ export const MainLayout = styled.div`
   max-width: 1024px;
   width: 100%;
 `;
-export const HowMuchLeftContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 
-  padding: 15px 17px;
-  background-color: ${MAIN_GREY};
-  border-radius: 6px;
-`;
 export const LinksBlock = styled.div``;
-export const BusEstimation = styled.div`
-  font-size: 18px;
-  margin-left: 19px;
-`;
-export const TextWrapper = styled.p``;
+
 export const StyledHR = styled.hr`
   opacity: 0.3;
   margin: 0;
 `;
-export const HighLighted = styled.span`
-  font-weight: bold;
-`;
+
 export const OtherTime = styled.div`
   padding: 22px 26px;
   background-color: ${MAIN_GREY};
   border-radius: 6px;
   max-height: 200px;
-  overflow: scroll;
+  overflow-y: scroll;
 `;
 export const TimeStamp = styled.div`
   & + & {
