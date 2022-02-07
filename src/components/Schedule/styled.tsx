@@ -3,6 +3,8 @@ import { MAIN_GREY } from "./consts";
 
 export const MainLayout = styled.div`
   padding: 15px;
+  max-width: 1024px;
+  width: 100%;
 `;
 export const HowMuchLeftContainer = styled.div`
   display: flex;
