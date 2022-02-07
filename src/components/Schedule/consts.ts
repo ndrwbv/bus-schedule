@@ -9,12 +9,12 @@ export type DayKeys =
   | "saturday"
   | "sunday";
 
-export interface IOption<ValueType> {
+export interface IStop<ValueType> {
   value: ValueType;
   label: string;
 }
 
-export const StopsInOptions: IOption<StopKeysIn | null>[] = [
+export const StopsInOptions: IStop<StopKeysIn | null>[] = [
   {
     label: "Не выбрано",
     value: null,

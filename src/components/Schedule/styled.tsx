@@ -19,7 +19,7 @@ export const OtherTime = styled.div`
   background-color: ${MAIN_GREY};
   border-radius: 6px;
   max-height: 200px;
-  overflow: scroll;
+  overflow-y: scroll;
 `;
 export const TimeStamp = styled.div`
   & + & {

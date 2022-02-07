@@ -1,10 +1,11 @@
 import styled from "styled-components";
-import { IOption, MAIN_GREY } from "./Schedule/consts";
+import { IStop, MAIN_GREY } from "./Schedule/consts";
 
 export const InlineOptionsItem = styled.div<{
   active: boolean;
-  defaultColor: string | undefined;
+  defaultColor?: string | undefined;
 }>`
+  cursor: pointer;
   padding: 8px 17px;
   border-radius: 30px;
   background-color: ${(props) =>
@@ -24,9 +25,9 @@ export const InlineOptionsContainer = styled.div`
 `;
 
 const InlineOptions: React.FC<{
-  list: IOption<string | number>[];
+  list: IStop<string | number | null>[];
   activeId: string | null;
-  onClick: (busStop: string | number) => void;
+  onClick: (busStop: string | number | null) => void;
   defaultColor?: string;
 }> = ({ list, activeId, onClick, defaultColor = undefined }) => {
   return (

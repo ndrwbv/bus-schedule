@@ -1,11 +1,13 @@
 import React from "react";
 import SVG from "react-inlinesvg";
+import { AndrewLytics } from "../../helpers";
 import NextBus from "../../img/next-bus.svg";
 
 import { ImageWrapper } from "../ImageWrapper";
 import InlineOptions from "../InlineOptions";
 import { StopKeys } from "../Schedule/consts";
 import { ITime } from "../Schedule/helpers";
+import SelectBusStopText from "../SelectBusStopText";
 import {
   BusEstimation,
   FastReplyContainer,
@@ -32,19 +34,21 @@ const FastReplyOptions = [
 
 const HowMuchLeft: React.FC<{
   left: ITime;
-  busStop: StopKeys;
+  busStop: StopKeys | null;
   shouldShowFastReply: boolean;
 }> = ({ left, busStop, shouldShowFastReply }) => {
   const [fastReplyOption, setFastReplyOption] = React.useState<string | null>(
     null
   );
 
-  const handleClickOption = (value: string | number) => {
-    // todo anal
+  const handleClickOption = (value: string | number | null) => {
+    AndrewLytics("fastReply")
     setFastReplyOption(value as string);
   };
 
   const renderLeftToString = () => {
+    if (!busStop) return <SelectBusStopText />;
+    
     if (left.hours === null && left.minutes === null)
       return (
         <TextWrapper>

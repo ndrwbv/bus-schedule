@@ -1,11 +1,10 @@
 import React from "react";
 
 import Select from "react-select";
-import ym from "react-yandex-metrika";
 
 import {
   Directions,
-  IOption,
+  IStop,
   SCHEDULE as defaultSCHEDULE,
   StopKeys,
   StopKeysIn,
@@ -47,15 +46,10 @@ import {
 import SelectBusStopText from "../SelectBusStopText";
 import HowMuchLeft from "../HowMuchLeft/HowMuchLeft";
 import InlineOptions from "../InlineOptions";
+import { AndrewLytics } from "../../helpers";
 
 const currentDay = new Date().getDay();
-const userVisitTime = new Date();
 const nextDay = getNextDay(currentDay);
-
-const isProd = process.env.NODE_ENV === "production";
-
-// если до автобуса осталось меньше 15 минут и пользователь провел на сайте больше 1 минуты
-// если до автобуса осталось меньше 5 минут
 
 function Schedule() {
   const [busStop, setBusStop] = React.useState<StopKeys | null>(null);
@@ -73,8 +67,8 @@ function Schedule() {
   );
   const [stopsOptions, setStopsOptions] =
     React.useState<IStop<StopKeysIn | StopKeysOut | null>[]>(StopsOutOptions);
-    const [shouldShowFastReply, setShouldShowFastReply] = React.useState(false);
-    
+  const [shouldShowFastReply, setShouldShowFastReply] = React.useState(false);
+
   const [SCHEDULE, setSchedule] = React.useState(defaultSCHEDULE);
   const [infoMessage, setInfoMessage] = React.useState({
     message: null,
@@ -104,25 +98,12 @@ function Schedule() {
         if (res?.fields?.schedule) {
           setSchedule(res?.fields?.schedule);
         } else {
-          isProd && ym("reachGoal", "cannotLoad");
+          AndrewLytics("cannotLoad");
         }
       })
       .catch(() => {
-        isProd && ym("reachGoal", "cannotLoad");
+        AndrewLytics("cannotLoad");
       });
-  }, []);
-
-  React.useEffect(() => {
-    const utmIndex = window.location.href.indexOf("utm");
-    if (utmIndex === -1) return;
-
-    const localStorageUtm = localStorage.getItem("utm");
-    if (localStorageUtm) return;
-
-    const utm = window.location.href.slice(utmIndex + 4);
-
-    localStorage.setItem("utm", utm);
-    isProd && ym("reachGoal", "fromUtm", { utm });
   }, []);
 
   React.useEffect(() => {
@@ -140,24 +121,9 @@ function Schedule() {
   }, []);
 
   React.useEffect(() => {
-    const userVisitTimeLeft = calculateHowMuchIsLeft(
-      userVisitTime.toISOString()
-    );
-    const isUserVistSiteMoreThenOneMinute =
-      (userVisitTimeLeft.hours && userVisitTimeLeft.hours >= 1) ||
-      (userVisitTimeLeft.minutes && userVisitTimeLeft.minutes >= 1);
-
     if (left.hours === null) return;
 
-    if (
-      left?.minutes &&
-      left?.minutes <= 15 &&
-      isUserVistSiteMoreThenOneMinute
-    ) {
-      return setShouldShowFastReply(true);
-    }
-
-    if (left?.minutes && left?.minutes <= 5) {
+    if (left?.minutes && (left?.minutes <= 15 || left?.minutes > 40)) {
       return setShouldShowFastReply(true);
     }
 
@@ -208,29 +174,8 @@ function Schedule() {
     setDirection(_direction);
   };
 
-  const renderLeftToString = () => {
-    if (!busStop) return <SelectBusStopText />;
-
-    if (left.hours === null && left.minutes === null)
-      return (
-        <TextWrapper>
-          Автобус на остановку <b>{busStop}</b> сегодня не приедет
-        </TextWrapper>
-      );
-
-    return (
-      <TextWrapper>
-        Следующий автобус приедет через{" "}
-        <HighLighted>
-          {left.hours === 0 ? "" : `${left.hours}ч `}
-          {left.minutes}м
-        </HighLighted>
-      </TextWrapper>
-    );
-  };
-
   const handleVoteClick = () => {
-    isProd && ym("reachGoal", "voteClick");
+    AndrewLytics("voteClick");
   };
 
   const saveFavoriteBusStops = (stops: StopKeys[]) => {
@@ -254,7 +199,7 @@ function Schedule() {
 
     const newStops: StopKeys[] = [busStop, ...stops];
     saveFavoriteBusStops(newStops);
-    isProd && ym("reachGoal", "addStop", { stop: busStop });
+    AndrewLytics("addStop");
   };
 
   const handleRemoveFavoriteStatus = () => {
@@ -270,18 +215,19 @@ function Schedule() {
   };
 
   const handleChangeBusStop = (busStop: StopKeys) => {
-    isProd && ym("reachGoal", "selectBusStop");
+    AndrewLytics("selectBusStop");
     setBusStop(busStop);
   };
 
   const onInfoCrossClick = () => {
     setIsInfoShow(false);
     infoMessage.id && localStorage.setItem("infoMessageId", infoMessage.id);
-    isProd && ym("reachGoal", "infoBlockHide");
+
+    AndrewLytics("infoBlockHide");
   };
 
   const onInfoBlockLinkClick = () => {
-    isProd && ym("reachGoal", "infoBlockLinkClick");
+    AndrewLytics("infoBlockLinkClick");
   };
 
   const renderTodaysBusContent = () => {
@@ -349,8 +295,8 @@ function Schedule() {
       <Container>
         <Header text={"Мои остановки"} imgSrc={GreenHeart} />
         <InlineOptions
-          list={stopsOptions.filter((stop) =>
-            favoriteBusStops.includes(stop.value)
+          list={stopsOptions.filter(
+            (stop) => stop.value && favoriteBusStops.includes(stop.value)
           )}
           activeId={busStop}
           onClick={(busStop) => setBusStop(busStop as StopKeys)}
