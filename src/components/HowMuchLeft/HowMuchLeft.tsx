@@ -77,7 +77,7 @@ const HowMuchLeft: React.FC<{
         <BusEstimation>{renderLeftToString()}</BusEstimation>
       </NextBusContainer>
 
-      {shouldShowFastReply && (
+      {shouldShowFastReply && !fastReplyOption && (
         <FastReplyContainer>
           <InlineOptions
             list={FastReplyOptions}
