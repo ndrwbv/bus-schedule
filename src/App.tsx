@@ -1,3 +1,4 @@
+import { getNextDay } from "components/Schedule/helpers";
 import styled from "styled-components";
 import Schedule from "./components/Schedule/Schedule";
 
@@ -7,10 +8,13 @@ const AppContainer = styled.div`
   justify-content: center;
 `;
 
-function App() {
+const currentDay = new Date().getDay();
+const nextDay = getNextDay(currentDay);
+
+function App({ c = currentDay, n = nextDay }) {
   return (
     <AppContainer>
-      <Schedule />
+      <Schedule currentDay={c} nextDay={n} />
     </AppContainer>
   );
 }

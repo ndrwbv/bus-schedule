@@ -5,7 +5,6 @@ import {
   calculateHowMuchIsLeft,
   findClosesTime,
   findClosesTimeArray,
-  getNextDay,
 } from "./helpers";
 
 import GreenHeart from "img/green-heart.svg";
@@ -50,10 +49,11 @@ import { ITime } from "interfaces/ITime";
 import { StopsOutOptions } from "consts/StopsOutOptions";
 import { StopsInOptions } from "consts/StopsInOptions";
 
-const currentDay = new Date().getDay();
-const nextDay = getNextDay(currentDay);
-
-function Schedule() {
+interface ISchedule {
+  currentDay: number;
+  nextDay: number;
+}
+const Schedule: React.FC<ISchedule> = ({ currentDay, nextDay }) => {
   const [busStop, setBusStop] = React.useState<StopKeys | null>(null);
   const [left, setLeft] = React.useState<ITime>({
     hours: 0,
@@ -142,7 +142,14 @@ function Schedule() {
       );
       setClossestTime(_closestTime);
     }
-  }, [_everyMinuteUpdate, closestTime, busStop, direction, SCHEDULE]);
+  }, [
+    _everyMinuteUpdate,
+    closestTime,
+    busStop,
+    direction,
+    SCHEDULE,
+    currentDay,
+  ]);
 
   React.useEffect(() => {
     const left = calculateHowMuchIsLeft(closestTime);
@@ -367,6 +374,6 @@ function Schedule() {
       </Container>
     </MainLayout>
   );
-}
+};
 
 export default Schedule;
