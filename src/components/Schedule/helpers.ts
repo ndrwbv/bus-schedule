@@ -1,5 +1,7 @@
+import { ITime } from "../../interfaces/ITime";
+
 /**
- * находит ближайшее время в расписании
+ * finds closest time in schedule
  * @param hours
  */
 export const findClosesTime = (hours: string[]): string | undefined => {
@@ -20,10 +22,6 @@ export const findClosesTime = (hours: string[]): string | undefined => {
   return closestTime?.toString();
 };
 
-/**
- * Возвращает массив таймингов которые будут в будущем
- * @param hours
- */
 export const findClosesTimeArray = (hours: string[]): string[] => {
   let closestTime: string[] = [];
 
@@ -40,10 +38,6 @@ export const findClosesTimeArray = (hours: string[]): string[] => {
   return closestTime;
 };
 
-export interface ITime {
-  hours: number | null;
-  minutes: number | null;
-}
 const getTimeFromMins = (mins: number): ITime => {
   let hours = Math.trunc(mins / 60);
   let minutes = Math.round(mins % 60);
@@ -55,7 +49,7 @@ const getTimeFromMins = (mins: number): ITime => {
 };
 
 /**
- * Находит разницу текущего времени с расписанием = столько надо ждать
+ * Finds difference between current time and schedule time
  * @param closestTime
  * @currentDate
  */

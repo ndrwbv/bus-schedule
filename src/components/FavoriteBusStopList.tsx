@@ -1,5 +1,5 @@
+import { IStop, StopKeys } from "interfaces/Stops";
 import { InlineOptionsContainer, InlineOptionsItem } from "./InlineOptions";
-import { IStop, StopKeys } from "./Schedule/consts";
 
 const FavoriteBusStopList: React.FC<{
   stopList: IStop<any>[];

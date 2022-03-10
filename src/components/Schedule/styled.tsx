@@ -1,5 +1,6 @@
+import { MAIN_GREY } from "consts/colors";
 import styled from "styled-components";
-import { MAIN_GREY } from "./consts";
+
 
 export const MainLayout = styled.div`
   padding: 15px;

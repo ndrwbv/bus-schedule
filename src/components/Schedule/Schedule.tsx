@@ -1,34 +1,25 @@
 import React from "react";
-
 import Select from "react-select";
 
-import {
-  Directions,
-  IStop,
-  SCHEDULE as defaultSCHEDULE,
-  StopKeys,
-  StopKeysIn,
-  StopKeysOut,
-  StopsInOptions,
-  StopsOutOptions,
-} from "./consts";
 import {
   calculateHowMuchIsLeft,
   findClosesTime,
   findClosesTimeArray,
   getNextDay,
-  ITime,
 } from "./helpers";
 
-import GreenHeart from "../../img/green-heart.svg";
-import BusStop from "../../img/bus-stop.svg";
-import UpcomingBus from "../../img/upcoming-bus.svg";
-import Write from "../../img/write.svg";
+import GreenHeart from "img/green-heart.svg";
+import BusStop from "img/bus-stop.svg";
+import UpcomingBus from "img/upcoming-bus.svg";
+import Write from "img/write.svg";
 
 import Header from "../Header";
 import TelegramButton from "../TelegramButton";
 import Vote from "../Vote";
 import Info from "../Info";
+import SelectBusStopText from "../SelectBusStopText";
+import HowMuchLeft from "../HowMuchLeft/HowMuchLeft";
+import InlineOptions from "../InlineOptions";
 import {
   AddToFavoriteButton,
   Container,
@@ -43,10 +34,21 @@ import {
   TelegramContainer,
   TimeStamp,
 } from "./styled";
-import SelectBusStopText from "../SelectBusStopText";
-import HowMuchLeft from "../HowMuchLeft/HowMuchLeft";
-import InlineOptions from "../InlineOptions";
-import { AndrewLytics } from "../../helpers";
+
+import { AndrewLytics } from "helpers";
+import useSchedule from "hooks/useSchedule";
+
+import {
+  Directions,
+  IStop,
+  StopKeys,
+  StopKeysIn,
+  StopKeysOut,
+} from "interfaces/Stops";
+import { ITime } from "interfaces/ITime";
+
+import { StopsOutOptions } from "consts/StopsOutOptions";
+import { StopsInOptions } from "consts/StopsInOptions";
 
 const currentDay = new Date().getDay();
 const nextDay = getNextDay(currentDay);
@@ -69,7 +71,8 @@ function Schedule() {
     React.useState<IStop<StopKeysIn | StopKeysOut | null>[]>(StopsOutOptions);
   const [shouldShowFastReply, setShouldShowFastReply] = React.useState(false);
 
-  const [SCHEDULE, setSchedule] = React.useState(defaultSCHEDULE);
+  const { SCHEDULE } = useSchedule();
+
   const [infoMessage, setInfoMessage] = React.useState({
     message: null,
     id: null,
@@ -86,23 +89,6 @@ function Schedule() {
         if (res?.fields) {
           setInfoMessage(res?.fields);
         }
-      });
-  }, []);
-
-  React.useEffect(() => {
-    fetch(
-      "https://cdn.contentful.com/spaces/jms7gencs5gy/environments/master/entries/43nolroEBc5PNSMub6VR8G?access_token=qhkzg59i5IhlhFYUg-N4Pc9Qm1Dfx63wlGkOwOGhPXg"
-    )
-      .then((res) => res.json())
-      .then((res) => {
-        if (res?.fields?.schedule) {
-          setSchedule(res?.fields?.schedule);
-        } else {
-          AndrewLytics("cannotLoad");
-        }
-      })
-      .catch(() => {
-        AndrewLytics("cannotLoad");
       });
   }, []);
 

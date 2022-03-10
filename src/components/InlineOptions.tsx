@@ -1,5 +1,6 @@
+import { MAIN_GREY } from "consts/colors";
+import { IStop } from "interfaces/Stops";
 import styled from "styled-components";
-import { IStop, MAIN_GREY } from "./Schedule/consts";
 
 export const InlineOptionsItem = styled.div<{
   active: boolean;
