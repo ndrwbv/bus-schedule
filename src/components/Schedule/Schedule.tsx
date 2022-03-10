@@ -46,8 +46,8 @@ import {
 } from "interfaces/Stops";
 import { ITime } from "interfaces/ITime";
 
-import { StopsOutOptions } from "consts/StopsOutOptions";
-import { StopsInOptions } from "consts/StopsInOptions";
+import { StopsOutOptions } from "consts/stopsOutOptions";
+import { StopsInOptions } from "consts/stopsInOptions";
 
 interface ISchedule {
   currentDay: number;
