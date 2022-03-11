@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import SVG from "react-inlinesvg";
 import VoteCloseCross from "../img/voteclosecross.svg";
+import { MAIN_BLUE } from "consts/colors";
 
 export const VoteWrapper = styled.div`
   display: flex;
@@ -30,7 +31,7 @@ export const VoteButton = styled.a`
   align-items: center;
   justify-content: center;
 
-  background: #336cff;
+  background: ${MAIN_BLUE};
   border-radius: 6px;
   padding: 13px 20px;
 

@@ -1,4 +1,4 @@
-import { MAIN_GREY } from "consts/colors";
+import { MAIN_BLUE, MAIN_GREY } from "consts/colors";
 import styled from "styled-components";
 
 
@@ -39,7 +39,7 @@ export const GoButton = styled.button<{ active?: boolean }>`
   width: 100%;
   border: none;
   border-radius: 6px;
-  background-color: ${(props) => (props.active ? "#336CFF" : MAIN_GREY)};
+  background-color: ${(props) => (props.active ? MAIN_BLUE : MAIN_GREY)};
   color: ${(props) => (props.active ? "white" : "black")};
   padding: 12px 10px;
 

@@ -1,4 +1,4 @@
-import { MAIN_GREY } from "consts/colors";
+import { MAIN_BLUE, MAIN_GREY } from "consts/colors";
 import { IStop } from "interfaces/Stops";
 import styled from "styled-components";
 
@@ -10,7 +10,7 @@ export const InlineOptionsItem = styled.div<{
   padding: 8px 17px;
   border-radius: 30px;
   background-color: ${(props) =>
-    props.active ? "#336CFF" : props.defaultColor ?? MAIN_GREY};
+    props.active ? MAIN_BLUE : props.defaultColor ?? MAIN_GREY};
   color: ${(props) => (props.active ? "white" : "black")};
   margin-top: 12px;
 
