@@ -12,6 +12,7 @@ if (process.env.NODE_ENV === "production") {
   ReactGA.pageview(window.location.pathname + window.location.search);
 }
 
+
 ReactDOM.render(
   <React.StrictMode>
     <App />
