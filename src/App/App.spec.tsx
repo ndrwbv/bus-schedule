@@ -35,7 +35,7 @@ describe('<App />', () => {
 
 	it.skip('should add stop in favorite', async () => {
 		await act(async () => {
-			const renderApp = render(<App />)
+			const renderApp = render(<CustomApp />)
 			const page = new MainPagePageObject(renderApp)
 			await page.openBusStopList()
 			await page.selectBusStop('ТГУ')

@@ -18,7 +18,7 @@ const useSchedule = (fetchSchedule: () => FetchScheduleResponse) => {
 			.catch(() => {
 				AndrewLytics('cannotLoad')
 			})
-	}, [])
+	}, [fetchSchedule])
 
 	return {
 		SCHEDULE,

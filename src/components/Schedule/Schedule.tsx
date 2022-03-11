@@ -77,7 +77,7 @@ const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo, fe
 				setInfoMessage(res?.fields)
 			}
 		})
-	}, [])
+	}, [fetchInfo])
 
 	React.useEffect(() => {
 		if (!infoMessage.id) return
@@ -187,7 +187,7 @@ const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo, fe
 
 	const onInfoCrossClick = () => {
 		setIsInfoShow(false)
-		infoMessage.id && localStorage.setItem('infoMessageId', infoMessage.id)
+		infoMessage.id && localStorage.setItem('infoMessageId', String(infoMessage.id))
 
 		AndrewLytics('infoBlockHide')
 	}
