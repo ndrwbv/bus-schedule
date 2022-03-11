@@ -1,0 +1,19 @@
+
+   
+name: CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+jobs:
+  deploy:
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v2.4.0
+
+      - name: Install deps
+        run: yarn
+
+      - name: Run tests
+        run: yarn ci-test
