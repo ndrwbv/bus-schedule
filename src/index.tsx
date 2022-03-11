@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { YMInitializer } from "react-yandex-metrika";
 import ReactGA from "react-ga";
 
-import App from "./App";
+import App from "./App/App";
 
 import "./index.css";
 

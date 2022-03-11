@@ -54,6 +54,7 @@ interface ISchedule {
   nextDay: number;
 }
 const Schedule: React.FC<ISchedule> = ({ currentDay, nextDay }) => {
+  console.log('currenttime', new Date(), currentDay, nextDay)
   const [busStop, setBusStop] = React.useState<StopKeys | null>(null);
   const [left, setLeft] = React.useState<ITime>({
     hours: 0,

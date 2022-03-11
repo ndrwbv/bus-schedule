@@ -1,6 +1,6 @@
 import { getNextDay } from "components/Schedule/helpers";
 import styled from "styled-components";
-import Schedule from "./components/Schedule/Schedule";
+import Schedule from "../components/Schedule/Schedule";
 
 const AppContainer = styled.div`
   display: flex;
