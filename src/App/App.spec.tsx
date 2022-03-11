@@ -5,7 +5,7 @@ import { createMockApi } from 'helpers/test/mocks/mockApi'
 import { MainPagePageObject } from 'helpers/test/pageObjects/MainPagePageObject'
 import App from './App'
 
-jest.useFakeTimers('modern')
+jest.useFakeTimers('modern') 
 jest.setSystemTime(new Date('Fri Mar 11 2022 13:44:27 GMT+0700 (GMT+07:00)'))
 
 const api = createMockApi()
