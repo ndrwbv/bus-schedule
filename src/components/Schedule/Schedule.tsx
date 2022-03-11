@@ -48,7 +48,7 @@ interface IScheduleProps {
 	fetchInfo: () => FetchInfoResponse
 }
 const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo, fetchSchedule }) => {
-	console.log(new Date())
+	console.log(new Date().toString())
 	const [busStop, setBusStop] = React.useState<StopKeys | null>(null)
 	const [left, setLeft] = React.useState<ITime>({
 		hours: 0,
@@ -116,6 +116,7 @@ const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo, fe
 		if (!busStop) return
 
 		const _closestTime = findClosesTime(SCHEDULE[direction][currentDay][busStop])
+		console.log('t', _closestTime)
 
 		if (!_closestTime) return
 
