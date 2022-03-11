@@ -48,6 +48,7 @@ interface IScheduleProps {
 	fetchInfo: () => FetchInfoResponse
 }
 const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo, fetchSchedule }) => {
+	console.log(new Date())
 	const [busStop, setBusStop] = React.useState<StopKeys | null>(null)
 	const [left, setLeft] = React.useState<ITime>({
 		hours: 0,
