@@ -1,4 +1,4 @@
-import { ITime } from "../../interfaces/ITime";
+import { ITime } from "interfaces/ITime";
 
 /**
  * finds closest time in schedule

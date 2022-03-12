@@ -7,7 +7,7 @@ import { AndrewLytics } from "helpers";
 import NextBus from "img/next-bus.svg";
 
 import { ImageWrapper } from "../ImageWrapper";
-import InlineOptions from "../InlineOptions";
+import InlineOptions from "../InlineOptions/InlineOptions";
 import SelectBusStopText from "../SelectBusStopText";
 
 import {

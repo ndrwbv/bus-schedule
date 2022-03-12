@@ -1,5 +1,5 @@
 import { IStop, StopKeys } from "interfaces/Stops";
-import { InlineOptionsContainer, InlineOptionsItem } from "./InlineOptions";
+import { InlineOptionsContainer, InlineOptionsItem } from "./InlineOptions/styled";
 
 const FavoriteBusStopList: React.FC<{
   stopList: IStop<any>[];

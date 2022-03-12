@@ -8,13 +8,13 @@ import BusStop from 'img/bus-stop.svg'
 import UpcomingBus from 'img/upcoming-bus.svg'
 import Write from 'img/write.svg'
 
-import Header from '../Header'
-import TelegramButton from '../TelegramButton'
-import Vote from '../Vote'
-import Info from '../Info'
+import Header from '../Header/Header'
+import TelegramButton from '../TelegramButton/TelegramButton'
+import Vote from '../Vote/Vote'
+import Info from '../Info/Info'
 import SelectBusStopText from '../SelectBusStopText'
 import HowMuchLeft from '../HowMuchLeft/HowMuchLeft'
-import InlineOptions from '../InlineOptions'
+import InlineOptions from '../InlineOptions/InlineOptions'
 import {
 	AddToFavoriteButton,
 	Container,
