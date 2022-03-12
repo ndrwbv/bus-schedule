@@ -5,7 +5,7 @@ import { createMockApi } from 'helpers/test/mocks/mockApi'
 import { MainPagePageObject } from 'helpers/test/pageObjects/MainPagePageObject'
 import App from './App'
 
-jest.useFakeTimers('modern') 
+jest.useFakeTimers('modern')
 jest.setSystemTime(new Date('Fri Mar 11 2022 13:44:27 GMT+0700 (GMT+07:00)'))
 
 const api = createMockApi()
@@ -33,12 +33,20 @@ describe('<App />', () => {
 		})
 	})
 
-	it.skip('should add stop in favorite', async () => {
+	it('should add stop in favorite', async () => {
 		await act(async () => {
 			const renderApp = render(<CustomApp />)
 			const page = new MainPagePageObject(renderApp)
 			await page.openBusStopList()
 			await page.selectBusStop('ТГУ')
+
+			await page.addBusStopInFavorite()
+
+			const removeBusStopText = renderApp.getByText(/Удалить остановку из избранного/)
+			const myBusStopText = renderApp.getByText(/Мои остановки/)
+
+			expect(myBusStopText).toBeInTheDocument()
+			expect(removeBusStopText).toBeInTheDocument()
 		})
 	})
 })

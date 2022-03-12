@@ -7,6 +7,14 @@ export class MainPagePageObject {
 		return this.renderApp.getByText(/Не выбрано/)
 	}
 
+	get addBusStopButton() {
+		return this.renderApp.getByText(/Добавить остановку в избранное/)
+	}
+
+	async addBusStopInFavorite() {
+		fireEvent.click(this.addBusStopButton)
+	}
+
 	async openBusStopList() {
 		fireEvent.mouseDown(this.busStopSelect)
 	}
