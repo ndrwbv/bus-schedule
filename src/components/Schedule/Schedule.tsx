@@ -40,6 +40,7 @@ import { StopsOutOptions } from 'consts/stopsOutOptions'
 import { StopsInOptions } from 'consts/stopsInOptions'
 import { IInfo } from 'interfaces/IInfo'
 import { FetchInfoResponse, FetchScheduleResponse } from 'api'
+import useInfo from 'hooks/useInfo'
 
 interface IScheduleProps {
 	currentDay: number
@@ -63,21 +64,9 @@ const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo, fe
 	const [shouldShowFastReply, setShouldShowFastReply] = React.useState(false)
 
 	const { SCHEDULE } = useSchedule(fetchSchedule)
+	const { infoMessage } = useInfo(fetchInfo)
 
-	const [infoMessage, setInfoMessage] = React.useState<IInfo>({
-		message: null,
-		id: null,
-		link: null,
-	})
 	const [isInfoShow, setIsInfoShow] = React.useState(false)
-
-	React.useEffect(() => {
-		fetchInfo().then(res => {
-			if (res?.fields) {
-				setInfoMessage(res?.fields)
-			}
-		})
-	}, [fetchInfo])
 
 	React.useEffect(() => {
 		if (!infoMessage.id) return
