@@ -30,7 +30,7 @@ import {
 	TimeStamp,
 } from './styled'
 
-import { AndrewLytics } from 'helpers'
+import { AndrewLytics } from 'helpers/analytics'
 import useSchedule from 'hooks/useSchedule'
 
 import { Directions, IStop, StopKeys, StopKeysIn, StopKeysOut } from 'interfaces/Stops'

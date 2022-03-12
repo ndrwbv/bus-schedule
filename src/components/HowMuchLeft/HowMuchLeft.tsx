@@ -3,7 +3,7 @@ import SVG from "react-inlinesvg";
 
 import { ITime } from "interfaces/ITime";
 import { StopKeys } from "interfaces/Stops";
-import { AndrewLytics } from "helpers";
+import { AndrewLytics } from "helpers/analytics";
 import NextBus from "img/next-bus.svg";
 
 import { ImageWrapper } from "../ImageWrapper";

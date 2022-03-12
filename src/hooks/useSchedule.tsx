@@ -1,7 +1,7 @@
 import React from 'react'
 import { FetchScheduleResponse } from 'api/schedule'
 import defaultSchedule from 'consts/schedule'
-import { AndrewLytics } from 'helpers'
+import { AndrewLytics } from 'helpers/analytics'
 
 const useSchedule = (fetchSchedule: () => FetchScheduleResponse) => {
 	const [SCHEDULE, setSchedule] = React.useState(defaultSchedule)
