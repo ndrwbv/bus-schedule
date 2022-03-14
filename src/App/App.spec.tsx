@@ -13,7 +13,7 @@ const api = createMockApi()
 const CustomApp = () => <App fi={api.fetchInfo} fs={api.fetchSchedule} />
 
 describe('<App />', () => {
-	it('should render correctly', async () => {
+	it.only('should render correctly', async () => {
 		await act(async () => {
 			const renderApp = render(<CustomApp />)
 
@@ -63,6 +63,7 @@ describe('<App />', () => {
 			
 			const myBusStopText = renderApp.getAllByText(/Интернационалистов/)
 			const addBusStopButton = page.addBusStopButton
+
 			expect(myBusStopText.length).toBe(1)
 			expect(addBusStopButton).toBeInTheDocument()
 		})

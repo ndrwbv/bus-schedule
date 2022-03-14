@@ -29,19 +29,13 @@ import {
 } from './styled'
 
 import { AndrewLytics } from 'helpers/analytics'
-import { calculateHowMuchIsLeft, findClosesTime, findClosesTimeArray } from './helpers'
 
-import { Directions, IStop, StopKeys, StopKeysIn, StopKeysOut } from 'interfaces/Stops'
-import { ITime } from 'interfaces/ITime'
-
-import { StopsOutOptions } from 'consts/stopsOutOptions'
-import { StopsInOptions } from 'consts/stopsInOptions'
+import { StopKeys } from 'interfaces/Stops'
 
 import { FetchInfoResponse, FetchScheduleResponse } from 'api'
 
-import useSchedule from 'hooks/useSchedule'
-import useEveryMinuteUpdater from 'hooks/useEveryMinuteUpdater'
 import useFavoriteBusStop, { getFavoriteBusStop } from 'hooks/useFavoriteBusStop'
+import { useScheduleContext } from 'context/ScheduleContext'
 
 interface IScheduleProps {
 	currentDay: number
@@ -49,64 +43,24 @@ interface IScheduleProps {
 	fetchSchedule: () => FetchScheduleResponse
 	fetchInfo: () => FetchInfoResponse
 }
-const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo, fetchSchedule }) => {
-	const [busStop, setBusStop] = React.useState<StopKeys | null>(null)
-	const [left, setLeft] = React.useState<ITime>({
-		hours: 0,
-		minutes: 0,
-	})
-	const [closestTimeArray, setClossestTimeArray] = React.useState<string[]>([])
-	const [closestTime, setClossestTime] = React.useState<string>('')
+const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo }) => {
+	
+	const {
+		busStop,
+		left,
+		closestTimeArray,
+		shouldShowFastReply,
+		stopsOptions,
+		direction,
+		SCHEDULE,
+		handleChangeBusStop,
+		changeDirectionIn,
+		changeDirectionOut,
+	} = useScheduleContext()
 
-	const [direction, setDirection] = React.useState<Directions>('out')
-	const [stopsOptions, setStopsOptions] = React.useState<IStop<StopKeysIn | StopKeysOut | null>[]>(StopsOutOptions)
-	const [shouldShowFastReply, setShouldShowFastReply] = React.useState(false)
-
-	const SCHEDULE = useSchedule(fetchSchedule)
-	const _everyMinuteUpdate = useEveryMinuteUpdater()
 	const { favoriteBusStops, saveFavoriteBusStops } = useFavoriteBusStop()
 
-	React.useEffect(() => {
-		if (left.hours === null) return
 
-		if (left?.minutes && (left?.minutes <= 15 || left?.minutes > 40)) {
-			return setShouldShowFastReply(true)
-		}
-
-		return setShouldShowFastReply(false)
-	}, [left])
-
-	React.useEffect(() => {
-		if (!busStop) return
-
-		const _closestTime = findClosesTime(SCHEDULE[direction][currentDay][busStop])
-
-		if (!_closestTime) return
-
-		if (!closestTime || new Date(closestTime).getTime() !== new Date(_closestTime).getTime()) {
-			setClossestTimeArray(findClosesTimeArray(SCHEDULE[direction][currentDay][busStop]))
-			setClossestTime(_closestTime)
-		}
-	}, [_everyMinuteUpdate, closestTime, busStop, direction, SCHEDULE, currentDay])
-
-	React.useEffect(() => {
-		const left = calculateHowMuchIsLeft(closestTime)
-
-		setLeft(left)
-	}, [_everyMinuteUpdate, closestTime])
-
-	const handleChangeDirection = (_direction: Directions) => {
-		const scheduleKeys = Object.keys(SCHEDULE[_direction][currentDay])
-		if (busStop && !scheduleKeys.includes(busStop)) {
-			setBusStop(scheduleKeys[0] as StopKeys)
-		}
-
-		setStopsOptions(_direction === 'in' ? StopsInOptions : StopsOutOptions)
-		setDirection(_direction)
-	}
-
-	const changeDirectionIn = useCallback(() => handleChangeDirection('in'), [SCHEDULE, currentDay, busStop])
-	const changeDirectionOut = useCallback(() => handleChangeDirection('out'), [SCHEDULE, currentDay, busStop])
 
 	const handleAddFavoriteStatus = useCallback(() => {
 		if (!busStop) return
@@ -131,11 +85,6 @@ const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo, fe
 
 		saveFavoriteBusStops(newStops)
 	}, [busStop])
-
-	const handleChangeBusStop = (busStop: StopKeys) => {
-		AndrewLytics('selectBusStop')
-		setBusStop(busStop)
-	}
 
 	const renderTodaysBusContent = () => {
 		if (!busStop) return <SelectBusStopText />
@@ -202,7 +151,7 @@ const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo, fe
 				<InlineOptions
 					list={favoriteList}
 					activeId={busStop}
-					onClick={busStop => setBusStop(busStop as StopKeys)}
+					onClick={busStop => handleChangeBusStop(busStop as StopKeys, undefined)}
 				/>
 			</Container>
 

@@ -1,5 +1,6 @@
 import { fetchInfo, fetchSchedule } from 'api'
-import { getNextDay } from 'components/Schedule/helpers'
+import ScheduleProvider from 'context/ScheduleContext'
+import { getNextDay } from 'helpers/schedule'
 import styled from 'styled-components'
 import Schedule from '../components/Schedule/Schedule'
 
@@ -14,9 +15,11 @@ const nextDay = getNextDay(currentDay)
 
 function App({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSchedule }) {
 	return (
-		<AppContainer>
-			<Schedule currentDay={c} nextDay={n} fetchInfo={fi} fetchSchedule={fs} />
-		</AppContainer>
+		<ScheduleProvider currentDay={currentDay} fetchSchedule={fetchSchedule}>
+			<AppContainer>
+				<Schedule currentDay={c} nextDay={n} fetchInfo={fi} fetchSchedule={fs} />
+			</AppContainer>
+		</ScheduleProvider>
 	)
 }
 
