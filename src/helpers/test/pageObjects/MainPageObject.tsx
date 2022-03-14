@@ -7,12 +7,20 @@ export class MainPageObject {
 		return this.renderApp.getByText(/Не выбрано/)
 	}
 
+	get removeBusStopButton() {
+		return this.renderApp.getByText(/Удалить остановку из избранного/)
+	}
+
 	get addBusStopButton() {
 		return this.renderApp.getByText(/Добавить остановку в избранное/)
 	}
 
 	async addBusStopInFavorite() {
 		fireEvent.click(this.addBusStopButton)
+	}
+
+	async removeBusStopFromFavorite() {
+		fireEvent.click(this.removeBusStopButton)
 	}
 
 	async openBusStopList() {

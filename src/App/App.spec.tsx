@@ -43,11 +43,28 @@ describe('<App />', () => {
 
 			await page.addBusStopInFavorite()
 
-			const removeBusStopText = renderApp.getByText(/Удалить остановку из избранного/)
+			const removeBusStopText = page.removeBusStopButton
 			const myBusStopText = renderApp.getAllByText(/ТГУ/)
 
 			expect(myBusStopText.length).toBe(2)
 			expect(removeBusStopText).toBeInTheDocument()
+		})
+	})
+
+	it('should remove stop in favorite', async () => {
+		await act(async () => {
+			const renderApp = render(<CustomApp />)
+			const page = new MainPageObject(renderApp)
+			await page.openBusStopList()
+			await page.selectBusStop('Интернационалистов')
+			await page.addBusStopInFavorite()
+
+			await page.removeBusStopFromFavorite()
+			
+			const myBusStopText = renderApp.getAllByText(/Интернационалистов/)
+			const addBusStopButton = page.addBusStopButton
+			expect(myBusStopText.length).toBe(1)
+			expect(addBusStopButton).toBeInTheDocument()
 		})
 	})
 })
