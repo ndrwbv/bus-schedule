@@ -110,10 +110,6 @@ const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo, fe
 		setDirection(_direction)
 	}
 
-	const handleVoteClick = () => {
-		AndrewLytics('voteClick')
-	}
-
 	const saveFavoriteBusStops = (stops: StopKeys[]) => {
 		setFavoriteBusStops(stops)
 		localStorage.setItem('favoriteStops', JSON.stringify(stops))
@@ -226,7 +222,7 @@ const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo, fe
 			</Container>
 
 			<Container>
-				<Vote key={2} hideCross={true} onVoteClick={handleVoteClick} />
+				<Vote />
 			</Container>
 
 			<Container>

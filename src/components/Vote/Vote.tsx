@@ -1,12 +1,11 @@
-import SVG from 'react-inlinesvg'
-import VoteCloseCross from 'img/voteclosecross.svg'
-import { VoteWrapper, VoteText, VoteButton, VoteCloseButton } from './styled'
+import { VoteWrapper, VoteText, VoteButton } from './styled'
+import { AndrewLytics } from 'helpers/analytics'
 
-const Vote: React.FC<{
-	hideCross: boolean
-	onCrossClick?: () => void
-	onVoteClick: () => void
-}> = ({ hideCross, onCrossClick, onVoteClick }) => {
+const Vote: React.FC<{}> = () => {
+	const onVoteClick = () => {
+		AndrewLytics('voteClick')
+	}
+
 	return (
 		<VoteWrapper>
 			<VoteText>
@@ -22,11 +21,6 @@ const Vote: React.FC<{
 			>
 				Оставить отзыв
 			</VoteButton>
-			{!hideCross && (
-				<VoteCloseButton onClick={onCrossClick}>
-					<SVG className="closebutton" src={VoteCloseCross} />
-				</VoteCloseButton>
-			)}
 		</VoteWrapper>
 	)
 }
