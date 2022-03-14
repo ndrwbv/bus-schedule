@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import Select from 'react-select'
 
 import { calculateHowMuchIsLeft, findClosesTime, findClosesTimeArray } from './helpers'
@@ -40,6 +40,7 @@ import { StopsInOptions } from 'consts/stopsInOptions'
 import { FetchInfoResponse, FetchScheduleResponse } from 'api'
 import useSchedule from 'hooks/useSchedule'
 import useEveryMinuteUpdater from 'hooks/useEveryMinuteUpdater'
+import useFavoriteBusStop, { getFavoriteBusStop } from 'hooks/useFavoriteBusStop'
 
 interface IScheduleProps {
 	currentDay: number
@@ -57,19 +58,12 @@ const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo, fe
 	const [closestTime, setClossestTime] = React.useState<string>('')
 
 	const [direction, setDirection] = React.useState<Directions>('out')
-	const [favoriteBusStops, setFavoriteBusStops] = React.useState<StopKeys[]>([])
 	const [stopsOptions, setStopsOptions] = React.useState<IStop<StopKeysIn | StopKeysOut | null>[]>(StopsOutOptions)
 	const [shouldShowFastReply, setShouldShowFastReply] = React.useState(false)
 
 	const SCHEDULE = useSchedule(fetchSchedule)
 	const _everyMinuteUpdate = useEveryMinuteUpdater()
-
-	React.useEffect(() => {
-		const localStorageItem = localStorage.getItem('favoriteStops')
-		const favoriteStops = localStorageItem ? JSON.parse(localStorageItem) : []
-
-		setFavoriteBusStops(favoriteStops)
-	}, [])
+	const { favoriteBusStops, saveFavoriteBusStops } = useFavoriteBusStop()
 
 	React.useEffect(() => {
 		if (left.hours === null) return
@@ -110,18 +104,6 @@ const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo, fe
 		setDirection(_direction)
 	}
 
-	const saveFavoriteBusStops = (stops: StopKeys[]) => {
-		setFavoriteBusStops(stops)
-		localStorage.setItem('favoriteStops', JSON.stringify(stops))
-	}
-
-	const getFavoriteBusStop = (): StopKeys[] => {
-		const localStorageItem = localStorage.getItem('favoriteStops')
-		const favoriteStops = localStorageItem ? JSON.parse(localStorageItem) : []
-
-		return favoriteStops
-	}
-
 	const handleAddFavoriteStatus = () => {
 		if (!busStop) return
 
@@ -159,7 +141,17 @@ const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo, fe
 			: closestTimeArray.map((d, index) => <TimeStamp key={`${d}-${index}`}>{d}</TimeStamp>)
 	}
 
-	const isBusStopFavorite = busStop ? favoriteBusStops.includes(busStop) : false
+	const favoriteList = useMemo(
+		() => stopsOptions.filter(stop => stop.value && favoriteBusStops.includes(stop.value)),
+		[stopsOptions, favoriteBusStops],
+	)
+
+	const isBusStopFavorite = useMemo(
+		() => (busStop ? favoriteBusStops.includes(busStop) : false),
+		[busStop, favoriteBusStops],
+	)
+
+	const currentBusStop = useMemo(() => stopsOptions.find(stop => stop.value === busStop), [stopsOptions, busStop])
 
 	return (
 		<MainLayout>
@@ -185,7 +177,7 @@ const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo, fe
 						styles={selectStyles}
 						options={stopsOptions}
 						onChange={e => handleChangeBusStop(e?.value as StopKeys)}
-						value={stopsOptions.find(stop => stop.value === busStop)}
+						value={currentBusStop}
 						defaultValue={stopsOptions[0]}
 					/>
 				</Header>
@@ -196,7 +188,7 @@ const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo, fe
 			<Container>
 				<Header text={'Мои остановки'} imgSrc={GreenHeart} />
 				<InlineOptions
-					list={stopsOptions.filter(stop => stop.value && favoriteBusStops.includes(stop.value))}
+					list={favoriteList}
 					activeId={busStop}
 					onClick={busStop => setBusStop(busStop as StopKeys)}
 				/>
