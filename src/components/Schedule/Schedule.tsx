@@ -40,6 +40,7 @@ import { StopsOutOptions } from 'consts/stopsOutOptions'
 import { StopsInOptions } from 'consts/stopsInOptions'
 import { FetchInfoResponse, FetchScheduleResponse } from 'api'
 import useInfo from 'hooks/useInfo'
+import useEveryMinuteUpdater from 'hooks/useEveryMinuteUpdater'
 
 interface IScheduleProps {
 	currentDay: number
@@ -56,16 +57,15 @@ const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo, fe
 	const [closestTimeArray, setClossestTimeArray] = React.useState<string[]>([])
 	const [closestTime, setClossestTime] = React.useState<string>('')
 
-	const [_everyMinuteUpdate, _setUpdate] = React.useState(0)
 	const [direction, setDirection] = React.useState<Directions>('out')
 	const [favoriteBusStops, setFavoriteBusStops] = React.useState<StopKeys[]>([])
 	const [stopsOptions, setStopsOptions] = React.useState<IStop<StopKeysIn | StopKeysOut | null>[]>(StopsOutOptions)
 	const [shouldShowFastReply, setShouldShowFastReply] = React.useState(false)
-
-	const { SCHEDULE } = useSchedule(fetchSchedule)
-	const { infoMessage } = useInfo(fetchInfo)
-
 	const [isInfoShow, setIsInfoShow] = React.useState(false)
+
+	const SCHEDULE  = useSchedule(fetchSchedule)
+	const infoMessage  = useInfo(fetchInfo)
+	const _everyMinuteUpdate = useEveryMinuteUpdater()
 
 	React.useEffect(() => {
 		if (!infoMessage.id) return
@@ -90,14 +90,6 @@ const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo, fe
 
 		return setShouldShowFastReply(false)
 	}, [left])
-
-	React.useEffect(() => {
-		const int = setInterval(() => _setUpdate(Date.now()), 1000)
-
-		return () => {
-			clearInterval(int)
-		}
-	}, [_everyMinuteUpdate])
 
 	React.useEffect(() => {
 		if (!busStop) return

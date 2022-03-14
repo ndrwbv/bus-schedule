@@ -17,9 +17,7 @@ const useInfo = (fetchInfo: () => FetchInfoResponse) => {
 		})
 	}, [fetchInfo])
 
-	return {
-		infoMessage,
-	}
+	return infoMessage
 }
 
 export default useInfo

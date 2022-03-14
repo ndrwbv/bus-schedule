@@ -20,9 +20,7 @@ const useSchedule = (fetchSchedule: () => FetchScheduleResponse) => {
 			})
 	}, [fetchSchedule])
 
-	return {
-		SCHEDULE,
-	}
+	return SCHEDULE
 }
 
 export default useSchedule
