@@ -8,7 +8,7 @@ interface IHeaderProps {
 	imgSrc: any
 	children?: React.ReactNode
 }
-
+ 
 const Header: React.FC<IHeaderProps> = ({ text: Text, imgSrc, children = null }) => {
 	return (
 		<HeaderContainer>
