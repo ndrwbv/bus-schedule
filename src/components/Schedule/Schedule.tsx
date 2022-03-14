@@ -31,7 +31,6 @@ import {
 } from './styled'
 
 import { AndrewLytics } from 'helpers/analytics'
-import useSchedule from 'hooks/useSchedule'
 
 import { Directions, IStop, StopKeys, StopKeysIn, StopKeysOut } from 'interfaces/Stops'
 import { ITime } from 'interfaces/ITime'
@@ -39,7 +38,7 @@ import { ITime } from 'interfaces/ITime'
 import { StopsOutOptions } from 'consts/stopsOutOptions'
 import { StopsInOptions } from 'consts/stopsInOptions'
 import { FetchInfoResponse, FetchScheduleResponse } from 'api'
-import useInfo from 'hooks/useInfo'
+import useSchedule from 'hooks/useSchedule'
 import useEveryMinuteUpdater from 'hooks/useEveryMinuteUpdater'
 
 interface IScheduleProps {
@@ -61,18 +60,9 @@ const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo, fe
 	const [favoriteBusStops, setFavoriteBusStops] = React.useState<StopKeys[]>([])
 	const [stopsOptions, setStopsOptions] = React.useState<IStop<StopKeysIn | StopKeysOut | null>[]>(StopsOutOptions)
 	const [shouldShowFastReply, setShouldShowFastReply] = React.useState(false)
-	const [isInfoShow, setIsInfoShow] = React.useState(false)
 
-	const SCHEDULE  = useSchedule(fetchSchedule)
-	const infoMessage  = useInfo(fetchInfo)
+	const SCHEDULE = useSchedule(fetchSchedule)
 	const _everyMinuteUpdate = useEveryMinuteUpdater()
-
-	React.useEffect(() => {
-		if (!infoMessage.id) return
-
-		const _infoMessageId = localStorage.getItem('infoMessageId')
-		Number(_infoMessageId) !== Number(infoMessage.id) && setIsInfoShow(true)
-	}, [infoMessage.id])
 
 	React.useEffect(() => {
 		const localStorageItem = localStorage.getItem('favoriteStops')
@@ -165,17 +155,6 @@ const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo, fe
 		setBusStop(busStop)
 	}
 
-	const onInfoCrossClick = () => {
-		setIsInfoShow(false)
-		infoMessage.id && localStorage.setItem('infoMessageId', String(infoMessage.id))
-
-		AndrewLytics('infoBlockHide')
-	}
-
-	const onInfoBlockLinkClick = () => {
-		AndrewLytics('infoBlockLinkClick')
-	}
-
 	const renderTodaysBusContent = () => {
 		if (!busStop) return <SelectBusStopText />
 
@@ -188,16 +167,10 @@ const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo, fe
 
 	return (
 		<MainLayout>
-			{isInfoShow && (
-				<Container>
-					<Info
-						text={infoMessage.message}
-						link={infoMessage.link}
-						onLinkClick={onInfoBlockLinkClick}
-						onInfoCrossClick={onInfoCrossClick}
-					></Info>
-				</Container>
-			)}
+			<Container>
+				<Info fetchInfo={fetchInfo} />
+			</Container>
+
 			<Container>
 				<GoButtonContainer>
 					<GoButton active={direction === 'in'} onClick={() => handleChangeDirection('in')}>
