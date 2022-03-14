@@ -44,9 +44,9 @@ describe('<App />', () => {
 			await page.addBusStopInFavorite()
 
 			const removeBusStopText = renderApp.getByText(/Удалить остановку из избранного/)
-			const myBusStopText = renderApp.getByText(/Мои остановки/)
+			const myBusStopText = renderApp.getAllByText(/ТГУ/)
 
-			expect(myBusStopText).toBeInTheDocument()
+			expect(myBusStopText.length).toBe(2)
 			expect(removeBusStopText).toBeInTheDocument()
 		})
 	})
