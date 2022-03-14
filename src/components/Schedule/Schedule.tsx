@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import Select from 'react-select'
 
 import GreenHeart from 'img/green-heart.svg'
@@ -105,7 +105,10 @@ const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo, fe
 		setDirection(_direction)
 	}
 
-	const handleAddFavoriteStatus = () => {
+	const changeDirectionIn = useCallback(() => handleChangeDirection('in'), [SCHEDULE, currentDay, busStop])
+	const changeDirectionOut = useCallback(() => handleChangeDirection('out'), [SCHEDULE, currentDay, busStop])
+
+	const handleAddFavoriteStatus = useCallback(() => {
 		if (!busStop) return
 
 		const stops = getFavoriteBusStop()
@@ -115,9 +118,9 @@ const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo, fe
 		const newStops: StopKeys[] = [busStop, ...stops]
 		saveFavoriteBusStops(newStops)
 		AndrewLytics('addStop')
-	}
+	}, [busStop])
 
-	const handleRemoveFavoriteStatus = () => {
+	const handleRemoveFavoriteStatus = useCallback(() => {
 		if (!busStop) return
 
 		const stops = getFavoriteBusStop()
@@ -127,7 +130,7 @@ const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo, fe
 		const newStops: StopKeys[] = stops.filter(stop => stop !== busStop)
 
 		saveFavoriteBusStops(newStops)
-	}
+	}, [busStop])
 
 	const handleChangeBusStop = (busStop: StopKeys) => {
 		AndrewLytics('selectBusStop')
@@ -140,6 +143,14 @@ const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo, fe
 		return closestTimeArray.length === 0
 			? 'Автобусов нет'
 			: closestTimeArray.map((d, index) => <TimeStamp key={`${d}-${index}`}>{d}</TimeStamp>)
+	}
+
+	const renderOtherTimeContent = () => {
+		return busStop ? (
+			SCHEDULE[direction][nextDay][busStop]?.map((d, index) => <TimeStamp key={`${d}-${index}`}>{d}</TimeStamp>)
+		) : (
+			<SelectBusStopText />
+		)
 	}
 
 	const favoriteList = useMemo(
@@ -162,10 +173,10 @@ const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo, fe
 
 			<Container>
 				<GoButtonContainer>
-					<GoButton active={direction === 'in'} onClick={() => handleChangeDirection('in')}>
+					<GoButton active={direction === 'in'} onClick={changeDirectionIn}>
 						в северный парк
 					</GoButton>
-					<GoButton active={direction === 'out'} onClick={() => handleChangeDirection('out')}>
+					<GoButton active={direction === 'out'} onClick={changeDirectionOut}>
 						из северного парка
 					</GoButton>
 				</GoButtonContainer>
@@ -221,15 +232,7 @@ const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo, fe
 			<Container>
 				<Header text={'Автобусы на завтра'} imgSrc={UpcomingBus} />
 
-				<OtherTime>
-					{busStop ? (
-						SCHEDULE[direction][nextDay][busStop]?.map((d, index) => (
-							<TimeStamp key={`${d}-${index}`}>{d}</TimeStamp>
-						))
-					) : (
-						<SelectBusStopText />
-					)}
-				</OtherTime>
+				<OtherTime>{renderOtherTimeContent()}</OtherTime>
 			</Container>
 
 			<Container>
