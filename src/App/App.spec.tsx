@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import { act, render, waitFor } from '@testing-library/react'
 import { createMockApi } from 'helpers/test/mocks/mockApi'
 
-import { MainPagePageObject } from 'helpers/test/pageObjects/MainPagePageObject'
+import { MainPageObject } from 'helpers/test/pageObjects/MainPageObject'
 import App from './App'
 
 jest.useFakeTimers('modern')
@@ -24,7 +24,7 @@ describe('<App />', () => {
 	it('should show correct left time', async () => {
 		await act(async () => {
 			const renderApp = render(<CustomApp />)
-			const page = new MainPagePageObject(renderApp)
+			const page = new MainPageObject(renderApp)
 			await page.openBusStopList()
 			await page.selectBusStop('ТГУ')
 
@@ -37,7 +37,7 @@ describe('<App />', () => {
 	it('should add stop in favorite', async () => {
 		await act(async () => {
 			const renderApp = render(<CustomApp />)
-			const page = new MainPagePageObject(renderApp)
+			const page = new MainPageObject(renderApp)
 			await page.openBusStopList()
 			await page.selectBusStop('ТГУ')
 

@@ -1,6 +1,6 @@
 import { fireEvent, RenderResult, waitFor } from '@testing-library/react'
 
-export class MainPagePageObject {
+export class MainPageObject {
 	constructor(private readonly renderApp: RenderResult) {}
 
 	get busStopSelect() {
