@@ -1,8 +1,6 @@
 import React, { useMemo } from 'react'
 import Select from 'react-select'
 
-import { calculateHowMuchIsLeft, findClosesTime, findClosesTimeArray } from './helpers'
-
 import GreenHeart from 'img/green-heart.svg'
 import BusStop from 'img/bus-stop.svg'
 import UpcomingBus from 'img/upcoming-bus.svg'
@@ -31,13 +29,16 @@ import {
 } from './styled'
 
 import { AndrewLytics } from 'helpers/analytics'
+import { calculateHowMuchIsLeft, findClosesTime, findClosesTimeArray } from './helpers'
 
 import { Directions, IStop, StopKeys, StopKeysIn, StopKeysOut } from 'interfaces/Stops'
 import { ITime } from 'interfaces/ITime'
 
 import { StopsOutOptions } from 'consts/stopsOutOptions'
 import { StopsInOptions } from 'consts/stopsInOptions'
+
 import { FetchInfoResponse, FetchScheduleResponse } from 'api'
+
 import useSchedule from 'hooks/useSchedule'
 import useEveryMinuteUpdater from 'hooks/useEveryMinuteUpdater'
 import useFavoriteBusStop, { getFavoriteBusStop } from 'hooks/useFavoriteBusStop'
