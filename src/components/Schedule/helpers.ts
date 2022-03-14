@@ -1,52 +1,55 @@
-import { ITime } from "interfaces/ITime";
+import { ITime } from 'interfaces/ITime'
+const TIME_ZONE = 'Asia/Tomsk'
 
 /**
  * finds closest time in schedule
  * @param hours
  */
 export const findClosesTime = (hours: string[]): string | undefined => {
-  let closestTime: Date | null = null;
+	const convertedDate = new Date().toLocaleString('en-US', { timeZone: TIME_ZONE })
 
-  for (let i = 0; i < hours.length; i++) {
-    const splitted = hours[i].split(":").map((item) => parseInt(item, 10));
+	let closestTime: Date | null = null
 
-    const possibleDate = new Date().setHours(splitted[0], splitted[1]);
+	for (let i = 0; i < hours.length; i++) {
+		const splitted = hours[i].split(':').map(item => parseInt(item, 10))
 
-    if (possibleDate - new Date().getTime() > 0) {
-      if (!closestTime) closestTime = new Date(possibleDate);
-      else if (closestTime.getTime() - possibleDate > 0)
-        closestTime = new Date(possibleDate);
-    }
-  }
+		const possibleDate = new Date(convertedDate).setHours(splitted[0], splitted[1])
 
-  return closestTime?.toString();
-};
+		if (possibleDate - new Date(convertedDate).getTime() > 0) {
+			if (!closestTime) closestTime = new Date(possibleDate)
+			else if (closestTime.getTime() - possibleDate > 0) closestTime = new Date(possibleDate)
+		}
+	}
+
+	return closestTime?.toString()
+}
 
 export const findClosesTimeArray = (hours: string[]): string[] => {
-  let closestTime: string[] = [];
+	const convertedDate = new Date().toLocaleString('en-US', { timeZone: TIME_ZONE })
+	let closestTime: string[] = []
 
-  for (let i = 0; i < hours.length; i++) {
-    const splitted = hours[i].split(":").map((item) => parseInt(item, 10));
+	for (let i = 0; i < hours.length; i++) {
+		const splitted = hours[i].split(':').map(item => parseInt(item, 10))
 
-    const possibleDate = new Date().setHours(splitted[0], splitted[1]);
+		const possibleDate = new Date(convertedDate).setHours(splitted[0], splitted[1])
 
-    if (possibleDate - new Date().getTime() > 0) {
-      closestTime.push(hours[i]);
-    }
-  }
+		if (possibleDate - new Date(convertedDate).getTime() > 0) {
+			closestTime.push(hours[i])
+		}
+	}
 
-  return closestTime;
-};
+	return closestTime
+}
 
 const getTimeFromMins = (mins: number): ITime => {
-  let hours = Math.trunc(mins / 60);
-  let minutes = Math.round(mins % 60);
+	let hours = Math.trunc(mins / 60)
+	let minutes = Math.round(mins % 60)
 
-  return {
-    hours,
-    minutes,
-  };
-};
+	return {
+		hours,
+		minutes,
+	}
+}
 
 /**
  * Finds difference between current time and schedule time
@@ -54,21 +57,20 @@ const getTimeFromMins = (mins: number): ITime => {
  * @currentDate
  */
 export const calculateHowMuchIsLeft = (closestTime: string | null): ITime => {
-  if (!closestTime)
-    return {
-      hours: null,
-      minutes: null,
-    };
+	const convertedDate = new Date().toLocaleString('en-US', { timeZone: TIME_ZONE })
 
-  const left =
-    Math.abs(new Date(closestTime).getTime() - new Date().getTime()) /
-    1000 /
-    60;
+	if (!closestTime)
+		return {
+			hours: null,
+			minutes: null,
+		}
 
-  return getTimeFromMins(left);
-};
+	const left = Math.abs(new Date(closestTime).getTime() - new Date(convertedDate).getTime()) / 1000 / 60
+
+	return getTimeFromMins(left)
+}
 
 export const getNextDay = (currentDay: number) => {
-  if (currentDay === 6) return 0;
-  return currentDay + 1;
-};
+	if (currentDay === 6) return 0
+	return currentDay + 1
+}

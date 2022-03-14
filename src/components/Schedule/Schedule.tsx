@@ -38,7 +38,6 @@ import { ITime } from 'interfaces/ITime'
 
 import { StopsOutOptions } from 'consts/stopsOutOptions'
 import { StopsInOptions } from 'consts/stopsInOptions'
-import { IInfo } from 'interfaces/IInfo'
 import { FetchInfoResponse, FetchScheduleResponse } from 'api'
 import useInfo from 'hooks/useInfo'
 
