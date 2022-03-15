@@ -1,5 +1,5 @@
+import { MAIN_GREY } from "consts/colors";
 import styled from "styled-components";
-import { MAIN_GREY } from "../Schedule/consts";
 
 export const HowMuchLeftContainer = styled.div`
   display: flex;

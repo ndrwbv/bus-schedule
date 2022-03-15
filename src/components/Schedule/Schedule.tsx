@@ -1,386 +1,211 @@
-import React from "react";
+import React, { useCallback, useMemo } from 'react'
+import Select from 'react-select'
 
-import Select from "react-select";
+import GreenHeart from 'img/green-heart.svg'
+import BusStop from 'img/bus-stop.svg'
+import UpcomingBus from 'img/upcoming-bus.svg'
+import Write from 'img/write.svg'
 
+import Header from '../Header/Header'
+import TelegramButton from '../TelegramButton/TelegramButton'
+import Vote from '../Vote/Vote'
+import Info from '../Info/Info'
+import SelectBusStopText from '../SelectBusStopText'
+import HowMuchLeft from '../HowMuchLeft/HowMuchLeft'
+import InlineOptions from '../InlineOptions/InlineOptions'
 import {
-  Directions,
-  IStop,
-  SCHEDULE as defaultSCHEDULE,
-  StopKeys,
-  StopKeysIn,
-  StopKeysOut,
-  StopsInOptions,
-  StopsOutOptions,
-} from "./consts";
-import {
-  calculateHowMuchIsLeft,
-  findClosesTime,
-  findClosesTimeArray,
-  getNextDay,
-  ITime,
-} from "./helpers";
+	AddToFavoriteButton,
+	Container,
+	GoButton,
+	GoButtonContainer,
+	GrayText,
+	LinksBlock,
+	MainLayout,
+	OtherTime,
+	selectStyles,
+	StyledHR,
+	TelegramContainer,
+	TimeStamp,
+} from './styled'
 
-import GreenHeart from "../../img/green-heart.svg";
-import BusStop from "../../img/bus-stop.svg";
-import UpcomingBus from "../../img/upcoming-bus.svg";
-import Write from "../../img/write.svg";
+import { AndrewLytics } from 'helpers/analytics'
 
-import Header from "../Header";
-import TelegramButton from "../TelegramButton";
-import Vote from "../Vote";
-import Info from "../Info";
-import {
-  AddToFavoriteButton,
-  Container,
-  GoButton,
-  GoButtonContainer,
-  GrayText,
-  LinksBlock,
-  MainLayout,
-  OtherTime,
-  selectStyles,
-  StyledHR,
-  TelegramContainer,
-  TimeStamp,
-} from "./styled";
-import SelectBusStopText from "../SelectBusStopText";
-import HowMuchLeft from "../HowMuchLeft/HowMuchLeft";
-import InlineOptions from "../InlineOptions";
-import { AndrewLytics } from "../../helpers";
+import { StopKeys } from 'interfaces/Stops'
 
-const currentDay = new Date().getDay();
-const nextDay = getNextDay(currentDay);
+import useFavoriteBusStop, { getFavoriteBusStop } from 'hooks/useFavoriteBusStop'
+import { useScheduleContext } from 'context/ScheduleContext'
 
-function Schedule() {
-  const [busStop, setBusStop] = React.useState<StopKeys | null>(null);
-  const [left, setLeft] = React.useState<ITime>({
-    hours: 0,
-    minutes: 0,
-  });
-  const [closestTimeArray, setClossestTimeArray] = React.useState<string[]>([]);
-  const [closestTime, setClossestTime] = React.useState<string>("");
+interface IScheduleProps {}
+const Schedule: React.FC<IScheduleProps> = () => {
+	const {
+		busStop,
+		left,
+		closestTimeArray,
+		shouldShowFastReply,
+		stopsOptions,
+		direction,
+		SCHEDULE,
+		handleChangeBusStop,
+		changeDirectionIn,
+		changeDirectionOut,
+		nextDay,
+	} = useScheduleContext()
 
-  const [_everyMinuteUpdate, _setUpdate] = React.useState(0);
-  const [direction, setDirection] = React.useState<Directions>("out");
-  const [favoriteBusStops, setFavoriteBusStops] = React.useState<StopKeys[]>(
-    []
-  );
-  const [stopsOptions, setStopsOptions] =
-    React.useState<IStop<StopKeysIn | StopKeysOut | null>[]>(StopsOutOptions);
-  const [shouldShowFastReply, setShouldShowFastReply] = React.useState(false);
+	const { favoriteBusStops, saveFavoriteBusStops } = useFavoriteBusStop()
 
-  const [SCHEDULE, setSchedule] = React.useState(defaultSCHEDULE);
-  const [infoMessage, setInfoMessage] = React.useState({
-    message: null,
-    id: null,
-    link: null,
-  });
-  const [isInfoShow, setIsInfoShow] = React.useState(false);
+	const handleAddFavoriteStatus = useCallback(() => {
+		if (!busStop) return
 
-  React.useEffect(() => {
-    fetch(
-      "https://cdn.contentful.com/spaces/jms7gencs5gy/environments/master/entries/7IlPNcg50LiVUVbIe2FwYN?access_token=qhkzg59i5IhlhFYUg-N4Pc9Qm1Dfx63wlGkOwOGhPXg"
-    )
-      .then((res) => res.json())
-      .then((res) => {
-        if (res?.fields) {
-          setInfoMessage(res?.fields);
-        }
-      });
-  }, []);
+		const stops = getFavoriteBusStop()
 
-  React.useEffect(() => {
-    fetch(
-      "https://cdn.contentful.com/spaces/jms7gencs5gy/environments/master/entries/43nolroEBc5PNSMub6VR8G?access_token=qhkzg59i5IhlhFYUg-N4Pc9Qm1Dfx63wlGkOwOGhPXg"
-    )
-      .then((res) => res.json())
-      .then((res) => {
-        if (res?.fields?.schedule) {
-          setSchedule(res?.fields?.schedule);
-        } else {
-          AndrewLytics("cannotLoad");
-        }
-      })
-      .catch(() => {
-        AndrewLytics("cannotLoad");
-      });
-  }, []);
+		if (stops.includes(busStop)) return
 
-  React.useEffect(() => {
-    if (!infoMessage.id) return;
+		const newStops: StopKeys[] = [busStop, ...stops]
+		saveFavoriteBusStops(newStops)
+		AndrewLytics('addStop')
+	}, [busStop, saveFavoriteBusStops])
 
-    const _infoMessageId = localStorage.getItem("infoMessageId");
-    Number(_infoMessageId) !== Number(infoMessage.id) && setIsInfoShow(true);
-  }, [infoMessage.id]);
+	const handleRemoveFavoriteStatus = useCallback(() => {
+		if (!busStop) return
 
-  React.useEffect(() => {
-    const localStorageItem = localStorage.getItem("favoriteStops");
-    const favoriteStops = localStorageItem ? JSON.parse(localStorageItem) : [];
+		const stops = getFavoriteBusStop()
 
-    setFavoriteBusStops(favoriteStops);
-  }, []);
+		if (!stops.includes(busStop)) return
 
-  React.useEffect(() => {
-    if (left.hours === null) return;
+		const newStops: StopKeys[] = stops.filter(stop => stop !== busStop)
 
-    if (left?.minutes && (left?.minutes <= 15 || left?.minutes > 40)) {
-      return setShouldShowFastReply(true);
-    }
+		saveFavoriteBusStops(newStops)
+	}, [busStop, saveFavoriteBusStops])
 
-    return setShouldShowFastReply(false);
-  }, [left]);
+	const renderTodaysBusContent = () => {
+		if (!busStop) return <SelectBusStopText />
 
-  React.useEffect(() => {
-    const int = setInterval(() => _setUpdate(Date.now()), 1000);
+		return closestTimeArray.length === 0
+			? 'Автобусов нет'
+			: closestTimeArray.map((d, index) => <TimeStamp key={`${d}-${index}`}>{d}</TimeStamp>)
+	}
 
-    return () => {
-      clearInterval(int);
-    };
-  }, [_everyMinuteUpdate]);
+	const renderOtherTimeContent = () => {
+		return busStop ? (
+			SCHEDULE[direction][nextDay][busStop]?.map((d, index) => <TimeStamp key={`${d}-${index}`}>{d}</TimeStamp>)
+		) : (
+			<SelectBusStopText />
+		)
+	}
 
-  React.useEffect(() => {
-    if (!busStop) return;
+	const favoriteList = useMemo(
+		() => stopsOptions.filter(stop => stop.value && favoriteBusStops.includes(stop.value)),
+		[stopsOptions, favoriteBusStops],
+	)
 
-    const _closestTime = findClosesTime(
-      SCHEDULE[direction][currentDay][busStop]
-    );
+	const isBusStopFavorite = useMemo(
+		() => (busStop ? favoriteBusStops.includes(busStop) : false),
+		[busStop, favoriteBusStops],
+	)
 
-    if (!_closestTime) return;
+	const currentBusStop = useMemo(() => stopsOptions.find(stop => stop.value === busStop), [stopsOptions, busStop])
 
-    if (
-      !closestTime ||
-      new Date(closestTime).getTime() !== new Date(_closestTime).getTime()
-    ) {
-      setClossestTimeArray(
-        findClosesTimeArray(SCHEDULE[direction][currentDay][busStop])
-      );
-      setClossestTime(_closestTime);
-    }
-  }, [_everyMinuteUpdate, closestTime, busStop, direction, SCHEDULE]);
+	return (
+		<MainLayout>
+			<Container>
+				<Info />
+			</Container>
 
-  React.useEffect(() => {
-    const left = calculateHowMuchIsLeft(closestTime);
+			<Container>
+				<GoButtonContainer>
+					<GoButton active={direction === 'in'} onClick={changeDirectionIn}>
+						в северный парк
+					</GoButton>
+					<GoButton active={direction === 'out'} onClick={changeDirectionOut}>
+						из северного парка
+					</GoButton>
+				</GoButtonContainer>
+			</Container>
 
-    setLeft(left);
-  }, [_everyMinuteUpdate, closestTime]);
+			<Container>
+				<Header text={'Остановка'} imgSrc={BusStop}>
+					<Select
+						isSearchable={false}
+						styles={selectStyles}
+						options={stopsOptions}
+						onChange={e => handleChangeBusStop(e?.value as StopKeys)}
+						value={currentBusStop}
+						defaultValue={stopsOptions[0]}
+					/>
+				</Header>
 
-  const handleChangeDirection = (_direction: Directions) => {
-    const scheduleKeys = Object.keys(SCHEDULE[_direction][currentDay]);
-    if (busStop && !scheduleKeys.includes(busStop)) {
-      setBusStop(scheduleKeys[0] as StopKeys);
-    }
+				<HowMuchLeft busStop={busStop} left={left} shouldShowFastReply={shouldShowFastReply} />
+			</Container>
 
-    setStopsOptions(_direction === "in" ? StopsInOptions : StopsOutOptions);
-    setDirection(_direction);
-  };
+			<Container>
+				<Header text={'Мои остановки'} imgSrc={GreenHeart} />
+				<InlineOptions
+					list={favoriteList}
+					activeId={busStop}
+					onClick={busStop => handleChangeBusStop(busStop as StopKeys, undefined)}
+				/>
+			</Container>
 
-  const handleVoteClick = () => {
-    AndrewLytics("voteClick");
-  };
+			<Container>
+				<StyledHR />
+			</Container>
 
-  const saveFavoriteBusStops = (stops: StopKeys[]) => {
-    setFavoriteBusStops(stops);
-    localStorage.setItem("favoriteStops", JSON.stringify(stops));
-  };
+			<Container>
+				<Header text={'Ещё автобусы на сегодня'} imgSrc={UpcomingBus} />
 
-  const getFavoriteBusStop = (): StopKeys[] => {
-    const localStorageItem = localStorage.getItem("favoriteStops");
-    const favoriteStops = localStorageItem ? JSON.parse(localStorageItem) : [];
+				<OtherTime>{renderTodaysBusContent()}</OtherTime>
 
-    return favoriteStops;
-  };
+				{busStop && (
+					<AddToFavoriteButton
+						status={isBusStopFavorite ? 'remove' : 'add'}
+						onClick={isBusStopFavorite ? handleRemoveFavoriteStatus : handleAddFavoriteStatus}
+					>
+						{isBusStopFavorite ? 'Удалить остановку из избранного' : 'Добавить остановку в избранное'}
+					</AddToFavoriteButton>
+				)}
+			</Container>
 
-  const handleAddFavoriteStatus = () => {
-    if (!busStop) return;
+			<Container>
+				<Vote />
+			</Container>
 
-    const stops = getFavoriteBusStop();
+			<Container>
+				<Header text={'Автобусы на завтра'} imgSrc={UpcomingBus} />
 
-    if (stops.includes(busStop)) return;
+				<OtherTime>{renderOtherTimeContent()}</OtherTime>
+			</Container>
 
-    const newStops: StopKeys[] = [busStop, ...stops];
-    saveFavoriteBusStops(newStops);
-    AndrewLytics("addStop");
-  };
+			<Container>
+				<Header
+					text={() => (
+						<>
+							Увидели ошибку?
+							<br />
+							Есть предложение по улучшению?
+						</>
+					)}
+					imgSrc={Write}
+				/>
 
-  const handleRemoveFavoriteStatus = () => {
-    if (!busStop) return;
+				<TelegramContainer>
+					<TelegramButton />
+				</TelegramContainer>
+			</Container>
 
-    const stops = getFavoriteBusStop();
+			<Container>
+				<LinksBlock>
+					<GrayText>
+						Расписание взято с сайта{' '}
+						<a href="http://www.tomskavtotrans.ru/60" target="_blank" rel="noreferrer">
+							tomskavtotrans.ru
+						</a>
+					</GrayText>
 
-    if (!stops.includes(busStop)) return;
-
-    const newStops: StopKeys[] = stops.filter((stop) => stop !== busStop);
-
-    saveFavoriteBusStops(newStops);
-  };
-
-  const handleChangeBusStop = (busStop: StopKeys) => {
-    AndrewLytics("selectBusStop");
-    setBusStop(busStop);
-  };
-
-  const onInfoCrossClick = () => {
-    setIsInfoShow(false);
-    infoMessage.id && localStorage.setItem("infoMessageId", infoMessage.id);
-
-    AndrewLytics("infoBlockHide");
-  };
-
-  const onInfoBlockLinkClick = () => {
-    AndrewLytics("infoBlockLinkClick");
-  };
-
-  const renderTodaysBusContent = () => {
-    if (!busStop) return <SelectBusStopText />;
-
-    return closestTimeArray.length === 0
-      ? "Автобусов нет"
-      : closestTimeArray.map((d, index) => (
-          <TimeStamp key={`${d}-${index}`}>{d}</TimeStamp>
-        ));
-  };
-
-  const isBusStopFavorite = busStop
-    ? favoriteBusStops.includes(busStop)
-    : false;
-
-  return (
-    <MainLayout>
-      {isInfoShow && (
-        <Container>
-          <Info
-            text={infoMessage.message}
-            link={infoMessage.link}
-            onLinkClick={onInfoBlockLinkClick}
-            onInfoCrossClick={onInfoCrossClick}
-          ></Info>
-        </Container>
-      )}
-      <Container>
-        <GoButtonContainer>
-          <GoButton
-            active={direction === "in"}
-            onClick={() => handleChangeDirection("in")}
-          >
-            в северный парк
-          </GoButton>
-          <GoButton
-            active={direction === "out"}
-            onClick={() => handleChangeDirection("out")}
-          >
-            из северного парка
-          </GoButton>
-        </GoButtonContainer>
-      </Container>
-
-      <Container>
-        <Header text={"Остановка"} imgSrc={BusStop}>
-          <Select
-            isSearchable={false}
-            styles={selectStyles}
-            options={stopsOptions}
-            onChange={(e) => handleChangeBusStop(e?.value as StopKeys)}
-            value={stopsOptions.find((stop) => stop.value === busStop)}
-            defaultValue={stopsOptions[0]}
-          />
-        </Header>
-
-        <HowMuchLeft
-          busStop={busStop}
-          left={left}
-          shouldShowFastReply={shouldShowFastReply}
-        />
-      </Container>
-
-      <Container>
-        <Header text={"Мои остановки"} imgSrc={GreenHeart} />
-        <InlineOptions
-          list={stopsOptions.filter(
-            (stop) => stop.value && favoriteBusStops.includes(stop.value)
-          )}
-          activeId={busStop}
-          onClick={(busStop) => setBusStop(busStop as StopKeys)}
-        />
-      </Container>
-
-      <Container>
-        <StyledHR />
-      </Container>
-
-      <Container>
-        <Header text={"Ещё автобусы на сегодня"} imgSrc={UpcomingBus} />
-
-        <OtherTime>{renderTodaysBusContent()}</OtherTime>
-
-        {busStop && (
-          <AddToFavoriteButton
-            status={isBusStopFavorite ? "remove" : "add"}
-            onClick={
-              isBusStopFavorite
-                ? handleRemoveFavoriteStatus
-                : handleAddFavoriteStatus
-            }
-          >
-            {isBusStopFavorite
-              ? "Удалить остановку из избранного"
-              : "Добавить остановку в избранное"}
-          </AddToFavoriteButton>
-        )}
-      </Container>
-
-      <Container>
-        <Vote key={2} hideCross={true} onVoteClick={handleVoteClick} />
-      </Container>
-
-      <Container>
-        <Header text={"Автобусы на завтра"} imgSrc={UpcomingBus} />
-
-        <OtherTime>
-          {busStop ? (
-            SCHEDULE[direction][nextDay][busStop]?.map((d, index) => (
-              <TimeStamp key={`${d}-${index}`}>{d}</TimeStamp>
-            ))
-          ) : (
-            <SelectBusStopText />
-          )}
-        </OtherTime>
-      </Container>
-
-      <Container>
-        <Header
-          text={() => (
-            <>
-              Увидели ошибку?
-              <br />
-              Есть предложение по улучшению?
-            </>
-          )}
-          imgSrc={Write}
-        />
-
-        <TelegramContainer>
-          <TelegramButton />
-        </TelegramContainer>
-      </Container>
-
-      <Container>
-        <LinksBlock>
-          <GrayText>
-            Расписание взято с сайта{" "}
-            <a
-              href="http://www.tomskavtotrans.ru/60"
-              target="_blank"
-              rel="noreferrer"
-            >
-              tomskavtotrans.ru
-            </a>
-          </GrayText>
-
-          <GrayText>© Andrew Boev & Friends</GrayText>
-        </LinksBlock>
-      </Container>
-    </MainLayout>
-  );
+					<GrayText>© Andrew Boev & Friends</GrayText>
+				</LinksBlock>
+			</Container>
+		</MainLayout>
+	)
 }
 
-export default Schedule;
+export default Schedule

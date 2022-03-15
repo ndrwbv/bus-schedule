@@ -3,28 +3,27 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - main
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
 
 jobs:
   deploy:
-    runs-on: [ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.4.0
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16.14.0
+          cache: 'yarn'
+      - uses: actions/cache@v2.1.7
+        with:
+          path: |
+            node_modules
+            */*/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
 
       - name: Install deps
         run: yarn
-      
-      - name: Build
-        run: yarn build
-      
-      - name: Add CNAME
-        run: echo 'severbus.ru' > ./build/CNAME
-        
-      - name: Deploy with gh-pages
-        run: |
-          git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-          npx gh-pages -d build -u "github-actions-bot <support+actions@github.com>"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run tests
+        run: yarn ci-test
