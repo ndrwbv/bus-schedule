@@ -1,5 +1,6 @@
 import React from 'react';
 
 export default function ReactInlineSVG({ src }) {
-  return <svg id={src} />;
+  const id = src.split('.')[0]
+  return <svg id={id} />;
 }

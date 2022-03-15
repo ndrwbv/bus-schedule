@@ -68,4 +68,26 @@ describe('<App />', () => {
 			expect(addBusStopButton).toBeInTheDocument()
 		})
 	})
+
+	it('should render info block', async () => {
+		await act(async () => {
+			const renderApp = render(<CustomApp />)
+
+			const infoBlockText = await waitFor(() => renderApp.getByText(/Leave your feedback/))
+
+			expect(infoBlockText).toBeInTheDocument()
+		})
+	})
+
+	it('should hide info block', async () => {
+		await act(async () => {
+			const renderApp = render(<CustomApp />)
+			const page = new MainPageObject(renderApp)
+
+			page.hideInfoBlock()
+
+			const infoBlockText = await waitFor(() => renderApp.queryByText(/Leave your feedback/))
+			expect(infoBlockText).not.toBeInTheDocument()
+		})
+	})
 })

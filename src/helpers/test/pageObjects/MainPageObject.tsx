@@ -15,6 +15,19 @@ export class MainPageObject {
 		return this.renderApp.getByText(/Добавить остановку в избранное/)
 	}
 
+	get infoBlock() {
+		return this.renderApp.getByText(/Leave your feedback/)
+	}
+
+	get infoBlockCross() {
+		return this.renderApp.getByTestId(/hide-btn/)
+	}
+
+	async hideInfoBlock() {
+		await waitFor(() => this.infoBlock)
+		fireEvent.click(this.infoBlockCross)
+	}
+
 	async addBusStopInFavorite() {
 		fireEvent.click(this.addBusStopButton)
 	}

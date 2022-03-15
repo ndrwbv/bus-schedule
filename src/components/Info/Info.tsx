@@ -39,8 +39,8 @@ const Info: React.FC = () => {
 			) : (
 				<InfoText>{text}</InfoText>
 			)}
-			<InfoCloseButton>
-				<SVG className="closebutton" src={InfoCloseCross} onClick={onInfoCrossClick} />
+			<InfoCloseButton data-testid="hide-btn" onClick={onInfoCrossClick}>
+				<SVG className="closebutton" src={InfoCloseCross}  />
 			</InfoCloseButton>
 		</InfoWrapper>
 	)
