@@ -15,9 +15,9 @@ const nextDay = getNextDay(currentDay)
 
 function App({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSchedule }) {
 	return (
-		<ScheduleProvider currentDay={currentDay} fetchSchedule={fetchSchedule}>
+		<ScheduleProvider currentDay={c} nextDay={n} fetchSchedule={fs} fetchInfo={fi}>
 			<AppContainer>
-				<Schedule currentDay={c} nextDay={n} fetchInfo={fi} fetchSchedule={fs} />
+				<Schedule />
 			</AppContainer>
 		</ScheduleProvider>
 	)

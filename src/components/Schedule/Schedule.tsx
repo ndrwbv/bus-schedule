@@ -32,19 +32,11 @@ import { AndrewLytics } from 'helpers/analytics'
 
 import { StopKeys } from 'interfaces/Stops'
 
-import { FetchInfoResponse, FetchScheduleResponse } from 'api'
-
 import useFavoriteBusStop, { getFavoriteBusStop } from 'hooks/useFavoriteBusStop'
 import { useScheduleContext } from 'context/ScheduleContext'
 
-interface IScheduleProps {
-	currentDay: number
-	nextDay: number
-	fetchSchedule: () => FetchScheduleResponse
-	fetchInfo: () => FetchInfoResponse
-}
-const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo }) => {
-	
+interface IScheduleProps {}
+const Schedule: React.FC<IScheduleProps> = () => {
 	const {
 		busStop,
 		left,
@@ -56,11 +48,10 @@ const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo }) 
 		handleChangeBusStop,
 		changeDirectionIn,
 		changeDirectionOut,
+		nextDay,
 	} = useScheduleContext()
 
 	const { favoriteBusStops, saveFavoriteBusStops } = useFavoriteBusStop()
-
-
 
 	const handleAddFavoriteStatus = useCallback(() => {
 		if (!busStop) return
@@ -72,7 +63,7 @@ const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo }) 
 		const newStops: StopKeys[] = [busStop, ...stops]
 		saveFavoriteBusStops(newStops)
 		AndrewLytics('addStop')
-	}, [busStop])
+	}, [busStop, saveFavoriteBusStops])
 
 	const handleRemoveFavoriteStatus = useCallback(() => {
 		if (!busStop) return
@@ -84,7 +75,7 @@ const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo }) 
 		const newStops: StopKeys[] = stops.filter(stop => stop !== busStop)
 
 		saveFavoriteBusStops(newStops)
-	}, [busStop])
+	}, [busStop, saveFavoriteBusStops])
 
 	const renderTodaysBusContent = () => {
 		if (!busStop) return <SelectBusStopText />
@@ -117,7 +108,7 @@ const Schedule: React.FC<IScheduleProps> = ({ currentDay, nextDay, fetchInfo }) 
 	return (
 		<MainLayout>
 			<Container>
-				<Info fetchInfo={fetchInfo} />
+				<Info />
 			</Container>
 
 			<Container>

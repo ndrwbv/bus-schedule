@@ -1,8 +1,10 @@
 import React from 'react'
-import { FetchInfoResponse } from 'api'
 import { IInfo } from 'interfaces/IInfo'
+import { useScheduleContext } from 'context/ScheduleContext'
 
-const useInfo = (fetchInfo: () => FetchInfoResponse) => {
+const useInfo = () => {
+	const { fetchInfo } = useScheduleContext()
+
 	const [infoMessage, setInfoMessage] = React.useState<IInfo>({
 		message: null,
 		id: null,

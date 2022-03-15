@@ -4,13 +4,10 @@ import { InfoWrapper, InfoLink, InfoText, InfoCloseButton } from './styled'
 import { AndrewLytics } from 'helpers/analytics'
 import React from 'react'
 import useInfo from 'hooks/useInfo'
-import { FetchInfoResponse } from 'api/info'
 
-const Info: React.FC<{
-	fetchInfo: () => FetchInfoResponse
-}> = ({ fetchInfo }) => {
+const Info: React.FC = () => {
 	const [isInfoShow, setIsInfoShow] = React.useState(false)
-	const infoMessage = useInfo(fetchInfo)
+	const infoMessage = useInfo()
 	const { message: text, link } = infoMessage
 
 	const onLinkClick = () => {

@@ -1,3 +1,5 @@
+import { FetchInfoResponse } from 'api/info'
+import { FetchScheduleResponse } from 'api/schedule'
 import { StopsInOptions } from 'consts/stopsInOptions'
 import { StopsOutOptions } from 'consts/stopsOutOptions'
 import { AndrewLytics } from 'helpers/analytics'
@@ -22,14 +24,24 @@ const DEFAULT_PROPS = {
 	shouldShowFastReply: false,
 	stopsOptions: StopsOutOptions,
 	direction: 'out' as Directions,
-	handleChangeDirection: () => {},
 	SCHEDULE: {
 		in: [],
 		out: [],
 	},
+	nextDay: 1,
+	handleChangeDirection: () => {},
 	handleChangeBusStop: () => {},
 	changeDirectionIn: () => {},
 	changeDirectionOut: () => {},
+	fetchInfo: async () => {
+		return {
+			fields: {
+				message: null,
+				id: null,
+				link: null,
+			},
+		}
+	},
 }
 
 export const ScheduleContext = createContext<ContextProps>(DEFAULT_PROPS)
@@ -46,17 +58,18 @@ interface ContextProps {
 	handleChangeBusStop: (busStop: StopKeys, analyticKey?: string) => void
 	changeDirectionIn: () => void
 	changeDirectionOut: () => void
+	nextDay: number
+	fetchInfo: () => FetchInfoResponse
 }
 
-export const ScheduleProvider = ({
-	children,
-	fetchSchedule,
-	currentDay,
-}: {
+interface IProviderProps {
 	children: React.ReactElement
-	fetchSchedule: any
-	currentDay: any
-}) => {
+	currentDay: number
+	nextDay: number
+	fetchSchedule: () => FetchScheduleResponse
+	fetchInfo: () => FetchInfoResponse
+}
+export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay, fetchInfo }: IProviderProps) => {
 	const [busStop, setBusStop] = React.useState<StopKeys | null>(null)
 	const [left, setLeft] = React.useState<ITime>(DEFAULT_LEFT)
 	const [closestTimeArray, setClossestTimeArray] = React.useState<string[]>([])
@@ -69,25 +82,26 @@ export const ScheduleProvider = ({
 	const _everyMinuteUpdate = useEveryMinuteUpdater()
 	const SCHEDULE = useSchedule(fetchSchedule)
 
-	const handleChangeDirection = useCallback((_direction: Directions) => {
-		const scheduleKeys = Object.keys(SCHEDULE[_direction][currentDay])
-		if (busStop && !scheduleKeys.includes(busStop)) {
-			setBusStop(scheduleKeys[0] as StopKeys)
-		}
+	const handleChangeDirection = useCallback(
+		(_direction: Directions) => {
+			const scheduleKeys = Object.keys(SCHEDULE[_direction][currentDay])
+			if (busStop && !scheduleKeys.includes(busStop)) {
+				setBusStop(scheduleKeys[0] as StopKeys)
+			}
 
-		setStopsOptions(_direction === 'in' ? StopsInOptions : StopsOutOptions)
-		setDirection(_direction)
-	}, [SCHEDULE, currentDay, busStop])
+			setStopsOptions(_direction === 'in' ? StopsInOptions : StopsOutOptions)
+			setDirection(_direction)
+		},
+		[SCHEDULE, currentDay, busStop],
+	)
 
-    const changeDirectionIn = () =>  handleChangeDirection('in')
+	const changeDirectionIn = () => handleChangeDirection('in')
 	const changeDirectionOut = () => handleChangeDirection('out')
 
 	const handleChangeBusStop = (busStop: StopKeys, analyticKey: string = 'selectBusStop') => {
 		analyticKey && AndrewLytics(analyticKey)
 		setBusStop(busStop)
 	}
-
-	
 
 	React.useEffect(() => {
 		if (left.hours === null) return
@@ -132,6 +146,8 @@ export const ScheduleProvider = ({
 				SCHEDULE,
 				changeDirectionIn,
 				changeDirectionOut,
+				nextDay,
+				fetchInfo,
 			}}
 		>
 			{children}

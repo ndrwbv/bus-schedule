@@ -7,13 +7,12 @@ import App from './App'
 
 jest.useFakeTimers('modern')
 jest.setSystemTime(new Date('Fri Mar 11 2022 13:44:27 GMT+0700 (GMT+07:00)'))
-global.fetch = jest.fn()
 
 const api = createMockApi()
 const CustomApp = () => <App fi={api.fetchInfo} fs={api.fetchSchedule} />
 
 describe('<App />', () => {
-	it.only('should render correctly', async () => {
+	it('should render correctly', async () => {
 		await act(async () => {
 			const renderApp = render(<CustomApp />)
 
@@ -40,6 +39,7 @@ describe('<App />', () => {
 			const page = new MainPageObject(renderApp)
 			await page.openBusStopList()
 			await page.selectBusStop('ТГУ')
+			await waitFor(() => renderApp.getByText(/2м/))
 
 			await page.addBusStopInFavorite()
 
@@ -60,7 +60,7 @@ describe('<App />', () => {
 			await page.addBusStopInFavorite()
 
 			await page.removeBusStopFromFavorite()
-			
+
 			const myBusStopText = renderApp.getAllByText(/Интернационалистов/)
 			const addBusStopButton = page.addBusStopButton
 
