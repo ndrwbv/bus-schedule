@@ -34,6 +34,7 @@ import { StopKeys } from 'interfaces/Stops'
 
 import useFavoriteBusStop, { getFavoriteBusStop } from 'hooks/useFavoriteBusStop'
 import { useScheduleContext } from 'context/ScheduleContext'
+import config from 'configs/base'
 
 interface IScheduleProps {}
 const Schedule: React.FC<IScheduleProps> = () => {
@@ -196,7 +197,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 				<LinksBlock>
 					<GrayText>
 						Расписание взято с сайта{' '}
-						<a href="http://www.tomskavtotrans.ru/60" target="_blank" rel="noreferrer">
+						<a href={config.AVTOTRANS_LINK} target="_blank" rel="noreferrer">
 							tomskavtotrans.ru
 						</a>
 					</GrayText>

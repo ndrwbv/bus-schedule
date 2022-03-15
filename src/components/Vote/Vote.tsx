@@ -1,5 +1,6 @@
 import { VoteWrapper, VoteText, VoteButton } from './styled'
 import { AndrewLytics } from 'helpers/analytics'
+import config from 'configs/base'
 
 const Vote: React.FC<{}> = () => {
 	const onVoteClick = () => {
@@ -15,7 +16,7 @@ const Vote: React.FC<{}> = () => {
 			</VoteText>
 			<VoteButton
 				onClick={onVoteClick}
-				href="https://docs.google.com/forms/d/1CIuACPCB373hVzxHdHsXbjFCkeEA2H7h7IK-CURqh2o/viewform?edit_requested=true"
+				href={config.FEEDBACK_LINK}
 				target="_blank"
 				rel="noopener"
 			>
