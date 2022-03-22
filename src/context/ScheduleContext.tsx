@@ -1,19 +1,36 @@
-import { FetchInfoResponse } from 'api/info'
-import { FetchScheduleResponse } from 'api/schedule'
+import React, { useContext, createContext, useCallback } from 'react'
+
 import { StopsInOptions } from 'consts/stopsInOptions'
 import { StopsOutOptions } from 'consts/stopsOutOptions'
+
 import { AndrewLytics } from 'helpers/analytics'
 import { calculateHowMuchIsLeft, findClosesTime, findClosesTimeArray } from 'helpers/schedule'
-import useEveryMinuteUpdater from 'hooks/useEveryMinuteUpdater'
+
 import useSchedule from 'hooks/useSchedule'
+import useEveryMinuteUpdater from 'hooks/useEveryMinuteUpdater'
+
+import { FetchInfoResponse, FetchScheduleResponse } from 'api'
+
 import { ISchedule } from 'interfaces/ISchedule'
 import { ITime } from 'interfaces/ITime'
 import { Directions, IStop, StopKeys, StopKeysIn, StopKeysOut } from 'interfaces/Stops'
-import React, { useContext, createContext, useCallback } from 'react'
 
 const DEFAULT_LEFT = {
 	hours: 0,
 	minutes: 0,
+}
+
+const DEFAULT_FETCH_INFO = {
+	fields: {
+		message: null,
+		id: null,
+		link: null,
+	},
+}
+
+const DEFAULT_SCHEDULE = {
+	in: [],
+	out: [],
 }
 
 const DEFAULT_PROPS = {
@@ -24,23 +41,14 @@ const DEFAULT_PROPS = {
 	shouldShowFastReply: false,
 	stopsOptions: StopsOutOptions,
 	direction: 'out' as Directions,
-	SCHEDULE: {
-		in: [],
-		out: [],
-	},
+	SCHEDULE: DEFAULT_SCHEDULE,
 	nextDay: 1,
 	handleChangeDirection: () => {},
 	handleChangeBusStop: () => {},
 	changeDirectionIn: () => {},
 	changeDirectionOut: () => {},
 	fetchInfo: async () => {
-		return {
-			fields: {
-				message: null,
-				id: null,
-				link: null,
-			},
-		}
+		return DEFAULT_FETCH_INFO
 	},
 }
 

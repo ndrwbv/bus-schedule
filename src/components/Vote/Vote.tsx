@@ -1,8 +1,11 @@
-import { VoteWrapper, VoteText, VoteButton } from './styled'
-import { AndrewLytics } from 'helpers/analytics'
+import { useTranslation } from 'react-i18next'
 import config from 'configs/base'
+import { AndrewLytics } from 'helpers/analytics'
+import { VoteWrapper, VoteText, VoteButton } from './styled'
 
 const Vote: React.FC<{}> = () => {
+	const { t } = useTranslation()
+
 	const onVoteClick = () => {
 		AndrewLytics('voteClick')
 	}
@@ -10,17 +13,12 @@ const Vote: React.FC<{}> = () => {
 	return (
 		<VoteWrapper>
 			<VoteText>
-				Мы добавили
+				{t('We add')}
 				<br />
-				новые остановки
+				{t('new stops')}
 			</VoteText>
-			<VoteButton
-				onClick={onVoteClick}
-				href={config.FEEDBACK_LINK}
-				target="_blank"
-				rel="noopener"
-			>
-				Оставить отзыв
+			<VoteButton onClick={onVoteClick} href={config.FEEDBACK_LINK} target="_blank" rel="noopener">
+				{t('Leave feedback')}
 			</VoteButton>
 		</VoteWrapper>
 	)

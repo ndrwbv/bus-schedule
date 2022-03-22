@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from 'react'
 import Select from 'react-select'
+import { useTranslation } from 'react-i18next'
 
 import GreenHeart from 'img/green-heart.svg'
 import BusStop from 'img/bus-stop.svg'
@@ -34,7 +35,9 @@ import { StopKeys } from 'interfaces/Stops'
 
 import useFavoriteBusStop, { getFavoriteBusStop } from 'hooks/useFavoriteBusStop'
 import { useScheduleContext } from 'context/ScheduleContext'
+
 import config from 'configs/base'
+import { AVTOTRANS, COPIRIGHT } from 'consts/strings'
 
 interface IScheduleProps {}
 const Schedule: React.FC<IScheduleProps> = () => {
@@ -51,8 +54,9 @@ const Schedule: React.FC<IScheduleProps> = () => {
 		changeDirectionOut,
 		nextDay,
 	} = useScheduleContext()
-
 	const { favoriteBusStops, saveFavoriteBusStops } = useFavoriteBusStop()
+
+	const { t } = useTranslation()
 
 	const handleAddFavoriteStatus = useCallback(() => {
 		if (!busStop) return
@@ -82,7 +86,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 		if (!busStop) return <SelectBusStopText />
 
 		return closestTimeArray.length === 0
-			? 'Автобусов нет'
+			? t('No basses')
 			: closestTimeArray.map((d, index) => <TimeStamp key={`${d}-${index}`}>{d}</TimeStamp>)
 	}
 
@@ -115,16 +119,16 @@ const Schedule: React.FC<IScheduleProps> = () => {
 			<Container>
 				<GoButtonContainer>
 					<GoButton active={direction === 'in'} onClick={changeDirectionIn}>
-						в северный парк
+						{t('In north park')}
 					</GoButton>
 					<GoButton active={direction === 'out'} onClick={changeDirectionOut}>
-						из северного парка
+						{t('Out of north park')}
 					</GoButton>
 				</GoButtonContainer>
 			</Container>
 
 			<Container>
-				<Header text={'Остановка'} imgSrc={BusStop}>
+				<Header text={t('Bus stop')} imgSrc={BusStop}>
 					<Select
 						isSearchable={false}
 						styles={selectStyles}
@@ -139,7 +143,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 			</Container>
 
 			<Container>
-				<Header text={'Мои остановки'} imgSrc={GreenHeart} />
+				<Header text={t('My stops')} imgSrc={GreenHeart} />
 				<InlineOptions
 					list={favoriteList}
 					activeId={busStop}
@@ -152,7 +156,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 			</Container>
 
 			<Container>
-				<Header text={'Ещё автобусы на сегодня'} imgSrc={UpcomingBus} />
+				<Header text={t('Buses for today')} imgSrc={UpcomingBus} />
 
 				<OtherTime>{renderTodaysBusContent()}</OtherTime>
 
@@ -161,7 +165,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 						status={isBusStopFavorite ? 'remove' : 'add'}
 						onClick={isBusStopFavorite ? handleRemoveFavoriteStatus : handleAddFavoriteStatus}
 					>
-						{isBusStopFavorite ? 'Удалить остановку из избранного' : 'Добавить остановку в избранное'}
+						{isBusStopFavorite ? t('Remove stop from favorite') : t('Add stop to favorite')}
 					</AddToFavoriteButton>
 				)}
 			</Container>
@@ -171,7 +175,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 			</Container>
 
 			<Container>
-				<Header text={'Автобусы на завтра'} imgSrc={UpcomingBus} />
+				<Header text={t('Buses for tommorow')} imgSrc={UpcomingBus} />
 
 				<OtherTime>{renderOtherTimeContent()}</OtherTime>
 			</Container>
@@ -180,9 +184,9 @@ const Schedule: React.FC<IScheduleProps> = () => {
 				<Header
 					text={() => (
 						<>
-							Увидели ошибку?
+							{t('Did you see an error?')}
 							<br />
-							Есть предложение по улучшению?
+							{t('Have a suggestion for improvement?')}
 						</>
 					)}
 					imgSrc={Write}
@@ -196,13 +200,13 @@ const Schedule: React.FC<IScheduleProps> = () => {
 			<Container>
 				<LinksBlock>
 					<GrayText>
-						Расписание взято с сайта{' '}
+						{t('Schedule taken from website')}{' '}
 						<a href={config.AVTOTRANS_LINK} target="_blank" rel="noreferrer">
-							tomskavtotrans.ru
+							{AVTOTRANS}
 						</a>
 					</GrayText>
 
-					<GrayText>© Andrew Boev & Friends</GrayText>
+					<GrayText>{COPIRIGHT}</GrayText>
 				</LinksBlock>
 			</Container>
 		</MainLayout>
