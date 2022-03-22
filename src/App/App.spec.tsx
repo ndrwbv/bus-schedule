@@ -3,10 +3,13 @@ import { act, render, waitFor } from '@testing-library/react'
 import { createMockApi } from 'helpers/test/mocks/mockApi'
 
 import { MainPageObject } from 'helpers/test/pageObjects/MainPageObject'
+import { configureI18next } from 'i18n/config.i18next'
 import App from './App'
 
 jest.useFakeTimers('modern')
 jest.setSystemTime(new Date('Fri Mar 11 2022 13:44:27 GMT+0700 (GMT+07:00)'))
+
+configureI18next(); // since we don't have backend for translations it's fine
 
 const api = createMockApi()
 const CustomApp = () => <App fi={api.fetchInfo} fs={api.fetchSchedule} />
