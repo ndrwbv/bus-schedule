@@ -12,6 +12,17 @@ const translations = {
 		'Did you see an error?': 'Увидели ошибку?',
 		'Have a suggestion for improvement?': 'Есть предложение по улучшению?',
 		'Schedule taken from website': 'Расписание взято с сайта',
+		'Next bus arriving in': 'Следующий автобус приедет через',
+		'today wont arrive': 'сегодня не приедет',
+		'Bus on stop': 'Автобус на остановку',
+		'Came earlier': 'Приехал раньше',
+		'Came late': 'Приехал позже',
+		'Hasnt come': 'Не приехал',
+		'Contact in telegram': 'Написать в телеграм',
+		'We add': 'Мы добавили',
+		'new stops': 'новые остановки',
+		'Leave feedback': 'Оставить отзыв',
+		'Select bus stop to see schedule': 'Выбери остановку, чтобы увидеть расписание',
 	},
 }
 

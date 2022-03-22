@@ -56,7 +56,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 	} = useScheduleContext()
 	const { favoriteBusStops, saveFavoriteBusStops } = useFavoriteBusStop()
 
-	const {t} = useTranslation();
+	const { t } = useTranslation()
 
 	const handleAddFavoriteStatus = useCallback(() => {
 		if (!busStop) return
@@ -128,7 +128,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 			</Container>
 
 			<Container>
-				<Header text={t("Bus stop")} imgSrc={BusStop}>
+				<Header text={t('Bus stop')} imgSrc={BusStop}>
 					<Select
 						isSearchable={false}
 						styles={selectStyles}
@@ -143,7 +143,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 			</Container>
 
 			<Container>
-				<Header text={t("My stops")} imgSrc={GreenHeart} />
+				<Header text={t('My stops')} imgSrc={GreenHeart} />
 				<InlineOptions
 					list={favoriteList}
 					activeId={busStop}
@@ -184,7 +184,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 				<Header
 					text={() => (
 						<>
-							{t("Did you see an error?")}
+							{t('Did you see an error?')}
 							<br />
 							{t('Have a suggestion for improvement?')}
 						</>
