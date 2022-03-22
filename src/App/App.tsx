@@ -1,6 +1,7 @@
 import { fetchInfo, fetchSchedule } from 'api'
 import ScheduleProvider from 'context/ScheduleContext'
 import { getNextDay } from 'helpers/schedule'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import Schedule from '../components/Schedule/Schedule'
 

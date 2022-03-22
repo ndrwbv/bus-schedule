@@ -49,7 +49,9 @@
   "devDependencies": {
     "@types/styled-components": "^5.1.18",
     "gh-pages": "^3.2.3",
+    "i18next": "^21.6.14",
     "react-ga": "^3.3.0",
+    "react-i18next": "^11.16.1",
     "react-select": "^5.2.1"
   }
 }
