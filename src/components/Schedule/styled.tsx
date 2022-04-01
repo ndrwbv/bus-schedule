@@ -2,7 +2,7 @@ import { MAIN_BLUE, MAIN_GREY } from 'consts/colors'
 import styled from 'styled-components'
 
 export const MainLayout = styled.div`
-	padding: 15px;
+	padding: 22px 15px 15px 15px;
 	max-width: 1024px;
 	width: 100%;
 `
