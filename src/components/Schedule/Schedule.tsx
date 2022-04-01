@@ -112,9 +112,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 
 	return (
 		<MainLayout>
-			<Container>
-				<Info />
-			</Container>
+			<Info />
 
 			<Container>
 				<GoButtonContainer>

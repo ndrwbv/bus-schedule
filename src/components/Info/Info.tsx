@@ -1,9 +1,11 @@
 import SVG from 'react-inlinesvg'
-import InfoCloseCross from 'img/infoclosecross.svg'
-import { InfoWrapper, InfoLink, InfoText, InfoCloseButton } from './styled'
-import { AndrewLytics } from 'helpers/analytics'
 import React from 'react'
+
+import InfoCloseCross from 'img/infoclosecross.svg'
+import { AndrewLytics } from 'helpers/analytics'
 import useInfo from 'hooks/useInfo'
+import { Container } from 'components/Schedule/styled'
+import { InfoWrapper, InfoLink, InfoText, InfoCloseButton } from './styled'
 
 const Info: React.FC = () => {
 	const [isInfoShow, setIsInfoShow] = React.useState(false)
@@ -31,18 +33,20 @@ const Info: React.FC = () => {
 	if (!text || !isInfoShow) return null
 
 	return (
-		<InfoWrapper>
-			{link ? (
-				<InfoLink href={link} target="_blank" onClick={onLinkClick}>
-					{text}
-				</InfoLink>
-			) : (
-				<InfoText>{text}</InfoText>
-			)}
-			<InfoCloseButton data-testid="hide-btn" onClick={onInfoCrossClick}>
-				<SVG className="closebutton" src={InfoCloseCross}  />
-			</InfoCloseButton>
-		</InfoWrapper>
+		<Container>
+			<InfoWrapper>
+				{link ? (
+					<InfoLink href={link} target="_blank" onClick={onLinkClick}>
+						{text}
+					</InfoLink>
+				) : (
+					<InfoText>{text}</InfoText>
+				)}
+				<InfoCloseButton data-testid="hide-btn" onClick={onInfoCrossClick}>
+					<SVG className="closebutton" src={InfoCloseCross} />
+				</InfoCloseButton>
+			</InfoWrapper>
+		</Container>
 	)
 }
 
