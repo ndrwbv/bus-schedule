@@ -12,9 +12,7 @@ export const InlineOptionsItem = styled.div<{
 	color: ${props => (props.active ? 'white' : 'black')};
 	margin-top: 12px;
 
-	& + & {
-		margin-left: 12px;
-	}
+	margin-left: 12px;
 `
 
 export const InlineOptionsContainer = styled.div`
