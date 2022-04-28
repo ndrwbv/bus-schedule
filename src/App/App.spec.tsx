@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
 import { act, render, waitFor } from '@testing-library/react'
-import { COPIRIGHT } from 'consts/strings'
+import { COPYRIGHT } from 'consts/strings'
 import { createMockApi } from 'helpers/test/mocks/mockApi'
 
 import { MainPageObject } from 'helpers/test/pageObjects/MainPageObject'
@@ -20,7 +20,7 @@ describe('<App />', () => {
 		await act(async () => {
 			const renderApp = render(<CustomApp />)
 
-			expect(renderApp.getByText(new RegExp(COPIRIGHT))).toBeInTheDocument()
+			expect(renderApp.getByText(new RegExp(COPYRIGHT))).toBeInTheDocument()
 		})
 	})
 

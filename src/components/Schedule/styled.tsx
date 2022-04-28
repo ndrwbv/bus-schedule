@@ -1,10 +1,11 @@
 import { MAIN_BLUE, MAIN_GREY } from 'consts/colors'
 import styled from 'styled-components'
 
-export const MainLayout = styled.div`
+export const MainLayout = styled.main`
 	padding: 22px 15px 15px 15px;
 	max-width: 1024px;
 	width: 100%;
+	flex-grow: 1;
 `
 
 export const LinksBlock = styled.div``
@@ -63,24 +64,6 @@ export const AddToFavoriteButton = styled.button<{
 export const GoButtonContainer = styled.div`
 	display: flex;
 	align-items: center;
-`
-export const Container = styled.div`
-	& + & {
-		margin-top: 44px;
-	}
-`
-
-export const GrayText = styled.p`
-	margin: 0;
-	color: #b2b2b2;
-	font-size: 12px;
-	a {
-		color: inherit;
-	}
-
-	& + & {
-		margin-top: 12px;
-	}
 `
 
 export const TelegramContainer = styled.div`

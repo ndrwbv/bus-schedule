@@ -5,29 +5,14 @@ import { useTranslation } from 'react-i18next'
 import GreenHeart from 'img/green-heart.svg'
 import BusStop from 'img/bus-stop.svg'
 import UpcomingBus from 'img/upcoming-bus.svg'
-import Write from 'img/write.svg'
 
 import Header from '../Header/Header'
-import TelegramButton from '../TelegramButton/TelegramButton'
 import Vote from '../Vote/Vote'
 import Info from '../Info/Info'
 import SelectBusStopText from '../SelectBusStopText'
 import HowMuchLeft from '../HowMuchLeft/HowMuchLeft'
 import InlineOptions from '../InlineOptions/InlineOptions'
-import {
-	AddToFavoriteButton,
-	Container,
-	GoButton,
-	GoButtonContainer,
-	GrayText,
-	LinksBlock,
-	MainLayout,
-	OtherTime,
-	selectStyles,
-	StyledHR,
-	TelegramContainer,
-	TimeStamp,
-} from './styled'
+import { Container } from 'components/common'
 
 import { AndrewLytics } from 'helpers/analytics'
 
@@ -36,8 +21,15 @@ import { StopKeys } from 'interfaces/Stops'
 import useFavoriteBusStop, { getFavoriteBusStop } from 'hooks/useFavoriteBusStop'
 import { useScheduleContext } from 'context/ScheduleContext'
 
-import config from 'configs/base'
-import { AVTOTRANS, COPIRIGHT } from 'consts/strings'
+import {
+	AddToFavoriteButton,
+	GoButton,
+	GoButtonContainer,
+	OtherTime,
+	selectStyles,
+	StyledHR,
+	TimeStamp,
+} from './styled'
 
 interface IScheduleProps {}
 const Schedule: React.FC<IScheduleProps> = () => {
@@ -111,7 +103,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 	const currentBusStop = useMemo(() => stopsOptions.find(stop => stop.value === busStop), [stopsOptions, busStop])
 
 	return (
-		<MainLayout>
+		<>
 			<Info />
 
 			<Container>
@@ -177,37 +169,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 
 				<OtherTime>{renderOtherTimeContent()}</OtherTime>
 			</Container>
-
-			<Container>
-				<Header
-					text={() => (
-						<>
-							{t('Did you see an error?')}
-							<br />
-							{t('Have a suggestion for improvement?')}
-						</>
-					)}
-					imgSrc={Write}
-				/>
-
-				<TelegramContainer>
-					<TelegramButton />
-				</TelegramContainer>
-			</Container>
-
-			<Container>
-				<LinksBlock>
-					<GrayText>
-						{t('Schedule taken from website')}{' '}
-						<a href={config.AVTOTRANS_LINK} target="_blank" rel="noreferrer">
-							{AVTOTRANS}
-						</a>
-					</GrayText>
-
-					<GrayText>{COPIRIGHT}</GrayText>
-				</LinksBlock>
-			</Container>
-		</MainLayout>
+		</>
 	)
 }
 

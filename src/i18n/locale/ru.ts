@@ -23,6 +23,7 @@ const translations = {
 		'new stops': 'новые остановки',
 		'Leave feedback': 'Оставить отзыв',
 		'Select bus stop to see schedule': 'Выбери остановку, чтобы увидеть расписание',
+		"About": "О проекте"
 	},
 }
 

@@ -9,7 +9,7 @@ export const LogoContainer = styled.div`
 	width: 100%;
 `
 
-export const LogoInner = styled.div`
+export const LogoInner = styled.nav`
 	display: flex;
 	align-items: center;
 	justify-content: center;
