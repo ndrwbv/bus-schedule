@@ -15,13 +15,15 @@ import config from 'configs/base'
 import Write from 'img/write.svg'
 
 import ScheduleProvider from 'context/ScheduleContext'
-import { getNextDay } from 'helpers/schedule'
+// import { getNextDay } from 'helpers/schedule'
 
 import { AppContainer, Footer } from './styled'
 import { AndrewLytics } from 'helpers/analytics'
 
-const currentDay = new Date().getDay()
-const nextDay = getNextDay(currentDay)
+const currentDay = 0 // till 3 may
+const nextDay = 0 // till 3 may
+// const currentDay = new Date().getDay()
+// const nextDay = getNextDay(currentDay)
 
 function App({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSchedule }) {
 	const { t } = useTranslation()
