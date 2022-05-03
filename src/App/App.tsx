@@ -1,24 +1,23 @@
 import { useTranslation } from 'react-i18next'
 import { fetchInfo, fetchSchedule } from 'api'
 
-import { LinksBlock, MainLayout, TelegramContainer } from 'components/Schedule/styled'
-import Header from 'components/Header/Header'
+import { LinksBlock, MainLayout } from 'components/Schedule/styled'
+
 import Logo from 'components/Logo/Logo'
 import { LogoContainer, LogoInner } from 'components/Logo/styled'
-import TelegramButton from 'components/TelegramButton/TelegramButton'
+
 import Schedule from '../components/Schedule/Schedule'
 import { Container, GrayText } from 'components/common'
 
 import { AVTOTRANS, COPYRIGHT } from 'consts/strings'
 import config from 'configs/base'
 
-import Write from 'img/write.svg'
-
 import ScheduleProvider from 'context/ScheduleContext'
 // import { getNextDay } from 'helpers/schedule'
 
 import { AppContainer, Footer } from './styled'
 import { AndrewLytics } from 'helpers/analytics'
+import WriteMe from 'components/WriteMe/WriteMe'
 
 const currentDay = 0 // till 3 may
 const nextDay = 0 // till 3 may
@@ -41,20 +40,7 @@ function App({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSchedule }
 					<Schedule />
 
 					<Container>
-						<Header
-							text={() => (
-								<>
-									{t('Did you see an error?')}
-									<br />
-									{t('Have a suggestion for improvement?')}
-								</>
-							)}
-							imgSrc={Write}
-						/>
-
-						<TelegramContainer>
-							<TelegramButton />
-						</TelegramContainer>
+						<WriteMe />
 					</Container>
 				</MainLayout>
 

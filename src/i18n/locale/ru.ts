@@ -21,7 +21,7 @@ const translations = {
 		'Contact in telegram': 'Написать в телеграм',
 		'We add': 'Мы добавили',
 		'new stops': 'новые остановки',
-		'Leave feedback': 'Оставить отзыв',
+		'Leave feedback': 'Оставить отзыв о работе сайта',
 		'Select bus stop to see schedule': 'Выбери остановку, чтобы увидеть расписание',
 		"About": "О проекте"
 	},

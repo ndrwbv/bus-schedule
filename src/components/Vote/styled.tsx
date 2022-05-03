@@ -1,27 +1,27 @@
 import styled from 'styled-components'
 import { MAIN_BLUE } from 'consts/colors'
 
-export const VoteWrapper = styled.div`
+export const VoteWrapper = styled.a`
 	display: flex;
-	justify-content: space-between;
+	justify-content: center;
 	align-items: center;
 	position: relative;
 
-	padding: 14px;
+	padding: 15px 30px 15px 15px;
 	width: 100%;
 
-	background: linear-gradient(91.01deg, #9803f9 -21.64%, #35e0ff 97.87%);
-	box-shadow: 0px 1px 22px -4px rgba(14, 139, 251, 0.46);
-	border-radius: 8px;
+	background: linear-gradient(100.09deg, #F3C8C8 -39.57%, #C4C7F8 124.36%);;
+	box-shadow: 0px 1px 22px -4px #0000002e;
+	border-radius: 18px;
 `
 
 export const VoteText = styled.div`
 	font-style: normal;
-	font-weight: bold;
+	font-weight: 600;
 	font-size: 16px;
 	line-height: 19px;
 
-	color: #ffffff;
+	color: #000000;
 `
 
 export const VoteButton = styled.a`
