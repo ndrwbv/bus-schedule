@@ -1,4 +1,4 @@
-import React, { useContext, createContext, useCallback } from 'react'
+import React, { useContext, createContext, useCallback, useState, useEffect } from 'react'
 
 import { StopsInOptions } from 'consts/stopsInOptions'
 import { StopsOutOptions } from 'consts/stopsOutOptions'
@@ -14,6 +14,7 @@ import { FetchInfoResponse, FetchScheduleResponse } from 'api'
 import { ISchedule } from 'interfaces/ISchedule'
 import { ITime } from 'interfaces/ITime'
 import { Directions, IStop, StopKeys, StopKeysIn, StopKeysOut } from 'interfaces/Stops'
+import { IHoliday, IHolidays } from 'interfaces/IHolidays'
 
 const DEFAULT_LEFT = {
 	hours: 0,
@@ -50,6 +51,7 @@ const DEFAULT_PROPS = {
 	fetchInfo: async () => {
 		return DEFAULT_FETCH_INFO
 	},
+	todaysHoliday: null,
 }
 
 export const ScheduleContext = createContext<ContextProps>(DEFAULT_PROPS)
@@ -68,6 +70,7 @@ interface ContextProps {
 	changeDirectionOut: () => void
 	nextDay: number
 	fetchInfo: () => FetchInfoResponse
+	todaysHoliday: IHoliday | null
 }
 
 interface IProviderProps {
@@ -78,21 +81,24 @@ interface IProviderProps {
 	fetchInfo: () => FetchInfoResponse
 }
 export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay, fetchInfo }: IProviderProps) => {
-	const [busStop, setBusStop] = React.useState<StopKeys | null>(null)
-	const [left, setLeft] = React.useState<ITime>(DEFAULT_LEFT)
-	const [closestTimeArray, setClossestTimeArray] = React.useState<string[]>([])
-	const [closestTime, setClossestTime] = React.useState<string>('')
+	const [busStop, setBusStop] = useState<StopKeys | null>(null)
+	const [left, setLeft] = useState<ITime>(DEFAULT_LEFT)
+	const [closestTimeArray, setClossestTimeArray] = useState<string[]>([])
+	const [closestTime, setClossestTime] = useState<string>('')
 
-	const [direction, setDirection] = React.useState<Directions>('out')
-	const [stopsOptions, setStopsOptions] = React.useState<IStop<StopKeysIn | StopKeysOut | null>[]>(StopsOutOptions)
-	const [shouldShowFastReply, setShouldShowFastReply] = React.useState<boolean>(false)
+	const [direction, setDirection] = useState<Directions>('out')
+	const [stopsOptions, setStopsOptions] = useState<IStop<StopKeysIn | StopKeysOut | null>[]>(StopsOutOptions)
+	const [shouldShowFastReply, setShouldShowFastReply] = useState<boolean>(false)
+
+	const [currentDayKey, setCurrentDayKey] = useState(currentDay)
 
 	const _everyMinuteUpdate = useEveryMinuteUpdater()
-	const SCHEDULE = useSchedule(fetchSchedule)
+	const { SCHEDULE, holidays } = useSchedule(fetchSchedule)
+	const [todaysHoliday, setTodaysHoliday] = useState<IHoliday | null>(null)
 
 	const handleChangeDirection = useCallback(
 		(_direction: Directions) => {
-			const scheduleKeys = Object.keys(SCHEDULE[_direction][currentDay])
+			const scheduleKeys = Object.keys(SCHEDULE[_direction][currentDayKey])
 			if (busStop && !scheduleKeys.includes(busStop)) {
 				setBusStop(scheduleKeys[0] as StopKeys)
 			}
@@ -100,7 +106,7 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 			setStopsOptions(_direction === 'in' ? StopsInOptions : StopsOutOptions)
 			setDirection(_direction)
 		},
-		[SCHEDULE, currentDay, busStop],
+		[SCHEDULE, currentDayKey, busStop],
 	)
 
 	const changeDirectionIn = () => handleChangeDirection('in')
@@ -111,7 +117,7 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 		setBusStop(busStop)
 	}
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (left.hours === null) return
 
 		if (left?.minutes && (left?.minutes <= 15 || left?.minutes > 40)) {
@@ -121,24 +127,52 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 		return setShouldShowFastReply(false)
 	}, [left])
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (!busStop) return
 
-		const _closestTime = findClosesTime(SCHEDULE[direction][currentDay][busStop])
+		const _closestTime = findClosesTime(SCHEDULE[direction][currentDayKey][busStop])
 
 		if (!_closestTime) return
 
 		if (!closestTime || new Date(closestTime).getTime() !== new Date(_closestTime).getTime()) {
-			setClossestTimeArray(findClosesTimeArray(SCHEDULE[direction][currentDay][busStop]))
+			setClossestTimeArray(findClosesTimeArray(SCHEDULE[direction][currentDayKey][busStop]))
 			setClossestTime(_closestTime)
 		}
-	}, [_everyMinuteUpdate, closestTime, busStop, direction, SCHEDULE, currentDay])
+	}, [_everyMinuteUpdate, closestTime, busStop, direction, SCHEDULE, currentDayKey])
 
-	React.useEffect(() => {
+	useEffect(() => {
 		const left = calculateHowMuchIsLeft(closestTime)
 
 		setLeft(left)
 	}, [_everyMinuteUpdate, closestTime])
+
+	useEffect(() => {
+		if (holidays.length === 0) return
+
+		const _todaysHolidays = getCurrentHoliday(holidays)
+
+		if (_todaysHolidays.length !== 0) {
+			setCurrentDayKey(_todaysHolidays[0]?.key ? _todaysHolidays[0].key : 0 ) 
+
+			setTodaysHoliday(_todaysHolidays[0])
+		}
+	}, [holidays, currentDay])
+
+	const getCurrentHoliday = (holidays: IHolidays): IHoliday[] => {
+		const today = new Date()
+		today.setHours(0, 0, 0, 0)
+
+		return holidays.filter(holiday => {
+			const start = new Date(`${holiday.start}.${today.getFullYear()}`)
+			const end = new Date(`${holiday.end}.${today.getFullYear()}`)
+
+			if (today <= end && today >= start) {
+				return true
+			}
+
+			return false
+		})
+	}
 
 	return (
 		<ScheduleContext.Provider
@@ -156,6 +190,7 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 				changeDirectionOut,
 				nextDay,
 				fetchInfo,
+				todaysHoliday,
 			}}
 		>
 			{children}

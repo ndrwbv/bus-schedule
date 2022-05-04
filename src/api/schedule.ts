@@ -1,8 +1,9 @@
 import config from 'configs/base'
 import { Contentful } from 'interfaces/Contentful'
+import { IHolidays } from 'interfaces/IHolidays'
 import { ISchedule } from 'interfaces/ISchedule'
 
-export type FetchScheduleResponse = Promise<Contentful<{ schedule: ISchedule }>>
+export type FetchScheduleResponse = Promise<Contentful<{ schedule: ISchedule; holidays: { data: IHolidays } }>>
 
 export const fetchSchedule = (): FetchScheduleResponse => {
 	return fetch(

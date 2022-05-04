@@ -19,11 +19,14 @@ import {
 	NextBusContainer,
 	TextWrapper,
 } from './styled'
+import Holiday from 'components/Holiday/Holiday'
+import { IHoliday } from 'interfaces/IHolidays'
 
 const HowMuchLeft: React.FC<{
 	left: ITime
 	busStop: StopKeys | null
 	shouldShowFastReply: boolean
+	holiday: IHoliday| null
 }> = ({ left, busStop, shouldShowFastReply }) => {
 	const [fastReplyOption, setFastReplyOption] = React.useState<string | null>(null)
 	const { t } = useTranslation()
@@ -70,6 +73,7 @@ const HowMuchLeft: React.FC<{
 	}
 
 	return (
+		<>
 		<HowMuchLeftContainer>
 			<NextBusContainer>
 				<ImageWrapper w={39} h={39}>
@@ -90,6 +94,9 @@ const HowMuchLeft: React.FC<{
 				</FastReplyContainer>
 			)}
 		</HowMuchLeftContainer>
+		
+		<Holiday />
+		</>
 	)
 }
 

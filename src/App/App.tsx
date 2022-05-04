@@ -33,7 +33,6 @@ function App({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSchedule }
 						<Logo />
 					</LogoContainer>
 				</LogoInner>
-
 				<MainLayout>
 					<Schedule />
 
