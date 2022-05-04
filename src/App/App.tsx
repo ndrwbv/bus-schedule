@@ -13,16 +13,14 @@ import { AVTOTRANS, COPYRIGHT } from 'consts/strings'
 import config from 'configs/base'
 
 import ScheduleProvider from 'context/ScheduleContext'
-// import { getNextDay } from 'helpers/schedule'
+import { getNextDay } from 'helpers/schedule'
 
 import { AppContainer, Footer } from './styled'
 import { AndrewLytics } from 'helpers/analytics'
 import WriteMe from 'components/WriteMe/WriteMe'
 
-const currentDay = 0 // till 3 may
-const nextDay = 0 // till 3 may
-// const currentDay = new Date().getDay()
-// const nextDay = getNextDay(currentDay)
+const currentDay = new Date().getDay()
+const nextDay = getNextDay(currentDay)
 
 function App({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSchedule }) {
 	const { t } = useTranslation()
