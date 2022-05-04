@@ -45,6 +45,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 		changeDirectionIn,
 		changeDirectionOut,
 		nextDay,
+		todaysHoliday,
 	} = useScheduleContext()
 	const { favoriteBusStops, saveFavoriteBusStops } = useFavoriteBusStop()
 
@@ -129,7 +130,12 @@ const Schedule: React.FC<IScheduleProps> = () => {
 					/>
 				</Header>
 
-				<HowMuchLeft busStop={busStop} left={left} shouldShowFastReply={shouldShowFastReply} />
+				<HowMuchLeft
+					holiday={todaysHoliday}
+					busStop={busStop}
+					left={left}
+					shouldShowFastReply={shouldShowFastReply}
+				/>
 			</Container>
 
 			<Container>

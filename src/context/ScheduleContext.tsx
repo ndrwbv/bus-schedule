@@ -152,7 +152,8 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 		const _todaysHolidays = getCurrentHoliday(holidays)
 
 		if (_todaysHolidays.length !== 0) {
-			setCurrentDayKey(0)
+			setCurrentDayKey(_todaysHolidays[0]?.key ? _todaysHolidays[0].key : 0 ) 
+
 			setTodaysHoliday(_todaysHolidays[0])
 		}
 	}, [holidays, currentDay])

@@ -6,7 +6,7 @@ const Holiday = () => {
 
     if(!todaysHoliday) return <></>;
 
-	return <HolidayContainer>сегодня праздничное расписание</HolidayContainer>
+	return <HolidayContainer>праздничное расписание</HolidayContainer>
 }
 
 export default Holiday

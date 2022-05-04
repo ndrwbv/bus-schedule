@@ -6,26 +6,15 @@ import { IHolidays } from 'interfaces/IHolidays'
 
 const useSchedule = (fetchSchedule: () => FetchScheduleResponse) => {
 	const [SCHEDULE, setSchedule] = React.useState(defaultSchedule)
-	const [holidays, setHolidays] = React.useState<IHolidays>([
-		{
-            "name": "1 мая",
-            "start": "05.01",
-            "end": "05.03"
-        },
-        {
-            "name": "9 мая",
-            "start": "05.09",
-            "end": "05.09"
-        }
-    ])
+	const [holidays, setHolidays] = React.useState<IHolidays>([])
 
 	React.useEffect(() => {
 		fetchSchedule()
 			.then(res => {
-				// console.log(res)
-				// if (res?.fields?.holidays) {
-				// 	setHolidays(res.fields.holidays)
-				// }
+				console.log(res)
+				if (res?.fields?.holidays?.data) {
+					setHolidays(res.fields.holidays.data)
+				}
 
 				if (res?.fields?.schedule) {
 					return setSchedule(res?.fields?.schedule)

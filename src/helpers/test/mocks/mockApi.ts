@@ -3,7 +3,7 @@ import SCHEDULE from 'consts/schedule'
 
 export function createMockApi() {
 	return {
-		fetchSchedule: async () => ({ fields: { schedule: SCHEDULE, holidays: [] } }),
+		fetchSchedule: async () => ({ fields: { schedule: SCHEDULE, holidays: { data: [] } } }),
 		fetchInfo: async () => ({
 			fields: {
 				message: 'Leave your feedback',

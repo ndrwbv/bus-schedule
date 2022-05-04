@@ -8,7 +8,6 @@ export const HowMuchLeftContainer = styled.div`
 
   padding: 15px 17px;
   background-color: ${MAIN_GREY};
-  border-radius: 6px;
 `;
 
 export const NextBusContainer = styled.div`
