@@ -11,7 +11,6 @@ const useSchedule = (fetchSchedule: () => FetchScheduleResponse) => {
 	React.useEffect(() => {
 		fetchSchedule()
 			.then(res => {
-				console.log(res)
 				if (res?.fields?.holidays?.data) {
 					setHolidays(res.fields.holidays.data)
 				}
