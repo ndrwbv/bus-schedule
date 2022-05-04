@@ -1,4 +1,4 @@
-import { MAIN_BLUE, MAIN_GREY } from 'consts/colors'
+import { MAIN_GREY } from 'consts/colors'
 import styled from 'styled-components'
 
 export const MainLayout = styled.main`
@@ -32,13 +32,12 @@ export const selectStyles = {
 	container: (p: any, s: any) => ({
 		...p,
 		width: '200px',
-	
 	}),
 	control: (p: any, s: any) => ({
 		...p,
-		borderRadius: "12px",
-		border: `2px solid #D8D8D8`
-	})
+		borderRadius: '12px',
+		border: `2px solid #D8D8D8`,
+	}),
 }
 
 export const GoButton = styled.button<{ active?: boolean }>`
@@ -47,7 +46,7 @@ export const GoButton = styled.button<{ active?: boolean }>`
 	background-color: ${MAIN_GREY};
 	color: #000000;
 	padding: 17px 17px;
-	text-align:left;
+	text-align: left;
 	cursor: pointer;
 `
 
@@ -59,7 +58,7 @@ export const AddToFavoriteButton = styled.button<{
 	border: none;
 	border-radius: 13px;
 	background-color: ${props => (props.status === 'add' ? '#1191FB' : '#FFB2B2')};
-	color:  ${props => (props.status === 'add' ? 'white' : '#9B2727')};
+	color: ${props => (props.status === 'add' ? 'white' : '#9B2727')};
 	padding: 17px;
 
 	margin-top: 12px;

@@ -1,6 +1,3 @@
-import SVG from 'react-inlinesvg'
-
-import { ImageWrapper } from '../ImageWrapper'
 import { HeaderContainer, HeaderItem, HeaderText } from './styled'
 
 interface IHeaderProps {
