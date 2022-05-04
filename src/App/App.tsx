@@ -18,6 +18,7 @@ import ScheduleProvider from 'context/ScheduleContext'
 import { AppContainer, Footer } from './styled'
 import { AndrewLytics } from 'helpers/analytics'
 import WriteMe from 'components/WriteMe/WriteMe'
+import Holiday from 'components/Holiday/Holiday'
 
 const currentDay = 0 // till 3 may
 const nextDay = 0 // till 3 may
@@ -35,7 +36,9 @@ function App({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSchedule }
 						<Logo />
 					</LogoContainer>
 				</LogoInner>
-
+				<Container>
+					<Holiday />
+					</Container>
 				<MainLayout>
 					<Schedule />
 
