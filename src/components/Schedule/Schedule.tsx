@@ -2,17 +2,13 @@ import React, { useCallback, useMemo } from 'react'
 import Select from 'react-select'
 import { useTranslation } from 'react-i18next'
 
-import GreenHeart from 'img/green-heart.svg'
-import BusStop from 'img/bus-stop.svg'
-import UpcomingBus from 'img/upcoming-bus.svg'
-
 import Header from '../Header/Header'
 import Vote from '../Vote/Vote'
 import Info from '../Info/Info'
 import SelectBusStopText from '../SelectBusStopText'
 import HowMuchLeft from '../HowMuchLeft/HowMuchLeft'
 import InlineOptions from '../InlineOptions/InlineOptions'
-import { Container } from 'components/common'
+import { Card, Container } from 'components/common'
 
 import { AndrewLytics } from 'helpers/analytics'
 
@@ -23,11 +19,13 @@ import { useScheduleContext } from 'context/ScheduleContext'
 
 import {
 	AddToFavoriteButton,
+	DirectionContainer,
+	DirectionPlaceholder,
+	DirectionText,
 	GoButton,
 	GoButtonContainer,
 	OtherTime,
 	selectStyles,
-	StyledHR,
 	TimeStamp,
 } from './styled'
 
@@ -42,8 +40,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 		direction,
 		SCHEDULE,
 		handleChangeBusStop,
-		changeDirectionIn,
-		changeDirectionOut,
+		handleChangeDirection,
 		nextDay,
 		todaysHoliday,
 	} = useScheduleContext()
@@ -108,72 +105,91 @@ const Schedule: React.FC<IScheduleProps> = () => {
 			<Info />
 
 			<Container>
-				<GoButtonContainer>
-					<GoButton active={direction === 'in'} onClick={changeDirectionIn}>
-						{t('In north park')}
-					</GoButton>
-					<GoButton active={direction === 'out'} onClick={changeDirectionOut}>
-						{t('Out of north park')}
-					</GoButton>
-				</GoButtonContainer>
+				<Card>
+					<GoButtonContainer>
+						<DirectionContainer>
+							<DirectionPlaceholder>Направление</DirectionPlaceholder>
+							<DirectionText>
+								{direction === 'in' ? t('In north park') : t('Out of north park')}
+							</DirectionText>
+						</DirectionContainer>
+
+						<GoButton
+							active={direction === 'in'}
+							onClick={() => handleChangeDirection(direction === 'in' ? 'out' : 'in')}
+						>
+							{direction === 'in' ? t('Out of north park') : t('In north park')}
+						</GoButton>
+					</GoButtonContainer>
+				</Card>
 			</Container>
 
 			<Container>
-				<Header text={t('Bus stop')} imgSrc={BusStop}>
-					<Select
-						isSearchable={false}
-						styles={selectStyles}
-						options={stopsOptions}
-						onChange={e => handleChangeBusStop(e?.value as StopKeys)}
-						value={currentBusStop}
-						defaultValue={stopsOptions[0]}
+				<Card>
+					<Header text={t('Bus stop')}>
+						<Select
+							isSearchable={false}
+							styles={selectStyles}
+							options={stopsOptions}
+							onChange={e => handleChangeBusStop(e?.value as StopKeys)}
+							value={currentBusStop}
+							defaultValue={stopsOptions[0]}
+						/>
+					</Header>
+
+					<HowMuchLeft
+						holiday={todaysHoliday}
+						busStop={busStop}
+						left={left}
+						shouldShowFastReply={shouldShowFastReply}
 					/>
-				</Header>
-
-				<HowMuchLeft
-					holiday={todaysHoliday}
-					busStop={busStop}
-					left={left}
-					shouldShowFastReply={shouldShowFastReply}
-				/>
+				</Card>
 			</Container>
 
-			<Container>
-				<Header text={t('My stops')} imgSrc={GreenHeart} />
-				<InlineOptions
-					list={favoriteList}
-					activeId={busStop}
-					onClick={busStop => handleChangeBusStop(busStop as StopKeys, undefined)}
-				/>
-			</Container>
+			{favoriteList.length !== 0 && (
+				<Container>
+					<Card>
+						<Header text={t('My stops')} />
+						<InlineOptions
+							list={favoriteList}
+							activeId={busStop}
+							onClick={busStop => handleChangeBusStop(busStop as StopKeys, undefined)}
+						/>
+					</Card>
+				</Container>
+			)}
 
-			<Container>
+			{/* <Container>
 				<StyledHR />
-			</Container>
+			</Container> */}
 
 			<Container>
-				<Header text={t('Buses for today')} imgSrc={UpcomingBus} />
+				<Card>
+					<Header text={t('Buses for today')} />
 
-				<OtherTime>{renderTodaysBusContent()}</OtherTime>
+					<OtherTime>{renderTodaysBusContent()}</OtherTime>
 
-				{busStop && (
-					<AddToFavoriteButton
-						status={isBusStopFavorite ? 'remove' : 'add'}
-						onClick={isBusStopFavorite ? handleRemoveFavoriteStatus : handleAddFavoriteStatus}
-					>
-						{isBusStopFavorite ? t('Remove stop from favorite') : t('Add stop to favorite')}
-					</AddToFavoriteButton>
-				)}
+					{busStop && (
+						<AddToFavoriteButton
+							status={isBusStopFavorite ? 'remove' : 'add'}
+							onClick={isBusStopFavorite ? handleRemoveFavoriteStatus : handleAddFavoriteStatus}
+						>
+							{isBusStopFavorite ? t('Remove stop from favorite') : t('Add stop to favorite')}
+						</AddToFavoriteButton>
+					)}
+				</Card>
 			</Container>
 
-			<Container>
+			<Container doubled>
 				<Vote />
 			</Container>
 
 			<Container>
-				<Header text={t('Buses for tommorow')} imgSrc={UpcomingBus} />
+				<Card>
+					<Header text={t('Buses for tommorow')} />
 
-				<OtherTime>{renderOtherTimeContent()}</OtherTime>
+					<OtherTime>{renderOtherTimeContent()}</OtherTime>
+				</Card>
 			</Container>
 		</>
 	)

@@ -1,6 +1,7 @@
 html,
 body {
     font-family: 'Roboto', sans-serif !important;
+    background-color: #F4F4F2;
 }
 
 #root {

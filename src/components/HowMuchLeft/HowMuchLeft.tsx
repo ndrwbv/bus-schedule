@@ -11,6 +11,9 @@ import { ImageWrapper } from '../ImageWrapper'
 import InlineOptions from '../InlineOptions/InlineOptions'
 import SelectBusStopText from '../SelectBusStopText'
 
+import Holiday from 'components/Holiday/Holiday'
+import { IHoliday } from 'interfaces/IHolidays'
+
 import {
 	BusEstimation,
 	FastReplyContainer,
@@ -19,15 +22,13 @@ import {
 	NextBusContainer,
 	TextWrapper,
 } from './styled'
-import Holiday from 'components/Holiday/Holiday'
-import { IHoliday } from 'interfaces/IHolidays'
 
 const HowMuchLeft: React.FC<{
 	left: ITime
 	busStop: StopKeys | null
 	shouldShowFastReply: boolean
-	holiday: IHoliday| null
-}> = ({ left, busStop, shouldShowFastReply }) => {
+	holiday: IHoliday | null
+}> = ({ left, busStop, shouldShowFastReply, holiday }) => {
 	const [fastReplyOption, setFastReplyOption] = React.useState<string | null>(null)
 	const { t } = useTranslation()
 
@@ -74,28 +75,28 @@ const HowMuchLeft: React.FC<{
 
 	return (
 		<>
-		<HowMuchLeftContainer>
-			<NextBusContainer>
-				<ImageWrapper w={39} h={39}>
-					<SVG src={NextBus} width={39} height={39} uniquifyIDs={true} />
-				</ImageWrapper>
+			<HowMuchLeftContainer isFancy={!!holiday}>
+				<NextBusContainer>
+					<ImageWrapper w={39} h={39}>
+						<SVG src={NextBus} width={39} height={39} uniquifyIDs={true} />
+					</ImageWrapper>
 
-				<BusEstimation>{renderLeftToString()}</BusEstimation>
-			</NextBusContainer>
+					<BusEstimation>{renderLeftToString()}</BusEstimation>
+				</NextBusContainer>
 
-			{shouldShowFastReply && !fastReplyOption && (
-				<FastReplyContainer>
-					<InlineOptions
-						list={FastReplyOptions}
-						activeId={fastReplyOption}
-						onClick={handleClickOption}
-						defaultColor={'white'}
-					/>
-				</FastReplyContainer>
-			)}
-		</HowMuchLeftContainer>
-		
-		<Holiday />
+				{shouldShowFastReply && !fastReplyOption && (
+					<FastReplyContainer>
+						<InlineOptions
+							list={FastReplyOptions}
+							activeId={fastReplyOption}
+							onClick={handleClickOption}
+							defaultColor={'white'}
+						/>
+					</FastReplyContainer>
+				)}
+			</HowMuchLeftContainer>
+
+			{holiday && <Holiday />}
 		</>
 	)
 }

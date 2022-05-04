@@ -5,7 +5,8 @@ export const Footer = styled.footer`
 	flex-direction: column;
 
 	padding: 64px 15px 22px 15px;
-	max-width: 1024px;
+	max-width: 768px;
+	
 	width: 100%;
 `
 

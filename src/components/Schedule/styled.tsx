@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 export const MainLayout = styled.main`
 	padding: 22px 15px 15px 15px;
-	max-width: 1024px;
+	max-width: 768px;
 	width: 100%;
 	flex-grow: 1;
 `
@@ -18,7 +18,7 @@ export const StyledHR = styled.hr`
 export const OtherTime = styled.div`
 	padding: 22px 26px;
 	background-color: ${MAIN_GREY};
-	border-radius: 6px;
+	border-radius: 13px;
 	max-height: 200px;
 	overflow-y: scroll;
 `
@@ -32,20 +32,23 @@ export const selectStyles = {
 	container: (p: any, s: any) => ({
 		...p,
 		width: '200px',
+	
 	}),
+	control: (p: any, s: any) => ({
+		...p,
+		borderRadius: "12px",
+		border: `2px solid #D8D8D8`
+	})
 }
 
 export const GoButton = styled.button<{ active?: boolean }>`
 	width: 100%;
-	border: none;
-	border-radius: 6px;
-	background-color: ${props => (props.active ? MAIN_BLUE : MAIN_GREY)};
-	color: ${props => (props.active ? 'white' : 'black')};
-	padding: 12px 10px;
-
-	& + & {
-		margin-left: 6px;
-	}
+	border-radius: 13px;
+	background-color: ${MAIN_GREY};
+	color: #000000;
+	padding: 17px 17px;
+	text-align:left;
+	cursor: pointer;
 `
 
 export type FavoriteButtonStatuses = 'add' | 'remove'
@@ -54,18 +57,37 @@ export const AddToFavoriteButton = styled.button<{
 }>`
 	width: 100%;
 	border: none;
-	border-radius: 6px;
-	background-color: ${props => (props.status === 'add' ? '#6BD756' : '#D75656')};
-	color: white;
-	padding: 12px 17px;
+	border-radius: 13px;
+	background-color: ${props => (props.status === 'add' ? '#1191FB' : '#FFB2B2')};
+	color:  ${props => (props.status === 'add' ? 'white' : '#9B2727')};
+	padding: 17px;
 
-	margin-top: 8px;
+	margin-top: 12px;
+	font-weight: 600;
+
+	cursor: pointer;
 `
 export const GoButtonContainer = styled.div`
 	display: flex;
-	align-items: center;
+	align-items: flex-start;
+	flex-direction: column;
 `
 
 export const TelegramContainer = styled.div`
 	padding-left: 31px;
+`
+
+export const DirectionPlaceholder = styled.span`
+	font-size: 16px;
+	margin-bottom: 2px;
+`
+
+export const DirectionText = styled.p`
+	font-size: 24px;
+	font-weight: 600;
+	margin-bottom: 12px;
+`
+
+export const DirectionContainer = styled.div`
+	padding-left: 6px;
 `

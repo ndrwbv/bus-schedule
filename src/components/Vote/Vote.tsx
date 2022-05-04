@@ -1,20 +1,20 @@
 import { useTranslation } from 'react-i18next'
 import config from 'configs/base'
 import { AndrewLytics } from 'helpers/analytics'
-import { VoteWrapper, VoteText } from './styled'
+import { FeedbackWrapper, FeedbackText } from './styled'
 
-const Vote: React.FC<{}> = () => {
+const LeaveFeedbackButton: React.FC<{}> = () => {
 	const { t } = useTranslation()
 
-	const onVoteClick = () => {
-		AndrewLytics('voteClick')
+	const onFeedbackClick = () => {
+		AndrewLytics('FeedbackClick')
 	}
 
 	return (
-		<VoteWrapper href={config.FEEDBACK_LINK} onClick={onVoteClick}>
-			<VoteText>{t('Leave feedback')}</VoteText>
-		</VoteWrapper>
+		<FeedbackWrapper href={config.FEEDBACK_LINK} onClick={onFeedbackClick}>
+			<FeedbackText>{t('Leave feedback')}</FeedbackText>
+		</FeedbackWrapper>
 	)
 }
 
-export default Vote
+export default LeaveFeedbackButton

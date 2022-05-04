@@ -5,7 +5,7 @@ export const LogoContainer = styled.div`
 	align-items: center;
 
 	padding: 11px 15px;
-	max-width: 1024px;
+	max-width: 768px;
 	width: 100%;
 `
 
@@ -15,6 +15,4 @@ export const LogoInner = styled.nav`
 	justify-content: center;
 
 	width: 100%;
-
-	border-bottom: 1px solid #dfe0e5;
 `

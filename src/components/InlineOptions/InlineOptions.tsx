@@ -1,5 +1,5 @@
 import { IStop } from 'interfaces/Stops'
-import { InlineOptionsContainer, InlineOptionsItem } from './styled'
+import { InlineOptionsContainer, InlineOptionsItem, OverLay } from './styled'
 
 const InlineOptions: React.FC<{
 	list: IStop<string | number | null>[]
@@ -19,6 +19,7 @@ const InlineOptions: React.FC<{
 					{option.label}
 				</InlineOptionsItem>
 			))}
+			{list.length >= 2 && <OverLay />}
 		</InlineOptionsContainer>
 	)
 }

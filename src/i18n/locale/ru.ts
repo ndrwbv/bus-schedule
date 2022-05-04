@@ -22,7 +22,7 @@ const translations = {
 		'We add': 'Мы добавили',
 		'new stops': 'новые остановки',
 		'Leave feedback': 'Оставить отзыв о работе сайта',
-		'Select bus stop to see schedule': 'Выбери остановку, чтобы увидеть расписание',
+		'Select bus stop to see schedule': 'Выберите остановку, чтобы увидеть расписание',
 		"About": "О проекте"
 	},
 }

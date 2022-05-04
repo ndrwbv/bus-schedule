@@ -46,8 +46,6 @@ const DEFAULT_PROPS = {
 	nextDay: 1,
 	handleChangeDirection: () => {},
 	handleChangeBusStop: () => {},
-	changeDirectionIn: () => {},
-	changeDirectionOut: () => {},
 	fetchInfo: async () => {
 		return DEFAULT_FETCH_INFO
 	},
@@ -66,8 +64,7 @@ interface ContextProps {
 	direction: Directions
 	SCHEDULE: ISchedule
 	handleChangeBusStop: (busStop: StopKeys, analyticKey?: string) => void
-	changeDirectionIn: () => void
-	changeDirectionOut: () => void
+	handleChangeDirection: (key: "in" | "out") => void
 	nextDay: number
 	fetchInfo: () => FetchInfoResponse
 	todaysHoliday: IHoliday | null
@@ -108,9 +105,6 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 		},
 		[SCHEDULE, currentDayKey, busStop],
 	)
-
-	const changeDirectionIn = () => handleChangeDirection('in')
-	const changeDirectionOut = () => handleChangeDirection('out')
 
 	const handleChangeBusStop = (busStop: StopKeys, analyticKey: string = 'selectBusStop') => {
 		analyticKey && AndrewLytics(analyticKey)
@@ -186,8 +180,7 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 				direction,
 				handleChangeBusStop,
 				SCHEDULE,
-				changeDirectionIn,
-				changeDirectionOut,
+				handleChangeDirection,
 				nextDay,
 				fetchInfo,
 				todaysHoliday,

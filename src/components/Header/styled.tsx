@@ -7,8 +7,8 @@ export const HeaderContainer = styled.div`
   margin-bottom: 14px;
 `;
 export const HeaderText = styled.h1`
-  font-size: 17px;
-  font-weight: normal;
+  font-size: 20px;
+  font-weight: 600;
   margin-left: 8px;
 `;
 export const HeaderItem = styled.div`
