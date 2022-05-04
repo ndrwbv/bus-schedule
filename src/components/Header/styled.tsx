@@ -9,7 +9,7 @@ export const HeaderContainer = styled.div`
 export const HeaderText = styled.h1`
   font-size: 20px;
   font-weight: 600;
-  margin-left: 8px;
+  margin-left: 6px;
 `;
 export const HeaderItem = styled.div`
   display: flex;
