@@ -7,7 +7,7 @@ export const Container = styled.article<{ doubled?: boolean }>`
 	margin: ${props => (props.doubled ? '24px 0 !important' : 'inherit')};
 `
 
-export const Card = styled.div<{ overflow?: boolean | undefined }>`
+export const Card = styled.div<{ isOverflow?: boolean | undefined }>`
 	position: relative;
 
 	background: #ffffff;
@@ -16,7 +16,7 @@ export const Card = styled.div<{ overflow?: boolean | undefined }>`
 
 	padding: 22px 14px 14px 14px;
 
-	overflow: ${props => (props.overflow ? 'hidden' : 'initial')};
+	overflow: ${props => (props.isOverflow === true ? 'hidden' : 'initial')};
 `
 
 export const GrayText = styled.p`

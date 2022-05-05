@@ -11,7 +11,7 @@ const WriteMe = () => {
 	const { t } = useTranslation()
 
 	return (
-		<Card>
+		<Card isOverflow>
 			<CardHeader>
 				{t('Did you see an error?')}
 				<br />
