@@ -41,6 +41,6 @@ export const OverLay = styled.div`
 	position: absolute;
 	right: 13px;
 	background: linear-gradient(270deg, #ffffff -11%, rgba(255, 255, 255, 0) 100%);
-	width: 78px;
+	width: 24px;
 	height: 53px;
 `
