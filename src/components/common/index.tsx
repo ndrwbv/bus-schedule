@@ -7,7 +7,7 @@ export const Container = styled.article<{ doubled?: boolean }>`
 	margin: ${props => (props.doubled ? '24px 0 !important' : 'inherit')};
 `
 
-export const Card = styled.div<{ overflow?: boolean }>`
+export const Card = styled.div<{ overflow?: boolean | undefined }>`
 	position: relative;
 
 	background: #ffffff;

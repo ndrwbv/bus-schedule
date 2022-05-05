@@ -102,6 +102,8 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 
 			setStopsOptions(_direction === 'in' ? StopsInOptions : StopsOutOptions)
 			setDirection(_direction)
+			
+			AndrewLytics("changeDirection")
 		},
 		[SCHEDULE, currentDayKey, busStop],
 	)
