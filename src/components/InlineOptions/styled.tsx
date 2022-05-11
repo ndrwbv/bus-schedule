@@ -35,12 +35,13 @@ export const InlineOptionsContainer = styled.div`
 	}
 
 	::-webkit-scrollbar-thumb {
+		background-color: transparent;
 	}
 `
 
 export const OverLayContainer = styled.div`
 	position: relative;
-	margin: 0 -14px;
+	margin: 0 -12px;
 
 	&::before {
 		content: '';
