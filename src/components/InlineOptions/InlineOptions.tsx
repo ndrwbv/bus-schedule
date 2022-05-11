@@ -1,5 +1,5 @@
 import { IStop } from 'interfaces/Stops'
-import { InlineOptionsContainer, InlineOptionsItem, OverLay } from './styled'
+import { InlineOptionsContainer, InlineOptionsItem, OverLayContainer } from './styled'
 
 const InlineOptions: React.FC<{
 	list: IStop<string | number | null>[]
@@ -8,19 +8,20 @@ const InlineOptions: React.FC<{
 	defaultColor?: string
 }> = ({ list, activeId, onClick, defaultColor = undefined }) => {
 	return (
-		<InlineOptionsContainer>
-			{list.map(option => (
-				<InlineOptionsItem
-					active={option.value === activeId}
-					defaultColor={defaultColor}
-					key={option.value}
-					onClick={() => onClick(option.value)}
-				>
-					{option.label}
-				</InlineOptionsItem>
-			))}
-			{list.length >= 2 && <OverLay />}
-		</InlineOptionsContainer>
+		<OverLayContainer>
+			<InlineOptionsContainer>
+				{list.map(option => (
+					<InlineOptionsItem
+						active={option.value === activeId}
+						defaultColor={defaultColor}
+						key={option.value}
+						onClick={() => onClick(option.value)}
+					>
+						{option.label}
+					</InlineOptionsItem>
+				))}
+			</InlineOptionsContainer>
+		</OverLayContainer>
 	)
 }
 

@@ -83,18 +83,18 @@ const HowMuchLeft: React.FC<{
 
 					<BusEstimation>{renderLeftToString()}</BusEstimation>
 				</NextBusContainer>
-
-				{shouldShowFastReply && !fastReplyOption && (
-					<FastReplyContainer>
-						<InlineOptions
-							list={FastReplyOptions}
-							activeId={fastReplyOption}
-							onClick={handleClickOption}
-							defaultColor={'white'}
-						/>
-					</FastReplyContainer>
-				)}
 			</HowMuchLeftContainer>
+
+			{shouldShowFastReply && !fastReplyOption && (
+				<FastReplyContainer>
+					<InlineOptions
+						list={FastReplyOptions}
+						activeId={fastReplyOption}
+						onClick={handleClickOption}
+						defaultColor={'#e7edec'}
+					/>
+				</FastReplyContainer>
+			)}
 
 			{holiday && <Holiday />}
 		</>

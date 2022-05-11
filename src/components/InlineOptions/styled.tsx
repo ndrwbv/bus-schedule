@@ -25,7 +25,7 @@ export const InlineOptionsContainer = styled.div`
 	align-items: center;
 
 	overflow: auto;
-	padding-right: 40px;
+	padding: 0 40px 0 13px;
 
 	::-webkit-scrollbar {
 		@media all and (max-width: 766px) {
@@ -37,10 +37,28 @@ export const InlineOptionsContainer = styled.div`
 	::-webkit-scrollbar-thumb {
 	}
 `
-export const OverLay = styled.div`
-	position: absolute;
-	right: 13px;
-	background: linear-gradient(270deg, #ffffff -11%, rgba(255, 255, 255, 0) 100%);
-	width: 24px;
-	height: 53px;
+
+export const OverLayContainer = styled.div`
+	position: relative;
+	margin: 0 -14px;
+
+	&::before {
+		content: '';
+		position: absolute;
+		right: 0;
+		top: 0;
+		background: linear-gradient(270deg, #ffffff -11%, rgba(255, 255, 255, 0) 100%);
+		width: 16px;
+		height: 53px;
+	}
+
+	&::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0;
+		background: linear-gradient(90deg, #ffffff -11%, rgba(255, 255, 255, 0) 100%);
+		width: 16px;
+		height: 53px;
+	}
 `
