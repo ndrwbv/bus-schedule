@@ -15,9 +15,10 @@ import config from 'configs/base'
 import ScheduleProvider from 'context/ScheduleContext'
 import { getNextDay } from 'helpers/schedule'
 
-import { AppContainer, Footer } from './styled'
 import { AndrewLytics } from 'helpers/analytics'
 import WriteMe from 'components/WriteMe/WriteMe'
+
+import { AppContainer, Footer } from './styled'
 
 const currentDay = new Date().getDay()
 const nextDay = getNextDay(currentDay)

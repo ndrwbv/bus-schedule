@@ -1,6 +1,6 @@
-import { IStop, StopKeysOut } from "../interfaces/Stops";
+import { IOption, StopKeysOut } from "../interfaces/Stops";
 
-export const StopsOutOptions: IStop<StopKeysOut | null>[] = [
+export const StopsOutOptions: IOption<StopKeysOut | null>[] = [
   {
     label: "Не выбрано",
     value: null,

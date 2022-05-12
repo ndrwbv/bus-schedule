@@ -9,6 +9,7 @@ import SelectBusStopText from '../SelectBusStopText'
 import HowMuchLeft from '../HowMuchLeft/HowMuchLeft'
 import InlineOptions from '../InlineOptions/InlineOptions'
 import { Card, Container } from 'components/common'
+import OtherTimeBusses from 'components/OtherTimeBuses/OtherTimeBuses'
 
 import { AndrewLytics } from 'helpers/analytics'
 
@@ -38,10 +39,8 @@ const Schedule: React.FC<IScheduleProps> = () => {
 		shouldShowFastReply,
 		stopsOptions,
 		direction,
-		SCHEDULE,
 		handleChangeBusStop,
 		handleChangeDirection,
-		nextDay,
 		todaysHoliday,
 	} = useScheduleContext()
 	const { favoriteBusStops, saveFavoriteBusStops } = useFavoriteBusStop()
@@ -78,14 +77,6 @@ const Schedule: React.FC<IScheduleProps> = () => {
 		return closestTimeArray.length === 0
 			? t('No basses')
 			: closestTimeArray.map((d, index) => <TimeStamp key={`${d}-${index}`}>{d}</TimeStamp>)
-	}
-
-	const renderOtherTimeContent = () => {
-		return busStop ? (
-			SCHEDULE[direction][nextDay][busStop]?.map((d, index) => <TimeStamp key={`${d}-${index}`}>{d}</TimeStamp>)
-		) : (
-			<SelectBusStopText />
-		)
 	}
 
 	const favoriteList = useMemo(
@@ -159,10 +150,6 @@ const Schedule: React.FC<IScheduleProps> = () => {
 				</Container>
 			)}
 
-			{/* <Container>
-				<StyledHR />
-			</Container> */}
-
 			<Container>
 				<Card>
 					<Header text={t('Buses for today')} />
@@ -185,10 +172,8 @@ const Schedule: React.FC<IScheduleProps> = () => {
 			</Container>
 
 			<Container>
-				<Card>
-					<Header text={t('Buses for tommorow')} />
-
-					<OtherTime>{renderOtherTimeContent()}</OtherTime>
+				<Card isNew>
+					<OtherTimeBusses />
 				</Card>
 			</Container>
 		</>

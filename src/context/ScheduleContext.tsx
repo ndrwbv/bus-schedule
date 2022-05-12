@@ -13,7 +13,7 @@ import { FetchInfoResponse, FetchScheduleResponse } from 'api'
 
 import { ISchedule } from 'interfaces/ISchedule'
 import { ITime } from 'interfaces/ITime'
-import { Directions, IStop, StopKeys, StopKeysIn, StopKeysOut } from 'interfaces/Stops'
+import { Directions, IOption, StopKeys, StopKeysIn, StopKeysOut } from 'interfaces/Stops'
 import { IHoliday, IHolidays } from 'interfaces/IHolidays'
 
 const DEFAULT_LEFT = {
@@ -50,6 +50,7 @@ const DEFAULT_PROPS = {
 		return DEFAULT_FETCH_INFO
 	},
 	todaysHoliday: null,
+	currentDay: 1,
 }
 
 export const ScheduleContext = createContext<ContextProps>(DEFAULT_PROPS)
@@ -60,14 +61,15 @@ interface ContextProps {
 	closestTimeArray: string[]
 	closestTime: string
 	shouldShowFastReply: boolean
-	stopsOptions: IStop<StopKeysIn | StopKeysOut | null>[]
+	stopsOptions: IOption<StopKeysIn | StopKeysOut | null>[]
 	direction: Directions
 	SCHEDULE: ISchedule
 	handleChangeBusStop: (busStop: StopKeys, analyticKey?: string) => void
-	handleChangeDirection: (key: "in" | "out") => void
+	handleChangeDirection: (key: 'in' | 'out') => void
 	nextDay: number
 	fetchInfo: () => FetchInfoResponse
 	todaysHoliday: IHoliday | null
+	currentDay: number
 }
 
 interface IProviderProps {
@@ -84,7 +86,7 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 	const [closestTime, setClossestTime] = useState<string>('')
 
 	const [direction, setDirection] = useState<Directions>('out')
-	const [stopsOptions, setStopsOptions] = useState<IStop<StopKeysIn | StopKeysOut | null>[]>(StopsOutOptions)
+	const [stopsOptions, setStopsOptions] = useState<IOption<StopKeysIn | StopKeysOut | null>[]>(StopsOutOptions)
 	const [shouldShowFastReply, setShouldShowFastReply] = useState<boolean>(false)
 
 	const [currentDayKey, setCurrentDayKey] = useState(currentDay)
@@ -102,8 +104,8 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 
 			setStopsOptions(_direction === 'in' ? StopsInOptions : StopsOutOptions)
 			setDirection(_direction)
-			
-			AndrewLytics("changeDirection")
+
+			AndrewLytics('changeDirection')
 		},
 		[SCHEDULE, currentDayKey, busStop],
 	)
@@ -148,7 +150,7 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 		const _todaysHolidays = getCurrentHoliday(holidays)
 
 		if (_todaysHolidays.length !== 0) {
-			setCurrentDayKey(_todaysHolidays[0]?.key ? _todaysHolidays[0].key : 0 ) 
+			setCurrentDayKey(_todaysHolidays[0]?.key ? _todaysHolidays[0].key : 0)
 
 			setTodaysHoliday(_todaysHolidays[0])
 		}
@@ -186,6 +188,7 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 				nextDay,
 				fetchInfo,
 				todaysHoliday,
+				currentDay,
 			}}
 		>
 			{children}

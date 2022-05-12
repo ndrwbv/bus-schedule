@@ -1,5 +1,9 @@
 import { ISchedule } from "../interfaces/ISchedule";
 
+// 1 - Monday
+// 6 - Saturday
+// 0 - Sunday
+
 export const SCHEDULE: ISchedule = {
   in: {
     1: {

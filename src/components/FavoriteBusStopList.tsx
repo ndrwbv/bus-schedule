@@ -1,8 +1,8 @@
-import { IStop, StopKeys } from "interfaces/Stops";
+import { IOption, StopKeys } from "interfaces/Stops";
 import { InlineOptionsContainer, InlineOptionsItem } from "./InlineOptions/styled";
 
 const FavoriteBusStopList: React.FC<{
-  stopList: IStop<any>[];
+  stopList: IOption<any>[];
   activeId: string | null;
   onClick: (busStop: StopKeys) => void;
 }> = ({ stopList, activeId, onClick }) => {

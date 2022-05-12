@@ -1,8 +1,8 @@
-import { IStop } from 'interfaces/Stops'
+import { IOption } from 'interfaces/Stops'
 import { InlineOptionsContainer, InlineOptionsItem, OverLayContainer } from './styled'
 
 const InlineOptions: React.FC<{
-	list: IStop<string | number | null>[]
+	list: IOption<string | number | null>[]
 	activeId: string | null
 	onClick: (busStop: string | number | null) => void
 	defaultColor?: string
