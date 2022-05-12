@@ -52,6 +52,15 @@ const HowMuchLeft: React.FC<{
 		setFastReplyOption(value as string)
 	}
 
+	const getColorByLeftTime = () => {
+		if (!left || left.hours === null || left.minutes === null || left?.hours >= 1) return '#e7edec'
+
+		if (left.minutes > 15 && left.minutes < 35) return '#E4F5D6'
+		if (left.minutes <= 15) return '#FBDCDC'
+
+		return '#e7edec'
+	}
+
 	const renderLeftToString = () => {
 		if (!busStop) return <SelectBusStopText />
 
@@ -75,7 +84,7 @@ const HowMuchLeft: React.FC<{
 
 	return (
 		<>
-			<HowMuchLeftContainer isFancy={!!holiday}>
+			<HowMuchLeftContainer isFancy={!!holiday} defaultColor={getColorByLeftTime()}>
 				<NextBusContainer>
 					<ImageWrapper w={39} h={39}>
 						<SVG src={NextBus} width={39} height={39} uniquifyIDs={true} />
