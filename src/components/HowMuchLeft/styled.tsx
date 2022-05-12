@@ -27,6 +27,23 @@ export const TextWrapper = styled.p``
 
 export const HighLighted = styled.span`
 	font-weight: bold;
+	animation-duration: 2s;
+	animation-name: flashing;
+	animation-iteration-count: infinite;
+
+	@keyframes flashing {
+		0% {
+			opacity: 1;
+		}
+
+		50% {
+			opacity: 0.8;
+		}
+
+		100% {
+			opacity: 1;
+		}
+	}
 `
 
 export const BusEstimation = styled.div`
