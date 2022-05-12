@@ -25,11 +25,11 @@ export const FastReplyContainer = styled.div`
 	width: 100%;
 `
 
-export const TextWrapper = styled.p``
+export const TextWrapper = styled.div``
 
 export const HighLighted = styled.span`
 	font-weight: bold;
-	animation-duration: 2s;
+	/* animation-duration: 2s;
 	animation-name: flashing;
 	animation-iteration-count: infinite;
 
@@ -45,7 +45,7 @@ export const HighLighted = styled.span`
 		100% {
 			opacity: 1;
 		}
-	}
+	} */
 `
 
 export const BusEstimation = styled.div`
