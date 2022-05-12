@@ -94,7 +94,6 @@ const Schedule: React.FC<IScheduleProps> = () => {
 	return (
 		<>
 			<Info />
-
 			<Container>
 				<Card>
 					<GoButtonContainer>
@@ -172,7 +171,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 			</Container>
 
 			<Container>
-				<Card isNew>
+				<Card isNew id="new">
 					<OtherTimeBusses />
 				</Card>
 			</Container>
