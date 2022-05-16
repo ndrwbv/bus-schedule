@@ -1,57 +1,57 @@
 {
-  "name": "bus-schedule",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.16.4",
-    "@testing-library/react": "^13.2.0",
-    "@testing-library/user-event": "^14.2.0",
-    "@types/jest": "^27.5.1",
-    "@types/node": "^17.0.33",
-    "@types/react": "^18.0.9",
-    "@types/react-dom": "^18.0.4",
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0",
-    "react-inlinesvg": "^3.0.0",
-    "react-scripts": "5.0.1",
-    "react-yandex-metrika": "^2.6.0",
-    "styled-components": "^5.3.5",
-    "typescript": "^4.6.4",
-    "web-vitals": "^2.1.4"
-  },
-  "homepage": "https://severbus.ru",
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "NODE_ENV=production react-scripts build",
-    "test": "react-scripts test",
-    "ci-test": "react-scripts test --watchAll=false",
-    "eject": "react-scripts eject",
-    "deploy": "echo 'severbus.ru' > ./build/CNAME && gh-pages -d build"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
-    "@types/styled-components": "^5.1.25",
-    "gh-pages": "^4.0.0",
-    "i18next": "^21.8.2",
-    "react-ga": "^3.3.0",
-    "react-i18next": "^11.16.9",
-    "react-select": "^5.3.2"
-  }
+	"name": "bus-schedule",
+	"version": "0.1.0",
+	"private": true,
+	"dependencies": {
+		"@testing-library/jest-dom": "^5.16.4",
+		"@testing-library/react": "^13.2.0",
+		"@testing-library/user-event": "^14.2.0",
+		"react": "^18.1.0",
+		"react-dom": "^18.1.0",
+		"react-inlinesvg": "^3.0.0",
+		"react-scripts": "5.0.1",
+		"react-yandex-metrika": "^2.6.0",
+		"styled-components": "^5.3.5",
+		"typescript": "^4.6.4",
+		"web-vitals": "^2.1.4",
+		"react-select": "^5.3.2"
+	},
+	"homepage": "https://severbus.ru",
+	"scripts": {
+		"start": "react-scripts start",
+		"build": "NODE_ENV=production react-scripts build",
+		"test": "react-scripts test",
+		"ci-test": "react-scripts test --watchAll=false",
+		"eject": "react-scripts eject",
+		"deploy": "echo 'severbus.ru' > ./build/CNAME && gh-pages -d build"
+	},
+	"eslintConfig": {
+		"extends": [
+			"react-app",
+			"react-app/jest"
+		]
+	},
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	},
+	"devDependencies": {
+		"@types/jest": "^27.5.1",
+		"@types/node": "^17.0.33",
+		"@types/react": "^18.0.9",
+		"@types/react-dom": "^18.0.4",
+		"@types/styled-components": "^5.1.25",
+		"gh-pages": "^4.0.0",
+		"i18next": "^21.8.2",
+		"react-ga": "^3.3.0",
+		"react-i18next": "^11.16.9"
+	}
 }
