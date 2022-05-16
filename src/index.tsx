@@ -13,18 +13,11 @@ initGA()
 configureI18next()
 
 const container = document.getElementById('root')
-const root = createRoot(container!) // createRoot(container!) if you use TypeScript
+const root = createRoot(container!)
+
 root.render(
 	<React.StrictMode>
 		<App />
 		<YM />
 	</React.StrictMode>,
 )
-
-// ReactDOM.render(
-// 	<React.StrictMode>
-// 		<App />
-// 		<YM />
-// 	</React.StrictMode>,
-// 	document.getElementById('root'),
-// )
