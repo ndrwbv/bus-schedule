@@ -10,7 +10,7 @@ import App from './App'
 jest.useFakeTimers('modern')
 jest.setSystemTime(new Date('Fri Mar 11 2022 13:44:27 GMT+0700 (GMT+07:00)'))
 
-configureI18next(); // since we don't have backend for translations it's fine
+configureI18next() // since we don't have backend for translations it's fine
 
 const api = createMockApi()
 const CustomApp = () => <App fi={api.fetchInfo} fs={api.fetchSchedule} />
@@ -18,7 +18,7 @@ const CustomApp = () => <App fi={api.fetchInfo} fs={api.fetchSchedule} />
 describe('<App />', () => {
 	it('should render correctly', async () => {
 		await act(async () => {
-			const renderApp = render(<CustomApp />)
+			const renderApp = render(<CustomApp />, { legacyRoot: true })
 
 			expect(renderApp.getByText(new RegExp(COPYRIGHT))).toBeInTheDocument()
 		})
@@ -26,7 +26,8 @@ describe('<App />', () => {
 
 	it('should show correct left time', async () => {
 		await act(async () => {
-			const renderApp = render(<CustomApp />)
+			const renderApp = render(<CustomApp />, { legacyRoot: true })
+
 			const page = new MainPageObject(renderApp)
 			await page.openBusStopList()
 			await page.selectBusStop('ТГУ')
@@ -39,7 +40,8 @@ describe('<App />', () => {
 
 	it('should add stop in favorite', async () => {
 		await act(async () => {
-			const renderApp = render(<CustomApp />)
+			const renderApp = render(<CustomApp />, { legacyRoot: true })
+
 			const page = new MainPageObject(renderApp)
 			await page.openBusStopList()
 			await page.selectBusStop('ТГУ')
@@ -57,7 +59,8 @@ describe('<App />', () => {
 
 	it('should remove stop in favorite', async () => {
 		await act(async () => {
-			const renderApp = render(<CustomApp />)
+			const renderApp = render(<CustomApp />, { legacyRoot: true })
+
 			const page = new MainPageObject(renderApp)
 			await page.openBusStopList()
 			await page.selectBusStop('Интернационалистов')
@@ -75,7 +78,7 @@ describe('<App />', () => {
 
 	it('should render info block', async () => {
 		await act(async () => {
-			const renderApp = render(<CustomApp />)
+			const renderApp = render(<CustomApp />, { legacyRoot: true })
 
 			const infoBlockText = await waitFor(() => renderApp.getByText(/Leave your feedback/))
 
@@ -85,7 +88,8 @@ describe('<App />', () => {
 
 	it('should hide info block', async () => {
 		await act(async () => {
-			const renderApp = render(<CustomApp />)
+			const renderApp = render(<CustomApp />, { legacyRoot: true })
+
 			const page = new MainPageObject(renderApp)
 
 			page.hideInfoBlock()
