@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { MIN_ELEMENTS, MAX_ELEMENTS, MAX_MISS, INIT_SCORE, INIT_MISS, INIT_LEVEL, INIT_GAME_OVER } from './const'
+import { MIN_ELEMENTS, MAX_MISS, INIT_SCORE, INIT_MISS, INIT_LEVEL, INIT_GAME_OVER, ONE_ROW } from './const'
 import { generateGameLevel } from './helpers'
 import * as S from './styled'
 
@@ -80,17 +80,28 @@ const Game = () => {
 		})
 	}
 
+	const generateAmount = (currentLevel: number) => {
+		if (currentLevel >= 14) return ONE_ROW * 6
+		if (currentLevel >= 12) return ONE_ROW * 5
+		if (currentLevel >= 9) return ONE_ROW * 4
+		if (currentLevel >= 5) return ONE_ROW * 3
+		if (currentLevel >= 2) return ONE_ROW * 2
+
+		if (currentLevel >= 1) return ONE_ROW
+
+		return ONE_ROW
+	}
+
 	useEffect(() => {
+		// new level
 		const isEveryCellDestroyed = levelData.every(cell => cell.destroyed === true)
 
 		if (isEveryCellDestroyed) {
-			const newAmount = levelData.length + 4
-			const amount = newAmount >= MAX_ELEMENTS ? MAX_ELEMENTS : newAmount
-
 			setLevel(prev => prev + 1)
+			const amount = generateAmount(level)
 			setLevelData(generateGameLevel(amount))
 		}
-	}, [levelData])
+	}, [levelData, level])
 
 	useEffect(() => {
 		if (miss > MAX_MISS) setGameOver(true)
