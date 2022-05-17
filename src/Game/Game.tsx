@@ -1,35 +1,21 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { MIN_ELEMENTS, MAX_ELEMENTS } from './const'
+import { generateGameLevel } from './helpers'
 import * as S from './styled'
 
 type ID = number
-interface IGameData {
+export interface IGameData {
 	id: ID
 	text: string
 	selected: boolean
 	destroyed: boolean
 }
 
-const DATA: IGameData[] = [
-	{ id: 1, text: '14:08', selected: false, destroyed: false },
-	{ id: 2, text: '14:08', selected: false, destroyed: false },
-	{ id: 3, text: '12:08', selected: false, destroyed: false },
-	{ id: 4, text: '12:08', selected: false, destroyed: false },
-
-	{ id: 5, text: '13:08', selected: false, destroyed: false },
-	{ id: 6, text: '13:08', selected: false, destroyed: false },
-	{ id: 7, text: '16:08', selected: false, destroyed: false },
-	{ id: 8, text: '16:08', selected: false, destroyed: false },
-
-	{ id: 9, text: '17:08', selected: false, destroyed: false },
-	{ id: 10, text: '17:08', selected: false, destroyed: false },
-	{ id: 11, text: '18:08', selected: false, destroyed: false },
-	{ id: 12, text: '18:08', selected: false, destroyed: false },
-]
-
 const Game = () => {
-	const [levelData, setLevelData] = useState<IGameData[]>(DATA)
+	const [levelData, setLevelData] = useState<IGameData[]>(generateGameLevel(MIN_ELEMENTS))
 	const [score, setScore] = useState(0)
 	const [miss, setMiss] = useState(0)
+	const [level, setLevel] = useState(1)
 
 	const handleClickTimeCode = (_cell: IGameData) => {
 		if (_cell.destroyed || _cell.selected) return
@@ -85,10 +71,22 @@ const Game = () => {
 		})
 	}
 
+	useEffect(() => {
+		const isEveryCellDestroyed = levelData.every(cell => cell.destroyed === true)
+
+		if (isEveryCellDestroyed) {
+			const newAmount = levelData.length + 4
+			const amount = newAmount >= MAX_ELEMENTS ? MAX_ELEMENTS : newAmount
+
+			setLevel(prev => prev + 1)
+			setLevelData(generateGameLevel(amount))
+		}
+	}, [levelData])
+
 	return (
 		<S.GameInner>
 			<S.GameTitle>
-				{score} - {miss}
+				{score} - {miss} - {level}
 			</S.GameTitle>
 			<S.GameTitle>Найдите дубли</S.GameTitle>
 			<S.GameContainer>
