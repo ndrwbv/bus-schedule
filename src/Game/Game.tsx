@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { MIN_ELEMENTS, MAX_ELEMENTS } from './const'
+import { MIN_ELEMENTS, MAX_ELEMENTS, MAX_MISS, INIT_SCORE, INIT_MISS, INIT_LEVEL, INIT_GAME_OVER } from './const'
 import { generateGameLevel } from './helpers'
 import * as S from './styled'
 
@@ -13,9 +13,10 @@ export interface IGameData {
 
 const Game = () => {
 	const [levelData, setLevelData] = useState<IGameData[]>(generateGameLevel(MIN_ELEMENTS))
-	const [score, setScore] = useState(0)
-	const [miss, setMiss] = useState(0)
-	const [level, setLevel] = useState(1)
+	const [score, setScore] = useState(INIT_SCORE)
+	const [miss, setMiss] = useState(INIT_MISS)
+	const [level, setLevel] = useState(INIT_LEVEL)
+	const [isGameOver, setGameOver] = useState(INIT_GAME_OVER)
 
 	const handleClickTimeCode = (_cell: IGameData) => {
 		if (_cell.destroyed || _cell.selected) return
@@ -82,6 +83,29 @@ const Game = () => {
 			setLevelData(generateGameLevel(amount))
 		}
 	}, [levelData])
+
+	useEffect(() => {
+		if (miss > MAX_MISS) setGameOver(true)
+	}, [miss])
+
+	const handleNewGame = () => {
+		setLevelData(generateGameLevel(MIN_ELEMENTS))
+		setScore(INIT_SCORE)
+		setMiss(INIT_MISS)
+		setLevel(INIT_LEVEL)
+		setGameOver(INIT_GAME_OVER)
+	}
+
+	if (isGameOver)
+		return (
+			<S.GameInner>
+				<S.GameTitle>Очки: {score}</S.GameTitle>
+				<S.GameTitle>Уровень: {level}</S.GameTitle>
+
+				<S.GameTitle>Игра окончена</S.GameTitle>
+				<S.GameButton onClick={handleNewGame}>Играть еще</S.GameButton>
+			</S.GameInner>
+		)
 
 	return (
 		<S.GameInner>

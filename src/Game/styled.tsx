@@ -43,3 +43,10 @@ export const GameTitle = styled.h1`
 	font-size: 24px;
 	margin-bottom: 24px;
 `
+
+export const GameButton = styled.button`
+	width: 100%;
+	border-radius: 14px;
+	background-color: green;
+	padding: 20px;
+`
