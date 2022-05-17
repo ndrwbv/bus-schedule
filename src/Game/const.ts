@@ -5,5 +5,5 @@ export const ONE_ROW = 4;
 
 export const INIT_SCORE = 0;
 export const INIT_MISS = 0;
-export const INIT_LEVEL = 0;
+export const INIT_LEVEL = 1;
 export const INIT_GAME_OVER = false;

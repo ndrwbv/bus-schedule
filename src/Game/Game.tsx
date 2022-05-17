@@ -11,6 +11,23 @@ export interface IGameData {
 	destroyed: boolean
 }
 
+const calculateTimeLeft = (date: number, minutes: number = 0.25) => {
+	const difference = +new Date(date + minutes * 60000) - +new Date()
+	let timeLeft = {
+		minutes: 0,
+		seconds: 0,
+	}
+
+	if (difference > 0) {
+		timeLeft = {
+			minutes: Math.floor((difference / 1000 / 60) % 60),
+			seconds: Math.floor((difference / 1000) % 60),
+		}
+	}
+
+	return timeLeft
+}
+
 const Game = () => {
 	const [levelData, setLevelData] = useState<IGameData[]>(generateGameLevel(MIN_ELEMENTS))
 	const [score, setScore] = useState(INIT_SCORE)
@@ -18,7 +35,19 @@ const Game = () => {
 	const [level, setLevel] = useState(INIT_LEVEL)
 	const [isGameOver, setGameOver] = useState(INIT_GAME_OVER)
 
+	const [date, setDate] = useState(new Date().getTime())
+	const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(date))
+
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			setTimeLeft(calculateTimeLeft(date, level * 0.1))
+		}, 1)
+
+		return () => clearTimeout(timer)
+	})
+
 	const handleNewGame = () => {
+		setDate(new Date().getTime())
 		setLevelData(generateGameLevel(MIN_ELEMENTS))
 		setScore(INIT_SCORE)
 		setMiss(INIT_MISS)
@@ -104,8 +133,8 @@ const Game = () => {
 	}, [levelData, level])
 
 	useEffect(() => {
-		if (miss > MAX_MISS) setGameOver(true)
-	}, [miss])
+		if (miss > MAX_MISS || timeLeft.seconds === 0) setGameOver(true)
+	}, [miss, timeLeft])
 
 	if (isGameOver)
 		return (
@@ -121,7 +150,7 @@ const Game = () => {
 	return (
 		<S.GameInner>
 			<S.GameTitle>
-				{score} - {miss} - {level}
+				{score} - {miss} - {level} - {timeLeft.seconds}
 			</S.GameTitle>
 			<S.GameTitle>Найдите дубли</S.GameTitle>
 			<S.GameContainer>
