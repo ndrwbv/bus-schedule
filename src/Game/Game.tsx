@@ -18,6 +18,14 @@ const Game = () => {
 	const [level, setLevel] = useState(INIT_LEVEL)
 	const [isGameOver, setGameOver] = useState(INIT_GAME_OVER)
 
+	const handleNewGame = () => {
+		setLevelData(generateGameLevel(MIN_ELEMENTS))
+		setScore(INIT_SCORE)
+		setMiss(INIT_MISS)
+		setLevel(INIT_LEVEL)
+		setGameOver(INIT_GAME_OVER)
+	}
+
 	const handleClickTimeCode = (_cell: IGameData) => {
 		if (_cell.destroyed || _cell.selected) return
 
@@ -87,14 +95,6 @@ const Game = () => {
 	useEffect(() => {
 		if (miss > MAX_MISS) setGameOver(true)
 	}, [miss])
-
-	const handleNewGame = () => {
-		setLevelData(generateGameLevel(MIN_ELEMENTS))
-		setScore(INIT_SCORE)
-		setMiss(INIT_MISS)
-		setLevel(INIT_LEVEL)
-		setGameOver(INIT_GAME_OVER)
-	}
 
 	if (isGameOver)
 		return (
