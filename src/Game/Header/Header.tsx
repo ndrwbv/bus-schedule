@@ -1,12 +1,12 @@
 import React from 'react'
 
 import { LeftToString } from 'components/HowMuchLeft/HowMuchLeft'
-import { GameLink, GameUIContainer } from 'Game/common'
+import { GameLink, GameUIContainer, Title } from 'Game/common'
 import RecordTable from 'Game/RecordTable/RecordTable'
 
 import { useScheduleContext } from 'context/ScheduleContext'
 
-import { HeaderContainer, Title } from './styled'
+import { HeaderContainer } from './styled'
 
 interface IGameHeaderProps {
 	score: number
@@ -30,16 +30,21 @@ const Header: React.FC<IGameHeaderProps> = ({ score, level, timeLeft, title, isG
 				</GameUIContainer>
 			) : null}
 
-<GameUIContainer>
-			{title && isGameOver ? (
-				<GameUIContainer>
-					<Title>{title}</Title>
-				</GameUIContainer>
-			) : null}
-
 			<GameUIContainer>
-				<RecordTable score={score} bestScore={null} left={timeLeft ? timeLeft.seconds : null} level={level} />
-			</GameUIContainer>
+				{title && isGameOver ? (
+					<GameUIContainer>
+						<Title>{title}</Title>
+					</GameUIContainer>
+				) : null}
+
+				<GameUIContainer>
+					<RecordTable
+						score={score}
+						bestScore={null}
+						left={timeLeft ? timeLeft.seconds : null}
+						level={level}
+					/>
+				</GameUIContainer>
 			</GameUIContainer>
 			{title && !isGameOver ? (
 				<GameUIContainer>

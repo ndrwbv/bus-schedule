@@ -10,7 +10,7 @@ import YM from 'YM'
 import './index.css'
 import { configureI18next } from 'i18n/config.i18next'
 import Game from 'Game/Game'
-import Intro from 'Game/Intro'
+import Intro from 'Game/Intro/Intro'
 
 initGA()
 

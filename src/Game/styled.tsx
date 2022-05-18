@@ -8,19 +8,6 @@ export const GameContainer = styled.div`
 	grid-gap: 9px;
 `
 
-export const GameInner = styled.div`
-	display: flex;
-	flex-direction: column;
-	height: 100%;
-	padding: 32px;
-
-	background-color: white;
-`
-
-export const GameOverInner = styled(GameInner)`
-	justify-content: center;
-`
-
 const getColor = (selected: boolean, destroyed: boolean) => {
 	if (destroyed) return 'rgb(233, 237, 233, 0.5)'
 	if (selected) return '#A4FFA4'
@@ -62,11 +49,4 @@ export const GameTitle = styled.h1`
 	font-weight: bold;
 	font-size: 24px;
 	margin-bottom: 24px;
-`
-
-export const GameButton = styled.button`
-	width: 100%;
-	border-radius: 14px;
-	background-color: green;
-	padding: 20px;
 `

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { MIN_ELEMENTS, MAX_MISS, INIT_SCORE, INIT_MISS, INIT_LEVEL, INIT_GAME_OVER, ONE_ROW } from './const'
 import Header from './Header/Header'
 import { calculateTimeLeft, generateGameLevel } from './helpers'
+import { GameButton, GameLayout, GameLayoutCentred } from './common'
 import * as S from './styled'
 
 type ID = number
@@ -122,15 +123,15 @@ const Game = () => {
 
 	if (isGameOver)
 		return (
-			<S.GameOverInner>
-				<Header score={score} miss={miss} level={level} timeLeft={null} title={'Игра окончена'} isGameOver/>
+			<GameLayoutCentred>
+				<Header score={score} miss={miss} level={level} timeLeft={null} title={'Игра окончена'} isGameOver />
 
-				<S.GameButton onClick={handleNewGame}>Играть еще</S.GameButton>
-			</S.GameOverInner>
+				<GameButton onClick={handleNewGame}>Играть еще</GameButton>
+			</GameLayoutCentred>
 		)
 
 	return (
-		<S.GameInner>
+		<GameLayout>
 			<Header score={score} miss={miss} level={level} timeLeft={timeLeft} title={'Найдите дубли'} />
 
 			<S.GameContainer>
@@ -145,7 +146,7 @@ const Game = () => {
 					</S.GameCell>
 				))}
 			</S.GameContainer>
-		</S.GameInner>
+		</GameLayout>
 	)
 }
 
