@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 export const GameContainer = styled.div`
@@ -11,19 +12,24 @@ export const GameContainer = styled.div`
 export const GameInner = styled.div`
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
 	height: 100%;
 	padding: 32px;
+
+	background-color: white;
+`
+
+export const GameOverInner = styled(GameInner)`
+	justify-content: space-between;
 `
 
 const getColor = (selected: boolean, destroyed: boolean) => {
-	if (destroyed) return '#4e4e4e2b'
-	if (selected) return 'red'
+	if (destroyed) return 'rgb(233, 237, 233, 0.5)'
+	if (selected) return '#A4FFA4'
 
-	return '#4e4e4e'
+	return '#EAEDE9'
 }
 export const GameCell = styled.button<{ selected: boolean; destroyed: boolean }>`
-	padding: 22px 12px;
+	padding: 1rem;
 
 	display: flex;
 	align-items: center;
@@ -31,7 +37,17 @@ export const GameCell = styled.button<{ selected: boolean; destroyed: boolean }>
 
 	border-radius: 8px;
 	background-color: ${props => getColor(props.selected, props.destroyed)};
-	color: white;
+	color: black;
+
+	font-size: 14px;
+
+	max-width: 100px;
+
+	&::before {
+		content: '';
+		padding-bottom: 100%;
+		display: block;
+	}
 `
 
 export const GameRow = styled.div`

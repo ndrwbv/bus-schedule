@@ -23,6 +23,29 @@ import {
 	TextWrapper,
 } from './styled'
 
+export const LeftToString: React.FC<{ left: ITime; busStop: StopKeys | null }> = ({ busStop, left }) => {
+	const { t } = useTranslation()
+
+	if (!busStop) return <SelectBusStopText />
+
+	if (left.hours === null && left.minutes === null)
+		return (
+			<TextWrapper>
+				{t('Bus on stop')} <b>{busStop}</b> {t('today wont arrive')}
+			</TextWrapper>
+		)
+
+	return (
+		<TextWrapper>
+			{t('Next bus arriving in')}{' '}
+			<HighLighted>
+				{left.hours === 0 ? '' : `${left.hours}ч `}
+				{left.minutes}м
+			</HighLighted>
+		</TextWrapper>
+	)
+}
+
 const HowMuchLeft: React.FC<{
 	left: ITime
 	busStop: StopKeys | null
@@ -61,27 +84,6 @@ const HowMuchLeft: React.FC<{
 		return '#e7edec'
 	}
 
-	const renderLeftToString = () => {
-		if (!busStop) return <SelectBusStopText />
-
-		if (left.hours === null && left.minutes === null)
-			return (
-				<TextWrapper>
-					{t('Bus on stop')} <b>{busStop}</b> {t('today wont arrive')}
-				</TextWrapper>
-			)
-
-		return (
-			<TextWrapper>
-				{t('Next bus arriving in')}{' '}
-				<HighLighted>
-					{left.hours === 0 ? '' : `${left.hours}ч `}
-					{left.minutes}м
-				</HighLighted>
-			</TextWrapper>
-		)
-	}
-
 	return (
 		<>
 			<HowMuchLeftContainer isFancy={!!holiday} defaultColor={getColorByLeftTime()}>
@@ -90,7 +92,9 @@ const HowMuchLeft: React.FC<{
 						<SVG src={NextBus} width={39} height={39} uniquifyIDs={true} />
 					</ImageWrapper>
 
-					<BusEstimation>{renderLeftToString()}</BusEstimation>
+					<BusEstimation>
+						<LeftToString busStop={busStop} left={left} />
+					</BusEstimation>
 				</NextBusContainer>
 			</HowMuchLeftContainer>
 

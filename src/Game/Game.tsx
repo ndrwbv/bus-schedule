@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { MIN_ELEMENTS, MAX_MISS, INIT_SCORE, INIT_MISS, INIT_LEVEL, INIT_GAME_OVER, ONE_ROW } from './const'
-import GameHeader from './GameHeader'
+import Header from './Header/Header'
 import { calculateTimeLeft, generateGameLevel } from './helpers'
 import * as S from './styled'
 
@@ -123,19 +122,16 @@ const Game = () => {
 
 	if (isGameOver)
 		return (
-			<S.GameInner>
-				<Link to="/">К расписанию автобуса</Link>
-				<S.GameTitle>Очки: {score}</S.GameTitle>
-				<S.GameTitle>Уровень: {level}</S.GameTitle>
+			<S.GameOverInner>
+				<Header score={score} miss={miss} level={level} timeLeft={null} title={'Игра окончена'} isGameOver/>
 
-				<S.GameTitle>Игра окончена</S.GameTitle>
 				<S.GameButton onClick={handleNewGame}>Играть еще</S.GameButton>
-			</S.GameInner>
+			</S.GameOverInner>
 		)
 
 	return (
 		<S.GameInner>
-			<GameHeader score={score} miss={miss} level={level} timeLeft={timeLeft} />
+			<Header score={score} miss={miss} level={level} timeLeft={timeLeft} title={'Найдите дубли'} />
 
 			<S.GameContainer>
 				{levelData.map(cell => (
