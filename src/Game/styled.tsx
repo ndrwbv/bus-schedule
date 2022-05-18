@@ -5,7 +5,7 @@ export const GameContainer = styled.div`
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr 1fr;
 	grid-template-rows: 1fr 1fr 1fr 1fr;
-	grid-gap: 12px;
+	grid-gap: 9px;
 `
 
 export const GameInner = styled.div`
@@ -13,7 +13,7 @@ export const GameInner = styled.div`
 	flex-direction: column;
 	justify-content: center;
 	height: 100%;
-	padding: 8px;
+	padding: 32px;
 `
 
 const getColor = (selected: boolean, destroyed: boolean) => {
@@ -23,8 +23,13 @@ const getColor = (selected: boolean, destroyed: boolean) => {
 	return '#4e4e4e'
 }
 export const GameCell = styled.button<{ selected: boolean; destroyed: boolean }>`
-	padding: 20px;
-	border-radius: 14px;
+	padding: 22px 12px;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	border-radius: 8px;
 	background-color: ${props => getColor(props.selected, props.destroyed)};
 	color: white;
 `

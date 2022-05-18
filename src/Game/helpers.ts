@@ -24,7 +24,7 @@ const generateTimeCode = () => {
         minutes = `0${minutes}`;
     }
 
-    return `${generateRandomNumber(0, 23)}:${minutes}`;
+    return `${generateRandomNumber(6, 23)}:${minutes}`;
 };
 export const generateGameLevel = (amount: number): IGameData[] => {
     let arr = [];
@@ -44,3 +44,20 @@ export const generateGameLevel = (amount: number): IGameData[] => {
 
     return shuffle(arr);
 };
+
+export const calculateTimeLeft = (date: number, minutes: number = 0.25) => {
+	const difference = +new Date(date + minutes * 60000) - +new Date()
+	let timeLeft = {
+		minutes: 0,
+		seconds: 0,
+	}
+
+	if (difference > 0) {
+		timeLeft = {
+			minutes: Math.floor((difference / 1000 / 60) % 60),
+			seconds: Math.floor((difference / 1000) % 60),
+		}
+	}
+
+	return timeLeft
+}

@@ -10,6 +10,7 @@ import YM from 'YM'
 import './index.css'
 import { configureI18next } from 'i18n/config.i18next'
 import Game from 'Game/Game'
+import Intro from 'Game/Intro'
 
 initGA()
 
@@ -23,7 +24,8 @@ root.render(
 		<BrowserRouter>
 			<Routes>
 				<Route path="/" element={<App />} />
-				<Route path="/game" element={<Game />} />
+				<Route path="/game" element={<Intro />} />
+				<Route path="/game/doubles" element={<Game />} />
 			</Routes>
 		</BrowserRouter>
 		<YM />

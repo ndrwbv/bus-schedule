@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { MIN_ELEMENTS, MAX_MISS, INIT_SCORE, INIT_MISS, INIT_LEVEL, INIT_GAME_OVER, ONE_ROW } from './const'
-import { generateGameLevel } from './helpers'
+import GameHeader from './GameHeader'
+import { calculateTimeLeft, generateGameLevel } from './helpers'
 import * as S from './styled'
 
 type ID = number
@@ -9,23 +11,6 @@ export interface IGameData {
 	text: string
 	selected: boolean
 	destroyed: boolean
-}
-
-const calculateTimeLeft = (date: number, minutes: number = 0.25) => {
-	const difference = +new Date(date + minutes * 60000) - +new Date()
-	let timeLeft = {
-		minutes: 0,
-		seconds: 0,
-	}
-
-	if (difference > 0) {
-		timeLeft = {
-			minutes: Math.floor((difference / 1000 / 60) % 60),
-			seconds: Math.floor((difference / 1000) % 60),
-		}
-	}
-
-	return timeLeft
 }
 
 const Game = () => {
@@ -139,6 +124,7 @@ const Game = () => {
 	if (isGameOver)
 		return (
 			<S.GameInner>
+				<Link to="/">К расписанию автобуса</Link>
 				<S.GameTitle>Очки: {score}</S.GameTitle>
 				<S.GameTitle>Уровень: {level}</S.GameTitle>
 
@@ -149,10 +135,8 @@ const Game = () => {
 
 	return (
 		<S.GameInner>
-			<S.GameTitle>
-				{score} - {miss} - {level} - {timeLeft.seconds}
-			</S.GameTitle>
-			<S.GameTitle>Найдите дубли</S.GameTitle>
+			<GameHeader score={score} miss={miss} level={level} timeLeft={timeLeft} />
+
 			<S.GameContainer>
 				{levelData.map(cell => (
 					<S.GameCell
