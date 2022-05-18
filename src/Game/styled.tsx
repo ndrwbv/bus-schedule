@@ -12,7 +12,7 @@ const getColor = (selected: boolean, destroyed: boolean) => {
 	if (destroyed) return 'rgb(233, 237, 233, 0.5)'
 	if (selected) return '#A4FFA4'
 
-	return '#EAEDE9'
+	return '#b8bab8'
 }
 export const GameCell = styled.button<{ selected: boolean; destroyed: boolean }>`
 	padding: 1rem;

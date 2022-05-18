@@ -25,19 +25,19 @@ const Game = () => {
 
 	useEffect(() => {
 		const timer = setTimeout(() => {
-			setTimeLeft(calculateTimeLeft(date, level * 0.1))
+			setTimeLeft(calculateTimeLeft(date, level * 0.14))
 		}, 1)
 
 		return () => clearTimeout(timer)
 	})
 
 	const handleNewGame = () => {
-		setDate(new Date().getTime())
 		setLevelData(generateGameLevel(MIN_ELEMENTS))
 		setScore(INIT_SCORE)
-		setMiss(INIT_MISS)
 		setLevel(INIT_LEVEL)
+		setMiss(INIT_MISS)
 		setGameOver(INIT_GAME_OVER)
+		setDate(new Date().getTime())
 	}
 
 	const handleClickTimeCode = (_cell: IGameData) => {
@@ -118,7 +118,10 @@ const Game = () => {
 	}, [levelData, level])
 
 	useEffect(() => {
-		if (miss > MAX_MISS || timeLeft.seconds === 0) setGameOver(true)
+		if (miss > MAX_MISS || timeLeft.seconds === 0) {
+			console.log('here', miss, timeLeft)
+			setGameOver(true)
+		}
 	}, [miss, timeLeft])
 
 	if (isGameOver)
