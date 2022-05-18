@@ -5,7 +5,7 @@ export const HeaderContainer = styled.div<{ fullHeight: boolean }>`
 	flex-direction: column;
 	justify-content: space-between;
 
-	height: ${props => (props.fullHeight ? '100%' : 'unset')};
+	/* height: ${props => (props.fullHeight ? '100%' : 'unset')}; */
 `
 
 export const Title = styled.h1`

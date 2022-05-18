@@ -17,24 +17,20 @@ interface IGameHeaderProps {
 	isGameOver?: boolean
 }
 
-const Header: React.FC<IGameHeaderProps> = ({ score, miss, level, timeLeft, title, isGameOver = false }) => {
-	const {
-		busStop,
-		left,
-		shouldShowFastReply,
+const Header: React.FC<IGameHeaderProps> = ({ score, level, timeLeft, title, isGameOver = false }) => {
+	const { busStop, left } = useScheduleContext()
 
-		todaysHoliday,
-	} = useScheduleContext()
-
-	console.log(busStop)
 	return (
 		<HeaderContainer fullHeight={isGameOver}>
-			<GameUIContainer>
-				<GameLink to="/" lowLight={!isGameOver}>
-					<LeftToString busStop={'В. Маяковского'} left={{ minutes: 20, hours: 0 }} />
-				</GameLink>
-			</GameUIContainer>
+			{busStop ? (
+				<GameUIContainer>
+					<GameLink to="/" lowLight={!isGameOver}>
+						<LeftToString busStop={'В. Маяковского'} left={left} />
+					</GameLink>
+				</GameUIContainer>
+			) : null}
 
+<GameUIContainer>
 			{title && isGameOver ? (
 				<GameUIContainer>
 					<Title>{title}</Title>
@@ -44,7 +40,7 @@ const Header: React.FC<IGameHeaderProps> = ({ score, miss, level, timeLeft, titl
 			<GameUIContainer>
 				<RecordTable score={score} bestScore={null} left={timeLeft ? timeLeft.seconds : null} level={level} />
 			</GameUIContainer>
-
+			</GameUIContainer>
 			{title && !isGameOver ? (
 				<GameUIContainer>
 					<Title>{title}</Title>

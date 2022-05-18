@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 export const GameContainer = styled.div`
@@ -19,7 +18,7 @@ export const GameInner = styled.div`
 `
 
 export const GameOverInner = styled(GameInner)`
-	justify-content: space-between;
+	justify-content: center;
 `
 
 const getColor = (selected: boolean, destroyed: boolean) => {
