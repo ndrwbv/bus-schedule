@@ -4,6 +4,7 @@ import Header from './Header/Header'
 import { calculateTimeLeft, generateGameLevel } from './helpers'
 import { GameButton, GameLayout, GameLayoutCentred, MainGameLayout } from './common'
 import * as S from './styled'
+import ProgressBar from './ProgressBar/ProgressBar'
 
 type ID = number
 export interface IGameData {
@@ -26,7 +27,7 @@ const Game = () => {
 	useEffect(() => {
 		const timer = setTimeout(() => {
 			setTimeLeft(calculateTimeLeft(date, level * 0.14))
-		}, 1)
+		}, 100)
 
 		return () => clearTimeout(timer)
 	})
@@ -119,34 +120,50 @@ const Game = () => {
 
 	useEffect(() => {
 		if (miss > MAX_MISS || timeLeft.seconds === 0) {
-			console.log('here', miss, timeLeft)
+			setTimeLeft({ minutes: 0, seconds: 0 })
 			setGameOver(true)
 		}
 	}, [miss, timeLeft])
 
-	// if (isGameOver)
-	// 	return (
-	// 		<MainGameLayout>
-	// 			<GameLayoutCentred>
-	// 				<Header
-	// 					score={score}
-	// 					miss={miss}
-	// 					level={level}
-	// 					timeLeft={null}
-	// 					title={'Игра окончена'}
-	// 					isGameOver
-	// 				/>
+	const getPercentage = () => {
+		if (timeLeft.seconds === 0) return 100
+		if (timeLeft.seconds === 1) return 100
+		if (timeLeft.seconds === 2) return 95
+		if (timeLeft.seconds === 3) return 80
+		if (timeLeft.seconds === 4) return 70
+		if (timeLeft.seconds === 5) return 60
+		if (timeLeft.seconds === 6) return 50
+		if (timeLeft.seconds === 7) return 40
+		if (timeLeft.seconds === 8) return 30
+		if (timeLeft.seconds === 9) return 20
+		if (timeLeft.seconds === 10) return 10
 
-	// 				<GameButton onClick={handleNewGame}>Играть еще</GameButton>
-	// 			</GameLayoutCentred>
-	// 		</MainGameLayout>
-	// 	)
+		return (timeLeft.seconds * 60) / 100
+	}
+
+	if (isGameOver)
+		return (
+			<MainGameLayout>
+				<GameLayoutCentred>
+					<Header
+						score={score}
+						miss={miss}
+						level={level}
+						timeLeft={null}
+						title={'Игра окончена'}
+						isGameOver
+					/>
+
+					<GameButton onClick={handleNewGame}>Играть еще</GameButton>
+				</GameLayoutCentred>
+			</MainGameLayout>
+		)
 
 	return (
 		<MainGameLayout>
 			<GameLayout>
+				<ProgressBar completed={getPercentage()} bgcolor={'#F48400'} />
 				<Header score={score} miss={miss} level={level} timeLeft={timeLeft} title={'Найдите дубли'} />
-
 				<S.GameContainer>
 					{levelData.map(cell => (
 						<S.GameCell
