@@ -1,11 +1,24 @@
 import styled from 'styled-components'
 
-export const GameContainer = styled.div`
+export const GameContainer = styled.div<{ animate: boolean }>`
 	width: 100%;
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr 1fr;
 	grid-template-rows: 1fr 1fr 1fr 1fr;
 	grid-gap: 9px;
+
+	animation-duration: 2s;
+	animation-name:  ${props => props.animate ? "fadeup" : "inherit"}; ;
+
+	@keyframes fadeup {
+		0% {
+			opacity: 0;
+		}
+
+		100% {
+			opacity: 1;
+		}
+	}
 `
 
 const getColor = (selected: boolean, destroyed: boolean) => {

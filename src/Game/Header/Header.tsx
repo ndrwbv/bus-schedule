@@ -13,11 +13,11 @@ interface IGameHeaderProps {
 	miss: number
 	level: number
 	timeLeft: { seconds: number } | null
-	title: string | null
+	title?: string | null
 	isGameOver?: boolean
 }
 
-const Header: React.FC<IGameHeaderProps> = ({ score, level, timeLeft, title, isGameOver = false }) => {
+const Header: React.FC<IGameHeaderProps> = ({ score, level, timeLeft, title = null, isGameOver = false }) => {
 	const { busStop, left } = useScheduleContext()
 
 	return (

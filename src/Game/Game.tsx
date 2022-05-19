@@ -23,6 +23,7 @@ const Game = () => {
 
 	const [date, setDate] = useState(new Date().getTime())
 	const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(date))
+	const [isWin, setIsWin] = useState(true)
 
 	useEffect(() => {
 		if (!isGameOver && miss > MAX_MISS) {
@@ -124,6 +125,14 @@ const Game = () => {
 	}
 
 	useEffect(() => {
+		if(isWin) {
+			setTimeout(() => {
+				setIsWin(false)
+			}, 2000)
+		}
+	}, [isWin])
+
+	useEffect(() => {
 		// new level
 		const isEveryCellDestroyed = levelData.every(cell => cell.destroyed === true)
 
@@ -131,6 +140,7 @@ const Game = () => {
 			setLevel(prev => prev + 1)
 			const amount = generateAmount(level)
 			setLevelData(generateGameLevel(amount))
+			setIsWin(true)
 		}
 	}, [levelData, level])
 
@@ -172,8 +182,8 @@ const Game = () => {
 		<MainGameLayout>
 			<GameLayout>
 				<ProgressBar completed={getPercentage()} bgcolor={'#F48400'} />
-				<Header score={score} miss={miss} level={level} timeLeft={timeLeft} title={'Найдите дубли'} />
-				<S.GameContainer>
+				<Header score={score} miss={miss} level={level} timeLeft={timeLeft} />
+				<S.GameContainer animate={isWin}>
 					{levelData.map(cell => (
 						<S.GameCell
 							key={cell.id}
