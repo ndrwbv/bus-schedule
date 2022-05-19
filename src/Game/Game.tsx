@@ -24,6 +24,7 @@ const Game = () => {
 	const [date, setDate] = useState(new Date().getTime())
 	const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(date))
 	const [isWin, setIsWin] = useState(true)
+	const [shoudlShowPlusOne, setShouldShowPlusOne] = useState(false)
 
 	useEffect(() => {
 		if (!isGameOver && miss > MAX_MISS) {
@@ -41,7 +42,7 @@ const Game = () => {
 		if (timeLeft.seconds === 0) return
 
 		const timer = setTimeout(() => {
-			setTimeLeft(calculateTimeLeft(date, level * 0.14))
+			setTimeLeft(calculateTimeLeft(date, level * 0.11))
 		}, 1)
 
 		return () => clearTimeout(timer)
@@ -56,6 +57,8 @@ const Game = () => {
 		setLevel(INIT_LEVEL)
 		setMiss(INIT_MISS)
 		setDate(new Date().getTime())
+		setIsWin(true)
+		setShouldShowPlusOne(false)
 	}
 
 	const handleClickTimeCode = (_cell: IGameData) => {
@@ -125,12 +128,13 @@ const Game = () => {
 	}
 
 	useEffect(() => {
-		if(isWin) {
+		if (isWin) {
 			setTimeout(() => {
 				setIsWin(false)
+				!shoudlShowPlusOne && setShouldShowPlusOne(true)
 			}, 2000)
 		}
-	}, [isWin])
+	}, [isWin, shoudlShowPlusOne])
 
 	useEffect(() => {
 		// new level
@@ -162,7 +166,7 @@ const Game = () => {
 
 	if (isGameOver)
 		return (
-			<MainGameLayout>
+			<MainGameLayout isWin={false}>
 				<GameLayoutCentred>
 					<Header
 						score={score}
@@ -179,10 +183,11 @@ const Game = () => {
 		)
 
 	return (
-		<MainGameLayout>
+		<MainGameLayout isWin={shoudlShowPlusOne ? isWin : false}>
 			<GameLayout>
 				<ProgressBar completed={getPercentage()} bgcolor={'#F48400'} />
 				<Header score={score} miss={miss} level={level} timeLeft={timeLeft} />
+				{isWin && shoudlShowPlusOne ? '+1' : ''}
 				<S.GameContainer animate={isWin}>
 					{levelData.map(cell => (
 						<S.GameCell
