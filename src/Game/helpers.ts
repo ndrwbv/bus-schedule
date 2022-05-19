@@ -52,12 +52,10 @@ export const calculateTimeLeft = (date: number, minutes: number = 0.25) => {
 		seconds: 0,
 	}
 
-	if (difference > 0) {
-		timeLeft = {
-			minutes: Math.floor((difference / 1000 / 60) % 60),
-			seconds: Math.floor((difference / 1000) % 60),
-		}
-	}
+    timeLeft = {
+        minutes: Math.floor((difference / 1000 / 60) % 60),
+        seconds: Math.floor((difference / 1000) % 60),
+    }
 
 	return timeLeft
 }

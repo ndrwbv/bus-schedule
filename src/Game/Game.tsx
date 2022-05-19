@@ -25,19 +25,35 @@ const Game = () => {
 	const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(date))
 
 	useEffect(() => {
+		if (!isGameOver && miss > MAX_MISS) {
+			setGameOver(true)
+		}
+	}, [miss, isGameOver])
+
+	useEffect(() => {
+		if (!isGameOver && timeLeft.seconds === 0) {
+			setGameOver(true)
+		}
+	}, [timeLeft, isGameOver])
+
+	useEffect(() => {
+		if (timeLeft.seconds === 0) return
+
 		const timer = setTimeout(() => {
 			setTimeLeft(calculateTimeLeft(date, level * 0.14))
-		}, 100)
+		}, 1)
 
 		return () => clearTimeout(timer)
-	})
+	}, [timeLeft, level, date])
 
 	const handleNewGame = () => {
+		setGameOver(INIT_GAME_OVER)
+		setTimeLeft(calculateTimeLeft(new Date().getTime(), 0.15))
+
 		setLevelData(generateGameLevel(MIN_ELEMENTS))
 		setScore(INIT_SCORE)
 		setLevel(INIT_LEVEL)
 		setMiss(INIT_MISS)
-		setGameOver(INIT_GAME_OVER)
 		setDate(new Date().getTime())
 	}
 
@@ -117,13 +133,6 @@ const Game = () => {
 			setLevelData(generateGameLevel(amount))
 		}
 	}, [levelData, level])
-
-	useEffect(() => {
-		if (miss > MAX_MISS || timeLeft.seconds === 0) {
-			setTimeLeft({ minutes: 0, seconds: 0 })
-			setGameOver(true)
-		}
-	}, [miss, timeLeft])
 
 	const getPercentage = () => {
 		if (timeLeft.seconds === 0) return 100
