@@ -124,23 +124,23 @@ const Game = () => {
 		}
 	}, [miss, timeLeft])
 
-	if (isGameOver)
-		return (
-			<MainGameLayout>
-				<GameLayoutCentred>
-					<Header
-						score={score}
-						miss={miss}
-						level={level}
-						timeLeft={null}
-						title={'Игра окончена'}
-						isGameOver
-					/>
+	// if (isGameOver)
+	// 	return (
+	// 		<MainGameLayout>
+	// 			<GameLayoutCentred>
+	// 				<Header
+	// 					score={score}
+	// 					miss={miss}
+	// 					level={level}
+	// 					timeLeft={null}
+	// 					title={'Игра окончена'}
+	// 					isGameOver
+	// 				/>
 
-					<GameButton onClick={handleNewGame}>Играть еще</GameButton>
-				</GameLayoutCentred>
-			</MainGameLayout>
-		)
+	// 				<GameButton onClick={handleNewGame}>Играть еще</GameButton>
+	// 			</GameLayoutCentred>
+	// 		</MainGameLayout>
+	// 	)
 
 	return (
 		<MainGameLayout>

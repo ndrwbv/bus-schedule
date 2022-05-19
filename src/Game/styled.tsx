@@ -9,27 +9,41 @@ export const GameContainer = styled.div`
 `
 
 const getColor = (selected: boolean, destroyed: boolean) => {
-	if (destroyed) return 'rgb(233, 237, 233, 0.5)'
-	if (selected) return '#A4FFA4'
-
 	return 'rgba(0, 0, 0, 0.74)'
 }
 export const GameCell = styled.button<{ selected: boolean; destroyed: boolean }>`
-	padding: 1rem;
+	position: relative;
 
+	padding: 0.9rem;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 
-	border-radius: 8px;
-	background-color: ${props => getColor(props.selected, props.destroyed)};
-	color: white;
-
+	font-weight: 700;
+	font-family: 'Inter', 'Roboto', sans-serif;
 	font-size: 14px;
 
 	max-width: 100px;
 
-	font-weight: 700;
+	border-radius: 8px;
+	background-color: ${props => getColor(props.selected, props.destroyed)};
+	opacity: ${props => (props.destroyed ? 0.7 : 1)};
+	color: white;
+
+	border: ${props => (props.selected ? '2px solid white' : '2px solid transparent')};
+
+	&::after {
+		content: ${props => (props.destroyed ? 'unset' : "''")};
+		position: absolute;
+		top: 3px;
+		left: 0;
+		width: 85%;
+		height: 4px;
+		margin: 0 6px;
+
+		background: rgba(255, 255, 255, 0.14);
+		border-radius: 19px;
+	}
 
 	&::before {
 		content: '';
