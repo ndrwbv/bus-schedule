@@ -171,7 +171,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 			</Container>
 
 			<Container>
-				<Card isNew id="new">
+				<Card>
 					<OtherTimeBusses />
 				</Card>
 			</Container>

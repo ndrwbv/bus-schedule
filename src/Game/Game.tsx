@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { MIN_ELEMENTS, MAX_MISS, INIT_SCORE, INIT_MISS, INIT_LEVEL, INIT_GAME_OVER, ONE_ROW } from './const'
 import Header from './Header/Header'
 import { calculateTimeLeft, generateGameLevel } from './helpers'
-import { GameButton, GameLayout, GameLayoutCentred } from './common'
+import { GameButton, GameLayout, GameLayoutCentred, MainGameLayout } from './common'
 import * as S from './styled'
 
 type ID = number
@@ -126,30 +126,41 @@ const Game = () => {
 
 	if (isGameOver)
 		return (
-			<GameLayoutCentred>
-				<Header score={score} miss={miss} level={level} timeLeft={null} title={'Игра окончена'} isGameOver />
+			<MainGameLayout>
+				<GameLayoutCentred>
+					<Header
+						score={score}
+						miss={miss}
+						level={level}
+						timeLeft={null}
+						title={'Игра окончена'}
+						isGameOver
+					/>
 
-				<GameButton onClick={handleNewGame}>Играть еще</GameButton>
-			</GameLayoutCentred>
+					<GameButton onClick={handleNewGame}>Играть еще</GameButton>
+				</GameLayoutCentred>
+			</MainGameLayout>
 		)
 
 	return (
-		<GameLayout>
-			<Header score={score} miss={miss} level={level} timeLeft={timeLeft} title={'Найдите дубли'} />
+		<MainGameLayout>
+			<GameLayout>
+				<Header score={score} miss={miss} level={level} timeLeft={timeLeft} title={'Найдите дубли'} />
 
-			<S.GameContainer>
-				{levelData.map(cell => (
-					<S.GameCell
-						key={cell.id}
-						onClick={() => handleClickTimeCode(cell)}
-						selected={cell.selected}
-						destroyed={cell.destroyed}
-					>
-						{cell.text}
-					</S.GameCell>
-				))}
-			</S.GameContainer>
-		</GameLayout>
+				<S.GameContainer>
+					{levelData.map(cell => (
+						<S.GameCell
+							key={cell.id}
+							onClick={() => handleClickTimeCode(cell)}
+							selected={cell.selected}
+							destroyed={cell.destroyed}
+						>
+							{cell.text}
+						</S.GameCell>
+					))}
+				</S.GameContainer>
+			</GameLayout>
+		</MainGameLayout>
 	)
 }
 

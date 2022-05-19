@@ -12,7 +12,7 @@ const getColor = (selected: boolean, destroyed: boolean) => {
 	if (destroyed) return 'rgb(233, 237, 233, 0.5)'
 	if (selected) return '#A4FFA4'
 
-	return '#b8bab8'
+	return 'rgba(0, 0, 0, 0.74)'
 }
 export const GameCell = styled.button<{ selected: boolean; destroyed: boolean }>`
 	padding: 1rem;
@@ -23,11 +23,13 @@ export const GameCell = styled.button<{ selected: boolean; destroyed: boolean }>
 
 	border-radius: 8px;
 	background-color: ${props => getColor(props.selected, props.destroyed)};
-	color: black;
+	color: white;
 
 	font-size: 14px;
 
 	max-width: 100px;
+
+	font-weight: 700;
 
 	&::before {
 		content: '';
