@@ -29,7 +29,7 @@ const RecordTableGameOver: React.FC<{
 }
 
 export const RecordScore: React.FC<{ score?: number }> = ({ score }) => {
-	if (!score) return <></>
+	if (score === undefined || score === null) return <></>
 
 	return (
 		<RecordItem>
@@ -55,7 +55,7 @@ const RecordTable: React.FC<{
 
 	return (
 		<RecordTableContainer isColumn={!!isGameOver}>
-			{bestScore ? <RecordScore score={bestScore} /> : null}
+			<RecordScore score={bestScore} />
 
 			<Score score={score} plusNumber={plusNumber} isBig={isGameOver} isNewHighScore={!!isNewHighScore} />
 

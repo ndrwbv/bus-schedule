@@ -12,7 +12,7 @@ export const GameContainer = styled.div<{ animate: boolean }>`
 
 	@keyframes fadeup {
 		0% {
-			opacity: 0.6;
+			opacity: 0;
 		}
 
 		100% {
