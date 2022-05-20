@@ -35,6 +35,18 @@ export interface IGameData {
 	destroyed: boolean
 }
 
+const generateAmount = (currentLevel: number) => {
+	if (currentLevel >= 14) return ONE_ROW * 6
+	if (currentLevel >= 12) return ONE_ROW * 5
+	if (currentLevel >= 9) return ONE_ROW * 4
+	if (currentLevel >= 5) return ONE_ROW * 3
+	if (currentLevel >= 2) return ONE_ROW * 2
+
+	if (currentLevel >= 1) return ONE_ROW
+
+	return ONE_ROW
+}
+
 const devMode = localStorage.getItem('devMode') === '1'
 const Game = () => {
 	const [levelData, setLevelData] = useState<IGameData[]>(generateGameLevel(MIN_ELEMENTS))
@@ -82,7 +94,7 @@ const Game = () => {
 
 		const timer = setTimeout(() => {
 			setTimeLeft(calculateTimeLeft(date, level * 0.11))
-		}, 1)
+		}, 10)
 
 		return () => clearTimeout(timer)
 	}, [timeLeft, level, date])
@@ -103,6 +115,7 @@ const Game = () => {
 	}
 
 	const handleClickTimeCode = (_cell: IGameData) => {
+		console.log('clicked', _cell.destroyed || _cell.selected)
 		if (_cell.destroyed || _cell.selected) return
 
 		setLevelData(prevState => {
@@ -157,41 +170,41 @@ const Game = () => {
 		})
 	}
 
-	const generateAmount = (currentLevel: number) => {
-		if (currentLevel >= 14) return ONE_ROW * 6
-		if (currentLevel >= 12) return ONE_ROW * 5
-		if (currentLevel >= 9) return ONE_ROW * 4
-		if (currentLevel >= 5) return ONE_ROW * 3
-		if (currentLevel >= 2) return ONE_ROW * 2
-
-		if (currentLevel >= 1) return ONE_ROW
-
-		return ONE_ROW
-	}
-
 	useEffect(() => {
+		let timer: any = null
+
 		if (isNewLevelWin) {
-			setTimeout(() => {
+			timer = setTimeout(() => {
 				setNewLeveWin(false)
 				!shoudlShowplusNumber && setShouldShowplusNumber(true)
 			}, ANIMATION_DURATION)
 		}
+
+		return () => clearTimeout(timer)
 	}, [isNewLevelWin, shoudlShowplusNumber])
 
 	useEffect(() => {
+		let timer: any = null
+
 		if (isMiss) {
-			setTimeout(() => {
+			timer = setTimeout(() => {
 				setIsMiss(false)
 			}, ANIMATION_DURATION)
 		}
+
+		return () => clearTimeout(timer)
 	}, [isMiss])
 
 	useEffect(() => {
+		let timer: any = null
+
 		if (isPairWin) {
-			setTimeout(() => {
+			timer = setTimeout(() => {
 				setPairWin(false)
 			}, 500)
 		}
+
+		return () => clearTimeout(timer)
 	}, [isPairWin])
 
 	useEffect(() => {
@@ -297,10 +310,10 @@ const Game = () => {
 				<S.WhiteTextBlock>Помоги работнику томскавтотранс найти дубли в расписании</S.WhiteTextBlock>
 			</GameLayout>
 
-			<S.GameReaction
+			{/* <S.GameReaction
 				animate={shoudlShowplusNumber ? isNewLevelWin || isMiss : false}
 				bg={isNewLevelWin ? GAME_WIN_BG : GAME_MISS_BG}
-			/>
+			/> */}
 		</MainGameLayout>
 	)
 }

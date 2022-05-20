@@ -13,7 +13,6 @@ interface IProps {
 const Score: React.FC<IProps> = ({ score, plusNumber, isBig , isNewHighScore = false}) => {
 	const iconSize = isBig ? 85 : 45
 
-	console.log(isNewHighScore)
 	return (
 		<S.Score isBig={!!isBig}>
 			<S.ScoreValue>{score}</S.ScoreValue>

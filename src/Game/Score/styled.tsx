@@ -68,7 +68,7 @@ export const StartContainer = styled.div<{ isBig: boolean }>`
 	right: ${props => (props.isBig ? '-55px' : '-31px')};
 	z-index: 4;
 
-	animation: ${props => (props.isBig ? 'scale infinite 2s' : 'unset')};
+	/* animation: ${props => (props.isBig ? 'scale infinite 2s' : 'unset')};
 
 	@keyframes scale {
 		0% {
@@ -82,5 +82,5 @@ export const StartContainer = styled.div<{ isBig: boolean }>`
 		100% {
 			transform: scale(1.1);
 		}
-	}
+	} */
 `
