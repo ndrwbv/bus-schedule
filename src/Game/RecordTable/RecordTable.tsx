@@ -1,6 +1,9 @@
 import React from 'react'
-import { InfoWrapper, RecordItem, RecordTableContainer, RecordTitle, RecordValue } from './styled'
+import SVG from 'react-inlinesvg'
+
 import Score from 'Game/Score/Score'
+import GameRecord from '../../img/game-record.svg'
+import { InfoWrapper, RecordItem, RecordTableContainer, RecordTitle, RecordValue, RecordValueContainer } from './styled'
 
 const RecordTableGameOver: React.FC<{
 	score: number
@@ -13,20 +16,28 @@ const RecordTableGameOver: React.FC<{
 			<Score score={score} plusNumber={plusNumber} isBig />
 
 			<InfoWrapper>
-				<RecordItem>
+				<RecordItem style={{ marginRight: '8px' }}>
 					<RecordTitle>уровень</RecordTitle>
 					<RecordValue>{level}</RecordValue>
 				</RecordItem>
 
-				<RecordItem style={{ marginLeft: '12px' }}>
-					<RecordTitle>рекорд</RecordTitle>
-					<RecordValue>{score}</RecordValue>
-				</RecordItem>
+				<RecordScore score={score} />
 			</InfoWrapper>
 		</RecordTableContainer>
 	)
 }
 
+export const RecordScore: React.FC<{ score: number }> = ({ score }) => {
+	return (
+		<RecordItem>
+			<RecordTitle>рекорд</RecordTitle>
+			<RecordValueContainer>
+				<RecordValue style={{ marginRight: '2px' }}>{score}</RecordValue>
+				<SVG src={GameRecord} width={19} height={19} uniquifyIDs={true} />
+			</RecordValueContainer>
+		</RecordItem>
+	)
+}
 const RecordTable: React.FC<{
 	score: number
 	bestScore: number | null
@@ -40,14 +51,11 @@ const RecordTable: React.FC<{
 
 	return (
 		<RecordTableContainer isColumn={!!isGameOver}>
-			<RecordItem>
-				<RecordTitle>рекорд</RecordTitle>
-				<RecordValue>{score}</RecordValue>
-			</RecordItem>
+			<RecordScore score={score} />
 
 			<Score score={score} plusNumber={plusNumber} isBig={isGameOver} />
 
-			<RecordItem>
+			<RecordItem style={{ marginLeft: '2px' }}>
 				<RecordTitle>уровень</RecordTitle>
 				<RecordValue>{level}</RecordValue>
 			</RecordItem>

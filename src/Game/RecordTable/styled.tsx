@@ -20,7 +20,7 @@ export const RecordItem = styled.div`
 	padding: 4px;
 	color: white;
 
-	height: 43px;
+	height: 47px;
 
 	max-width: 58px;
 
@@ -49,6 +49,12 @@ export const RecordValue = styled.div`
 	font-size: 16px;
 	font-weight: 900;
 `
+
+export const RecordValueContainer = styled.div`
+	display: flex;
+	justify-content:center;
+`
+
 export const InfoWrapper = styled.div`
 	display: flex;
 	margin-top: 40px;
