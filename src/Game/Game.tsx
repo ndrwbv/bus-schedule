@@ -16,7 +16,6 @@ import {
 	GameLayout,
 	GameLayoutCentred,
 	GameUIContainer,
-	GAME_MISS_BG,
 	GAME_OVER_BG,
 	HIGH_SCORE_BG,
 	MainGameLayout,
@@ -25,7 +24,6 @@ import {
 import ProgressBar from './ProgressBar/ProgressBar'
 import * as S from './styled'
 import RecordTable from './RecordTable/RecordTable'
-import { GAME_WIN_BG } from './common'
 
 type ID = number
 export interface IGameData {
