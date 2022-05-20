@@ -3,8 +3,8 @@ import { MIN_ELEMENTS, MAX_MISS, INIT_SCORE, INIT_MISS, INIT_LEVEL, INIT_GAME_OV
 import Header from './Header/Header'
 import { calculateTimeLeft, generateGameLevel } from './helpers'
 import { GameButton, GameLayout, GameLayoutCentred, MainGameLayout } from './common'
-import * as S from './styled'
 import ProgressBar from './ProgressBar/ProgressBar'
+import * as S from './styled'
 
 type ID = number
 export interface IGameData {
@@ -14,6 +14,7 @@ export interface IGameData {
 	destroyed: boolean
 }
 
+const devMode = localStorage.getItem('devMode') === '1'
 const Game = () => {
 	const [levelData, setLevelData] = useState<IGameData[]>(generateGameLevel(MIN_ELEMENTS))
 	const [score, setScore] = useState(INIT_SCORE)
@@ -23,8 +24,9 @@ const Game = () => {
 
 	const [date, setDate] = useState(new Date().getTime())
 	const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(date))
-	const [isWin, setIsWin] = useState(true)
-	const [shoudlShowPlusOne, setShouldShowPlusOne] = useState(false)
+	const [isNewLevelWin, setNewLeveWin] = useState(true)
+	const [isPairWin, setPairWin] = useState(false)
+	const [shoudlShowplusNumber, setShouldShowplusNumber] = useState(false)
 
 	useEffect(() => {
 		if (!isGameOver && miss > MAX_MISS) {
@@ -57,8 +59,8 @@ const Game = () => {
 		setLevel(INIT_LEVEL)
 		setMiss(INIT_MISS)
 		setDate(new Date().getTime())
-		setIsWin(true)
-		setShouldShowPlusOne(false)
+		setNewLeveWin(true)
+		setShouldShowplusNumber(false)
 	}
 
 	const handleClickTimeCode = (_cell: IGameData) => {
@@ -128,13 +130,21 @@ const Game = () => {
 	}
 
 	useEffect(() => {
-		if (isWin) {
+		if (isNewLevelWin) {
 			setTimeout(() => {
-				setIsWin(false)
-				!shoudlShowPlusOne && setShouldShowPlusOne(true)
+				setNewLeveWin(false)
+				!shoudlShowplusNumber && setShouldShowplusNumber(true)
 			}, 2000)
 		}
-	}, [isWin, shoudlShowPlusOne])
+	}, [isNewLevelWin, shoudlShowplusNumber])
+
+	useEffect(() => {
+		if (isPairWin) {
+			setTimeout(() => {
+				setPairWin(false)
+			}, 500)
+		}
+	}, [isPairWin])
 
 	useEffect(() => {
 		// new level
@@ -144,9 +154,13 @@ const Game = () => {
 			setLevel(prev => prev + 1)
 			const amount = generateAmount(level)
 			setLevelData(generateGameLevel(amount))
-			setIsWin(true)
+			setNewLeveWin(true)
 		}
 	}, [levelData, level])
+
+	useEffect(() => {
+		setPairWin(true)
+	}, [score])
 
 	const getPercentage = () => {
 		if (timeLeft.seconds === 0) return 100
@@ -164,7 +178,7 @@ const Game = () => {
 		return (timeLeft.seconds * 60) / 100
 	}
 
-	if (isGameOver)
+	if (isGameOver && !devMode)
 		return (
 			<MainGameLayout isWin={false}>
 				<GameLayoutCentred>
@@ -183,12 +197,18 @@ const Game = () => {
 		)
 
 	return (
-		<MainGameLayout isWin={shoudlShowPlusOne ? isWin : false}>
+		<MainGameLayout isWin={shoudlShowplusNumber ? isNewLevelWin : false}>
 			<GameLayout>
 				<ProgressBar completed={getPercentage()} bgcolor={'#F48400'} />
-				<Header score={score} miss={miss} level={level} timeLeft={timeLeft} />
-				{isWin && shoudlShowPlusOne ? '+1' : ''}
-				<S.GameContainer animate={isWin}>
+				<Header
+					plusNumber={isPairWin && shoudlShowplusNumber ? '+1' : ''}
+					score={score}
+					miss={miss}
+					level={level}
+					timeLeft={timeLeft}
+				/>
+
+				<S.GameContainer animate={isNewLevelWin}>
 					{levelData.map(cell => (
 						<S.GameCell
 							key={cell.id}

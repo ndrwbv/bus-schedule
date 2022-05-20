@@ -15,9 +15,10 @@ interface IGameHeaderProps {
 	timeLeft: { seconds: number } | null
 	title?: string | null
 	isGameOver?: boolean
+	plusNumber?: string;
 }
 
-const Header: React.FC<IGameHeaderProps> = ({ score, level, timeLeft, title = null, isGameOver = false }) => {
+const Header: React.FC<IGameHeaderProps> = ({ score, level, plusNumber = "", title = null, isGameOver = false }) => {
 	const { busStop, left } = useScheduleContext()
 
 	return (
@@ -39,9 +40,9 @@ const Header: React.FC<IGameHeaderProps> = ({ score, level, timeLeft, title = nu
 
 				<GameUIContainer>
 					<RecordTable
+						plusNumber={plusNumber}
 						score={score}
 						bestScore={null}
-						left={timeLeft ? timeLeft.seconds : null}
 						level={level}
 					/>
 				</GameUIContainer>
