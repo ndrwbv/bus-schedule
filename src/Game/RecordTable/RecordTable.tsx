@@ -7,13 +7,14 @@ import { InfoWrapper, RecordItem, RecordTableContainer, RecordTitle, RecordValue
 
 const RecordTableGameOver: React.FC<{
 	score: number
-	bestScore: number | null
+	bestScore?: number
 	level: number
 	plusNumber: string
-}> = ({ score, plusNumber, level }) => {
+	isNewHighScore?: boolean
+}> = ({ score, plusNumber, level, isNewHighScore, bestScore }) => {
 	return (
 		<RecordTableContainer isColumn={true}>
-			<Score score={score} plusNumber={plusNumber} isBig />
+			<Score score={score} plusNumber={plusNumber} isBig isNewHighScore={isNewHighScore} />
 
 			<InfoWrapper>
 				<RecordItem style={{ marginRight: '8px' }}>
@@ -21,13 +22,15 @@ const RecordTableGameOver: React.FC<{
 					<RecordValue>{level}</RecordValue>
 				</RecordItem>
 
-				<RecordScore score={score} />
+				<RecordScore score={bestScore} />
 			</InfoWrapper>
 		</RecordTableContainer>
 	)
 }
 
-export const RecordScore: React.FC<{ score: number }> = ({ score }) => {
+export const RecordScore: React.FC<{ score?: number }> = ({ score }) => {
+	if (!score) return <></>
+
 	return (
 		<RecordItem>
 			<RecordTitle>рекорд</RecordTitle>
@@ -40,20 +43,21 @@ export const RecordScore: React.FC<{ score: number }> = ({ score }) => {
 }
 const RecordTable: React.FC<{
 	score: number
-	bestScore: number | null
+	bestScore?: number
 	level: number
 	plusNumber: string
 	isGameOver?: boolean
+	isNewHighScore?: boolean
 }> = props => {
-	const { score, plusNumber, level, isGameOver } = props
+	const { score, plusNumber, level, isGameOver, bestScore, isNewHighScore } = props
 
 	if (isGameOver) return <RecordTableGameOver {...props} />
 
 	return (
 		<RecordTableContainer isColumn={!!isGameOver}>
-			<RecordScore score={score} />
+			{bestScore ? <RecordScore score={bestScore} /> : null}
 
-			<Score score={score} plusNumber={plusNumber} isBig={isGameOver} />
+			<Score score={score} plusNumber={plusNumber} isBig={isGameOver} isNewHighScore={!!isNewHighScore} />
 
 			<RecordItem style={{ marginLeft: '2px' }}>
 				<RecordTitle>уровень</RecordTitle>

@@ -18,6 +18,7 @@ import {
 	GameUIContainer,
 	GAME_MISS_BG,
 	GAME_OVER_BG,
+	HIGH_SCORE_BG,
 	MainGameLayout,
 	Title,
 } from './common'
@@ -48,12 +49,27 @@ const Game = () => {
 	const [isMiss, setIsMiss] = useState(true)
 	const [isPairWin, setPairWin] = useState(false)
 	const [shoudlShowplusNumber, setShouldShowplusNumber] = useState(false)
+	const [highScore, setHighScore] = useState(
+		localStorage.getItem('score') ? Number(localStorage.getItem('score')) : 0,
+	)
+	const [isHighScore, setIsHighScore] = useState(false)
 
 	useEffect(() => {
+		if (isHighScore && isGameOver) {
+			localStorage.setItem('score', score.toString())
+			setHighScore(score)
+		}
+	}, [isHighScore, isGameOver, score])
+
+	useEffect(() => {
+		if (score > highScore) {
+			setIsHighScore(true)
+		}
+
 		if (!isGameOver && miss > MAX_MISS) {
 			setGameOver(true)
 		}
-	}, [miss, isGameOver])
+	}, [miss, isGameOver, score, highScore])
 
 	useEffect(() => {
 		if (!isGameOver && timeLeft.seconds === 0) {
@@ -83,6 +99,7 @@ const Game = () => {
 		setNewLeveWin(true)
 		setIsMiss(true)
 		setShouldShowplusNumber(false)
+		setIsHighScore(false)
 	}
 
 	const handleClickTimeCode = (_cell: IGameData) => {
@@ -209,6 +226,28 @@ const Game = () => {
 		return (timeLeft.seconds * 60) / 100
 	}
 
+	if (isHighScore && isGameOver) {
+		return (
+			<MainGameLayout isWin={false} bg={HIGH_SCORE_BG}>
+				<GameLayoutCentred>
+					<GameUIContainer>
+						<Title>Новый рекорд</Title>
+					</GameUIContainer>
+
+					<RecordTable
+						plusNumber={''}
+						score={highScore}
+						level={level}
+						isGameOver={true}
+						isNewHighScore={true}
+					/>
+
+					<GameButton onClick={handleNewGame}>Играть еще</GameButton>
+				</GameLayoutCentred>
+			</MainGameLayout>
+		)
+	}
+
 	if (isGameOver && !devMode)
 		return (
 			<MainGameLayout isWin={false} bg={GAME_OVER_BG}>
@@ -217,7 +256,13 @@ const Game = () => {
 						<Title>Продолжим?</Title>
 					</GameUIContainer>
 
-					<RecordTable plusNumber={''} score={score} bestScore={null} level={level} isGameOver={isGameOver} />
+					<RecordTable
+						plusNumber={''}
+						score={score}
+						bestScore={highScore}
+						level={level}
+						isGameOver={isGameOver}
+					/>
 
 					<GameButton onClick={handleNewGame}>Играть еще</GameButton>
 				</GameLayoutCentred>
@@ -234,6 +279,7 @@ const Game = () => {
 					miss={miss}
 					level={level}
 					timeLeft={timeLeft}
+					bestScore={highScore}
 				/>
 
 				<S.GameContainer animate={isNewLevelWin}>

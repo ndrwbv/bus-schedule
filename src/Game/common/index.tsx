@@ -5,6 +5,7 @@ export const GAME_BG = 'linear-gradient(180.17deg, #9C45C4 0.15%, #723CB7 26.11%
 export const GAME_WIN_BG = 'linear-gradient(180.17deg, #723CB7 0.15%, #47FF7B 99.85%)'
 export const GAME_MISS_BG = 'linear-gradient(180.17deg, #723CB7 0.15%, #FF4747 99.85%)'
 export const GAME_OVER_BG = 'linear-gradient(180.17deg, #5F55FF 0.15%, #6070FF 56.75%, #BB78F0 99.85%);'
+export const HIGH_SCORE_BG = 'linear-gradient(359.69deg, #EA9836 0.28%, #F5C460 77.47%, #FFE066 99.75%)'
 
 export const GameLink = styled(Link)<{ lowLight: boolean }>`
 	color: #0364f6;
