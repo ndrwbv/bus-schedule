@@ -1,8 +1,11 @@
 import styled from 'styled-components'
 
-export const RecordTableContainer = styled.div`
+export const RecordTableContainer = styled.div<{isColumn: boolean}>`
 	display: flex;
-	justify-content: space-between;
+	justify-content: ${props => props.isColumn ? "center" : "space-between"};
+	flex-direction: ${props => props.isColumn ? "column" : "row"};
+	align-items: center;
+	height: 100%;
 `
 
 export const RecordItem = styled.div`
@@ -17,13 +20,17 @@ export const RecordItem = styled.div`
 	padding: 4px;
 	color: white;
 
+	height: 43px;
+
+	max-width: 58px;
+
 	&::after {
 		content: '';
 		position: absolute;
 		top: 3px;
 		left: 0;
 		width: 85%;
-		height: 4px;
+		height: 1px;
 		margin: 0 6px;
 
 		background: rgba(255, 255, 255, 0.14);
@@ -31,67 +38,18 @@ export const RecordItem = styled.div`
 	}
 `
 
-export const Score = styled.div`
-	position: relative;
-
-	width: 61px;
-	height: 61px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-
-	color: white;
-
-	border-radius: 50%;
-	background: rgba(0, 0, 0, 0.2);
-
-	font-weight: 900;
-	font-size: 22px;
-	line-height: 26px;
-	z-index: 0;
-
-	&::after {
-		content: '';
-		position: absolute;
-		width: 41px;
-		height: 41px;
-		border-radius: 50%;
-		background: rgba(0, 0, 0, 0.2);
-		z-index: 0;
-	}
-`
-
-export const PlusOne = styled.span<{animate: boolean}>`
-	position: absolute;
-	bottom: -20px;
-	right: -20px;
-	font-weight: 700;
-	font-size: 22px;
-	line-height: 27px;
-	color: rgba(255, 255, 255, 0.8);
-
-	animation-duration: 0.5s;
-	animation-name:  ${props => props.animate ? "fadeup" : "inherit"}; ;
-
-	@keyframes fadeup {
-		0% {
-			color: rgba(255, 255, 255, 0);
-		}
-
-		50% {
-			color: rgba(255, 255, 255, 0.8);
-		}
-
-		100% {
-			color: rgba(255, 255, 255, 0);
-		}
-	}
-`
-
 export const RecordTitle = styled.div`
-	margin-bottom: 9px;
+	margin-bottom: 2px;
+	font-size: 13px;
+	font-weight: 300;
 `
 
 export const RecordValue = styled.div`
 	z-index: 4;
+	font-size: 16px;
+	font-weight: 900;
+`
+export const InfoWrapper = styled.div`
+	display: flex;
+	margin-top: 40px;
 `

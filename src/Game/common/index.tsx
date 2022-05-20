@@ -8,26 +8,53 @@ export const GameLink = styled(Link)<{ lowLight: boolean }>`
 	text-decoration: underline;
 	opacity: ${props => (props.lowLight ? '0.5' : '1')};
 `
+export const GAME_OVER_BG = 'linear-gradient(180.17deg, #5F55FF 0.15%, #6070FF 56.75%, #BB78F0 99.85%);'
 
 export const GameUIContainer = styled.div<{ marginBottom?: number }>`
 	margin-bottom: ${props => (props.marginBottom ? `${props.marginBottom} px` : '32px')};
 `
 
 export const Title = styled.h1`
-	font-size: 18px;
+	font-weight: 700;
+	font-size: 23px;
+
 	text-align: center;
+	color: #ffffff;
+
+	text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.13);
 `
 
 export const GameButton = styled.button`
+	position: relative;
 	width: 100%;
-	border-radius: 14px;
-	background-color: green;
+
 	padding: 20px;
+
+	font-weight: 600;
+	font-size: 20px;
+	color: #ffffff;
+
+	background: linear-gradient(89.43deg, #0f2fff 0.93%, #7a31cf 80.37%);
+	box-shadow: 0px 2px 0px 1px rgba(0, 0, 0, 0.27);
+	border-radius: 8px;
+
+	&::after {
+		content: '';
+		position: absolute;
+		top: 3px;
+		left: 0;
+		width: 95%;
+		height: 4px;
+		margin: 0 6px;
+
+		background: rgba(255, 255, 255, 0.14);
+		border-radius: 19px;
+	}
 `
-export const MainGameLayout = styled.div<{ isWin: boolean }>`
+export const MainGameLayout = styled.div<{ isWin: boolean; bg?: string }>`
 	display: flex;
 	justify-content: center;
-	background: ${GAME_BG};
+	background: ${props => (props.bg ? props.bg : GAME_BG)};
 	height: 100%;
 
 	animation-duration: 2s;
@@ -56,8 +83,10 @@ export const GameLayout = styled.div`
 	flex-direction: column;
 	height: 100%;
 	padding: 32px;
+
+	font-family: 'Inter', 'Roboto', sans-serif;
 `
 
 export const GameLayoutCentred = styled(GameLayout)`
-	justify-content: center;
+	justify-content: space-between;
 `

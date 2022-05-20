@@ -44,6 +44,7 @@ const Header: React.FC<IGameHeaderProps> = ({ score, level, plusNumber = "", tit
 						score={score}
 						bestScore={null}
 						level={level}
+						isGameOver={isGameOver}
 					/>
 				</GameUIContainer>
 			</GameUIContainer>

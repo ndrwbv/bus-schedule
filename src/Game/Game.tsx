@@ -2,9 +2,18 @@ import { useEffect, useState } from 'react'
 import { MIN_ELEMENTS, MAX_MISS, INIT_SCORE, INIT_MISS, INIT_LEVEL, INIT_GAME_OVER, ONE_ROW } from './const'
 import Header from './Header/Header'
 import { calculateTimeLeft, generateGameLevel } from './helpers'
-import { GameButton, GameLayout, GameLayoutCentred, MainGameLayout } from './common'
+import {
+	GameButton,
+	GameLayout,
+	GameLayoutCentred,
+	GameUIContainer,
+	GAME_OVER_BG,
+	MainGameLayout,
+	Title,
+} from './common'
 import ProgressBar from './ProgressBar/ProgressBar'
 import * as S from './styled'
+import RecordTable from './RecordTable/RecordTable'
 
 type ID = number
 export interface IGameData {
@@ -180,16 +189,21 @@ const Game = () => {
 
 	if (isGameOver && !devMode)
 		return (
-			<MainGameLayout isWin={false}>
+			<MainGameLayout isWin={false} bg={GAME_OVER_BG}>
 				<GameLayoutCentred>
-					<Header
+					{/* <Header
 						score={score}
 						miss={miss}
 						level={level}
 						timeLeft={null}
-						title={'Игра окончена'}
+						title={'Продолжим?'}
 						isGameOver
-					/>
+					/> */}
+					<GameUIContainer>
+						<Title>Продолжим?</Title>
+					</GameUIContainer>
+
+					<RecordTable plusNumber={''} score={score} bestScore={null} level={level} isGameOver={isGameOver} />
 
 					<GameButton onClick={handleNewGame}>Играть еще</GameButton>
 				</GameLayoutCentred>

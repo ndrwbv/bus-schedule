@@ -39,3 +39,15 @@
   font-weight: 700;
   font-style: normal;
 }
+@font-face {
+  font-family: "Inter";
+  src: url("Inter-Black.ttf");
+  font-weight: 900;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("Inter-Light.ttf");
+  font-weight: 300;
+  font-style: normal;
+}

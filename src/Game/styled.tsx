@@ -33,7 +33,7 @@ export const GameCell = styled.button<{ selected: boolean; destroyed: boolean }>
 	justify-content: center;
 
 	font-weight: 700;
-	font-family: 'Inter', 'Roboto', sans-serif;
+
 	font-size: 14px;
 
 	max-width: 100px;

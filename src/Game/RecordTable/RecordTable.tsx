@@ -1,26 +1,55 @@
 import React from 'react'
-import { PlusOne, RecordItem, RecordTableContainer, RecordTitle, RecordValue, Score } from './styled'
+import { InfoWrapper, RecordItem, RecordTableContainer, RecordTitle, RecordValue } from './styled'
+import Score from 'Game/Score/Score'
+
+const RecordTableGameOver: React.FC<{
+	score: number
+	bestScore: number | null
+	level: number
+	plusNumber: string
+}> = ({ score, plusNumber, level }) => {
+	return (
+		<RecordTableContainer isColumn={true}>
+			<Score score={score} plusNumber={plusNumber} isBig />
+
+			<InfoWrapper>
+				<RecordItem>
+					<RecordTitle>уровень</RecordTitle>
+					<RecordValue>{level}</RecordValue>
+				</RecordItem>
+
+				<RecordItem style={{ marginLeft: '12px' }}>
+					<RecordTitle>рекорд</RecordTitle>
+					<RecordValue>{score}</RecordValue>
+				</RecordItem>
+			</InfoWrapper>
+		</RecordTableContainer>
+	)
+}
 
 const RecordTable: React.FC<{
 	score: number
 	bestScore: number | null
 	level: number
 	plusNumber: string
-}> = ({ score, plusNumber, bestScore }) => {
+	isGameOver?: boolean
+}> = props => {
+	const { score, plusNumber, level, isGameOver } = props
+
+	if (isGameOver) return <RecordTableGameOver {...props} />
+
 	return (
-		<RecordTableContainer>
+		<RecordTableContainer isColumn={!!isGameOver}>
 			<RecordItem>
-				<RecordTitle>Рекорд</RecordTitle>
+				<RecordTitle>рекорд</RecordTitle>
 				<RecordValue>{score}</RecordValue>
 			</RecordItem>
 
-			<Score>
-				<RecordValue>{score}</RecordValue>
-				<PlusOne animate={plusNumber.length !== 0}>{plusNumber}</PlusOne>
-			</Score>
+			<Score score={score} plusNumber={plusNumber} isBig={isGameOver} />
 
 			<RecordItem>
-				<RecordValue>{bestScore ?? '-'}</RecordValue>
+				<RecordTitle>уровень</RecordTitle>
+				<RecordValue>{level}</RecordValue>
 			</RecordItem>
 		</RecordTableContainer>
 	)
