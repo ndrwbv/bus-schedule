@@ -16,7 +16,6 @@ import ProgressBar from './ProgressBar/ProgressBar'
 import * as S from './styled'
 import RecordTable from './RecordTable/RecordTable'
 import { GAME_WIN_BG } from './common'
-import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript'
 
 type ID = number
 export interface IGameData {
@@ -146,7 +145,7 @@ const Game = () => {
 	useEffect(() => {
 		setIsMiss(true)
 	}, [miss])
-	
+
 	useEffect(() => {
 		if (isNewLevelWin) {
 			setTimeout(() => {
