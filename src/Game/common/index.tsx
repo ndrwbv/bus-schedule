@@ -19,7 +19,7 @@ export const GameUIContainer = styled.div<{ marginBottom?: number }>`
 
 export const Title = styled.h1`
 	font-weight: 700;
-	font-size: 23px;
+	font-size: 32px;
 
 	text-align: center;
 	color: #ffffff;
