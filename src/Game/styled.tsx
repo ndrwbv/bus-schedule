@@ -101,7 +101,7 @@ export const GameReaction = styled.div<{ animate: boolean; bg: string }>`
 	height: 100%;
 
 	opacity: 0;
-	animation-duration: 1s;
+	animation-duration: 0.5s;
 	animation-name: ${props => (props.animate ? 'reaction' : 'inherit')};
 
 	background: ${props => props.bg};

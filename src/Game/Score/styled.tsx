@@ -3,8 +3,6 @@ import styled from 'styled-components'
 export const Score = styled.div<{ isBig: boolean }>`
 	position: relative;
 
-	/* padding: ${props => (props.isBig ? '39px' : '15px')}; */
-
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -64,9 +62,25 @@ export const PlusOne = styled.span<{ animate: boolean }>`
 	}
 `
 
-export const StartContainer = styled.div<{isBig: boolean}>`
+export const StartContainer = styled.div<{ isBig: boolean }>`
 	position: absolute;
 	top: 10px;
-	right: ${props => props.isBig ? "-45px" : "-31px" };
+	right: ${props => (props.isBig ? '-55px' : '-31px')};
 	z-index: 4;
+
+	animation: ${props => (props.isBig ? 'scale infinite 2s' : 'unset')};
+
+	@keyframes scale {
+		0% {
+			transform: scale(1.1);
+		}
+
+		50% {
+			transform: scale(1);
+		}
+
+		100% {
+			transform: scale(1.1);
+		}
+	}
 `

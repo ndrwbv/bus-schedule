@@ -1,5 +1,14 @@
 import { useEffect, useState } from 'react'
-import { MIN_ELEMENTS, MAX_MISS, INIT_SCORE, INIT_MISS, INIT_LEVEL, INIT_GAME_OVER, ONE_ROW } from './const'
+import {
+	MIN_ELEMENTS,
+	MAX_MISS,
+	INIT_SCORE,
+	INIT_MISS,
+	INIT_LEVEL,
+	INIT_GAME_OVER,
+	ONE_ROW,
+	ANIMATION_DURATION,
+} from './const'
 import Header from './Header/Header'
 import { calculateTimeLeft, generateGameLevel } from './helpers'
 import {
@@ -101,6 +110,7 @@ const Game = () => {
 
 			if (isMissed) {
 				setMiss(prev => prev + 1)
+				setIsMiss(true)
 			}
 
 			if (isWin) {
@@ -143,15 +153,11 @@ const Game = () => {
 	}
 
 	useEffect(() => {
-		setIsMiss(true)
-	}, [miss])
-
-	useEffect(() => {
 		if (isNewLevelWin) {
 			setTimeout(() => {
 				setNewLeveWin(false)
 				!shoudlShowplusNumber && setShouldShowplusNumber(true)
-			}, 2000)
+			}, ANIMATION_DURATION)
 		}
 	}, [isNewLevelWin, shoudlShowplusNumber])
 
@@ -159,7 +165,7 @@ const Game = () => {
 		if (isMiss) {
 			setTimeout(() => {
 				setIsMiss(false)
-			}, 1000)
+			}, ANIMATION_DURATION)
 		}
 	}, [isMiss])
 
@@ -245,7 +251,10 @@ const Game = () => {
 				<S.WhiteTextBlock>Помоги работнику томскавтотранс найти дубли в расписании</S.WhiteTextBlock>
 			</GameLayout>
 
-			<S.GameReaction animate={shoudlShowplusNumber ? isNewLevelWin || isMiss : false} bg={isNewLevelWin ? GAME_WIN_BG : GAME_MISS_BG} />
+			<S.GameReaction
+				animate={shoudlShowplusNumber ? isNewLevelWin || isMiss : false}
+				bg={isNewLevelWin ? GAME_WIN_BG : GAME_MISS_BG}
+			/>
 		</MainGameLayout>
 	)
 }

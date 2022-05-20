@@ -61,7 +61,7 @@ export const MainGameLayout = styled.div<{ isWin: boolean; bg?: string }>`
 `
 
 export const GameLayout = styled.div`
-z-index: 999;
+	z-index: 999;
 	max-width: 550px;
 	width: 100%;
 
@@ -74,5 +74,4 @@ z-index: 999;
 	font-family: 'Inter', 'Roboto', sans-serif;
 `
 
-export const GameLayoutCentred = styled(GameLayout)`
-`
+export const GameLayoutCentred = styled(GameLayout)``

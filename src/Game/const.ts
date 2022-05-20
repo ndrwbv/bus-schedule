@@ -7,3 +7,5 @@ export const INIT_SCORE = 0;
 export const INIT_MISS = 0;
 export const INIT_LEVEL = 1;
 export const INIT_GAME_OVER = false;
+
+export const ANIMATION_DURATION = 500;
