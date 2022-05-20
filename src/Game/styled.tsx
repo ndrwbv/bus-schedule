@@ -8,11 +8,11 @@ export const GameContainer = styled.div<{ animate: boolean }>`
 	grid-gap: 9px;
 
 	animation-duration: 2s;
-	animation-name:  ${props => props.animate ? "fadeup" : "inherit"}; ;
+	animation-name: ${props => (props.animate ? 'fadeup' : 'inherit')};
 
 	@keyframes fadeup {
 		0% {
-			opacity: 0;
+			opacity: 0.6;
 		}
 
 		100% {
@@ -78,4 +78,46 @@ export const GameTitle = styled.h1`
 	font-weight: bold;
 	font-size: 24px;
 	margin-bottom: 24px;
+`
+
+export const WhiteTextBlock = styled.div`
+	font-weight: 600;
+	line-height: 22px;
+	font-size: 14px;
+
+	color: #ffffff;
+
+	background: rgba(0, 0, 0, 0.25);
+	border-radius: 14px;
+
+	padding: 11px 12px;
+`
+
+export const GameReaction = styled.div<{ animate: boolean; bg: string }>`
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+
+	opacity: 0;
+	animation-duration: 1s;
+	animation-name: ${props => (props.animate ? 'reaction' : 'inherit')};
+
+	background: ${props => props.bg};
+
+	z-index: 0;
+	@keyframes reaction {
+		0% {
+			opacity: 0;
+		}
+
+		50% {
+			opacity: 1;
+		}
+
+		100% {
+			opacity: 0;
+		}
+	}
 `

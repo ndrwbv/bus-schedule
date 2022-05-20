@@ -7,6 +7,7 @@ import {
 	GameLayout,
 	GameLayoutCentred,
 	GameUIContainer,
+	GAME_MISS_BG,
 	GAME_OVER_BG,
 	MainGameLayout,
 	Title,
@@ -14,6 +15,8 @@ import {
 import ProgressBar from './ProgressBar/ProgressBar'
 import * as S from './styled'
 import RecordTable from './RecordTable/RecordTable'
+import { GAME_WIN_BG } from './common'
+import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript'
 
 type ID = number
 export interface IGameData {
@@ -34,6 +37,7 @@ const Game = () => {
 	const [date, setDate] = useState(new Date().getTime())
 	const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(date))
 	const [isNewLevelWin, setNewLeveWin] = useState(true)
+	const [isMiss, setIsMiss] = useState(true)
 	const [isPairWin, setPairWin] = useState(false)
 	const [shoudlShowplusNumber, setShouldShowplusNumber] = useState(false)
 
@@ -69,6 +73,7 @@ const Game = () => {
 		setMiss(INIT_MISS)
 		setDate(new Date().getTime())
 		setNewLeveWin(true)
+		setIsMiss(true)
 		setShouldShowplusNumber(false)
 	}
 
@@ -139,6 +144,10 @@ const Game = () => {
 	}
 
 	useEffect(() => {
+		setIsMiss(true)
+	}, [miss])
+	
+	useEffect(() => {
 		if (isNewLevelWin) {
 			setTimeout(() => {
 				setNewLeveWin(false)
@@ -146,6 +155,14 @@ const Game = () => {
 			}, 2000)
 		}
 	}, [isNewLevelWin, shoudlShowplusNumber])
+
+	useEffect(() => {
+		if (isMiss) {
+			setTimeout(() => {
+				setIsMiss(false)
+			}, 1000)
+		}
+	}, [isMiss])
 
 	useEffect(() => {
 		if (isPairWin) {
@@ -191,14 +208,6 @@ const Game = () => {
 		return (
 			<MainGameLayout isWin={false} bg={GAME_OVER_BG}>
 				<GameLayoutCentred>
-					{/* <Header
-						score={score}
-						miss={miss}
-						level={level}
-						timeLeft={null}
-						title={'Продолжим?'}
-						isGameOver
-					/> */}
 					<GameUIContainer>
 						<Title>Продолжим?</Title>
 					</GameUIContainer>
@@ -234,7 +243,10 @@ const Game = () => {
 						</S.GameCell>
 					))}
 				</S.GameContainer>
+				<S.WhiteTextBlock>Помоги работнику томскавтотранс найти дубли в расписании</S.WhiteTextBlock>
 			</GameLayout>
+
+			<S.GameReaction animate={shoudlShowplusNumber ? isNewLevelWin || isMiss : false} bg={isNewLevelWin ? GAME_WIN_BG : GAME_MISS_BG} />
 		</MainGameLayout>
 	)
 }

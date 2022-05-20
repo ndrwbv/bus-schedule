@@ -67,6 +67,6 @@ export const PlusOne = styled.span<{ animate: boolean }>`
 export const StartContainer = styled.div<{isBig: boolean}>`
 	position: absolute;
 	top: 10px;
-	right: ${props => props.isBig ? "-45px" : "-25px" };
+	right: ${props => props.isBig ? "-45px" : "-31px" };
 	z-index: 4;
 `

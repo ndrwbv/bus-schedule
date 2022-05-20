@@ -1,14 +1,16 @@
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
-const GAME_BG = 'linear-gradient(180.17deg, #723CB7 0.15%, #7C86E7 65.58%, #336CFF 99.85%)'
-const GAME_WIN_BG = 'linear-gradient(180.17deg, #723CB7 0.15%, #FF47E2 99.85%)'
+export const GAME_BG = 'linear-gradient(180.17deg, #9C45C4 0.15%, #723CB7 26.11%, #336CFF 99.85%);'
+export const GAME_WIN_BG = 'linear-gradient(180.17deg, #723CB7 0.15%, #47FF7B 99.85%)'
+export const GAME_MISS_BG = 'linear-gradient(180.17deg, #723CB7 0.15%, #FF4747 99.85%)'
+export const GAME_OVER_BG = 'linear-gradient(180.17deg, #5F55FF 0.15%, #6070FF 56.75%, #BB78F0 99.85%);'
+
 export const GameLink = styled(Link)<{ lowLight: boolean }>`
 	color: #0364f6;
 	text-decoration: underline;
 	opacity: ${props => (props.lowLight ? '0.5' : '1')};
 `
-export const GAME_OVER_BG = 'linear-gradient(180.17deg, #5F55FF 0.15%, #6070FF 56.75%, #BB78F0 99.85%);'
 
 export const GameUIContainer = styled.div<{ marginBottom?: number }>`
 	margin-bottom: ${props => (props.marginBottom ? `${props.marginBottom} px` : '32px')};
@@ -56,37 +58,21 @@ export const MainGameLayout = styled.div<{ isWin: boolean; bg?: string }>`
 	justify-content: center;
 	background: ${props => (props.bg ? props.bg : GAME_BG)};
 	height: 100%;
-
-	animation-duration: 2s;
-	animation-name: ${props => (props.isWin ? 'win' : 'inherit')};
-
-	@keyframes win {
-		0% {
-			background: ${GAME_BG};
-		}
-
-		50% {
-			background: ${GAME_WIN_BG};
-		}
-
-		100% {
-			background: ${GAME_BG};
-		}
-	}
 `
 
 export const GameLayout = styled.div`
+z-index: 999;
 	max-width: 550px;
 	width: 100%;
 
 	display: flex;
 	flex-direction: column;
 	height: 100%;
-	padding: 32px;
+	padding: 55px 32px 15px 32px;
+	justify-content: space-between;
 
 	font-family: 'Inter', 'Roboto', sans-serif;
 `
 
 export const GameLayoutCentred = styled(GameLayout)`
-	justify-content: space-between;
 `
