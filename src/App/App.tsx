@@ -4,7 +4,7 @@ import { fetchInfo, fetchSchedule } from 'api'
 import { LinksBlock, MainLayout } from 'components/Schedule/styled'
 
 import Logo from 'components/Logo/Logo'
-import { LogoContainer, LogoInner } from 'components/Logo/styled'
+import { HeaderInner, HeaderContainer } from 'components/Logo/styled'
 
 import Schedule from '../components/Schedule/Schedule'
 import { Container, GrayText } from 'components/common'
@@ -20,6 +20,7 @@ import WriteMe from 'components/WriteMe/WriteMe'
 
 import { AppContainer, Footer } from './styled'
 import { Link } from 'react-router-dom'
+import Share from 'components/Share/Share'
 
 const currentDay = new Date().getDay()
 const nextDay = getNextDay(currentDay)
@@ -30,11 +31,12 @@ function App({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSchedule }
 	return (
 		<ScheduleProvider currentDay={c} nextDay={n} fetchSchedule={fs} fetchInfo={fi}>
 			<AppContainer>
-				<LogoInner>
-					<LogoContainer>
+				<HeaderContainer>
+					<HeaderInner>
 						<Logo />
-					</LogoContainer>
-				</LogoInner>
+						<Share />
+					</HeaderInner>
+				</HeaderContainer>
 				<MainLayout>
 					<Schedule />
 
