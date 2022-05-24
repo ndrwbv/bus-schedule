@@ -41,7 +41,7 @@ function Share() {
 
 					<ShareItemContainer>
 						<QRCodeContainer>
-							<QRCode size={166} value="https://severbus.ru" bgColor="#F2F4F4" />
+							<QRCode size={166} value="https://severbus.ru?utm=scan" bgColor="#F2F4F4" />
 						</QRCodeContainer>
 					</ShareItemContainer>
 
