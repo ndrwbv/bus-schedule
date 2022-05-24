@@ -104,21 +104,14 @@ const Popup: React.FC<any> = ({ isOpen = false, handleClose, children, contentRe
 	}, [isOpen])
 
 	return (
-		<PopupStyles
-			//   className={cls([
-			//     styles["popup-container"],
-			//     isOpen && styles["popup-container--open"],
-			//     isClosing && styles["popup-container--closing"],
-			//   ])}
-		
-		>
+		<PopupStyles>
 			<div
 				className={cls([
 					'popup-container',
 					isOpen && 'popup-container--open',
 					isClosing && 'popup-container--closing',
 				])}
-                style={{ zIndex: isClosing || isOpen ? 30 : -1 }}
+				style={{ zIndex: isClosing || isOpen ? 30 : -1 }}
 			>
 				<div className={'popup-container__overlay'} onClick={onClose} />
 
@@ -128,15 +121,7 @@ const Popup: React.FC<any> = ({ isOpen = false, handleClose, children, contentRe
 					onTouchStart={dragStart}
 					onTouchEnd={dragEnd}
 					onTouchMove={drag}
-					// onMouseDown={dragStart}
-					// onMouseUp={dragEnd}
-					// onMouseMove={drag}
 				>
-					{/* <Button
-          type={ButtonTypes.CLOSE}
-          onClick={onClose}
-          classes={styles["popup-close"]}
-        /> */}
 					<div className={'popup__header'}>
 						<span className={'popup__close'}></span>
 					</div>
