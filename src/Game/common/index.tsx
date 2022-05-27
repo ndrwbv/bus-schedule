@@ -69,7 +69,7 @@ export const GameLayout = styled.div`
 	display: flex;
 	flex-direction: column;
 	height: 100%;
-	padding: 55px 32px 15px 32px;
+	padding: 35px 32px 25px 32px;
 	justify-content: space-between;
 
 	font-family: 'Inter', 'Roboto', sans-serif;

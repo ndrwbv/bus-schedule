@@ -121,3 +121,17 @@ export const GameReaction = styled.div<{ animate: boolean; bg: string }>`
 		}
 	}
 `
+
+export const BackToSchedule = styled.article`
+	padding: 12px;
+	color: white;
+	border-radius: 14px;
+	text-align: center;
+
+	margin-bottom: 12px;
+
+	a {
+		color: white;
+		text-decoration: underline;
+	}
+`

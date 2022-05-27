@@ -1,4 +1,6 @@
 import React, { useContext, createContext, useCallback, useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import queryString from 'query-string'
 
 import { StopsInOptions } from 'consts/stopsInOptions'
 import { StopsOutOptions } from 'consts/stopsOutOptions'
@@ -95,19 +97,65 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 	const { SCHEDULE, holidays } = useSchedule(fetchSchedule)
 	const [todaysHoliday, setTodaysHoliday] = useState<IHoliday | null>(null)
 
+	let [searchParams, setSearchParams] = useSearchParams()
+
+	const getDirectionKeys = useCallback(
+		(d: Directions) => (d ? Object.keys(SCHEDULE[d][currentDayKey]) : []),
+		[SCHEDULE, currentDayKey],
+	)
+
+	useEffect(() => {
+		const parsed = queryString.parse(searchParams.toString())
+
+		const _busStop = parsed['b'] as StopKeys
+		const _direction: Directions | undefined = ['in', 'out'].includes(parsed['d'] as Directions)
+			? (parsed['d'] as Directions)
+			: undefined
+
+		if (!_direction || !_busStop) return
+
+		if (_busStop) {
+			const scheduleKeys = getDirectionKeys(_direction)
+			const isBusStopNotInKeys = !scheduleKeys.includes(_busStop)
+
+			if (isBusStopNotInKeys) {
+				setBusStop(scheduleKeys[0] as StopKeys)
+			} else {
+				setBusStop(_busStop)
+			}
+		}
+
+		if (_direction) {
+			changeDirection(_direction as Directions)
+		}
+	}, [searchParams, getDirectionKeys])
+
+	const changeDirection = (_direction: Directions) => {
+		setStopsOptions(_direction === 'in' ? StopsInOptions : StopsOutOptions)
+		setDirection(_direction)
+	}
+
+	useEffect(() => {
+		setSearchParams(new URLSearchParams({ ...queryString.parse(searchParams.toString()), d: direction }))
+	}, [direction, setSearchParams, searchParams])
+
+	useEffect(() => {
+		if (busStop === null) return
+		setSearchParams(new URLSearchParams({ ...queryString.parse(searchParams.toString()), b: busStop }))
+	}, [busStop, setSearchParams, searchParams])
+
 	const handleChangeDirection = useCallback(
 		(_direction: Directions) => {
-			const scheduleKeys = Object.keys(SCHEDULE[_direction][currentDayKey])
+			changeDirection(_direction)
+
+			const scheduleKeys = getDirectionKeys(_direction)
 			if (busStop && !scheduleKeys.includes(busStop)) {
 				setBusStop(scheduleKeys[0] as StopKeys)
 			}
 
-			setStopsOptions(_direction === 'in' ? StopsInOptions : StopsOutOptions)
-			setDirection(_direction)
-
 			AndrewLytics('changeDirection')
 		},
-		[SCHEDULE, currentDayKey, busStop],
+		[busStop, getDirectionKeys],
 	)
 
 	const handleChangeBusStop = (busStop: StopKeys, analyticKey: string = 'selectBusStop') => {

@@ -24,6 +24,7 @@ import {
 import ProgressBar from './ProgressBar/ProgressBar'
 import * as S from './styled'
 import RecordTable from './RecordTable/RecordTable'
+import { Link, useSearchParams } from 'react-router-dom'
 
 type ID = number
 export interface IGameData {
@@ -47,6 +48,7 @@ const generateAmount = (currentLevel: number) => {
 
 const devMode = localStorage.getItem('devMode') === '1'
 const Game = () => {
+	const [searchParams] = useSearchParams()
 	const [levelData, setLevelData] = useState<IGameData[]>(generateGameLevel(MIN_ELEMENTS))
 	const [score, setScore] = useState(INIT_SCORE)
 	const [miss, setMiss] = useState(INIT_MISS)
@@ -263,6 +265,10 @@ const Game = () => {
 		return (
 			<MainGameLayout isWin={false} bg={GAME_OVER_BG}>
 				<GameLayoutCentred>
+					<S.BackToSchedule>
+						<Link to={`/?${searchParams.toString()}`}>Вернуться к расписанию</Link>
+					</S.BackToSchedule>
+
 					<GameUIContainer>
 						<Title>Продолжим?</Title>
 					</GameUIContainer>

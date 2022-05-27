@@ -19,7 +19,7 @@ import { AndrewLytics } from 'helpers/analytics'
 import WriteMe from 'components/WriteMe/WriteMe'
 
 import { AppContainer, Footer } from './styled'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import Share from 'components/Share/Share'
 
 const currentDay = new Date().getDay()
@@ -27,6 +27,7 @@ const nextDay = getNextDay(currentDay)
 
 function App({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSchedule }) {
 	const { t } = useTranslation()
+	const [searchParams] = useSearchParams()
 
 	return (
 		<ScheduleProvider currentDay={c} nextDay={n} fetchSchedule={fs} fetchInfo={fi}>
@@ -69,9 +70,7 @@ function App({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSchedule }
 							</GrayText>
 
 							<GrayText>
-								<Link to="/game">
-									Играть
-								</Link>
+								<Link to={`/game?${searchParams.toString()}`}>Играть</Link>
 							</GrayText>
 						</LinksBlock>
 					</Container>
