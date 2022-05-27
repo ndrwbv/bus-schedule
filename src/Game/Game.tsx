@@ -118,7 +118,6 @@ const Game = () => {
 	}
 
 	const handleClickTimeCode = (_cell: IGameData) => {
-		console.log('clicked', _cell.destroyed || _cell.selected)
 		if (_cell.destroyed || _cell.selected) return
 
 		setLevelData(prevState => {
@@ -219,6 +218,8 @@ const Game = () => {
 			const amount = generateAmount(level)
 			setLevelData(generateGameLevel(amount))
 			setNewLeveWin(true)
+
+			AndrewLytics('game.newLevel')
 		}
 	}, [levelData, level])
 
