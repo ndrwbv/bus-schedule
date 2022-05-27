@@ -70,7 +70,12 @@ function App({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSchedule }
 							</GrayText>
 
 							<GrayText>
-								<Link to={`/game?${searchParams.toString()}`}>Играть</Link>
+								<Link
+									to={`/game?${searchParams.toString()}`}
+									onClick={() => AndrewLytics('game.footerPlay')}
+								>
+									Играть
+								</Link>
 							</GrayText>
 						</LinksBlock>
 					</Container>

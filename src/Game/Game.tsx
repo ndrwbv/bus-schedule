@@ -25,6 +25,7 @@ import ProgressBar from './ProgressBar/ProgressBar'
 import * as S from './styled'
 import RecordTable from './RecordTable/RecordTable'
 import { Link, useSearchParams } from 'react-router-dom'
+import { AndrewLytics } from 'helpers/analytics'
 
 type ID = number
 export interface IGameData {
@@ -112,6 +113,8 @@ const Game = () => {
 		setIsMiss(true)
 		setShouldShowplusNumber(false)
 		setIsHighScore(false)
+
+		AndrewLytics('game.newGame')
 	}
 
 	const handleClickTimeCode = (_cell: IGameData) => {
@@ -266,7 +269,9 @@ const Game = () => {
 			<MainGameLayout isWin={false} bg={GAME_OVER_BG}>
 				<GameLayoutCentred>
 					<S.BackToSchedule>
-						<Link to={`/?${searchParams.toString()}`}>Вернуться к расписанию</Link>
+						<Link to={`/?${searchParams.toString()}`} onClick={() => AndrewLytics('game.backToSchedule')}>
+							Вернуться к расписанию
+						</Link>
 					</S.BackToSchedule>
 
 					<GameUIContainer>
