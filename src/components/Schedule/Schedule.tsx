@@ -29,6 +29,7 @@ import {
 	selectStyles,
 	TimeStamp,
 } from './styled'
+import Complains from 'components/Complains/Complains'
 
 interface IScheduleProps {}
 const Schedule: React.FC<IScheduleProps> = () => {
@@ -133,6 +134,12 @@ const Schedule: React.FC<IScheduleProps> = () => {
 						left={left}
 						shouldShowFastReply={shouldShowFastReply}
 					/>
+				</Card>
+			</Container>
+
+			<Container>
+				<Card>
+					<Complains />
 				</Card>
 			</Container>
 

@@ -21,6 +21,7 @@ import WriteMe from 'components/WriteMe/WriteMe'
 import { AppContainer, Footer } from './styled'
 import { Link, useSearchParams } from 'react-router-dom'
 import Share from 'components/Share/Share'
+import ComplainsProvider from 'context/ComplainsContext'
 
 const currentDay = new Date().getDay()
 const nextDay = getNextDay(currentDay)
@@ -31,56 +32,58 @@ function App({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSchedule }
 
 	return (
 		<ScheduleProvider currentDay={c} nextDay={n} fetchSchedule={fs} fetchInfo={fi}>
-			<AppContainer>
-				<HeaderContainer>
-					<HeaderInner>
-						<Logo />
-						<Share />
-					</HeaderInner>
-				</HeaderContainer>
-				<MainLayout>
-					<Schedule />
+			<ComplainsProvider>
+				<AppContainer>
+					<HeaderContainer>
+						<HeaderInner>
+							<Logo />
+							<Share />
+						</HeaderInner>
+					</HeaderContainer>
+					<MainLayout>
+						<Schedule />
 
-					<Container>
-						<WriteMe />
-					</Container>
-				</MainLayout>
+						<Container>
+							<WriteMe />
+						</Container>
+					</MainLayout>
 
-				<Footer>
-					<Container>
-						<LinksBlock>
-							<GrayText>
-								{t('Schedule taken from website')}{' '}
-								<a href={config.AVTOTRANS_LINK} target="_blank" rel="noreferrer">
-									{AVTOTRANS}
-								</a>
-							</GrayText>
+					<Footer>
+						<Container>
+							<LinksBlock>
+								<GrayText>
+									{t('Schedule taken from website')}{' '}
+									<a href={config.AVTOTRANS_LINK} target="_blank" rel="noreferrer">
+										{AVTOTRANS}
+									</a>
+								</GrayText>
 
-							<GrayText>{COPYRIGHT}</GrayText>
+								<GrayText>{COPYRIGHT}</GrayText>
 
-							<GrayText>
-								<a
-									href={config.ABOUT_LINK}
-									target="_blank"
-									rel="noreferrer"
-									onClick={() => AndrewLytics('aboutLink')}
-								>
-									{t('About')}
-								</a>
-							</GrayText>
+								<GrayText>
+									<a
+										href={config.ABOUT_LINK}
+										target="_blank"
+										rel="noreferrer"
+										onClick={() => AndrewLytics('aboutLink')}
+									>
+										{t('About')}
+									</a>
+								</GrayText>
 
-							<GrayText>
-								<Link
-									to={`/game?${searchParams.toString()}`}
-									onClick={() => AndrewLytics('game.footerPlay')}
-								>
-									Играть
-								</Link>
-							</GrayText>
-						</LinksBlock>
-					</Container>
-				</Footer>
-			</AppContainer>
+								<GrayText>
+									<Link
+										to={`/game?${searchParams.toString()}`}
+										onClick={() => AndrewLytics('game.footerPlay')}
+									>
+										Играть
+									</Link>
+								</GrayText>
+							</LinksBlock>
+						</Container>
+					</Footer>
+				</AppContainer>
+			</ComplainsProvider>
 		</ScheduleProvider>
 	)
 }
