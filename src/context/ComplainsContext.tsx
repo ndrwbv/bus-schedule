@@ -1,5 +1,5 @@
 import useComplains, { IComplains, IComplainsResponse } from 'components/Complains/useComplains'
-import React, { useContext, createContext, useEffect, useState } from 'react'
+import React, { useContext, createContext } from 'react'
 
 const DEFAULT_PROPS = {
 	complains: [],
@@ -18,7 +18,6 @@ interface IProviderProps {
 }
 export const ComplainsProvider = ({ children }: IProviderProps) => {
 	const { complains, addComplain } = useComplains()
-	const [visitTime, setVisitTime] = useState(new Date())
 
 	return (
 		<ComplainsContext.Provider

@@ -17,7 +17,7 @@ export interface IComplainsResponse extends IComplains {
 function useComplains() {
 	const [complains, setComplains] = useState<IComplainsResponse[]>([])
 
-	useEffect(() => {
+	const fetchComplains = () => {
 		fetch('https://popooga.ru/graphql', {
 			headers: {
 				accept: '*/*',
@@ -36,6 +36,17 @@ function useComplains() {
 		})
 			.then(res => res.json())
 			.then(res => setComplains(res.data.findComplains))
+	}
+
+	useEffect(() => {
+		fetchComplains()
+		const interval = setInterval(() => {
+			fetchComplains()
+		}, 5000)
+
+		return () => {
+			clearInterval(interval)
+		}
 	}, [])
 
 	const addComplain = (data: IComplains) => {
