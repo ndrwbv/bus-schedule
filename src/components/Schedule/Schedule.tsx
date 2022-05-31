@@ -129,7 +129,6 @@ const Schedule: React.FC<IScheduleProps> = () => {
 
 	const currentBusStop = useMemo(() => stopsOptions.find(stop => stop.value === busStop), [stopsOptions, busStop])
 
-	console.log(new Date(closestTime).getMinutes())
 	return (
 		<>
 			<Info />

@@ -23,6 +23,7 @@ function Complains() {
 	const contentRef = React.useRef(null)
 
 	const latestTime = useMemo(() => {
+		if(complains.length === 0) return ""
 		const latest = complains[0]
 		return getHumanDate(latest.date)
 	}, [complains])
