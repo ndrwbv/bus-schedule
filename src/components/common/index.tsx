@@ -51,3 +51,34 @@ export const CardHeader = styled.p`
 	font-weight: 600;
 	font-size: 20px;
 `
+
+export type ButtonType = 'primary' | 'danger'
+export const CustomButton = styled.button<{
+	status: ButtonType
+	mt?: string
+}>`
+	width: 100%;
+	border: none;
+	border-radius: 13px;
+	background-color: ${props => (props.status === 'primary' ? '#1191FB' : '#FFB2B2')};
+	color: ${props => (props.status === 'primary' ? 'white' : '#9B2727')};
+	padding: 17px;
+
+	margin-top: ${props => props.mt};
+	font-weight: 600;
+
+	cursor: pointer;
+
+	&:disabled {
+		opacity: 0.5;
+	}
+`
+
+export const MiniButton = styled.button`
+	font-weight: 600;
+	font-size: 16px;
+	padding: 8px 17px;
+	background: #1191fb;
+	border-radius: 14px;
+	color: white;
+`

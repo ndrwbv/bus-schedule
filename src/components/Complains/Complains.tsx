@@ -1,18 +1,16 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import Popup, { PopupWrapper } from 'components/Popup/Popup'
 import ComplainMessage from './ComplainsMessage'
-import { ComplainsContainer } from './styled'
 import { useComplainsContext } from 'context/ComplainsContext'
-import React from 'react'
+import { MiniButton } from 'components/common'
 
-// сделать разделения зеленой и красной подложки по типу
-// в зависимости от этого типа показывать фаст реплаи 
-// сделать обязательно кнопку я сел и от нее считать опоздания 
+import { HeaderText } from 'components/Header/styled'
+import { ComplainsBlockContainer, ComplainsBlockText, ComplainsContainer, ComplainsLabel } from './styled'
 
 function Complains() {
 	const [isOpen, setIsOpen] = useState(false)
 
-	const { complains, addComplain } = useComplainsContext()
+	const { complains } = useComplainsContext()
 	const contentRef = React.useRef(null)
 
 	return (
@@ -23,27 +21,22 @@ function Complains() {
 						{complains.map(c => (
 							<ComplainMessage {...c} />
 						))}
-
-						<button
-							onClick={() => {
-								const d = new Date().toISOString()
-								console.log('d', d)
-								addComplain({
-									stop: 'В. Маяковского',
-									direction: 'in',
-									date: d,
-									type: 'earlier',
-									on: 15,
-								})
-							}}
-						>
-							Жаловаться
-						</button>
 					</PopupWrapper>
 				</div>
 			</Popup>
 
-			<ComplainsContainer onClick={() => setIsOpen(true)}>Жалобы сегодня {complains.length}</ComplainsContainer>
+			<ComplainsContainer onClick={() => setIsOpen(true)}>
+				<div>
+					<ComplainsBlockContainer>
+						<ComplainsBlockText>Жалобы сегодня {complains.length}</ComplainsBlockText>
+						<ComplainsLabel>последняя 10 минут назад</ComplainsLabel>
+					</ComplainsBlockContainer>
+
+					<HeaderText></HeaderText>
+				</div>
+
+				<MiniButton>смотреть</MiniButton>
+			</ComplainsContainer>
 		</>
 	)
 }

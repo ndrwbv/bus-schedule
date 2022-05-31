@@ -6,7 +6,7 @@ export const HeaderContainer = styled.div`
   justify-content: space-between;
   margin-bottom: 14px;
 `;
-export const HeaderText = styled.h1`
+export const HeaderText = styled.h2`
   font-size: 20px;
   font-weight: 600;
   margin-left: 6px;

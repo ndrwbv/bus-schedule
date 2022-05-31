@@ -11,9 +11,9 @@ import SelectBusStopText from '../SelectBusStopText'
 
 import Holiday from 'components/Holiday/Holiday'
 import { IHoliday } from 'interfaces/IHolidays'
-import { AddToFavoriteButton } from '../Schedule/styled'
 
 import { BusEstimation, HighLighted, HowMuchLeftContainer, NextBusContainer, TextWrapper } from './styled'
+import { CustomButton } from 'components/common'
 
 export const LeftToString: React.FC<{ left: ITime; busStop: StopKeys | null }> = ({ busStop, left }) => {
 	const { t } = useTranslation()
@@ -76,9 +76,9 @@ const HowMuchLeft: React.FC<{
 			</HowMuchLeftContainer>
 
 			{shouldShowFastReply && (
-				<AddToFavoriteButton status="add" mt="12px" onClick={handleClick} disabled={isComplainClicked}>
+				<CustomButton status="primary" mt="12px" onClick={handleClick} disabled={isComplainClicked}>
 					{isComplainClicked ? 'Спасибо за ответ!' : 'Я сел в автобус'}
-				</AddToFavoriteButton>
+				</CustomButton>
 			)}
 
 			{holiday && <Holiday />}

@@ -2,6 +2,8 @@ import styled from 'styled-components'
 
 export const ComplainsContainer = styled.div`
 	font-weight: bold;
+	display: flex;
+	justify-content: space-between;
 `
 
 export const MessageContainer = styled.article`
@@ -32,4 +34,19 @@ export const ComplainsStop = styled.p<{ isCurrentStop?: boolean }>`
 
 export const ComplainsDirection = styled.p`
 	text-align: right;
+`
+
+export const ComplainsLabel = styled.span`
+	font-weight: 400;
+	font-size: 12px;
+	color: #a5a5a5;
+`
+
+export const ComplainsBlockContainer = styled.div`
+	padding-left: 6px;
+`
+
+export const ComplainsBlockText = styled.p`
+	font-size: 20px;
+	font-weight: 600;
 `

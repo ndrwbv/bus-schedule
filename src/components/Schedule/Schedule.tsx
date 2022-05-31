@@ -8,7 +8,7 @@ import Info from '../Info/Info'
 import SelectBusStopText from '../SelectBusStopText'
 import HowMuchLeft from '../HowMuchLeft/HowMuchLeft'
 import InlineOptions from '../InlineOptions/InlineOptions'
-import { Card, Container } from 'components/common'
+import { Card, Container, CustomButton } from 'components/common'
 import OtherTimeBusses from 'components/OtherTimeBuses/OtherTimeBuses'
 
 import { AndrewLytics } from 'helpers/analytics'
@@ -19,7 +19,6 @@ import useFavoriteBusStop, { getFavoriteBusStop } from 'hooks/useFavoriteBusStop
 import { useScheduleContext } from 'context/ScheduleContext'
 
 import {
-	AddToFavoriteButton,
 	DirectionContainer,
 	DirectionPlaceholder,
 	DirectionText,
@@ -183,13 +182,13 @@ const Schedule: React.FC<IScheduleProps> = () => {
 					<OtherTime>{renderTodaysBusContent()}</OtherTime>
 
 					{busStop && (
-						<AddToFavoriteButton
-							status={isBusStopFavorite ? 'remove' : 'add'}
+						<CustomButton
+							status={isBusStopFavorite ? 'danger' : 'primary'}
 							mt="12px"
 							onClick={isBusStopFavorite ? handleRemoveFavoriteStatus : handleAddFavoriteStatus}
 						>
 							{isBusStopFavorite ? t('Remove stop from favorite') : t('Add stop to favorite')}
-						</AddToFavoriteButton>
+						</CustomButton>
 					)}
 				</Card>
 			</Container>
