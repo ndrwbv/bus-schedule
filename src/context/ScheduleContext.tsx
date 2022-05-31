@@ -53,6 +53,7 @@ const DEFAULT_PROPS = {
 	},
 	todaysHoliday: null,
 	currentDay: 1,
+	currentDayKey: 1
 }
 
 export const ScheduleContext = createContext<ContextProps>(DEFAULT_PROPS)
@@ -71,7 +72,8 @@ interface ContextProps {
 	nextDay: number
 	fetchInfo: () => FetchInfoResponse
 	todaysHoliday: IHoliday | null
-	currentDay: number
+	currentDay: number;
+	currentDayKey: number
 }
 
 const VISIT_TIME = new Date().toISOString()
@@ -238,6 +240,7 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 				fetchInfo,
 				todaysHoliday,
 				currentDay,
+				currentDayKey
 			}}
 		>
 			{children}

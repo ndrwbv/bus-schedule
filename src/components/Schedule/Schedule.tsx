@@ -30,12 +30,14 @@ import {
 } from './styled'
 import Complains from 'components/Complains/Complains'
 import { useComplainsContext } from 'context/ComplainsContext'
+import { calculateHowMuchIsLeft, getDateFromTimeCode } from 'helpers/schedule'
 
 interface IScheduleProps {}
 const Schedule: React.FC<IScheduleProps> = () => {
 	const {
 		busStop,
 		left,
+	closestTime,
 		closestTimeArray,
 		shouldShowFastReply,
 		stopsOptions,
@@ -43,6 +45,8 @@ const Schedule: React.FC<IScheduleProps> = () => {
 		handleChangeBusStop,
 		handleChangeDirection,
 		todaysHoliday,
+		SCHEDULE,
+		currentDayKey
 	} = useScheduleContext()
 	const { favoriteBusStops, saveFavoriteBusStops } = useFavoriteBusStop()
 	const { addComplain } = useComplainsContext()
@@ -87,12 +91,25 @@ const Schedule: React.FC<IScheduleProps> = () => {
 		const type = left.minutes > 40 ? 'later' : 'earlier'
 		const date = new Date().toISOString()
 
+		let on = left.minutes ?? 0;
+		if(left.minutes > 40) {
+			const d = new Date(closestTime);
+			const minutes = d.getMinutes()
+			const timeCode = `${d.getHours()}:${minutes <= 9 ? 0 : ""}${minutes}`
+			const indexOfSchedule = SCHEDULE[direction][currentDayKey][busStop].indexOf(timeCode)
+			const indexPrevSchedule = indexOfSchedule === 0 ? 0 : indexOfSchedule -1
+	
+			const closeDate = new Date(getDateFromTimeCode(SCHEDULE[direction][currentDayKey][busStop][indexPrevSchedule])).toISOString()
+			
+			on = calculateHowMuchIsLeft(closeDate).minutes ?? 0
+		}
+
 		addComplain({
 			stop: busStop,
 			direction: direction,
 			date: date,
 			type: type,
-			on: left.minutes,
+			on: on,
 		})
 
 		AndrewLytics('fastReply')
@@ -110,6 +127,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 
 	const currentBusStop = useMemo(() => stopsOptions.find(stop => stop.value === busStop), [stopsOptions, busStop])
 
+	console.log(new Date(closestTime).getMinutes())
 	return (
 		<>
 			<Info />
@@ -150,7 +168,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 						holiday={todaysHoliday}
 						busStop={busStop}
 						left={left}
-						shouldShowFastReply={shouldShowFastReply}
+						shouldShowFastReply={true}
 						onComplain={handleComplain}
 					/>
 				</Card>
