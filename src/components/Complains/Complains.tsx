@@ -23,9 +23,9 @@ function Complains() {
 	const contentRef = React.useRef(null)
 
 	const latestTime = useMemo(() => {
-		if(complains.length === 0) return ""
+		if (complains.length === 0) return 'сегодня ни одной жалобы'
 		const latest = complains[0]
-		return getHumanDate(latest.date)
+		return `последняя ${getHumanDate(latest.date)}`
 	}, [complains])
 
 	const handleOpenComplains = () => {
@@ -45,19 +45,21 @@ function Complains() {
 				</PopupContent>
 			</Popup>
 
-			<ComplainsContainer onClick={handleOpenComplains}>
+			<ComplainsContainer>
 				<div>
 					<ComplainsBlockContainer>
 						<ComplainsBlockText>
 							Жалобы <ComplainCount>{complains.length}</ComplainCount>
 						</ComplainsBlockText>
-						<ComplainsLabel>последняя {latestTime}</ComplainsLabel>
+						<ComplainsLabel>{latestTime}</ComplainsLabel>
 					</ComplainsBlockContainer>
 
 					<HeaderText></HeaderText>
 				</div>
 
-				<MiniButton>смотреть</MiniButton>
+				<MiniButton disabled={complains.length === 0} onClick={handleOpenComplains}>
+					смотреть
+				</MiniButton>
 			</ComplainsContainer>
 		</>
 	)

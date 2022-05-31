@@ -81,4 +81,8 @@ export const MiniButton = styled.button`
 	background: #1191fb;
 	border-radius: 14px;
 	color: white;
+
+	&:disabled {
+		opacity: 0.5;
+	}
 `
