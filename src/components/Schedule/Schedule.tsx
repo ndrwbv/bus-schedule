@@ -30,6 +30,7 @@ import {
 	TimeStamp,
 } from './styled'
 import Complains from 'components/Complains/Complains'
+import { useComplainsContext } from 'context/ComplainsContext'
 
 interface IScheduleProps {}
 const Schedule: React.FC<IScheduleProps> = () => {
@@ -45,6 +46,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 		todaysHoliday,
 	} = useScheduleContext()
 	const { favoriteBusStops, saveFavoriteBusStops } = useFavoriteBusStop()
+	const { addComplain } = useComplainsContext()
 
 	const { t } = useTranslation()
 
@@ -78,6 +80,23 @@ const Schedule: React.FC<IScheduleProps> = () => {
 		return closestTimeArray.length === 0
 			? t('No basses')
 			: closestTimeArray.map((d, index) => <TimeStamp key={`${d}-${index}`}>{d}</TimeStamp>)
+	}
+
+	const handleComplain = () => {
+		if (!busStop || left.minutes === null) return
+
+		const type = left.minutes > 40 ? 'later' : 'earlier'
+		const date = new Date().toISOString()
+
+		addComplain({
+			stop: busStop,
+			direction: direction,
+			date: date,
+			type: type,
+			on: left.minutes,
+		})
+
+		AndrewLytics('fastReply')
 	}
 
 	const favoriteList = useMemo(
@@ -133,6 +152,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 						busStop={busStop}
 						left={left}
 						shouldShowFastReply={shouldShowFastReply}
+						onComplain={handleComplain}
 					/>
 				</Card>
 			</Container>
@@ -165,6 +185,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 					{busStop && (
 						<AddToFavoriteButton
 							status={isBusStopFavorite ? 'remove' : 'add'}
+							mt="12px"
 							onClick={isBusStopFavorite ? handleRemoveFavoriteStatus : handleAddFavoriteStatus}
 						>
 							{isBusStopFavorite ? t('Remove stop from favorite') : t('Add stop to favorite')}

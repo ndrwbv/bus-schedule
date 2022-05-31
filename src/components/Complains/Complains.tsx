@@ -5,6 +5,10 @@ import { ComplainsContainer } from './styled'
 import { useComplainsContext } from 'context/ComplainsContext'
 import React from 'react'
 
+// сделать разделения зеленой и красной подложки по типу
+// в зависимости от этого типа показывать фаст реплаи 
+// сделать обязательно кнопку я сел и от нее считать опоздания 
+
 function Complains() {
 	const [isOpen, setIsOpen] = useState(false)
 
@@ -39,7 +43,7 @@ function Complains() {
 				</div>
 			</Popup>
 
-			<ComplainsContainer onClick={() => setIsOpen(true)}>Жалобы сегодня 2</ComplainsContainer>
+			<ComplainsContainer onClick={() => setIsOpen(true)}>Жалобы сегодня {complains.length}</ComplainsContainer>
 		</>
 	)
 }

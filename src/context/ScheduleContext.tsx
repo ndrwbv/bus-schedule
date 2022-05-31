@@ -74,6 +74,7 @@ interface ContextProps {
 	currentDay: number
 }
 
+const VISIT_TIME = new Date().toISOString()
 interface IProviderProps {
 	children: React.ReactElement
 	currentDay: number
@@ -86,7 +87,6 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 	const [left, setLeft] = useState<ITime>(DEFAULT_LEFT)
 	const [closestTimeArray, setClossestTimeArray] = useState<string[]>([])
 	const [closestTime, setClossestTime] = useState<string>('')
-
 	const [direction, setDirection] = useState<Directions>('out')
 	const [stopsOptions, setStopsOptions] = useState<IOption<StopKeysIn | StopKeysOut | null>[]>(StopsOutOptions)
 	const [shouldShowFastReply, setShouldShowFastReply] = useState<boolean>(false)
@@ -165,8 +165,9 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 
 	useEffect(() => {
 		if (left.hours === null) return
-
-		if (left?.minutes && (left?.minutes <= 15 || left?.minutes > 40)) {
+		const userTimeLeft = calculateHowMuchIsLeft(VISIT_TIME)
+		if (userTimeLeft.minutes === null || (userTimeLeft.hours === 0 && userTimeLeft.minutes <= 0)) return
+		if (left?.minutes && (left?.minutes <= 25 || left?.minutes > 40)) {
 			return setShouldShowFastReply(true)
 		}
 

@@ -1,27 +1,19 @@
-import React from 'react'
+import React, { useState } from 'react'
 import SVG from 'react-inlinesvg'
 import { useTranslation } from 'react-i18next'
 
 import { ITime } from 'interfaces/ITime'
 import { StopKeys } from 'interfaces/Stops'
-import { AndrewLytics } from 'helpers/analytics'
 import NextBus from 'img/next-bus.svg'
 
 import { ImageWrapper } from '../ImageWrapper'
-import InlineOptions from '../InlineOptions/InlineOptions'
 import SelectBusStopText from '../SelectBusStopText'
 
 import Holiday from 'components/Holiday/Holiday'
 import { IHoliday } from 'interfaces/IHolidays'
+import { AddToFavoriteButton } from '../Schedule/styled'
 
-import {
-	BusEstimation,
-	FastReplyContainer,
-	HighLighted,
-	HowMuchLeftContainer,
-	NextBusContainer,
-	TextWrapper,
-} from './styled'
+import { BusEstimation, HighLighted, HowMuchLeftContainer, NextBusContainer, TextWrapper } from './styled'
 
 export const LeftToString: React.FC<{ left: ITime; busStop: StopKeys | null }> = ({ busStop, left }) => {
 	const { t } = useTranslation()
@@ -51,29 +43,9 @@ const HowMuchLeft: React.FC<{
 	busStop: StopKeys | null
 	shouldShowFastReply: boolean
 	holiday: IHoliday | null
-}> = ({ left, busStop, shouldShowFastReply, holiday }) => {
-	const [fastReplyOption, setFastReplyOption] = React.useState<string | null>(null)
-	const { t } = useTranslation()
-
-	const FastReplyOptions = [
-		{
-			value: t('Came earlier'),
-			label: t('Came earlier'),
-		},
-		{
-			value: t('Came late'),
-			label: t('Came late'),
-		},
-		{
-			value: t('Hasnt come'),
-			label: t('Hasnt come'),
-		},
-	]
-
-	const handleClickOption = (value: string | number | null) => {
-		AndrewLytics('fastReply')
-		setFastReplyOption(value as string)
-	}
+	onComplain: () => void
+}> = ({ left, busStop, shouldShowFastReply, holiday, onComplain }) => {
+	const [isComplainClicked, setIsComplainClicked] = useState(false)
 
 	const getColorByLeftTime = () => {
 		if (!left || left.hours === null || left.minutes === null || left?.hours >= 1) return '#e7edec'
@@ -82,6 +54,11 @@ const HowMuchLeft: React.FC<{
 		if (left.minutes <= 15) return '#FBDCDC'
 
 		return '#e7edec'
+	}
+
+	const handleClick = () => {
+		onComplain()
+		setIsComplainClicked(true)
 	}
 
 	return (
@@ -98,15 +75,10 @@ const HowMuchLeft: React.FC<{
 				</NextBusContainer>
 			</HowMuchLeftContainer>
 
-			{shouldShowFastReply && !fastReplyOption && (
-				<FastReplyContainer>
-					<InlineOptions
-						list={FastReplyOptions}
-						activeId={fastReplyOption}
-						onClick={handleClickOption}
-						defaultColor={'#e7edec'}
-					/>
-				</FastReplyContainer>
+			{shouldShowFastReply && (
+				<AddToFavoriteButton status="add" mt="12px" onClick={handleClick} disabled={isComplainClicked}>
+					{isComplainClicked ? 'Спасибо за ответ!' : 'Я сел в автобус'}
+				</AddToFavoriteButton>
 			)}
 
 			{holiday && <Holiday />}
