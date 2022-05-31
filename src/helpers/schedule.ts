@@ -1,6 +1,12 @@
 import { ITime } from 'interfaces/ITime'
 const TIME_ZONE = 'Asia/Tomsk'
 
+export const getDateFromTimeCode = (timeCode: string) => {
+	const convertedDate = new Date().toLocaleString('en-US', { timeZone: TIME_ZONE })
+	const splitted = timeCode.split(':').map(item => parseInt(item, 10))
+
+	return new Date(convertedDate).setHours(splitted[0], splitted[1])
+}
 /**
  * finds closest time in schedule
  * @param hours

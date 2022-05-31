@@ -50,22 +50,6 @@ export const GoButton = styled.button<{ active?: boolean }>`
 	cursor: pointer;
 `
 
-export type FavoriteButtonStatuses = 'add' | 'remove'
-export const AddToFavoriteButton = styled.button<{
-	status: FavoriteButtonStatuses
-}>`
-	width: 100%;
-	border: none;
-	border-radius: 13px;
-	background-color: ${props => (props.status === 'add' ? '#1191FB' : '#FFB2B2')};
-	color: ${props => (props.status === 'add' ? 'white' : '#9B2727')};
-	padding: 17px;
-
-	margin-top: 12px;
-	font-weight: 600;
-
-	cursor: pointer;
-`
 export const GoButtonContainer = styled.div`
 	display: flex;
 	align-items: flex-start;

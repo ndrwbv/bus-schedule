@@ -25,6 +25,13 @@ export const FastReplyContainer = styled.div`
 	width: 100%;
 `
 
+export const FastReplyButton = styled.button`
+	background: #e4f5d6;
+	border-radius: 13px;
+	color: black;
+	padding: 15px;
+	width: 100%;
+`
 export const TextWrapper = styled.div``
 
 export const HighLighted = styled.span`
