@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const PopupStyles = styled.div`
 .popup-padding {
-  padding: 0 24px;
+  padding: 0 12px;
 
   @media all and (min-width: 1024px) {
     padding: 0 24px;
@@ -77,11 +77,13 @@ export const PopupStyles = styled.div`
 .popup__close {
   position: absolute;
   top: 13px;
-  left: 48%;
-  width: 34px;
-  height: 3px;
+  left: 50%;
+  width: 84px;
+  height: 5px;
 
+  transform: translate(-50%, 0);
   border-radius: 10px;
+  background-color: #b2b2b2;
 }
 
 .popup-container__overlay {

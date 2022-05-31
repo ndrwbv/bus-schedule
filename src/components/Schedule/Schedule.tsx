@@ -37,7 +37,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 	const {
 		busStop,
 		left,
-	closestTime,
+		closestTime,
 		closestTimeArray,
 		shouldShowFastReply,
 		stopsOptions,
@@ -46,7 +46,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 		handleChangeDirection,
 		todaysHoliday,
 		SCHEDULE,
-		currentDayKey
+		currentDayKey,
 	} = useScheduleContext()
 	const { favoriteBusStops, saveFavoriteBusStops } = useFavoriteBusStop()
 	const { addComplain } = useComplainsContext()
@@ -91,16 +91,18 @@ const Schedule: React.FC<IScheduleProps> = () => {
 		const type = left.minutes > 40 ? 'later' : 'earlier'
 		const date = new Date().toISOString()
 
-		let on = left.minutes ?? 0;
-		if(left.minutes > 40) {
-			const d = new Date(closestTime);
+		let on = left.minutes ?? 0
+		if (left.minutes > 40) {
+			const d = new Date(closestTime)
 			const minutes = d.getMinutes()
-			const timeCode = `${d.getHours()}:${minutes <= 9 ? 0 : ""}${minutes}`
+			const timeCode = `${d.getHours()}:${minutes <= 9 ? 0 : ''}${minutes}`
 			const indexOfSchedule = SCHEDULE[direction][currentDayKey][busStop].indexOf(timeCode)
-			const indexPrevSchedule = indexOfSchedule === 0 ? 0 : indexOfSchedule -1
-	
-			const closeDate = new Date(getDateFromTimeCode(SCHEDULE[direction][currentDayKey][busStop][indexPrevSchedule])).toISOString()
-			
+			const indexPrevSchedule = indexOfSchedule === 0 ? 0 : indexOfSchedule - 1
+
+			const closeDate = new Date(
+				getDateFromTimeCode(SCHEDULE[direction][currentDayKey][busStop][indexPrevSchedule]),
+			).toISOString()
+
 			on = calculateHowMuchIsLeft(closeDate).minutes ?? 0
 		}
 
@@ -168,7 +170,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 						holiday={todaysHoliday}
 						busStop={busStop}
 						left={left}
-						shouldShowFastReply={true}
+						shouldShowFastReply={shouldShowFastReply}
 						onComplain={handleComplain}
 					/>
 				</Card>
