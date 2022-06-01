@@ -65,7 +65,7 @@ const HowMuchLeft: React.FC<{
 		if (isComplainClicked) {
 			setTimeout(() => {
 				setIsComplainClicked(false)
-			}, 20000)
+			}, 200000)
 		}
 	}, [isComplainClicked])
 
