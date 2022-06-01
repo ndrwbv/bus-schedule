@@ -1,3 +1,4 @@
+import { AndrewLytics } from 'helpers/analytics'
 import { Directions, StopKeys } from 'interfaces/Stops'
 import { useEffect, useState } from 'react'
 
@@ -36,6 +37,7 @@ function useComplains() {
 		})
 			.then(res => res.json())
 			.then(res => setComplains(res.data.findComplains))
+			.catch(() => {})
 	}
 
 	useEffect(() => {
@@ -50,6 +52,7 @@ function useComplains() {
 	}, [])
 
 	const addComplain = (data: IComplains) => {
+		AndrewLytics('addComplainMethod')
 		const body = {
 			operationName: null,
 			variables: {
@@ -77,7 +80,7 @@ function useComplains() {
 			method: 'POST',
 			mode: 'cors',
 			credentials: 'omit',
-		})
+		}).catch(e => {})
 	}
 
 	return { complains: complains, addComplain }

@@ -76,7 +76,7 @@ interface ContextProps {
 	currentDayKey: number
 }
 
-const VISIT_TIME = new Date().toISOString()
+export const VISIT_TIME = new Date().toISOString()
 interface IProviderProps {
 	children: React.ReactElement
 	currentDay: number
@@ -169,12 +169,15 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 		if (left.hours === null) return
 		const userTimeLeft = calculateHowMuchIsLeft(VISIT_TIME)
 		if (userTimeLeft.minutes === null || (userTimeLeft.hours === 0 && userTimeLeft.minutes <= 0)) return
+
 		if (left?.minutes && (left?.minutes <= 25 || left?.minutes > 40)) {
+			if(shouldShowFastReply) return;
+			AndrewLytics('frappears')
 			return setShouldShowFastReply(true)
 		}
 
 		return setShouldShowFastReply(false)
-	}, [left])
+	}, [left, shouldShowFastReply])
 
 	useEffect(() => {
 		if (!busStop) return

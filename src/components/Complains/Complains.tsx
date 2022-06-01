@@ -13,6 +13,7 @@ import {
 	ComplainsBlockText,
 	ComplainsContainer,
 	ComplainsLabel,
+	InfoText,
 	PopupContent,
 } from './styled'
 
@@ -38,8 +39,12 @@ function Complains() {
 			<Popup isOpen={isOpen} handleClose={() => setIsOpen(false)} contentRef={contentRef}>
 				<PopupContent ref={contentRef}>
 					<PopupWrapper>
+						<InfoText>
+							Жалобы попадают автоматически после нажатия на кнопку "Я сел в автобус". Кнопка появляется в
+							секции Остановка при выбранной остановке.
+						</InfoText>
 						{complains.map(c => (
-							<ComplainMessage {...c} />
+							<ComplainMessage {...c} key={c.id} />
 						))}
 					</PopupWrapper>
 				</PopupContent>
@@ -58,7 +63,7 @@ function Complains() {
 				</div>
 
 				<MiniButton disabled={complains.length === 0} onClick={handleOpenComplains}>
-					смотреть
+					Смотреть
 				</MiniButton>
 			</ComplainsContainer>
 		</>

@@ -66,3 +66,12 @@ export const PopupContent = styled.div`
 export const ComplainCount = styled.span`
 	color: #717171;
 `
+
+export const InfoText = styled.p`
+	text-align: left;
+	font-size: 12px;
+	line-height: 20px;
+	color: #808080;
+	margin-bottom: 12px;
+	padding: 0 3px;
+`

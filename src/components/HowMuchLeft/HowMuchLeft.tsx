@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SVG from 'react-inlinesvg'
 import { useTranslation } from 'react-i18next'
 
@@ -12,8 +12,8 @@ import SelectBusStopText from '../SelectBusStopText'
 import Holiday from 'components/Holiday/Holiday'
 import { IHoliday } from 'interfaces/IHolidays'
 
-import { BusEstimation, HighLighted, HowMuchLeftContainer, NextBusContainer, TextWrapper } from './styled'
 import { CustomButton } from 'components/common'
+import { BusEstimation, HighLighted, HowMuchLeftContainer, NextBusContainer, TextWrapper } from './styled'
 
 export const LeftToString: React.FC<{ left: ITime; busStop: StopKeys | null }> = ({ busStop, left }) => {
 	const { t } = useTranslation()
@@ -60,6 +60,14 @@ const HowMuchLeft: React.FC<{
 		onComplain()
 		setIsComplainClicked(true)
 	}
+
+	useEffect(() => {
+		if (isComplainClicked) {
+			setTimeout(() => {
+				setIsComplainClicked(false)
+			}, 20000)
+		}
+	}, [isComplainClicked])
 
 	return (
 		<>
