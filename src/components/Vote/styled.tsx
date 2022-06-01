@@ -20,3 +20,13 @@ export const FeedbackText = styled.div`
 
 	color: #000000;
 `
+
+export const BirdWrapper = styled.div`
+	position: relative;
+`
+
+export const BirdContainer = styled.div`
+	position: absolute;
+	top: -44px;
+    right: 9px;
+`
