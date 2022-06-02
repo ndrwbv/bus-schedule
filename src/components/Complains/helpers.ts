@@ -31,7 +31,9 @@ export const getOnString = (on: number, type: ComplainType) => {
 
 export const getHumanDate = (date: string) => {
 	const time = calculateHowMuchIsLeft(date)
-	if (!time || time.hours === null || time.hours >= 1) return 'больше часа назад'
+	const d = new Date(date)
+	const min = d.getMinutes() < 9 ? `0${d.getMinutes()}` : d.getMinutes()
+	if (!time || time.hours === null || time.hours >= 1) return `в ${d.getHours()}:${min}`
 
 	if (time.minutes === null) return
 
