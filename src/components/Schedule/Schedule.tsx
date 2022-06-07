@@ -27,10 +27,12 @@ import {
 	OtherTime,
 	selectStyles,
 	TimeStamp,
+	TranslationLink,
 } from './styled'
 import Complains from 'components/Complains/Complains'
 import { useComplainsContext } from 'context/ComplainsContext'
 import { calculateHowMuchIsLeft, getDateFromTimeCode } from 'helpers/schedule'
+import { TRANSLATION_LINK } from 'consts/strings'
 
 interface IScheduleProps {}
 const Schedule: React.FC<IScheduleProps> = () => {
@@ -179,6 +181,16 @@ const Schedule: React.FC<IScheduleProps> = () => {
 				<Card>
 					<Complains />
 				</Card>
+			</Container>
+
+			<Container>
+				<TranslationLink
+					href={TRANSLATION_LINK}
+					target="_blank"
+					onClick={() => AndrewLytics('clickTranslation')}
+				>
+					Онлайн трансляция с моста
+				</TranslationLink>
 			</Container>
 
 			{favoriteList.length !== 0 && (

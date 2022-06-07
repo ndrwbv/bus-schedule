@@ -74,3 +74,23 @@ export const DirectionText = styled.p`
 export const DirectionContainer = styled.div`
 	padding-left: 6px;
 `
+
+export const TranslationLink = styled.a`
+	position: relative;
+	display: block;
+	color: black;
+	text-decoration: underline;
+	padding-left: 18px;
+	margin: 16px 0;
+
+	&::before {
+		content: '';
+		position: absolute;
+		left: 3px;
+		top: 5px;
+		width: 8px;
+		height: 8px;
+		background-color: #ff0000;
+		border-radius: 50%;
+	}
+`
