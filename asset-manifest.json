@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.553b3ac9.css",
-    "main.js": "/static/js/main.76b55293.js",
+    "main.css": "/static/css/main.c419a03d.css",
+    "main.js": "/static/js/main.b33d1260.js",
     "static/media/Inter-Black.ttf": "/static/media/Inter-Black.cebeacf9cf3be04078de.ttf",
     "static/media/Inter-Bold.ttf": "/static/media/Inter-Bold.1eca2d329458b92342aa.ttf",
     "static/media/Inter-Medium.ttf": "/static/media/Inter-Medium.4ebf1acf62f447ea2f0d.ttf",
@@ -22,11 +22,11 @@
     "static/media/telegram-logo.svg": "/static/media/telegram-logo.b27302a35854870eeab0572b8193532a.svg",
     "static/media/infoclosecross.svg": "/static/media/infoclosecross.cf37cdc570ce98de772c02fb7aed3f0b.svg",
     "static/media/copy-icon.svg": "/static/media/copy-icon.d150580cfa1903236a9e6d1deb4099bf.svg",
-    "main.553b3ac9.css.map": "/static/css/main.553b3ac9.css.map",
-    "main.76b55293.js.map": "/static/js/main.76b55293.js.map"
+    "main.c419a03d.css.map": "/static/css/main.c419a03d.css.map",
+    "main.b33d1260.js.map": "/static/js/main.b33d1260.js.map"
   },
   "entrypoints": [
-    "static/css/main.553b3ac9.css",
-    "static/js/main.76b55293.js"
+    "static/css/main.c419a03d.css",
+    "static/js/main.b33d1260.js"
   ]
 }
