@@ -18,6 +18,10 @@ export const InlineOptionsItem = styled.div<{
 	& + & {
 		margin-left: 12px;
 	}
+
+	&:hover {
+		opacity: 0.8;
+	}
 `
 
 export const InlineOptionsContainer = styled.div`

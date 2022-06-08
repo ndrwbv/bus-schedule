@@ -3,7 +3,7 @@ import SVG from 'react-inlinesvg'
 import config from 'configs/base'
 import { AndrewLytics } from 'helpers/analytics'
 import Bird from '../../img/bird-zamanuha.svg'
-import { FeedbackWrapper, FeedbackText, BirdWrapper, BirdContainer } from './styled'
+import { FeedbackLink, FeedbackText, BirdWrapper, BirdContainer } from './styled'
 import { Link, useSearchParams } from 'react-router-dom'
 
 const LeaveFeedbackButton: React.FC<{}> = () => {
@@ -16,9 +16,9 @@ const LeaveFeedbackButton: React.FC<{}> = () => {
 
 	return (
 		<BirdWrapper>
-			<FeedbackWrapper href={config.FEEDBACK_LINK} onClick={onFeedbackClick}>
+			<FeedbackLink href={config.FEEDBACK_LINK} onClick={onFeedbackClick}>
 				<FeedbackText>{t('Leave feedback')}</FeedbackText>
-			</FeedbackWrapper>
+			</FeedbackLink>
 
 			<BirdContainer onClick={() => AndrewLytics('game.birdPlay')}>
 				<Link to={`/game?${searchParams.toString()}`} onClick={() => AndrewLytics('game.footerPlay')}>

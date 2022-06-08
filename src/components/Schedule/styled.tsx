@@ -48,6 +48,10 @@ export const GoButton = styled.button<{ active?: boolean }>`
 	padding: 17px 17px;
 	text-align: left;
 	cursor: pointer;
+
+	&:hover {
+		opacity: 0.8;
+	}
 `
 
 export const GoButtonContainer = styled.div`

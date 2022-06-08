@@ -72,9 +72,14 @@ export const CustomButton = styled.button<{
 	&:disabled {
 		opacity: 0.5;
 	}
+
+	&:hover {
+		opacity: 0.8;
+	}
 `
 
 export const MiniButton = styled.button`
+	cursor: pointer;
 	font-weight: 600;
 	font-size: 16px;
 	padding: 8px 17px;
@@ -84,5 +89,9 @@ export const MiniButton = styled.button`
 
 	&:disabled {
 		opacity: 0.5;
+	}
+
+	&:hover {
+		opacity: 0.8;
 	}
 `

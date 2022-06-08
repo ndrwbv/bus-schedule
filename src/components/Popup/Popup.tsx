@@ -94,8 +94,6 @@ const Popup: React.FC<any> = ({ isOpen = false, handleClose, children, contentRe
 	}
 
 	React.useEffect(() => {
-		if (typeof window === 'undefined') return
-
 		if (isOpen) {
 			document.body.classList.add('scroll-lock')
 		} else {

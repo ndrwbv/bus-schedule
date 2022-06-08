@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-export const FeedbackWrapper = styled.a`
+export const FeedbackLink = styled.a`
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -11,6 +11,10 @@ export const FeedbackWrapper = styled.a`
 
 	background: #caeaff;
 	border-radius: 15px;
+
+	&:hover {
+		opacity: 0.8;
+	}
 `
 
 export const FeedbackText = styled.div`
@@ -28,5 +32,5 @@ export const BirdWrapper = styled.div`
 export const BirdContainer = styled.div`
 	position: absolute;
 	top: -44px;
-    right: 9px;
+	right: 9px;
 `
