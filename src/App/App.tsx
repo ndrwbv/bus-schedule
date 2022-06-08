@@ -52,15 +52,6 @@ function App({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSchedule }
 						<Container>
 							<LinksBlock>
 								<GrayText>
-									{t('Schedule taken from website')}{' '}
-									<a href={config.AVTOTRANS_LINK} target="_blank" rel="noreferrer">
-										{AVTOTRANS}
-									</a>
-								</GrayText>
-
-								<GrayText>{COPYRIGHT}</GrayText>
-
-								<GrayText>
 									<a
 										href={config.ABOUT_LINK}
 										target="_blank"
@@ -79,6 +70,13 @@ function App({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSchedule }
 										Играть
 									</Link>
 								</GrayText>
+								<GrayText>
+									{t('Schedule taken from website')}{' '}
+									<a href={config.AVTOTRANS_LINK} target="_blank" rel="noreferrer">
+										{AVTOTRANS}
+									</a>
+								</GrayText>
+								<GrayText>{COPYRIGHT}</GrayText>
 							</LinksBlock>
 						</Container>
 					</Footer>
