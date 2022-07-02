@@ -11,9 +11,30 @@ import SelectBusStopText from '../SelectBusStopText'
 
 import Holiday from 'components/Holiday/Holiday'
 import { IHoliday } from 'interfaces/IHolidays'
+import InlineOptions from 'components/InlineOptions/InlineOptions'
+import { ComplainType } from 'interfaces/Complains'
 
-import { CustomButton } from 'components/common'
-import { BusEstimation, HighLighted, HowMuchLeftContainer, NextBusContainer, TextWrapper } from './styled'
+import {
+	BusEstimation,
+	ComplainOptionContainer,
+	HighLighted,
+	HowMuchLeftContainer,
+	NextBusContainer,
+	TextWrapper,
+} from './styled'
+
+const SIZE = 39
+const COMPLAIN_DISAPPEAR_MS = 200000
+const ComplainsOptions = [
+	{
+		value: ComplainType.earlier,
+		label: 'Приехал раньше',
+	},
+	{
+		value: ComplainType.later,
+		label: 'Приехал позже',
+	},
+]
 
 export const LeftToString: React.FC<{ left: ITime; busStop: StopKeys | null }> = ({ busStop, left }) => {
 	const { t } = useTranslation()
@@ -38,14 +59,16 @@ export const LeftToString: React.FC<{ left: ITime; busStop: StopKeys | null }> =
 	)
 }
 
-const HowMuchLeft: React.FC<{
+interface ILeftProps {
 	left: ITime
 	busStop: StopKeys | null
 	shouldShowFastReply: boolean
 	holiday: IHoliday | null
-	onComplain: () => void
-}> = ({ left, busStop, shouldShowFastReply, holiday, onComplain }) => {
+	onComplain: (key: ComplainType) => void
+}
+const HowMuchLeft: React.FC<ILeftProps> = ({ left, busStop, shouldShowFastReply, holiday, onComplain }) => {
 	const [isComplainClicked, setIsComplainClicked] = useState(false)
+	const [activeComplain, setActiveComplain] = useState<ComplainType | undefined>(undefined)
 
 	const getColorByLeftTime = () => {
 		if (!left || left.hours === null || left.minutes === null || left?.hours >= 1) return '#e7edec'
@@ -56,8 +79,11 @@ const HowMuchLeft: React.FC<{
 		return '#e7edec'
 	}
 
-	const handleClick = () => {
-		onComplain()
+	const handleFastReplyClick = (key: ComplainType) => {
+		if (isComplainClicked) return
+
+		setActiveComplain(key)
+		onComplain(key)
 		setIsComplainClicked(true)
 	}
 
@@ -65,7 +91,7 @@ const HowMuchLeft: React.FC<{
 		if (isComplainClicked) {
 			setTimeout(() => {
 				setIsComplainClicked(false)
-			}, 200000)
+			}, COMPLAIN_DISAPPEAR_MS)
 		}
 	}, [isComplainClicked])
 
@@ -73,8 +99,8 @@ const HowMuchLeft: React.FC<{
 		<>
 			<HowMuchLeftContainer isFancy={!!holiday} defaultColor={getColorByLeftTime()}>
 				<NextBusContainer>
-					<ImageWrapper w={39} h={39}>
-						<SVG src={NextBus} width={39} height={39} uniquifyIDs={true} />
+					<ImageWrapper w={SIZE} h={SIZE}>
+						<SVG src={NextBus} width={SIZE} height={SIZE} uniquifyIDs={true} />
 					</ImageWrapper>
 
 					<BusEstimation>
@@ -84,9 +110,9 @@ const HowMuchLeft: React.FC<{
 			</HowMuchLeftContainer>
 
 			{shouldShowFastReply && (
-				<CustomButton status="primary" mt="12px" onClick={handleClick} disabled={isComplainClicked}>
-					{isComplainClicked ? 'Спасибо за ответ!' : 'Я сел в автобус'}
-				</CustomButton>
+				<ComplainOptionContainer>
+					<InlineOptions list={ComplainsOptions} onClick={handleFastReplyClick} activeId={activeComplain} />
+				</ComplainOptionContainer>
 			)}
 
 			{holiday && <Holiday />}

@@ -31,15 +31,14 @@ import {
 } from './styled'
 import Complains from 'components/Complains/Complains'
 import { useComplainsContext } from 'context/ComplainsContext'
-import { calculateHowMuchIsLeft, getDateFromTimeCode } from 'helpers/schedule'
 import { TRANSLATION_LINK } from 'consts/strings'
+import { ComplainType } from 'components/Complains/useComplains'
 
 interface IScheduleProps {}
 const Schedule: React.FC<IScheduleProps> = () => {
 	const {
 		busStop,
 		left,
-		closestTime,
 		closestTimeArray,
 		shouldShowFastReply,
 		stopsOptions,
@@ -47,8 +46,6 @@ const Schedule: React.FC<IScheduleProps> = () => {
 		handleChangeBusStop,
 		handleChangeDirection,
 		todaysHoliday,
-		SCHEDULE,
-		currentDayKey,
 	} = useScheduleContext()
 	const { favoriteBusStops, saveFavoriteBusStops } = useFavoriteBusStop()
 	const { addComplain } = useComplainsContext()
@@ -87,33 +84,33 @@ const Schedule: React.FC<IScheduleProps> = () => {
 			: closestTimeArray.map((d, index) => <TimeStamp key={`${d}-${index}`}>{d}</TimeStamp>)
 	}
 
-	const handleComplain = () => {
+	const handleComplain = (type: ComplainType) => {
 		if (!busStop || left.minutes === null) return
 
-		const type = left.minutes > 40 ? 'later' : 'earlier'
+		// const type = left.minutes > 40 ? 'later' : 'earlier'
 		const date = new Date().toISOString()
 
-		let on = left.minutes ?? 0
-		if (left.minutes > 40) {
-			const d = new Date(closestTime)
-			const minutes = d.getMinutes()
-			const timeCode = `${d.getHours()}:${minutes <= 9 ? 0 : ''}${minutes}`
-			const indexOfSchedule = SCHEDULE[direction][currentDayKey][busStop].indexOf(timeCode)
-			const indexPrevSchedule = indexOfSchedule === 0 ? 0 : indexOfSchedule - 1
+		// let on = left.minutes ?? 0
+		// if (left.minutes > 40) {
+		// 	const d = new Date(closestTime)
+		// 	const minutes = d.getMinutes()
+		// 	const timeCode = `${d.getHours()}:${minutes <= 9 ? 0 : ''}${minutes}`
+		// 	const indexOfSchedule = SCHEDULE[direction][currentDayKey][busStop].indexOf(timeCode)
+		// 	const indexPrevSchedule = indexOfSchedule === 0 ? 0 : indexOfSchedule - 1
 
-			const closeDate = new Date(
-				getDateFromTimeCode(SCHEDULE[direction][currentDayKey][busStop][indexPrevSchedule]),
-			).toISOString()
+		// 	const closeDate = new Date(
+		// 		getDateFromTimeCode(SCHEDULE[direction][currentDayKey][busStop][indexPrevSchedule]),
+		// 	).toISOString()
 
-			on = calculateHowMuchIsLeft(closeDate).minutes ?? 0
-		}
+		// 	on = calculateHowMuchIsLeft(closeDate).minutes ?? 0
+		// }
 
 		addComplain({
 			stop: busStop,
 			direction: direction,
 			date: date,
 			type: type,
-			on: on,
+			on: 0,
 		})
 
 		AndrewLytics('fastReply')

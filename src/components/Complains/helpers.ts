@@ -26,6 +26,7 @@ export const getTypeString = (type: ComplainType) => {
 }
 
 export const getOnString = (on: number, type: ComplainType) => {
+	if (on === 0) return `приехал ${getTypeString(type)}`
 	return `${getTypeString(type)} на ${on}${getMinutesString(on, '')}`
 }
 

@@ -1,12 +1,14 @@
 import { IOption } from 'interfaces/Stops'
 import { InlineOptionsContainer, InlineOptionsItem, OverLayContainer } from './styled'
 
-const InlineOptions: React.FC<{
-	list: IOption<string | number | null>[]
-	activeId: string | null
-	onClick: (busStop: string | number | null) => void
+interface IProps {
+	list: IOption<any>[]
+	activeId: any
+	onClick: (value: any) => void
 	defaultColor?: string
-}> = ({ list, activeId, onClick, defaultColor = undefined }) => {
+}
+
+const InlineOptions: React.FC<IProps> = ({ list, activeId, onClick, defaultColor = undefined }) => {
 	return (
 		<OverLayContainer>
 			<InlineOptionsContainer>

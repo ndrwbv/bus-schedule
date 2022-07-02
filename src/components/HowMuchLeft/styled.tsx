@@ -59,3 +59,7 @@ export const BusEstimation = styled.div`
 	font-size: 18px;
 	margin-left: 19px;
 `
+
+export const ComplainOptionContainer = styled.div`
+	margin-top: 12px;
+`
