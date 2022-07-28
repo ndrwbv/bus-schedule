@@ -317,7 +317,7 @@ const Game = () => {
 						</S.GameCell>
 					))}
 				</S.GameContainer>
-				<S.WhiteTextBlock>Помоги работнику томскавтотранс найти дубли в расписании</S.WhiteTextBlock>
+				<S.WhiteTextBlock>Выбирай одинаковые блоки пока все не закончатся</S.WhiteTextBlock>
 			</GameLayout>
 
 			{/* <S.GameReaction
