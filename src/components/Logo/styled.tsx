@@ -17,3 +17,9 @@ export const HeaderContainer = styled.nav`
 
 	width: 100%;
 `
+
+export const HeaderActions = styled.div`
+	display: flex;
+	align-items: center;
+	gap: 4px;
+`
