@@ -32,7 +32,7 @@ import {
 import Complains from 'components/Complains/Complains'
 import { useComplainsContext } from 'context/ComplainsContext'
 import { TRANSLATION_LINK } from 'consts/strings'
-import { ComplainType } from 'components/Complains/useComplains'
+import { ComplainType } from 'interfaces/Complains'
 
 interface IScheduleProps {}
 const Schedule: React.FC<IScheduleProps> = () => {
@@ -87,23 +87,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 	const handleComplain = (type: ComplainType) => {
 		if (!busStop || left.minutes === null) return
 
-		// const type = left.minutes > 40 ? 'later' : 'earlier'
 		const date = new Date().toISOString()
-
-		// let on = left.minutes ?? 0
-		// if (left.minutes > 40) {
-		// 	const d = new Date(closestTime)
-		// 	const minutes = d.getMinutes()
-		// 	const timeCode = `${d.getHours()}:${minutes <= 9 ? 0 : ''}${minutes}`
-		// 	const indexOfSchedule = SCHEDULE[direction][currentDayKey][busStop].indexOf(timeCode)
-		// 	const indexPrevSchedule = indexOfSchedule === 0 ? 0 : indexOfSchedule - 1
-
-		// 	const closeDate = new Date(
-		// 		getDateFromTimeCode(SCHEDULE[direction][currentDayKey][busStop][indexPrevSchedule]),
-		// 	).toISOString()
-
-		// 	on = calculateHowMuchIsLeft(closeDate).minutes ?? 0
-		// }
 
 		addComplain({
 			stop: busStop,

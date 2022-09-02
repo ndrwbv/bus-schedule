@@ -34,6 +34,10 @@ const ComplainsOptions = [
 		value: ComplainType.later,
 		label: 'Приехал позже',
 	},
+	{
+		value: ComplainType.not_arrive,
+		label: 'Не приехал',
+	},
 ]
 
 export const LeftToString: React.FC<{ left: ITime; busStop: StopKeys | null }> = ({ busStop, left }) => {

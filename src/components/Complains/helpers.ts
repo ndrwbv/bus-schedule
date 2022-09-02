@@ -1,6 +1,6 @@
 import { calculateHowMuchIsLeft } from 'helpers/schedule'
 import { Directions } from 'interfaces/Stops'
-import { ComplainType } from './useComplains'
+import { ComplainType } from 'interfaces/Complains'
 
 export const getMinutesString = (amount: number, secondWord = 'назад') => {
 	if (amount === 0) return ' сейчас'
@@ -16,17 +16,19 @@ export const getDirectionString = (direction: Directions) => {
 
 export const getTypeString = (type: ComplainType) => {
 	switch (type) {
-		case 'earlier':
-			return 'раньше'
-		case 'later':
-			return 'позже'
+		case ComplainType.earlier:
+			return 'приехал раньше'
+		case ComplainType.later:
+			return 'приехал позже'
+		case ComplainType.not_arrive:
+			return 'не приехал'
 		default:
 			return ''
 	}
 }
 
 export const getOnString = (on: number, type: ComplainType) => {
-	if (on === 0) return `приехал ${getTypeString(type)}`
+	if (on === 0) return getTypeString(type)
 	return `${getTypeString(type)} на ${on}${getMinutesString(on, '')}`
 }
 

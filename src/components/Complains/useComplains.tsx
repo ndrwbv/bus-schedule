@@ -1,8 +1,7 @@
 import { AndrewLytics } from 'helpers/analytics'
 import { Directions, StopKeys } from 'interfaces/Stops'
 import { useEffect, useState } from 'react'
-
-export type ComplainType = 'earlier' | 'later'
+import { ComplainType } from 'interfaces/Complains'
 export interface IComplains {
 	stop: StopKeys
 	direction: Directions
