@@ -53,7 +53,7 @@ export const PopupStyles = styled.div`
 			// max-height: 644px;
 			bottom: 35%;
 
-			border-radius: 48px;
+			border-radius: 30px;
 			transition: transform 0.3s ease;
 			transform: translate3d(0, 200%, 0);
 
