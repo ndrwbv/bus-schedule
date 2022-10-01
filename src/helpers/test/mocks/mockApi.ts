@@ -1,4 +1,4 @@
-import { FetchInfoResponse } from 'api'
+import { FetchInfoResponse } from 'shared/api'
 import SCHEDULE from 'consts/schedule'
 
 export function createMockApi() {

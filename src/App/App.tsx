@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { fetchInfo, fetchSchedule } from 'api'
+import { fetchInfo, fetchSchedule } from 'shared/api'
 
 import { LinksBlock, MainLayout } from 'components/Schedule/styled'
 

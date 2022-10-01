@@ -11,7 +11,7 @@ import { calculateHowMuchIsLeft, findClosesTime, findClosesTimeArray } from 'hel
 import useSchedule from 'hooks/useSchedule'
 import useEveryMinuteUpdater from 'hooks/useEveryMinuteUpdater'
 
-import { FetchInfoResponse, FetchScheduleResponse } from 'api'
+import { FetchInfoResponse, FetchScheduleResponse } from 'shared/api'
 
 import { ISchedule } from 'interfaces/ISchedule'
 import { ITime } from 'interfaces/ITime'
@@ -53,7 +53,7 @@ const DEFAULT_PROPS = {
 	},
 	todaysHoliday: null,
 	currentDay: 1,
-	currentDayKey: 1
+	currentDayKey: 1,
 }
 
 export const ScheduleContext = createContext<ContextProps>(DEFAULT_PROPS)
@@ -72,7 +72,7 @@ interface ContextProps {
 	nextDay: number
 	fetchInfo: () => FetchInfoResponse
 	todaysHoliday: IHoliday | null
-	currentDay: number;
+	currentDay: number
 	currentDayKey: number
 }
 
@@ -84,6 +84,7 @@ interface IProviderProps {
 	fetchSchedule: () => FetchScheduleResponse
 	fetchInfo: () => FetchInfoResponse
 }
+
 export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay, fetchInfo }: IProviderProps) => {
 	const [busStop, setBusStop] = useState<StopKeys | null>(null)
 	const [left, setLeft] = useState<ITime>(DEFAULT_LEFT)
@@ -171,7 +172,7 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 		if (userTimeLeft.minutes === null || (userTimeLeft.hours === 0 && userTimeLeft.minutes <= 0)) return
 
 		if (left?.minutes && (left?.minutes <= 25 || left?.minutes > 40)) {
-			if(shouldShowFastReply) return;
+			if (shouldShowFastReply) return
 			AndrewLytics('frappears')
 			return setShouldShowFastReply(true)
 		}
@@ -243,7 +244,7 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 				fetchInfo,
 				todaysHoliday,
 				currentDay,
-				currentDayKey
+				currentDayKey,
 			}}
 		>
 			{children}
