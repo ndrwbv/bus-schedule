@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import SVG from 'react-inlinesvg'
 import config from 'configs/base'
-import { AndrewLytics } from 'helpers/analytics'
+import { AndrewLytics } from 'shared/lib'
 import Bird from '../../img/bird-zamanuha.svg'
 import { FeedbackLink, FeedbackText, BirdWrapper, BirdContainer } from './styled'
 import { Link, useSearchParams } from 'react-router-dom'

@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import App from './App/App'
 
-import { initGA } from 'helpers/analytics'
+import { initGA } from 'shared/lib'
 import YM from 'YM'
 
 import './index.css'

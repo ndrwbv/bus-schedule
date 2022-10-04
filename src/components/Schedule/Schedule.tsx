@@ -11,7 +11,7 @@ import InlineOptions from '../InlineOptions/InlineOptions'
 import { Card, Container, CustomButton } from 'components/common'
 import OtherTimeBusses from 'components/OtherTimeBuses/OtherTimeBuses'
 
-import { AndrewLytics } from 'helpers/analytics'
+import { AndrewLytics } from 'shared/lib'
 
 import { StopKeys } from 'interfaces/Stops'
 

@@ -15,7 +15,7 @@ import config from 'configs/base'
 import ScheduleProvider from 'context/ScheduleContext'
 import { getNextDay } from 'helpers/schedule'
 
-import { AndrewLytics } from 'helpers/analytics'
+import { AndrewLytics } from 'shared/lib'
 import WriteMe from 'components/WriteMe/WriteMe'
 
 import { AppContainer, Footer } from './styled'

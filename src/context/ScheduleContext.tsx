@@ -5,7 +5,7 @@ import queryString from 'query-string'
 import { StopsInOptions } from 'consts/stopsInOptions'
 import { StopsOutOptions } from 'consts/stopsOutOptions'
 
-import { AndrewLytics } from 'helpers/analytics'
+import { AndrewLytics } from 'shared/lib'
 import { calculateHowMuchIsLeft, findClosesTime, findClosesTimeArray } from 'helpers/schedule'
 
 import useSchedule from 'hooks/useSchedule'
