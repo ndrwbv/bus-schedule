@@ -4,7 +4,7 @@ import { COPYRIGHT } from 'consts/strings'
 import { createMockApi } from 'helpers/test/mocks/mockApi'
 
 import { MainPageObject } from 'helpers/test/pageObjects/MainPageObject'
-import { configureI18next } from 'i18n/config.i18next'
+import { configureI18next } from 'shared/lib'
 import { MemoryRouter } from 'react-router-dom'
 import App from './App'
 
