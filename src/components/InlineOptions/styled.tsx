@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { MAIN_BLUE, MAIN_GREY } from 'consts/colors'
+import { MAIN_BLUE, MAIN_GREY } from 'shared/theme'
 
 export const InlineOptionsItem = styled.div<{
 	active: boolean

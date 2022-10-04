@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
 import { act, render, waitFor } from '@testing-library/react'
-import { COPYRIGHT } from 'consts/strings'
+import { COPYRIGHT } from 'shared/common'
 import { createMockApi } from 'shared/lib/test/mocks/mockApi'
 
 import { MainPageObject } from 'shared/lib/test/pageObjects/MainPageObject'

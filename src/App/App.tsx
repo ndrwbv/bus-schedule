@@ -9,8 +9,7 @@ import { HeaderInner, HeaderContainer, HeaderActions } from 'components/Logo/sty
 import Schedule from '../components/Schedule/Schedule'
 import { Container, GrayText } from 'components/common'
 
-import { AVTOTRANS, COPYRIGHT } from 'consts/strings'
-import config from 'configs/base'
+import { ABOUT_LINK, AVTOTRANS, AVTOTRANS_LINK, COPYRIGHT } from 'shared/common'
 
 import ScheduleProvider from 'context/ScheduleContext'
 import { getNextDay } from 'helpers/schedule'
@@ -58,7 +57,7 @@ function App({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSchedule }
 							<LinksBlock>
 								<GrayText>
 									<a
-										href={config.ABOUT_LINK}
+										href={ABOUT_LINK}
 										target="_blank"
 										rel="noreferrer"
 										onClick={() => AndrewLytics('aboutLink')}
@@ -77,7 +76,7 @@ function App({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSchedule }
 								</GrayText>
 								<GrayText>
 									{t('Schedule taken from website')}{' '}
-									<a href={config.AVTOTRANS_LINK} target="_blank" rel="noreferrer">
+									<a href={AVTOTRANS_LINK} target="_blank" rel="noreferrer">
 										{AVTOTRANS}
 									</a>
 								</GrayText>

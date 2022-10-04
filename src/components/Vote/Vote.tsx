@@ -1,10 +1,11 @@
 import { useTranslation } from 'react-i18next'
+import { Link, useSearchParams } from 'react-router-dom'
 import SVG from 'react-inlinesvg'
-import config from 'configs/base'
+
 import { AndrewLytics } from 'shared/lib'
+import { FEEDBACK_LINK } from 'shared/common'
 import Bird from '../../img/bird-zamanuha.svg'
 import { FeedbackLink, FeedbackText, BirdWrapper, BirdContainer } from './styled'
-import { Link, useSearchParams } from 'react-router-dom'
 
 const LeaveFeedbackButton: React.FC<{}> = () => {
 	const [searchParams] = useSearchParams()
@@ -16,7 +17,7 @@ const LeaveFeedbackButton: React.FC<{}> = () => {
 
 	return (
 		<BirdWrapper>
-			<FeedbackLink href={config.FEEDBACK_LINK} onClick={onFeedbackClick}>
+			<FeedbackLink href={FEEDBACK_LINK} onClick={onFeedbackClick}>
 				<FeedbackText>{t('Leave feedback')}</FeedbackText>
 			</FeedbackLink>
 

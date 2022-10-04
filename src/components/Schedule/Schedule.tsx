@@ -31,7 +31,7 @@ import {
 } from './styled'
 import Complains from 'components/Complains/Complains'
 import { useComplainsContext } from 'context/ComplainsContext'
-import { TRANSLATION_LINK } from 'consts/strings'
+import { TRANSLATION_LINK } from 'shared/common'
 import { ComplainType } from 'interfaces/Complains'
 
 interface IScheduleProps {}
