@@ -1,4 +1,4 @@
-import config from 'configs/base'
+import config from 'shared/configs'
 import { YMInitializer } from 'react-yandex-metrika'
 
 const YM = () => {

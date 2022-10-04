@@ -1,4 +1,4 @@
-import config from 'configs/base'
+import config from 'shared/configs'
 import { IHolidays } from 'interfaces/IHolidays'
 import { ISchedule } from 'interfaces/ISchedule'
 import { baseRequest, IContentfulResponse } from 'shared/lib'
