@@ -1,3 +1,3 @@
-export * from './request/base'
-export * from './request/types'
-export * from './i18n/config.i18next'
+export * from './request'
+export * from './i18n'
+export * from './test'

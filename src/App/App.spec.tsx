@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom'
 import { act, render, waitFor } from '@testing-library/react'
 import { COPYRIGHT } from 'consts/strings'
-import { createMockApi } from 'helpers/test/mocks/mockApi'
+import { createMockApi } from 'shared/lib/test/mocks/mockApi'
 
-import { MainPageObject } from 'helpers/test/pageObjects/MainPageObject'
+import { MainPageObject } from 'shared/lib/test/pageObjects/MainPageObject'
 import { configureI18next } from 'shared/lib'
 import { MemoryRouter } from 'react-router-dom'
 import App from './App'
