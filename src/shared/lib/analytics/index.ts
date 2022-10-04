@@ -1,6 +1,6 @@
 import ym from 'react-yandex-metrika'
 import ReactGA from 'react-ga'
-import config from 'shared/configs'
+import { config } from 'shared/configs'
 
 export const AndrewLytics = (goal: string) => {
 	const isProd = process.env.NODE_ENV === 'production'

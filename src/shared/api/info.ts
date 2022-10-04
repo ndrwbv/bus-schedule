@@ -1,5 +1,5 @@
 import { IInfo } from 'interfaces/IInfo'
-import config from 'shared/configs'
+import { config } from 'shared/configs'
 import { baseRequest, IContentfulResponse } from 'shared/lib'
 
 export type FetchInfoResponse = IContentfulResponse<IInfo>
