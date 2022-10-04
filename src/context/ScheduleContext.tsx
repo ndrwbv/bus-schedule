@@ -81,8 +81,8 @@ interface IProviderProps {
 	children: React.ReactElement
 	currentDay: number
 	nextDay: number
-	fetchSchedule: () => FetchScheduleResponse
-	fetchInfo: () => FetchInfoResponse
+	fetchSchedule: any
+	fetchInfo: any
 }
 
 export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay, fetchInfo }: IProviderProps) => {

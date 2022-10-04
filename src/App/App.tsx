@@ -26,7 +26,7 @@ import HeaderScore from 'components/HeaderScore/HeaderScore'
 const currentDay = new Date().getDay()
 const nextDay = getNextDay(currentDay)
 
-function App({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSchedule }) {
+function App({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSchedule }: any) {
 	const { t } = useTranslation()
 	const [searchParams] = useSearchParams()
 
