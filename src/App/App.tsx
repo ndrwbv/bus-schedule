@@ -22,7 +22,6 @@ import { Link, useSearchParams } from 'react-router-dom'
 import Share from 'components/Share/Share'
 import ComplainsProvider from 'context/ComplainsContext'
 import HeaderScore from 'components/HeaderScore/HeaderScore'
-import { useTypedSelector } from '../shared/lib'
 
 const currentDay = new Date().getDay()
 const nextDay = getNextDay(currentDay)
@@ -30,9 +29,6 @@ const nextDay = getNextDay(currentDay)
 function App({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSchedule }: any) {
 	const { t } = useTranslation()
 	const [searchParams] = useSearchParams()
-
-	const isHalloweenMode = useTypedSelector(state => state.featureToggle.isHalloweenMode)
-	console.log(isHalloweenMode)
 
 	return (
 		<ScheduleProvider currentDay={c} nextDay={n} fetchSchedule={fs} fetchInfo={fi}>
