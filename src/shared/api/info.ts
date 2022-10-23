@@ -1,4 +1,4 @@
-import { IInfo } from 'interfaces/IInfo'
+import { IInfo } from 'features/Info/types/IInfo'
 import { config } from 'shared/configs'
 import { baseRequest, IContentfulResponse } from 'shared/lib'
 
