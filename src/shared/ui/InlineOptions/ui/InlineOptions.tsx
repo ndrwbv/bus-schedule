@@ -8,7 +8,7 @@ interface IProps {
 	defaultColor?: string
 }
 
-const InlineOptions: React.FC<IProps> = ({ list, activeId, onClick, defaultColor = undefined }) => {
+export const InlineOptions: React.FC<IProps> = ({ list, activeId, onClick, defaultColor = undefined }) => {
 	return (
 		<OverLayContainer>
 			<InlineOptionsContainer>
@@ -26,5 +26,3 @@ const InlineOptions: React.FC<IProps> = ({ list, activeId, onClick, defaultColor
 		</OverLayContainer>
 	)
 }
-
-export default InlineOptions

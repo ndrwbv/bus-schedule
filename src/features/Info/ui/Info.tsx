@@ -7,7 +7,7 @@ import useInfo from 'hooks/useInfo'
 import { Container } from 'shared/ui/common'
 import { InfoWrapper, InfoLink, InfoText, InfoCloseButton } from './styled'
 
-const Info: React.FC = () => {
+export const Info: React.FC = () => {
 	const [isInfoShow, setIsInfoShow] = React.useState(false)
 	const infoMessage = useInfo()
 	const { message: text, link } = infoMessage
@@ -49,5 +49,3 @@ const Info: React.FC = () => {
 		</Container>
 	)
 }
-
-export default Info

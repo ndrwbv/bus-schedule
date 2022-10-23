@@ -12,7 +12,7 @@ import { SelectBusStopText } from 'entities/SelectBusStopText'
 
 import Holiday from 'components/Holiday/Holiday'
 import { IHoliday } from 'interfaces/IHolidays'
-import InlineOptions from 'components/InlineOptions/InlineOptions'
+import { InlineOptions } from 'shared/ui/InlineOptions'
 import { ComplainType } from 'interfaces/Complains'
 
 import {

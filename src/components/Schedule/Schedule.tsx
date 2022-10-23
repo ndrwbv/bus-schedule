@@ -4,10 +4,10 @@ import { useTranslation } from 'react-i18next'
 
 import Header from '../Header/Header'
 import Vote from '../Vote/Vote'
-import Info from '../Info/Info'
+import { Info } from 'features/Info'
 import { SelectBusStopText } from 'entities/SelectBusStopText'
 import HowMuchLeft from '../../widget/HowMuchLeft/HowMuchLeft'
-import InlineOptions from '../InlineOptions/InlineOptions'
+import { InlineOptions } from '../../shared/ui/InlineOptions'
 import { Card, Container, CustomButton } from 'shared/ui/common'
 import { OtherTimeBusses } from 'features/OtherTimeBuses'
 
