@@ -1,6 +1,6 @@
 import React from 'react'
 import { FetchScheduleResponse } from 'shared/api/schedule'
-import defaultSchedule from 'consts/schedule'
+import defaultSchedule from 'shared/common/schedule'
 import { AndrewLytics } from 'shared/lib'
 import { IHolidays } from 'interfaces/IHolidays'
 

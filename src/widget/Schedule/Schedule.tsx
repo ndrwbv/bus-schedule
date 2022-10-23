@@ -3,10 +3,10 @@ import Select from 'react-select'
 import { useTranslation } from 'react-i18next'
 
 import { Header } from '../../shared/ui/Header/Header'
-import Vote from '../Vote/Vote'
+import { LeaveFeedbackButton } from 'features/LeaveFeedbackButton'
 import { Info } from 'features/Info'
 import { SelectBusStopText } from 'entities/SelectBusStopText'
-import HowMuchLeft from '../../widget/HowMuchLeft/HowMuchLeft'
+import HowMuchLeft from '../../features/HowMuchLeft/HowMuchLeft'
 import { InlineOptions } from '../../shared/ui/InlineOptions'
 import { Card, Container, CustomButton } from 'shared/ui/common'
 import { OtherTimeBusses } from 'features/OtherTimeBuses'
@@ -15,12 +15,12 @@ import { AndrewLytics } from 'shared/lib'
 
 import { StopKeys } from 'interfaces/Stops'
 
-import useFavoriteBusStop, { getFavoriteBusStop } from 'hooks/useFavoriteBusStop'
-import { useScheduleContext } from 'context/ScheduleContext'
+import useFavoriteBusStop, { getFavoriteBusStop } from './model/useFavoriteBusStop'
+import { useScheduleContext } from 'widget/Schedule/model/ScheduleContext'
 
-import { OtherTime, selectStyles, TimeStamp, TranslationLink } from './styled'
+import { OtherTime, selectStyles, TimeStamp, TranslationLink } from './ui/styled'
 import Complains from 'features/Complains/ui/Complains'
-import { useComplainsContext } from 'context/ComplainsContext'
+import { useComplainsContext } from 'features/Complains/model/ComplainsContext'
 import { TRANSLATION_LINK } from 'shared/common'
 import { ComplainType } from 'interfaces/Complains'
 import { DirectionChanger } from 'features/DirectionChanger'
@@ -178,7 +178,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 			</Container>
 
 			<Container doubled>
-				<Vote />
+				<LeaveFeedbackButton />
 			</Container>
 
 			<OtherTimeBusses />

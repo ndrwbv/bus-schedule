@@ -3,7 +3,7 @@ import React from 'react'
 
 import InfoCloseCross from 'img/infoclosecross.svg'
 import { AndrewLytics } from 'shared/lib'
-import useInfo from 'hooks/useInfo'
+import useInfo from 'features/Info/model/useInfo'
 import { Container } from 'shared/ui/common'
 import { InfoWrapper, InfoLink, InfoText, InfoCloseButton } from './styled'
 

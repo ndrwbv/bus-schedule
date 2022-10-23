@@ -2,14 +2,14 @@ import React, { useContext, createContext, useCallback, useState, useEffect } fr
 import { useSearchParams } from 'react-router-dom'
 import queryString from 'query-string'
 
-import { StopsInOptions } from 'consts/stopsInOptions'
-import { StopsOutOptions } from 'consts/stopsOutOptions'
+import { StopsInOptions } from '../const/stopsInOptions'
+import { StopsOutOptions } from '../const/stopsOutOptions'
 
 import { AndrewLytics } from 'shared/lib'
-import { calculateHowMuchIsLeft, findClosesTime, findClosesTimeArray } from 'helpers/schedule'
+import { calculateHowMuchIsLeft, findClosesTime, findClosesTimeArray } from 'widget/Schedule/helpers/schedule'
 
-import useSchedule from 'hooks/useSchedule'
-import useEveryMinuteUpdater from 'hooks/useEveryMinuteUpdater'
+import useSchedule from 'widget/Schedule/model/useSchedule'
+import useEveryMinuteUpdater from 'widget/Schedule/helpers/useEveryMinuteUpdater'
 
 import { FetchInfoResponse } from 'shared/api'
 

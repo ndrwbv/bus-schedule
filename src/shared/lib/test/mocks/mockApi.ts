@@ -1,4 +1,4 @@
-import SCHEDULE from 'consts/schedule'
+import SCHEDULE from 'shared/common/schedule'
 
 export function createMockApi() {
 	return {

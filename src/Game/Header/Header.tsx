@@ -1,10 +1,10 @@
 import React from 'react'
 
-import { LeftToString } from 'widget/HowMuchLeft/HowMuchLeft'
+import { LeftToString } from 'features/HowMuchLeft/HowMuchLeft'
 import { GameLink, GameUIContainer, Title } from 'Game/common'
 import RecordTable from 'Game/RecordTable/RecordTable'
 
-import { useScheduleContext } from 'context/ScheduleContext'
+import { useScheduleContext } from 'widget/Schedule/model/ScheduleContext'
 
 import { HeaderContainer } from './styled'
 

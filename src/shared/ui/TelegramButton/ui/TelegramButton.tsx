@@ -1,13 +1,8 @@
 import SVG from 'react-inlinesvg'
 import { useTranslation } from 'react-i18next'
 
-<<<<<<< HEAD:src/components/TelegramButton/TelegramButton.tsx
-import TelegramLogo from 'img/telegram-logo.svg'
-import { ImageWrapper } from '../ImageWrapper'
-=======
 import TelegramLogo from '../img/telegram-logo.svg'
 import { ImageWrapper } from 'shared/ui/ImageWrapper'
->>>>>>> cff00f8 (moves shared):src/shared/ui/TelegramButton/ui/TelegramButton.tsx
 
 import { TelegramContainer, TelegramText } from './styled'
 import { TG_LINK } from 'shared/common'

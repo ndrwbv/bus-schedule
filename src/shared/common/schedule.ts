@@ -1,4 +1,4 @@
-import { ISchedule } from '../interfaces/ISchedule'
+import { ISchedule } from '../../interfaces/ISchedule'
 
 // 1 - Monday
 // 6 - Saturday

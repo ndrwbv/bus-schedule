@@ -7,7 +7,7 @@ import { FEEDBACK_LINK } from 'shared/common'
 import Bird from '../../img/bird-zamanuha.svg'
 import { FeedbackLink, FeedbackText, BirdWrapper, BirdContainer } from './styled'
 
-const LeaveFeedbackButton: React.FC<{}> = () => {
+export const LeaveFeedbackButton: React.FC<{}> = () => {
 	const [searchParams] = useSearchParams()
 	const { t } = useTranslation()
 

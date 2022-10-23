@@ -1,18 +1,18 @@
 import { useTranslation } from 'react-i18next'
 import { fetchInfo, fetchSchedule } from 'shared/api'
 
-import { LinksBlock, MainLayout } from 'components/Schedule/styled'
+import { LinksBlock, MainLayout } from 'widget/Schedule/ui/styled'
 
 import { Logo } from 'entities/Logo'
 import { HeaderInner, HeaderContainer, HeaderActions } from 'entities/Logo/ui/styled'
 
-import Schedule from '../components/Schedule/Schedule'
+import Schedule from '../widget/Schedule/Schedule'
 import { Container, GrayText } from 'shared/ui/common'
 
 import { ABOUT_LINK, AVTOTRANS, AVTOTRANS_LINK, COPYRIGHT } from 'shared/common'
 
-import ScheduleProvider from 'context/ScheduleContext'
-import { getNextDay } from 'helpers/schedule'
+import ScheduleProvider from 'widget/Schedule/model/ScheduleContext'
+import { getNextDay } from 'widget/Schedule/helpers/schedule'
 
 import { AndrewLytics } from 'shared/lib'
 import WriteMe from 'entities/WriteMe/WriteMe'
@@ -20,7 +20,7 @@ import WriteMe from 'entities/WriteMe/WriteMe'
 import { AppContainer, Footer } from 'App/styled'
 import { Link, useSearchParams } from 'react-router-dom'
 import { Share } from '../features/Share'
-import ComplainsProvider from 'context/ComplainsContext'
+import ComplainsProvider from 'features/Complains/model/ComplainsContext'
 import { HeaderScore } from 'features/HeaderScore'
 
 const currentDay = new Date().getDay()

@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import { Popup, PopupWrapper } from 'shared/ui'
 import ComplainMessage from './ComplainsMessage'
-import { useComplainsContext } from 'context/ComplainsContext'
+import { useComplainsContext } from 'features/Complains/model/ComplainsContext'
 import { MiniButton } from 'shared/ui/common'
 
 import { HeaderText } from 'shared/ui/Header/styled'

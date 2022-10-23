@@ -1,4 +1,4 @@
-import { useScheduleContext } from 'context/ScheduleContext'
+import { useScheduleContext } from 'widget/Schedule/model/ScheduleContext'
 import { useTranslation } from 'react-i18next'
 import SVG from 'react-inlinesvg'
 import Web from '../img/web.svg'

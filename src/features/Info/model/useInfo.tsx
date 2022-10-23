@@ -1,6 +1,6 @@
 import React from 'react'
 import { IInfo } from 'interfaces/IInfo'
-import { useScheduleContext } from 'context/ScheduleContext'
+import { useScheduleContext } from 'widget/Schedule/model/ScheduleContext'
 
 const useInfo = () => {
 	const { fetchInfo } = useScheduleContext()
