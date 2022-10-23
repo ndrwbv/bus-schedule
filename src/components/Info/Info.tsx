@@ -2,7 +2,7 @@ import SVG from 'react-inlinesvg'
 import React from 'react'
 
 import InfoCloseCross from 'img/infoclosecross.svg'
-import { AndrewLytics } from 'helpers/analytics'
+import { AndrewLytics } from 'shared/lib'
 import useInfo from 'hooks/useInfo'
 import { Container } from 'components/common'
 import { InfoWrapper, InfoLink, InfoText, InfoCloseButton } from './styled'

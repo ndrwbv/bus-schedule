@@ -25,7 +25,7 @@ import ProgressBar from './ProgressBar/ProgressBar'
 import * as S from './styled'
 import RecordTable from './RecordTable/RecordTable'
 import { Link, useSearchParams } from 'react-router-dom'
-import { AndrewLytics } from 'helpers/analytics'
+import { AndrewLytics } from 'shared/lib'
 
 type ID = number
 export interface IGameData {

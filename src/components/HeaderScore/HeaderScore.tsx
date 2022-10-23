@@ -1,4 +1,4 @@
-import { AndrewLytics } from 'helpers/analytics'
+import { AndrewLytics } from 'shared/lib'
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { StyledScore } from './styled'

@@ -1,4 +1,4 @@
-import { MAIN_GREY } from 'consts/colors'
+import { MAIN_GREY } from 'shared/theme'
 import styled from 'styled-components'
 
 export const MainLayout = styled.main`

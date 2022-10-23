@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { fetchInfo, fetchSchedule } from 'api'
+import { fetchInfo, fetchSchedule } from 'shared/api'
 
 import { LinksBlock, MainLayout } from 'components/Schedule/styled'
 
@@ -9,13 +9,12 @@ import { HeaderInner, HeaderContainer, HeaderActions } from 'components/Logo/sty
 import Schedule from '../components/Schedule/Schedule'
 import { Container, GrayText } from 'components/common'
 
-import { AVTOTRANS, COPYRIGHT } from 'consts/strings'
-import config from 'configs/base'
+import { ABOUT_LINK, AVTOTRANS, AVTOTRANS_LINK, COPYRIGHT } from 'shared/common'
 
 import ScheduleProvider from 'context/ScheduleContext'
 import { getNextDay } from 'helpers/schedule'
 
-import { AndrewLytics } from 'helpers/analytics'
+import { AndrewLytics } from 'shared/lib'
 import WriteMe from 'components/WriteMe/WriteMe'
 
 import { AppContainer, Footer } from './styled'
@@ -27,7 +26,7 @@ import HeaderScore from 'components/HeaderScore/HeaderScore'
 const currentDay = new Date().getDay()
 const nextDay = getNextDay(currentDay)
 
-function App({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSchedule }) {
+function App({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSchedule }: any) {
 	const { t } = useTranslation()
 	const [searchParams] = useSearchParams()
 
@@ -58,7 +57,7 @@ function App({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSchedule }
 							<LinksBlock>
 								<GrayText>
 									<a
-										href={config.ABOUT_LINK}
+										href={ABOUT_LINK}
 										target="_blank"
 										rel="noreferrer"
 										onClick={() => AndrewLytics('aboutLink')}
@@ -77,7 +76,7 @@ function App({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSchedule }
 								</GrayText>
 								<GrayText>
 									{t('Schedule taken from website')}{' '}
-									<a href={config.AVTOTRANS_LINK} target="_blank" rel="noreferrer">
+									<a href={AVTOTRANS_LINK} target="_blank" rel="noreferrer">
 										{AVTOTRANS}
 									</a>
 								</GrayText>

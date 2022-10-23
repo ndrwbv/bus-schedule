@@ -6,7 +6,7 @@ import { MiniButton } from 'components/common'
 
 import { HeaderText } from 'components/Header/styled'
 import { getHumanDate } from './helpers'
-import { AndrewLytics } from 'helpers/analytics'
+import { AndrewLytics } from 'shared/lib'
 import {
 	ComplainCount,
 	ComplainsBlockContainer,

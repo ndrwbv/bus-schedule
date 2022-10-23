@@ -8,7 +8,7 @@ import CopyIcon from '../../img/copy-icon.svg'
 import Popup, { PopupWrapper } from 'components/Popup/Popup'
 import { copyTextToClipboard } from './clickToClipBoard'
 
-import { AndrewLytics } from 'helpers/analytics'
+import { AndrewLytics } from 'shared/lib'
 
 import { CopyField, QRCodeContainer, ShareContainer, ShareItemContainer, ShareTitle } from './styled'
 

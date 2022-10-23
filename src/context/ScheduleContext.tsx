@@ -5,13 +5,13 @@ import queryString from 'query-string'
 import { StopsInOptions } from 'consts/stopsInOptions'
 import { StopsOutOptions } from 'consts/stopsOutOptions'
 
-import { AndrewLytics } from 'helpers/analytics'
+import { AndrewLytics } from 'shared/lib'
 import { calculateHowMuchIsLeft, findClosesTime, findClosesTimeArray } from 'helpers/schedule'
 
 import useSchedule from 'hooks/useSchedule'
 import useEveryMinuteUpdater from 'hooks/useEveryMinuteUpdater'
 
-import { FetchInfoResponse, FetchScheduleResponse } from 'api'
+import { FetchInfoResponse, FetchScheduleResponse } from 'shared/api'
 
 import { ISchedule } from 'interfaces/ISchedule'
 import { ITime } from 'interfaces/ITime'
@@ -53,7 +53,7 @@ const DEFAULT_PROPS = {
 	},
 	todaysHoliday: null,
 	currentDay: 1,
-	currentDayKey: 1
+	currentDayKey: 1,
 }
 
 export const ScheduleContext = createContext<ContextProps>(DEFAULT_PROPS)
@@ -72,7 +72,7 @@ interface ContextProps {
 	nextDay: number
 	fetchInfo: () => FetchInfoResponse
 	todaysHoliday: IHoliday | null
-	currentDay: number;
+	currentDay: number
 	currentDayKey: number
 }
 
@@ -81,9 +81,10 @@ interface IProviderProps {
 	children: React.ReactElement
 	currentDay: number
 	nextDay: number
-	fetchSchedule: () => FetchScheduleResponse
-	fetchInfo: () => FetchInfoResponse
+	fetchSchedule: any
+	fetchInfo: any
 }
+
 export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay, fetchInfo }: IProviderProps) => {
 	const [busStop, setBusStop] = useState<StopKeys | null>(null)
 	const [left, setLeft] = useState<ITime>(DEFAULT_LEFT)
@@ -171,7 +172,7 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 		if (userTimeLeft.minutes === null || (userTimeLeft.hours === 0 && userTimeLeft.minutes <= 0)) return
 
 		if (left?.minutes && (left?.minutes <= 25 || left?.minutes > 40)) {
-			if(shouldShowFastReply) return;
+			if (shouldShowFastReply) return
 			AndrewLytics('frappears')
 			return setShouldShowFastReply(true)
 		}
@@ -243,7 +244,7 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 				fetchInfo,
 				todaysHoliday,
 				currentDay,
-				currentDayKey
+				currentDayKey,
 			}}
 		>
 			{children}

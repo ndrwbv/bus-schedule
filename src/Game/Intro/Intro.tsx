@@ -1,6 +1,6 @@
 import { Link, useSearchParams } from 'react-router-dom'
 import { GameButton, GameLayoutCentred, GameUIContainer, GAME_OVER_BG, MainGameLayout, Title } from 'Game/common'
-import { AndrewLytics } from 'helpers/analytics'
+import { AndrewLytics } from 'shared/lib'
 import { BackToSchedule } from '../styled'
 
 function Intro() {

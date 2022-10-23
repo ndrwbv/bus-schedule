@@ -1,4 +1,4 @@
-import { AndrewLytics } from 'helpers/analytics'
+import { AndrewLytics } from 'shared/lib'
 import { Directions, StopKeys } from 'interfaces/Stops'
 import { useEffect, useState } from 'react'
 import { ComplainType } from 'interfaces/Complains'

@@ -7,7 +7,7 @@ import SelectBusStopText from 'components/SelectBusStopText'
 import { useScheduleContext } from 'context/ScheduleContext'
 import { IOption } from 'interfaces/Stops'
 import { useTranslation } from 'react-i18next'
-import { AndrewLytics } from 'helpers/analytics'
+import { AndrewLytics } from 'shared/lib'
 
 const OtherTimeBusses = () => {
 	const { nextDay, busStop, SCHEDULE, direction } = useScheduleContext()
