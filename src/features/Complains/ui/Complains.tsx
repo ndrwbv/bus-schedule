@@ -5,7 +5,7 @@ import { useComplainsContext } from 'context/ComplainsContext'
 import { MiniButton } from 'shared/ui/common'
 
 import { HeaderText } from 'components/Header/styled'
-import { getHumanDate } from './helpers'
+import { getHumanDate } from '../helpers'
 import { AndrewLytics } from 'shared/lib'
 import {
 	ComplainCount,

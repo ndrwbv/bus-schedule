@@ -8,8 +8,9 @@ import { useScheduleContext } from 'context/ScheduleContext'
 import { IOption } from 'interfaces/Stops'
 import { useTranslation } from 'react-i18next'
 import { AndrewLytics } from 'shared/lib'
+import { Card, Container } from 'shared/ui'
 
-const OtherTimeBusses = () => {
+export const OtherTimeBusses = () => {
 	const { nextDay, busStop, SCHEDULE, direction } = useScheduleContext()
 	const { t } = useTranslation()
 
@@ -51,21 +52,21 @@ const OtherTimeBusses = () => {
 	}, [busStop, SCHEDULE, direction, busOption])
 
 	return (
-		<>
-			<Header text={t('Buses for')}>
-				<Select
-					isSearchable={false}
-					styles={selectStyles}
-					options={DaysOptions}
-					onChange={handleChange}
-					value={busOption}
-					defaultValue={DaysOptions[0]}
-				/>
-			</Header>
+		<Container>
+			<Card>
+				<Header text={t('Buses for')}>
+					<Select
+						isSearchable={false}
+						styles={selectStyles}
+						options={DaysOptions}
+						onChange={handleChange}
+						value={busOption}
+						defaultValue={DaysOptions[0]}
+					/>
+				</Header>
 
-			<OtherTime>{renderOtherTimeContent}</OtherTime>
-		</>
+				<OtherTime>{renderOtherTimeContent}</OtherTime>
+			</Card>
+		</Container>
 	)
 }
-
-export default OtherTimeBusses

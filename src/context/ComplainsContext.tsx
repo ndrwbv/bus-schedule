@@ -1,4 +1,4 @@
-import useComplains, { IComplains, IComplainsResponse } from 'components/Complains/useComplains'
+import useComplains, { IComplains, IComplainsResponse } from 'features/Complains/model/useComplains'
 import React, { useContext, createContext } from 'react'
 
 const DEFAULT_PROPS = {

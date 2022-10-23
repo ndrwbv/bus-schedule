@@ -9,7 +9,7 @@ import { SelectBusStopText } from 'entities/SelectBusStopText'
 import HowMuchLeft from '../../widget/HowMuchLeft/HowMuchLeft'
 import InlineOptions from '../InlineOptions/InlineOptions'
 import { Card, Container, CustomButton } from 'shared/ui/common'
-import OtherTimeBusses from 'components/OtherTimeBuses/OtherTimeBuses'
+import { OtherTimeBusses } from 'features/OtherTimeBuses'
 
 import { AndrewLytics } from 'shared/lib'
 
@@ -19,7 +19,7 @@ import useFavoriteBusStop, { getFavoriteBusStop } from 'hooks/useFavoriteBusStop
 import { useScheduleContext } from 'context/ScheduleContext'
 
 import { OtherTime, selectStyles, TimeStamp, TranslationLink } from './styled'
-import Complains from 'components/Complains/Complains'
+import Complains from 'features/Complains/ui/Complains'
 import { useComplainsContext } from 'context/ComplainsContext'
 import { TRANSLATION_LINK } from 'shared/common'
 import { ComplainType } from 'interfaces/Complains'
@@ -181,11 +181,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 				<Vote />
 			</Container>
 
-			<Container>
-				<Card>
-					<OtherTimeBusses />
-				</Card>
-			</Container>
+			<OtherTimeBusses />
 		</>
 	)
 }

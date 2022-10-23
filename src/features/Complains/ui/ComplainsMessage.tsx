@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
-import { getDirectionString, getHumanDate, getOnString } from './helpers'
+import { getDirectionString, getHumanDate, getOnString } from '../helpers'
 import { ComplainsDirection, ComplainsStop, MessageContainer, MessageDate } from './styled'
-import { IComplainsResponse } from './useComplains'
+import { IComplainsResponse } from '../model/useComplains'
 
 type Props = IComplainsResponse & { isCurrentStop?: boolean }
 
