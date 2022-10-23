@@ -1,7 +1,5 @@
 import { HolidayContainer } from './styled'
 
-const Holiday = () => {
+export const Holiday = () => {
 	return <HolidayContainer>праздничное расписание</HolidayContainer>
 }
-
-export default Holiday

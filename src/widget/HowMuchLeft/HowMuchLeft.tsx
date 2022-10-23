@@ -10,7 +10,7 @@ import Pumpkin from './img/pumpkin.svg'
 import { ImageWrapper } from '../../shared/ui/ImageWrapper'
 import { SelectBusStopText } from 'entities/SelectBusStopText'
 
-import Holiday from 'components/Holiday/Holiday'
+import { Holiday } from 'entities/Holiday'
 import { IHoliday } from 'interfaces/IHolidays'
 import { InlineOptions } from 'shared/ui/InlineOptions'
 import { ComplainType } from 'interfaces/Complains'
