@@ -22,7 +22,7 @@ import { OtherTime, selectStyles, TimeStamp, TranslationLink } from './ui/styled
 import Complains from 'features/Complains/ui/Complains'
 import { useComplainsContext } from 'features/Complains/model/ComplainsContext'
 import { TRANSLATION_LINK } from 'shared/common'
-import { ComplainType } from 'interfaces/Complains'
+import { ComplainType } from 'features/Complains'
 import { DirectionChanger } from 'features/DirectionChanger'
 
 interface IScheduleProps {}

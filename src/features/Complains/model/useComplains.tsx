@@ -1,7 +1,7 @@
 import { AndrewLytics } from 'shared/lib'
 import { Directions, StopKeys } from 'interfaces/Stops'
 import { useEffect, useState } from 'react'
-import { ComplainType } from 'interfaces/Complains'
+import { ComplainType } from '../model/Complains'
 export interface IComplains {
 	stop: StopKeys
 	direction: Directions

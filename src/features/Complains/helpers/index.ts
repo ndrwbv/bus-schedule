@@ -1,6 +1,6 @@
 import { calculateHowMuchIsLeft } from 'widget/Schedule/helpers/schedule'
 import { Directions } from 'interfaces/Stops'
-import { ComplainType } from 'interfaces/Complains'
+import { ComplainType } from '../model/Complains'
 
 export const getMinutesString = (amount: number, secondWord = 'назад') => {
 	if (amount === 0) return ' сейчас'

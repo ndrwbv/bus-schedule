@@ -13,7 +13,7 @@ import { SelectBusStopText } from 'entities/SelectBusStopText'
 import { Holiday } from 'entities/Holiday'
 import { IHoliday } from 'interfaces/IHolidays'
 import { InlineOptions } from 'shared/ui/InlineOptions'
-import { ComplainType } from 'interfaces/Complains'
+import { ComplainType } from 'features/Complains'
 
 import {
 	BusEstimation,
