@@ -26,7 +26,7 @@ import {
 import { useTypedSelector } from 'shared/lib'
 import { isHalloween } from 'App/model/selectors/isHalloween'
 
-const SIZE = 49
+const SIZE = 45
 const COMPLAIN_DISAPPEAR_MS = 200000
 const ComplainsOptions = [
 	{
