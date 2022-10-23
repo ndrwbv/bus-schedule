@@ -7,6 +7,8 @@ import { MainPageObject } from 'shared/lib/test/pageObjects/MainPageObject'
 import { configureI18next } from 'shared/lib'
 import { MemoryRouter } from 'react-router-dom'
 import { Home } from '../page/Home/Home'
+import { Provider } from 'react-redux'
+import { store } from 'App/model/configureStore'
 
 jest.useFakeTimers('modern')
 jest.setSystemTime(new Date('Fri Mar 11 2022 13:44:27 GMT+0700 (GMT+07:00)'))
@@ -15,9 +17,11 @@ configureI18next() // since we don't have backend for translations it's fine
 
 const api = createMockApi()
 const CustomApp = () => (
-	<MemoryRouter>
-		<Home fi={api.fetchInfo} fs={api.fetchSchedule} />
-	</MemoryRouter>
+	<Provider store={store}>
+		<MemoryRouter>
+			<Home fi={api.fetchInfo} fs={api.fetchSchedule} />
+		</MemoryRouter>
+	</Provider>
 )
 
 describe('<Home />', () => {
