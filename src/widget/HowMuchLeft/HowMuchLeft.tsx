@@ -8,7 +8,7 @@ import NextBus from './img/next-bus.svg'
 import Pumpkin from './img/pumpkin.svg'
 
 import { ImageWrapper } from '../../shared/ui/ImageWrapper'
-import SelectBusStopText from '../../components/SelectBusStopText'
+import { SelectBusStopText } from '../../entities/SelectBusStopText'
 
 import Holiday from 'components/Holiday/Holiday'
 import { IHoliday } from 'interfaces/IHolidays'

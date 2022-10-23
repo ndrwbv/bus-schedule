@@ -6,10 +6,8 @@ const TextContainer = styled.p`
 	font-size: 18px;
 `
 
-const SelectBusStopText = () => {
+export const SelectBusStopText = () => {
 	const { t } = useTranslation()
-  
+
 	return <TextContainer>{t('Select bus stop to see schedule')}</TextContainer>
 }
-
-export default SelectBusStopText

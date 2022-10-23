@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import Header from '../Header/Header'
 import Vote from '../Vote/Vote'
 import Info from '../Info/Info'
-import SelectBusStopText from '../SelectBusStopText'
+import { SelectBusStopText } from '../../entities/SelectBusStopText'
 import HowMuchLeft from '../../widget/HowMuchLeft/HowMuchLeft'
 import InlineOptions from '../InlineOptions/InlineOptions'
 import { Card, Container, CustomButton } from 'shared/ui/common'
@@ -18,12 +18,7 @@ import { StopKeys } from 'interfaces/Stops'
 import useFavoriteBusStop, { getFavoriteBusStop } from 'hooks/useFavoriteBusStop'
 import { useScheduleContext } from 'context/ScheduleContext'
 
-import {
-	OtherTime,
-	selectStyles,
-	TimeStamp,
-	TranslationLink,
-} from './styled'
+import { OtherTime, selectStyles, TimeStamp, TranslationLink } from './styled'
 import Complains from 'components/Complains/Complains'
 import { useComplainsContext } from 'context/ComplainsContext'
 import { TRANSLATION_LINK } from 'shared/common'

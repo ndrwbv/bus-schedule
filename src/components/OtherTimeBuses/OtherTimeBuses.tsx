@@ -3,7 +3,7 @@ import Select from 'react-select'
 
 import Header from 'components/Header/Header'
 import { OtherTime, selectStyles, TimeStamp } from 'components/Schedule/styled'
-import SelectBusStopText from 'components/SelectBusStopText'
+import { SelectBusStopText } from 'entities/SelectBusStopText'
 import { useScheduleContext } from 'context/ScheduleContext'
 import { IOption } from 'interfaces/Stops'
 import { useTranslation } from 'react-i18next'
