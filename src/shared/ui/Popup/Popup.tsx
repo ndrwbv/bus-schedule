@@ -6,7 +6,7 @@ export function cls(arr: string[]): string {
 	return arr.filter(Boolean).join(' ')
 }
 
-const Popup: React.FC<any> = ({ isOpen = false, handleClose, children, contentRef = null }) => {
+export const Popup: React.FC<any> = ({ isOpen = false, handleClose, children, contentRef = null }) => {
 	const [isClosing, setClose] = React.useState(false)
 
 	const [active, setActive] = React.useState(false)
@@ -134,5 +134,3 @@ const Popup: React.FC<any> = ({ isOpen = false, handleClose, children, contentRe
 export const PopupWrapper: React.FC<{ children: any }> = ({ children }) => {
 	return <div className={'popup-padding'}>{children}</div>
 }
-
-export default Popup
