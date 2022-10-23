@@ -7,7 +7,7 @@ import Logo from 'components/Logo/Logo'
 import { HeaderInner, HeaderContainer, HeaderActions } from 'components/Logo/styled'
 
 import Schedule from '../components/Schedule/Schedule'
-import { Container, GrayText } from 'components/common'
+import { Container, GrayText } from 'shared/ui/common'
 
 import { ABOUT_LINK, AVTOTRANS, AVTOTRANS_LINK, COPYRIGHT } from 'shared/common'
 
@@ -15,9 +15,9 @@ import ScheduleProvider from 'context/ScheduleContext'
 import { getNextDay } from 'helpers/schedule'
 
 import { AndrewLytics } from 'shared/lib'
-import WriteMe from 'components/WriteMe/WriteMe'
+import WriteMe from 'entities/WriteMe/WriteMe'
 
-import { AppContainer, Footer } from './styled'
+import { AppContainer, Footer } from 'App/styled'
 import { Link, useSearchParams } from 'react-router-dom'
 import Share from 'components/Share/Share'
 import ComplainsProvider from 'context/ComplainsContext'

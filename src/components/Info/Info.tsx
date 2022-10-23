@@ -4,7 +4,7 @@ import React from 'react'
 import InfoCloseCross from 'img/infoclosecross.svg'
 import { AndrewLytics } from 'shared/lib'
 import useInfo from 'hooks/useInfo'
-import { Container } from 'components/common'
+import { Container } from 'shared/ui/common'
 import { InfoWrapper, InfoLink, InfoText, InfoCloseButton } from './styled'
 
 const Info: React.FC = () => {

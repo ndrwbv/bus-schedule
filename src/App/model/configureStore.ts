@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
-import featureToggle from './featureToggleSlice'
+import featureToggle from 'App/model/featureToggleSlice'
 
 export const store = configureStore({
 	reducer: {

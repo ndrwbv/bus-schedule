@@ -4,10 +4,11 @@ import { useTranslation } from 'react-i18next'
 
 import { ITime } from 'interfaces/ITime'
 import { StopKeys } from 'interfaces/Stops'
-import NextBus from 'img/next-bus.svg'
+import NextBus from './img/next-bus.svg'
+import Pumpkin from './img/pumpkin.svg'
 
-import { ImageWrapper } from '../ImageWrapper'
-import SelectBusStopText from '../SelectBusStopText'
+import { ImageWrapper } from '../../shared/ui/ImageWrapper'
+import SelectBusStopText from '../../components/SelectBusStopText'
 
 import Holiday from 'components/Holiday/Holiday'
 import { IHoliday } from 'interfaces/IHolidays'
@@ -22,8 +23,9 @@ import {
 	NextBusContainer,
 	TextWrapper,
 } from './styled'
+import { useTypedSelector } from 'shared/lib'
 
-const SIZE = 39
+const SIZE = 49
 const COMPLAIN_DISAPPEAR_MS = 200000
 const ComplainsOptions = [
 	{
@@ -73,6 +75,8 @@ interface ILeftProps {
 const HowMuchLeft: React.FC<ILeftProps> = ({ left, busStop, shouldShowFastReply, holiday, onComplain }) => {
 	const [isComplainClicked, setIsComplainClicked] = useState(false)
 	const [activeComplain, setActiveComplain] = useState<ComplainType | undefined>(undefined)
+	const isHalloweenMode = useTypedSelector(state => state.featureToggle.isHalloweenMode)
+	const isFancy = isHalloweenMode || !!holiday
 
 	const getColorByLeftTime = () => {
 		if (!left || left.hours === null || left.minutes === null || left?.hours >= 1) return '#e7edec'
@@ -101,10 +105,10 @@ const HowMuchLeft: React.FC<ILeftProps> = ({ left, busStop, shouldShowFastReply,
 
 	return (
 		<>
-			<HowMuchLeftContainer isFancy={!!holiday} defaultColor={getColorByLeftTime()}>
+			<HowMuchLeftContainer isFancy={isFancy} defaultColor={getColorByLeftTime()}>
 				<NextBusContainer>
 					<ImageWrapper w={SIZE} h={SIZE}>
-						<SVG src={NextBus} width={SIZE} height={SIZE} uniquifyIDs={true} />
+						<SVG src={isHalloweenMode ? Pumpkin : NextBus} width={SIZE} height={SIZE} uniquifyIDs={true} />
 					</ImageWrapper>
 
 					<BusEstimation>

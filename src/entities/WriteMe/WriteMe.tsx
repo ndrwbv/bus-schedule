@@ -1,9 +1,9 @@
 import SVG from 'react-inlinesvg'
 
-import { Card, CardHeader } from 'components/common'
+import { Card, CardHeader } from 'shared/ui/common'
 
 import Write from 'img/write.svg'
-import TelegramButton from 'components/TelegramButton/TelegramButton'
+import { TelegramButton } from 'shared/ui'
 import { useTranslation } from 'react-i18next'
 import { HandWrapper } from './styled'
 

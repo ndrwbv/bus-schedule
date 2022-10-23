@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react'
 import Popup, { PopupWrapper } from 'components/Popup/Popup'
 import ComplainMessage from './ComplainsMessage'
 import { useComplainsContext } from 'context/ComplainsContext'
-import { MiniButton } from 'components/common'
+import { MiniButton } from 'shared/ui/common'
 
 import { HeaderText } from 'components/Header/styled'
 import { getHumanDate } from './helpers'
