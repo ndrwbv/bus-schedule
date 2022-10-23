@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import Select from 'react-select'
 
-import Header from 'components/Header/Header'
+import { Header } from 'shared/ui/Header/Header'
 import { OtherTime, selectStyles, TimeStamp } from 'components/Schedule/styled'
 import { SelectBusStopText } from '../../entities/SelectBusStopText'
 import { useScheduleContext } from 'context/ScheduleContext'

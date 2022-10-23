@@ -1,4 +1,3 @@
-
 import { HeaderContainer, HeaderItem, HeaderText } from './styled'
 
 interface IHeaderProps {
@@ -6,9 +5,8 @@ interface IHeaderProps {
 	imgSrc?: any
 	children?: React.ReactNode
 }
- 
-const Header: React.FC<IHeaderProps> = ({ text: Text, imgSrc, children = null }) => {
 
+export const Header: React.FC<IHeaderProps> = ({ text: Text, imgSrc, children = null }) => {
 	return (
 		<HeaderContainer>
 			<HeaderItem>
@@ -19,5 +17,3 @@ const Header: React.FC<IHeaderProps> = ({ text: Text, imgSrc, children = null })
 		</HeaderContainer>
 	)
 }
-
-export default Header

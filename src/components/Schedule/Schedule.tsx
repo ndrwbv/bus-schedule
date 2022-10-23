@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from 'react'
 import Select from 'react-select'
 import { useTranslation } from 'react-i18next'
 
-import Header from '../Header/Header'
+import { Header } from '../../shared/ui/Header/Header'
 import Vote from '../Vote/Vote'
 import { Info } from 'features/Info'
 import { SelectBusStopText } from 'entities/SelectBusStopText'
