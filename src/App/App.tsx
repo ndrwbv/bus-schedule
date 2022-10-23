@@ -3,7 +3,7 @@ import { fetchInfo, fetchSchedule } from 'shared/api'
 
 import { LinksBlock, MainLayout } from 'components/Schedule/styled'
 
-import {Logo} from 'entities/Logo'
+import { Logo } from 'entities/Logo'
 import { HeaderInner, HeaderContainer, HeaderActions } from 'entities/Logo/ui/styled'
 
 import Schedule from '../components/Schedule/Schedule'
@@ -19,7 +19,7 @@ import WriteMe from 'entities/WriteMe/WriteMe'
 
 import { AppContainer, Footer } from 'App/styled'
 import { Link, useSearchParams } from 'react-router-dom'
-import Share from 'components/Share/Share'
+import { Share } from '../features/Share'
 import ComplainsProvider from 'context/ComplainsContext'
 import HeaderScore from 'components/HeaderScore/HeaderScore'
 

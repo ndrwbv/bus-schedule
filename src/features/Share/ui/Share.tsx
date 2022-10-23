@@ -2,17 +2,17 @@ import { useEffect, useState } from 'react'
 import SVG from 'react-inlinesvg'
 import QRCode from 'react-qr-code'
 
-import QRCodeIcon from '../../img/qr-code-icon.svg'
-import CopyIcon from '../../img/copy-icon.svg'
+import QRCodeIcon from '../img/qr-code-icon.svg'
+import CopyIcon from '../img/copy-icon.svg'
 
 import { Popup, PopupWrapper } from 'shared/ui'
-import { copyTextToClipboard } from './clickToClipBoard'
+import { copyTextToClipboard } from '../helpers/clickToClipBoard'
 
 import { AndrewLytics } from 'shared/lib'
 
 import { CopyField, QRCodeContainer, ShareContainer, ShareItemContainer, ShareTitle } from './styled'
 
-function Share() {
+export const Share = () => {
 	const [isOpen, setIsOpen] = useState(false)
 	const [clicked, setClicked] = useState(false)
 
@@ -60,5 +60,3 @@ function Share() {
 		</>
 	)
 }
-
-export default Share
