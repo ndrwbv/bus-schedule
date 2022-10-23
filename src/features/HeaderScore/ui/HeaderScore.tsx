@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { StyledScore } from './styled'
 
-const HeaderScore = () => {
+export const HeaderScore = () => {
 	const [searchParams] = useSearchParams()
 	const [score, setScore] = useState<undefined | string>(undefined)
 
@@ -24,5 +24,3 @@ const HeaderScore = () => {
 		</Link>
 	)
 }
-
-export default HeaderScore

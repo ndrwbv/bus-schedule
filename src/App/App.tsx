@@ -21,7 +21,7 @@ import { AppContainer, Footer } from 'App/styled'
 import { Link, useSearchParams } from 'react-router-dom'
 import { Share } from '../features/Share'
 import ComplainsProvider from 'context/ComplainsContext'
-import HeaderScore from 'components/HeaderScore/HeaderScore'
+import { HeaderScore } from 'features/HeaderScore'
 
 const currentDay = new Date().getDay()
 const nextDay = getNextDay(currentDay)
