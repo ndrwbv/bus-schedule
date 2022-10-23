@@ -19,11 +19,6 @@ import useFavoriteBusStop, { getFavoriteBusStop } from 'hooks/useFavoriteBusStop
 import { useScheduleContext } from 'context/ScheduleContext'
 
 import {
-	DirectionContainer,
-	DirectionPlaceholder,
-	DirectionText,
-	GoButton,
-	GoButtonContainer,
 	OtherTime,
 	selectStyles,
 	TimeStamp,
@@ -33,6 +28,7 @@ import Complains from 'components/Complains/Complains'
 import { useComplainsContext } from 'context/ComplainsContext'
 import { TRANSLATION_LINK } from 'shared/common'
 import { ComplainType } from 'interfaces/Complains'
+import { DirectionChanger } from 'features/DirectionChanger'
 
 interface IScheduleProps {}
 const Schedule: React.FC<IScheduleProps> = () => {
@@ -44,7 +40,6 @@ const Schedule: React.FC<IScheduleProps> = () => {
 		stopsOptions,
 		direction,
 		handleChangeBusStop,
-		handleChangeDirection,
 		todaysHoliday,
 	} = useScheduleContext()
 	const { favoriteBusStops, saveFavoriteBusStops } = useFavoriteBusStop()
@@ -115,25 +110,7 @@ const Schedule: React.FC<IScheduleProps> = () => {
 	return (
 		<>
 			<Info />
-			<Container>
-				<Card>
-					<GoButtonContainer>
-						<DirectionContainer>
-							<DirectionPlaceholder>Направление</DirectionPlaceholder>
-							<DirectionText>
-								{direction === 'in' ? t('In north park') : t('Out of north park')}
-							</DirectionText>
-						</DirectionContainer>
-
-						<GoButton
-							active={direction === 'in'}
-							onClick={() => handleChangeDirection(direction === 'in' ? 'out' : 'in')}
-						>
-							{direction === 'in' ? t('Out of north park') : t('In north park')}
-						</GoButton>
-					</GoButtonContainer>
-				</Card>
-			</Container>
+			<DirectionChanger />
 
 			<Container>
 				<Card>

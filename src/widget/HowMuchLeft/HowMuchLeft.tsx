@@ -24,6 +24,7 @@ import {
 	TextWrapper,
 } from './styled'
 import { useTypedSelector } from 'shared/lib'
+import { isHalloween } from 'App/model/selectors/isHalloween'
 
 const SIZE = 49
 const COMPLAIN_DISAPPEAR_MS = 200000
@@ -75,7 +76,7 @@ interface ILeftProps {
 const HowMuchLeft: React.FC<ILeftProps> = ({ left, busStop, shouldShowFastReply, holiday, onComplain }) => {
 	const [isComplainClicked, setIsComplainClicked] = useState(false)
 	const [activeComplain, setActiveComplain] = useState<ComplainType | undefined>(undefined)
-	const isHalloweenMode = useTypedSelector(state => state.featureToggle.isHalloweenMode)
+	const isHalloweenMode = useTypedSelector(isHalloween)
 	const isFancy = isHalloweenMode || !!holiday
 
 	const getColorByLeftTime = () => {
