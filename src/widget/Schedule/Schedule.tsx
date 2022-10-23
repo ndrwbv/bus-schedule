@@ -13,7 +13,7 @@ import { OtherTimeBusses } from 'features/OtherTimeBuses'
 
 import { AndrewLytics } from 'shared/lib'
 
-import { StopKeys } from 'interfaces/Stops'
+import { StopKeys } from 'widget/Schedule/types/Stops'
 
 import useFavoriteBusStop, { getFavoriteBusStop } from './model/useFavoriteBusStop'
 import { useScheduleContext } from 'widget/Schedule/model/ScheduleContext'

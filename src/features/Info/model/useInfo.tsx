@@ -1,5 +1,5 @@
 import React from 'react'
-import { IInfo } from 'interfaces/IInfo'
+import { IInfo } from 'features/Info/types/IInfo'
 import { useScheduleContext } from 'widget/Schedule/model/ScheduleContext'
 
 const useInfo = () => {

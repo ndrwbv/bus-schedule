@@ -13,10 +13,10 @@ import useEveryMinuteUpdater from 'widget/Schedule/helpers/useEveryMinuteUpdater
 
 import { FetchInfoResponse } from 'shared/api'
 
-import { ISchedule } from 'interfaces/ISchedule'
-import { ITime } from 'interfaces/ITime'
-import { Directions, IOption, StopKeys, StopKeysIn, StopKeysOut } from 'interfaces/Stops'
-import { IHoliday, IHolidays } from 'interfaces/IHolidays'
+import { ISchedule } from 'widget/Schedule/types/ISchedule'
+import { ITime } from 'widget/Schedule/types/ITime'
+import { Directions, IOption, StopKeys, StopKeysIn, StopKeysOut } from 'widget/Schedule/types/Stops'
+import { IHoliday, IHolidays } from 'widget/Schedule/types/IHolidays'
 
 const DEFAULT_LEFT = {
 	hours: 0,

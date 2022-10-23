@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import SVG from 'react-inlinesvg'
 import { useTranslation } from 'react-i18next'
 
-import { ITime } from 'interfaces/ITime'
-import { StopKeys } from 'interfaces/Stops'
+import { ITime } from 'widget/Schedule/types/ITime'
+import { StopKeys } from 'widget/Schedule/types/Stops'
 import NextBus from './img/next-bus.svg'
 import Pumpkin from './img/pumpkin.svg'
 
@@ -11,7 +11,7 @@ import { ImageWrapper } from '../../shared/ui/ImageWrapper'
 import { SelectBusStopText } from 'entities/SelectBusStopText'
 
 import { Holiday } from 'entities/Holiday'
-import { IHoliday } from 'interfaces/IHolidays'
+import { IHoliday } from 'widget/Schedule/types/IHolidays'
 import { InlineOptions } from 'shared/ui/InlineOptions'
 import { ComplainType } from 'features/Complains'
 

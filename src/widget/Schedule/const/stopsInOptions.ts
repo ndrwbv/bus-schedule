@@ -1,4 +1,4 @@
-import { IOption, StopKeysIn } from 'interfaces/Stops'
+import { IOption, StopKeysIn } from 'widget/Schedule/types/Stops'
 
 export const StopsInOptions: IOption<StopKeysIn | null>[] = [
 	{

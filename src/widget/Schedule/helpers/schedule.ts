@@ -1,4 +1,4 @@
-import { ITime } from 'interfaces/ITime'
+import { ITime } from 'widget/Schedule/types/ITime'
 const TIME_ZONE = 'Asia/Tomsk'
 
 export const getDateFromTimeCode = (timeCode: string) => {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { StopKeys } from 'interfaces/Stops'
+import { StopKeys } from 'widget/Schedule/types/Stops'
 
 export const getFavoriteBusStop = (): StopKeys[] => {
 	const localStorageItem = localStorage.getItem('favoriteStops')
