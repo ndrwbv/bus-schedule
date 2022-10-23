@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 
 import TelegramLogo from 'img/telegram-logo.svg'
 import { ImageWrapper } from '../ImageWrapper'
-import { config } from 'shared/configs'
 
 import { TelegramContainer, TelegramText } from './styled'
 import { TG_LINK } from 'shared/common'

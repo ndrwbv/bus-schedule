@@ -11,7 +11,7 @@ import { calculateHowMuchIsLeft, findClosesTime, findClosesTimeArray } from 'hel
 import useSchedule from 'hooks/useSchedule'
 import useEveryMinuteUpdater from 'hooks/useEveryMinuteUpdater'
 
-import { FetchInfoResponse, FetchScheduleResponse } from 'shared/api'
+import { FetchInfoResponse } from 'shared/api'
 
 import { ISchedule } from 'interfaces/ISchedule'
 import { ITime } from 'interfaces/ITime'
