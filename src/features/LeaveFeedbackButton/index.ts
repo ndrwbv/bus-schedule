@@ -1,1 +1,1 @@
-export * from './Vote'
+export * from './LeaveFeedbackButton'

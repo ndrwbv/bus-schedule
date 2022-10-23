@@ -2,7 +2,7 @@ import React from 'react'
 import SVG from 'react-inlinesvg'
 
 import Score from 'Game/Score/Score'
-import GameRecord from '../../img/game-record.svg'
+import GameRecord from './img/game-record.svg'
 import { InfoWrapper, RecordItem, RecordTableContainer, RecordTitle, RecordValue, RecordValueContainer } from './styled'
 
 const RecordTableGameOver: React.FC<{

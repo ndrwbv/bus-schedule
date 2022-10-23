@@ -4,7 +4,7 @@ import SVG from 'react-inlinesvg'
 
 import { AndrewLytics } from 'shared/lib'
 import { FEEDBACK_LINK } from 'shared/common'
-import Bird from '../../img/bird-zamanuha.svg'
+import Bird from './img/bird-zamanuha.svg'
 import { FeedbackLink, FeedbackText, BirdWrapper, BirdContainer } from './styled'
 
 export const LeaveFeedbackButton: React.FC<{}> = () => {

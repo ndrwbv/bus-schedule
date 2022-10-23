@@ -1,6 +1,6 @@
 import SVG from 'react-inlinesvg'
-import GameStart from '../../img/game-star.svg'
-import HighScore from '../../img/game-new-high-score.svg'
+import GameStart from './img/game-star.svg'
+import HighScore from './img/game-new-high-score.svg'
 import * as S from './styled'
 
 interface IProps {

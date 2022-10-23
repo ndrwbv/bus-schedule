@@ -1,9 +1,9 @@
 import SVG from 'react-inlinesvg'
 import React from 'react'
 
-import InfoCloseCross from 'img/infoclosecross.svg'
+import InfoCloseCross from '../img/infoclosecross.svg'
 import { AndrewLytics } from 'shared/lib'
-import useInfo from 'features/Info/model/useInfo'
+import useInfo from '../model/useInfo'
 import { Container } from 'shared/ui/common'
 import { InfoWrapper, InfoLink, InfoText, InfoCloseButton } from './styled'
 

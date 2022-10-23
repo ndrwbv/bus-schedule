@@ -2,7 +2,7 @@ import SVG from 'react-inlinesvg'
 
 import { Card, CardHeader } from 'shared/ui/common'
 
-import Write from 'img/write.svg'
+import Write from './img/write.svg'
 import { TelegramButton } from 'shared/ui'
 import { useTranslation } from 'react-i18next'
 import { HandWrapper } from './styled'
