@@ -6,7 +6,7 @@ import { LinksBlock, MainLayout } from 'widget/Schedule/ui/styled'
 import { Logo } from 'entities/Logo'
 import { HeaderInner, HeaderContainer, HeaderActions } from 'entities/Logo/ui/styled'
 
-import Schedule from '../widget/Schedule/Schedule'
+import Schedule from '../../widget/Schedule/Schedule'
 import { Container, GrayText } from 'shared/ui/common'
 
 import { ABOUT_LINK, AVTOTRANS, AVTOTRANS_LINK, COPYRIGHT } from 'shared/common'
@@ -19,14 +19,14 @@ import WriteMe from 'entities/WriteMe/WriteMe'
 
 import { AppContainer, Footer } from 'App/styled'
 import { Link, useSearchParams } from 'react-router-dom'
-import { Share } from '../features/Share'
+import { Share } from '../../features/Share'
 import ComplainsProvider from 'features/Complains/model/ComplainsContext'
 import { HeaderScore } from 'features/HeaderScore'
 
 const currentDay = new Date().getDay()
 const nextDay = getNextDay(currentDay)
 
-function App({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSchedule }: any) {
+export const Home = ({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSchedule }: any) => {
 	const { t } = useTranslation()
 	const [searchParams] = useSearchParams()
 
@@ -89,5 +89,3 @@ function App({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSchedule }
 		</ScheduleProvider>
 	)
 }
-
-export default App

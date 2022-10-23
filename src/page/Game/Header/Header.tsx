@@ -1,8 +1,8 @@
 import React from 'react'
 
 import { LeftToString } from 'features/HowMuchLeft/HowMuchLeft'
-import { GameLink, GameUIContainer, Title } from 'Game/common'
-import RecordTable from 'Game/RecordTable/RecordTable'
+import { GameLink, GameUIContainer, Title } from 'page/Game/common'
+import RecordTable from 'page/Game/RecordTable/RecordTable'
 
 import { useScheduleContext } from 'widget/Schedule/model/ScheduleContext'
 

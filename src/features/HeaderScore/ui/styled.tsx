@@ -1,4 +1,4 @@
-import { GameCell } from 'Game/styled'
+import { GameCell } from 'page/Game/styled'
 import styled from 'styled-components'
 
 export const StyledScore = styled(GameCell)`

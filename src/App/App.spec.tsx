@@ -6,7 +6,7 @@ import { createMockApi } from 'shared/lib/test/mocks/mockApi'
 import { MainPageObject } from 'shared/lib/test/pageObjects/MainPageObject'
 import { configureI18next } from 'shared/lib'
 import { MemoryRouter } from 'react-router-dom'
-import App from './App'
+import { Home } from '../page/Home/Home'
 
 jest.useFakeTimers('modern')
 jest.setSystemTime(new Date('Fri Mar 11 2022 13:44:27 GMT+0700 (GMT+07:00)'))
@@ -16,11 +16,11 @@ configureI18next() // since we don't have backend for translations it's fine
 const api = createMockApi()
 const CustomApp = () => (
 	<MemoryRouter>
-		<App fi={api.fetchInfo} fs={api.fetchSchedule} />
+		<Home fi={api.fetchInfo} fs={api.fetchSchedule} />
 	</MemoryRouter>
 )
 
-describe('<App />', () => {
+describe('<Home />', () => {
 	it('should render correctly', async () => {
 		await act(async () => {
 			const renderApp = render(<CustomApp />, { legacyRoot: true })
