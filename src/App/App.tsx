@@ -3,8 +3,8 @@ import { fetchInfo, fetchSchedule } from 'shared/api'
 
 import { LinksBlock, MainLayout } from 'components/Schedule/styled'
 
-import Logo from 'components/Logo/Logo'
-import { HeaderInner, HeaderContainer, HeaderActions } from 'components/Logo/styled'
+import Logo from 'shared/Logo/ui/Logo'
+import { HeaderInner, HeaderContainer, HeaderActions } from 'shared/Logo/ui/styled'
 
 import Schedule from '../components/Schedule/Schedule'
 import { Container, GrayText } from 'shared/ui/common'

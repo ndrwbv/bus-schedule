@@ -1,7 +1,7 @@
 import SVG from 'react-inlinesvg'
 
 import { ImageWrapper } from 'shared/ui/ImageWrapper'
-import LogoWithText from './LogoWithText.svg'
+import LogoWithText from '../img/LogoWithText.svg'
 
 const Logo = () => {
 	return (
