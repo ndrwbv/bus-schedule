@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.c419a03d.css",
-    "main.js": "/static/js/main.b10392c3.js",
+    "main.js": "/static/js/main.6cc1366f.js",
     "static/media/Inter-Black.ttf": "/static/media/Inter-Black.cebeacf9cf3be04078de.ttf",
     "static/media/Inter-Bold.ttf": "/static/media/Inter-Bold.1eca2d329458b92342aa.ttf",
     "static/media/Inter-Medium.ttf": "/static/media/Inter-Medium.4ebf1acf62f447ea2f0d.ttf",
@@ -10,8 +10,10 @@
     "static/media/Roboto-Medium.ttf": "/static/media/Roboto-Medium.13a29228654d5c5ec9c4.ttf",
     "static/media/Roboto-Regular.ttf": "/static/media/Roboto-Regular.03523cf578d69fa92322.ttf",
     "static/media/Roboto-Bold.ttf": "/static/media/Roboto-Bold.4f39c5796e60c9d8e732.ttf",
+    "static/media/evil-face.svg": "/static/media/evil-face.7e2e6f483905962ee0ab97c2ad0ee189.svg",
     "static/media/next-bus.svg": "/static/media/next-bus.d9e4ed7a435fcbd170ee6387141617b7.svg",
     "static/media/web.svg": "/static/media/web.46de3e8205e7fb84fee7560c320673de.svg",
+    "static/media/dead.svg": "/static/media/dead.2d961e00722dc7c8642dffa44e0a6b19.svg",
     "static/media/game-new-high-score.svg": "/static/media/game-new-high-score.37798a028cfe18d31e69a78b9b3a6f93.svg",
     "static/media/game-record.svg": "/static/media/game-record.88435295f18dc2d97f2c5f9c6b8cf4be.svg",
     "static/media/game-star.svg": "/static/media/game-star.6476d6652420b8c5847a64b346f73fb8.svg",
@@ -25,10 +27,10 @@
     "static/media/infoclosecross.svg": "/static/media/infoclosecross.cf37cdc570ce98de772c02fb7aed3f0b.svg",
     "static/media/copy-icon.svg": "/static/media/copy-icon.d150580cfa1903236a9e6d1deb4099bf.svg",
     "main.c419a03d.css.map": "/static/css/main.c419a03d.css.map",
-    "main.b10392c3.js.map": "/static/js/main.b10392c3.js.map"
+    "main.6cc1366f.js.map": "/static/js/main.6cc1366f.js.map"
   },
   "entrypoints": [
     "static/css/main.c419a03d.css",
-    "static/js/main.b10392c3.js"
+    "static/js/main.6cc1366f.js"
   ]
 }
