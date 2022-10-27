@@ -5,7 +5,7 @@ export interface FeatureToggleState {
 }
 
 const initialState: FeatureToggleState = {
-	isHalloweenMode: false,
+	isHalloweenMode: true,
 }
 
 export const featureToggleSlice = createSlice({
