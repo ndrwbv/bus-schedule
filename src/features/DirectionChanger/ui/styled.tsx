@@ -37,6 +37,6 @@ export const GoButton = styled.button<{ active?: boolean }>`
 
 export const WebWrapper = styled(ImageWrapper)`
 	position: absolute;
-	right: -10px;
+	right: 10px;
 	top: -10px;
 `
