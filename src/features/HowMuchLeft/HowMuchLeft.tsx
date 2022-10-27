@@ -6,6 +6,8 @@ import { ITime } from 'widget/Schedule/types/ITime'
 import { StopKeys } from 'widget/Schedule/types/Stops'
 import NextBus from './img/next-bus.svg'
 import Pumpkin from './img/pumpkin.svg'
+import EvilFace from './img/evil-face.svg'
+import Dead from './img/dead.svg'
 
 import { ImageWrapper } from '../../shared/ui/ImageWrapper'
 import { SelectBusStopText } from 'entities/SelectBusStopText'
@@ -78,6 +80,8 @@ const HowMuchLeft: React.FC<ILeftProps> = ({ left, busStop, shouldShowFastReply,
 	const [activeComplain, setActiveComplain] = useState<ComplainType | undefined>(undefined)
 	const isHalloweenMode = useTypedSelector(isHalloween)
 	const isFancy = isHalloweenMode || !!holiday
+	const [currentIcon, setIcon] = useState(isHalloweenMode ? Pumpkin : NextBus)
+	const [iconClickCounter, setIconClickCounter] = useState(0)
 
 	const getColorByLeftTime = () => {
 		if (!left || left.hours === null || left.minutes === null || left?.hours >= 1) return '#e7edec'
@@ -96,6 +100,20 @@ const HowMuchLeft: React.FC<ILeftProps> = ({ left, busStop, shouldShowFastReply,
 		setIsComplainClicked(true)
 	}
 
+	const handleIconClick = () => {
+		setIconClickCounter(prev => prev + 1)
+	}
+
+	useEffect(() => {
+		if (iconClickCounter > 18) return setIcon(Dead)
+
+		if (iconClickCounter % 2 === 0) {
+			setIcon(Pumpkin)
+		} else {
+			setIcon(EvilFace)
+		}
+	}, [iconClickCounter])
+
 	useEffect(() => {
 		if (isComplainClicked) {
 			setTimeout(() => {
@@ -109,7 +127,13 @@ const HowMuchLeft: React.FC<ILeftProps> = ({ left, busStop, shouldShowFastReply,
 			<HowMuchLeftContainer isFancy={isFancy} defaultColor={getColorByLeftTime()}>
 				<NextBusContainer>
 					<ImageWrapper w={SIZE} h={SIZE}>
-						<SVG src={isHalloweenMode ? Pumpkin : NextBus} width={SIZE} height={SIZE} uniquifyIDs={true} />
+						<SVG
+							src={currentIcon}
+							width={SIZE}
+							height={SIZE}
+							uniquifyIDs={true}
+							onClick={handleIconClick}
+						/>
 					</ImageWrapper>
 
 					<BusEstimation>
