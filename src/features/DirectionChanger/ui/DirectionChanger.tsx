@@ -14,6 +14,7 @@ import {
 } from './styled'
 import { useTypedSelector } from 'shared/lib'
 import { isHalloween } from 'App/model/selectors/isHalloween'
+import { useState } from 'react'
 
 const SIZE = 43
 export const DirectionChanger = () => {
@@ -21,11 +22,16 @@ export const DirectionChanger = () => {
 	const isHalloweenMode = useTypedSelector(isHalloween)
 	const { t } = useTranslation()
 
+	const [isWebVisible, setIsWebVisible] = useState(true)
+	const handleWebClick = () => {
+		setIsWebVisible(false)
+	}
+
 	return (
 		<Container>
 			<Card>
-				{isHalloweenMode && (
-					<WebWrapper w={SIZE} h={SIZE}>
+				{isHalloweenMode && isWebVisible && (
+					<WebWrapper w={SIZE} h={SIZE} onClick={handleWebClick}>
 						<SVG src={Web} width={SIZE} height={SIZE} uniquifyIDs={true} />
 					</WebWrapper>
 				)}
