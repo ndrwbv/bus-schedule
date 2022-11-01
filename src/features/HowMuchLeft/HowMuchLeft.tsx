@@ -105,6 +105,7 @@ const HowMuchLeft: React.FC<ILeftProps> = ({ left, busStop, shouldShowFastReply,
 	}
 
 	useEffect(() => {
+		if (!isHalloweenMode) return
 		if (iconClickCounter > 18) return setIcon(Dead)
 
 		if (iconClickCounter % 2 === 0) {
