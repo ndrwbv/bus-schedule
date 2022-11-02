@@ -8,6 +8,7 @@ import { configureI18next, YM } from 'shared/lib'
 import Game from 'page/Game/Game'
 import Intro from 'page/Game/Intro/Intro'
 
+import 'react-spring-bottom-sheet/dist/style.css'
 import 'shared/theme/styles/index.css'
 
 initGA()

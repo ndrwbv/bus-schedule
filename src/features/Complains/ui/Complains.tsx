@@ -16,6 +16,7 @@ import {
 	InfoText,
 	PopupContent,
 } from './styled'
+import { BottomSheet } from 'react-spring-bottom-sheet'
 
 function Complains() {
 	const [isOpen, setIsOpen] = useState(false)
@@ -36,19 +37,22 @@ function Complains() {
 
 	return (
 		<>
-			<Popup isOpen={isOpen} handleClose={() => setIsOpen(false)} contentRef={contentRef}>
+			<BottomSheet
+				open={isOpen}
+				onDismiss={() => setIsOpen(false)}
+				defaultSnap={({ maxHeight }) => maxHeight / 2}
+				snapPoints={({ maxHeight }) => [maxHeight - maxHeight / 10, maxHeight / 4, maxHeight * 0.6]}
+			>
 				<PopupContent ref={contentRef}>
-					<PopupWrapper>
-						<InfoText>
-							Жалобы попадают автоматически после выбора опции «Приехал раньше» или «Приехал позже».
-							Кнопки появлюятся в секции Остановка при выбранной остановке.
-						</InfoText>
-						{complains.map(c => (
-							<ComplainMessage {...c} key={c.id} />
-						))}
-					</PopupWrapper>
+					<InfoText>
+						Жалобы попадают автоматически после выбора опции «Приехал раньше» или «Приехал позже». Кнопки
+						появлюятся в секции Остановка при выбранной остановке.
+					</InfoText>
+					{complains.map(c => (
+						<ComplainMessage {...c} key={c.id} />
+					))}
 				</PopupContent>
-			</Popup>
+			</BottomSheet>
 
 			<ComplainsContainer>
 				<div>

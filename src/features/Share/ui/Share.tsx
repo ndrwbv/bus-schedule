@@ -11,6 +11,7 @@ import { copyTextToClipboard } from '../helpers/clickToClipBoard'
 import { AndrewLytics } from 'shared/lib'
 
 import { CopyField, QRCodeContainer, ShareContainer, ShareItemContainer, ShareTitle } from './styled'
+import { BottomSheet } from 'react-spring-bottom-sheet'
 
 export const Share = () => {
 	const [isOpen, setIsOpen] = useState(false)
@@ -33,26 +34,24 @@ export const Share = () => {
 
 	return (
 		<>
-			<Popup isOpen={isOpen} handleClose={() => setIsOpen(false)}>
-				<PopupWrapper>
-					<ShareItemContainer>
-						<ShareTitle>Поделиться расписанием</ShareTitle>
-					</ShareItemContainer>
+			<BottomSheet open={isOpen} onDismiss={() => setIsOpen(false)}>
+				<ShareItemContainer>
+					<ShareTitle>Поделиться расписанием</ShareTitle>
+				</ShareItemContainer>
 
-					<ShareItemContainer>
-						<QRCodeContainer>
-							<QRCode size={166} value="https://severbus.ru?utm=scan" bgColor="#F2F4F4" />
-						</QRCodeContainer>
-					</ShareItemContainer>
+				<ShareItemContainer>
+					<QRCodeContainer>
+						<QRCode size={166} value="https://severbus.ru?utm=scan" bgColor="#F2F4F4" />
+					</QRCodeContainer>
+				</ShareItemContainer>
 
-					<ShareItemContainer>
-						<CopyField onClick={handleClick} clicked={clicked}>
-							<p>https://severbus.ru</p>
-							<SVG src={CopyIcon} width={20} height={20} uniquifyIDs={true} style={{ display: 'flex' }} />
-						</CopyField>
-					</ShareItemContainer>
-				</PopupWrapper>
-			</Popup>
+				<ShareItemContainer>
+					<CopyField onClick={handleClick} clicked={clicked}>
+						<p>https://severbus.ru</p>
+						<SVG src={CopyIcon} width={20} height={20} uniquifyIDs={true} style={{ display: 'flex' }} />
+					</CopyField>
+				</ShareItemContainer>
+			</BottomSheet>
 
 			<ShareContainer onClick={handleOpenClick}>
 				<SVG src={QRCodeIcon} width={20} height={20} uniquifyIDs={true} style={{ display: 'flex' }} />
