@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import featureToggle from 'App/model/featureToggleSlice'
+import busStopInfo from 'widget/Schedule/model/BusStopInfoSlice'
 
 export const store = configureStore({
 	reducer: {
 		featureToggle,
+		busStopInfo,
 	},
 })
 

@@ -35,7 +35,10 @@ export type StopKeysOut =
 
 export type StopKeys = StopKeysIn | StopKeysOut;
 export type Directions = "in" | "out";
-
+export enum DirectionsNew {
+	in = 'in',
+	out = 'out',
+}
 export interface IOption<ValueType> {
   value: ValueType;
   label: string;

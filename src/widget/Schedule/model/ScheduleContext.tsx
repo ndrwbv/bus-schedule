@@ -15,8 +15,10 @@ import { FetchInfoResponse } from 'shared/api'
 
 import { ISchedule } from 'widget/Schedule/types/ISchedule'
 import { ITime } from 'widget/Schedule/types/ITime'
-import { Directions, IOption, StopKeys, StopKeysIn, StopKeysOut } from 'widget/Schedule/types/Stops'
+import { Directions, DirectionsNew, IOption, StopKeys, StopKeysIn, StopKeysOut } from 'widget/Schedule/types/Stops'
 import { IHoliday, IHolidays } from 'widget/Schedule/types/IHolidays'
+import { useDispatch, useSelector } from 'react-redux'
+import { busStopSelector, directionSelector, setBusStop, setDirection, stopsOptionsSelector } from './BusStopInfoSlice'
 
 const DEFAULT_LEFT = {
 	hours: 0,
@@ -86,12 +88,14 @@ interface IProviderProps {
 }
 
 export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay, fetchInfo }: IProviderProps) => {
-	const [busStop, setBusStop] = useState<StopKeys | null>(null)
+	const busStop = useSelector(busStopSelector)
+	const direction = useSelector(directionSelector)
+	const stopsOptions = useSelector(stopsOptionsSelector)
+	const dispatch = useDispatch()
+
 	const [left, setLeft] = useState<ITime>(DEFAULT_LEFT)
 	const [closestTimeArray, setClossestTimeArray] = useState<string[]>([])
 	const [closestTime, setClossestTime] = useState<string>('')
-	const [direction, setDirection] = useState<Directions>('out')
-	const [stopsOptions, setStopsOptions] = useState<IOption<StopKeysIn | StopKeysOut | null>[]>(StopsOutOptions)
 	const [shouldShowFastReply, setShouldShowFastReply] = useState<boolean>(false)
 
 	const [currentDayKey, setCurrentDayKey] = useState(currentDay)
@@ -122,21 +126,16 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 			const isBusStopNotInKeys = !scheduleKeys.includes(_busStop)
 
 			if (isBusStopNotInKeys) {
-				setBusStop(scheduleKeys[0] as StopKeys)
+				dispatch(setBusStop(scheduleKeys[0] as StopKeys))
 			} else {
-				setBusStop(_busStop)
+				dispatch(setBusStop(_busStop))
 			}
 		}
 
 		if (_direction) {
-			changeDirection(_direction as Directions)
+			dispatch(setDirection(_direction as DirectionsNew))
 		}
 	}, [searchParams, getDirectionKeys])
-
-	const changeDirection = (_direction: Directions) => {
-		setStopsOptions(_direction === 'in' ? StopsInOptions : StopsOutOptions)
-		setDirection(_direction)
-	}
 
 	useEffect(() => {
 		setSearchParams(new URLSearchParams({ ...queryString.parse(searchParams.toString()), d: direction }))
@@ -149,11 +148,11 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 
 	const handleChangeDirection = useCallback(
 		(_direction: Directions) => {
-			changeDirection(_direction)
+			dispatch(setDirection(_direction as DirectionsNew))
 
 			const scheduleKeys = getDirectionKeys(_direction)
 			if (busStop && !scheduleKeys.includes(busStop)) {
-				setBusStop(scheduleKeys[0] as StopKeys)
+				dispatch(setBusStop(scheduleKeys[0] as StopKeys))
 			}
 
 			AndrewLytics('changeDirection')
@@ -163,7 +162,7 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 
 	const handleChangeBusStop = (busStop: StopKeys, analyticKey: string = 'selectBusStop') => {
 		analyticKey && AndrewLytics(analyticKey)
-		setBusStop(busStop)
+		dispatch(setBusStop(busStop))
 	}
 
 	useEffect(() => {

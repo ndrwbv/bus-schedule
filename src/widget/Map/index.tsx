@@ -12,7 +12,7 @@ const MapStyled = styled(MapContainer)`
 
 export const Map = () => {
 	return (
-		<MapStyled center={[51.505, -0.09]} zoom={13} zoomControl={false} scrollWheelZoom={false}>
+		<MapStyled center={[56.467790, 84.905530]} zoom={15} zoomControl={false} scrollWheelZoom={false}>
 			<TileLayer
 				attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 				url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
