@@ -18,7 +18,7 @@ import { Share } from '../../features/Share'
 import ComplainsProvider from 'features/Complains/model/ComplainsContext'
 import { HeaderScore } from 'features/HeaderScore'
 import { Footer } from 'shared/ui/Footer'
-
+import { Map } from 'widget/Map'
 const currentDay = new Date().getDay()
 const nextDay = getNextDay(currentDay)
 
@@ -26,27 +26,31 @@ export const Home = ({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSc
 	return (
 		<ScheduleProvider currentDay={c} nextDay={n} fetchSchedule={fs} fetchInfo={fi}>
 			<ComplainsProvider>
-				<AppContainer>
-					<HeaderContainer>
-						<HeaderInner>
-							<Logo />
+				<div style={{position: "relative"}}>
+					<Map />
 
-							<HeaderActions>
-								<HeaderScore />
-								<Share />
-							</HeaderActions>
-						</HeaderInner>
-					</HeaderContainer>
-					<MainLayout>
-						<Schedule />
+					<AppContainer>
+						<HeaderContainer>
+							<HeaderInner>
+								<Logo />
 
-						<Container>
-							<WriteMe />
-						</Container>
-					</MainLayout>
+								<HeaderActions>
+									<HeaderScore />
+									<Share />
+								</HeaderActions>
+							</HeaderInner>
+						</HeaderContainer>
+						<MainLayout>
+							<Schedule />
 
-					<Footer />
-				</AppContainer>
+							<Container>
+								<WriteMe />
+							</Container>
+						</MainLayout>
+
+						<Footer />
+					</AppContainer>
+				</div>
 			</ComplainsProvider>
 		</ScheduleProvider>
 	)
