@@ -12,19 +12,34 @@ import {
 	GoButtonContainer,
 	WebWrapper,
 } from './styled'
-import { useTypedSelector } from 'shared/lib'
+import { AndrewLytics, useTypedSelector } from 'shared/lib'
 import { isHalloween } from 'App/model/selectors/isHalloween'
 import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { directionSelector, setDirection } from 'widget/Schedule/model/busStopInfoSlice'
+import { DirectionsNew } from 'widget/Schedule/types/Stops'
 
 const SIZE = 43
 export const DirectionChanger = () => {
-	const { direction, handleChangeDirection } = useScheduleContext()
+	const direction = useSelector(directionSelector)
+	const dispatch = useDispatch()
+
 	const isHalloweenMode = useTypedSelector(isHalloween)
 	const { t } = useTranslation()
 
 	const [isWebVisible, setIsWebVisible] = useState(true)
+
+	const handleChangeDirection = (_direction: DirectionsNew) => {
+		dispatch(setDirection(_direction as DirectionsNew))
+		AndrewLytics('changeDirection')
+	}
+
 	const handleWebClick = () => {
 		setIsWebVisible(false)
+	}
+
+	const onDirectionClick = () => {
+		handleChangeDirection(direction === DirectionsNew.in ? DirectionsNew.out : DirectionsNew.in)
 	}
 
 	return (
@@ -44,10 +59,7 @@ export const DirectionChanger = () => {
 						</DirectionText>
 					</DirectionContainer>
 
-					<GoButton
-						active={direction === 'in'}
-						onClick={() => handleChangeDirection(direction === 'in' ? 'out' : 'in')}
-					>
+					<GoButton active={direction === 'in'} onClick={onDirectionClick}>
 						{direction === 'in' ? t('Out of north park') : t('In north park')}
 					</GoButton>
 				</GoButtonContainer>

@@ -21,6 +21,7 @@ import { Footer } from 'shared/ui/Footer'
 import { Map } from 'widget/Map'
 import { BottomSheet, BottomSheetRef } from 'react-spring-bottom-sheet'
 import { useRef, useState } from 'react'
+
 const currentDay = new Date().getDay()
 const nextDay = getNextDay(currentDay)
 

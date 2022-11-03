@@ -1,12 +1,14 @@
 import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { FetchScheduleResponse } from 'shared/api/schedule'
-import defaultSchedule from 'shared/common/schedule'
 import { AndrewLytics } from 'shared/lib'
 import { IHolidays } from 'widget/Schedule/types/IHolidays'
+import { scheduleSelector, setSchedule } from './scheduleSlice'
 
 const useSchedule = (fetchSchedule: () => FetchScheduleResponse) => {
-	const [SCHEDULE, setSchedule] = React.useState(defaultSchedule)
 	const [holidays, setHolidays] = React.useState<IHolidays>([])
+	const dispatch = useDispatch()
+	const schedule = useSelector(scheduleSelector)
 
 	React.useEffect(() => {
 		fetchSchedule()
@@ -16,7 +18,7 @@ const useSchedule = (fetchSchedule: () => FetchScheduleResponse) => {
 				}
 
 				if (res?.fields?.schedule) {
-					return setSchedule(res?.fields?.schedule)
+					return dispatch(setSchedule(res?.fields?.schedule))
 				}
 
 				AndrewLytics('cannotLoad')
@@ -27,7 +29,7 @@ const useSchedule = (fetchSchedule: () => FetchScheduleResponse) => {
 	}, [fetchSchedule])
 
 	return {
-		SCHEDULE,
+		SCHEDULE: schedule,
 		holidays,
 	}
 }

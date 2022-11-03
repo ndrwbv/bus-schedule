@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'App/model/configureStore'
-import { AndrewLytics } from 'shared/lib'
 import { StopsInOptions } from '../const/stopsInOptions'
 import { StopsOutOptions } from '../const/stopsOutOptions'
 import { DirectionsNew, IOption, StopKeys, StopKeysIn, StopKeysOut } from '../types/Stops'
@@ -23,8 +22,6 @@ export const busStopInfoSlice = createSlice({
 		setDirection: (state, action: PayloadAction<DirectionsNew>) => {
 			state.direction = action.payload
 			state.stopsOptions = action.payload === DirectionsNew.in ? StopsInOptions : StopsOutOptions
-
-			AndrewLytics('changeDirection')
 		},
 		setBusStop: (state, action: PayloadAction<StopKeys>) => {
 			state.busStop = action.payload

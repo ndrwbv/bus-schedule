@@ -1,12 +1,17 @@
 import { configureStore } from '@reduxjs/toolkit'
 import featureToggle from 'App/model/featureToggleSlice'
-import busStopInfo from 'widget/Schedule/model/BusStopInfoSlice'
+import busStopInfo from 'widget/Schedule/model/busStopInfoSlice'
+import scheduleSlice from 'widget/Schedule/model/scheduleSlice'
+import { listenerMiddleware } from '../../widget/Schedule/model/listenerMiddleware'
 
 export const store = configureStore({
 	reducer: {
 		featureToggle,
 		busStopInfo,
+		scheduleSlice,
 	},
+	devTools: process.env.NODE_ENV !== 'production',
+	middleware: getDefaultMiddleware => getDefaultMiddleware().prepend(listenerMiddleware.middleware),
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

@@ -16,9 +16,10 @@ import { FetchInfoResponse } from 'shared/api'
 import { ISchedule } from 'widget/Schedule/types/ISchedule'
 import { ITime } from 'widget/Schedule/types/ITime'
 import { Directions, DirectionsNew, IOption, StopKeys, StopKeysIn, StopKeysOut } from 'widget/Schedule/types/Stops'
-import { IHoliday, IHolidays } from 'widget/Schedule/types/IHolidays'
+import { IHoliday } from 'widget/Schedule/types/IHolidays'
 import { useDispatch, useSelector } from 'react-redux'
-import { busStopSelector, directionSelector, setBusStop, setDirection, stopsOptionsSelector } from './BusStopInfoSlice'
+import { busStopSelector, directionSelector, setBusStop, setDirection, stopsOptionsSelector } from './busStopInfoSlice'
+import { getCurrentHoliday } from '../helpers/getCurrentHoliday'
 
 const DEFAULT_LEFT = {
 	hours: 0,
@@ -48,7 +49,7 @@ const DEFAULT_PROPS = {
 	direction: 'out' as Directions,
 	SCHEDULE: DEFAULT_SCHEDULE,
 	nextDay: 1,
-	handleChangeDirection: () => {},
+	getDirectionKeys: () => [],
 	handleChangeBusStop: () => {},
 	fetchInfo: async () => {
 		return DEFAULT_FETCH_INFO
@@ -70,7 +71,7 @@ interface ContextProps {
 	direction: Directions
 	SCHEDULE: ISchedule
 	handleChangeBusStop: (busStop: StopKeys, analyticKey?: string) => void
-	handleChangeDirection: (key: 'in' | 'out') => void
+	getDirectionKeys: (d: Directions) => string[]
 	nextDay: number
 	fetchInfo: () => FetchInfoResponse
 	todaysHoliday: IHoliday | null
@@ -106,11 +107,13 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 
 	let [searchParams, setSearchParams] = useSearchParams()
 
+	
 	const getDirectionKeys = useCallback(
 		(d: Directions) => (d ? Object.keys(SCHEDULE[d][currentDayKey]) : []),
 		[SCHEDULE, currentDayKey],
 	)
 
+	// url handling parsing from url
 	useEffect(() => {
 		const parsed = queryString.parse(searchParams.toString())
 
@@ -137,34 +140,23 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 		}
 	}, [searchParams, getDirectionKeys])
 
+	// url handling direction
 	useEffect(() => {
 		setSearchParams(new URLSearchParams({ ...queryString.parse(searchParams.toString()), d: direction }))
 	}, [direction, setSearchParams, searchParams])
 
+	// url handling bus stop
 	useEffect(() => {
 		if (busStop === null) return
 		setSearchParams(new URLSearchParams({ ...queryString.parse(searchParams.toString()), b: busStop }))
 	}, [busStop, setSearchParams, searchParams])
-
-	const handleChangeDirection = useCallback(
-		(_direction: Directions) => {
-			dispatch(setDirection(_direction as DirectionsNew))
-
-			const scheduleKeys = getDirectionKeys(_direction)
-			if (busStop && !scheduleKeys.includes(busStop)) {
-				dispatch(setBusStop(scheduleKeys[0] as StopKeys))
-			}
-
-			AndrewLytics('changeDirection')
-		},
-		[busStop, getDirectionKeys],
-	)
 
 	const handleChangeBusStop = (busStop: StopKeys, analyticKey: string = 'selectBusStop') => {
 		analyticKey && AndrewLytics(analyticKey)
 		dispatch(setBusStop(busStop))
 	}
 
+	// fastreply logic
 	useEffect(() => {
 		if (left.hours === null) return
 		const userTimeLeft = calculateHowMuchIsLeft(VISIT_TIME)
@@ -179,6 +171,7 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 		return setShouldShowFastReply(false)
 	}, [left, shouldShowFastReply])
 
+	// finding closest time
 	useEffect(() => {
 		if (!busStop) return
 
@@ -192,12 +185,14 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 		}
 	}, [_everyMinuteUpdate, closestTime, busStop, direction, SCHEDULE, currentDayKey])
 
+	// calculation how much left
 	useEffect(() => {
 		const left = calculateHowMuchIsLeft(closestTime)
 
 		setLeft(left)
 	}, [_everyMinuteUpdate, closestTime])
 
+	// setting holliday if exists
 	useEffect(() => {
 		if (holidays.length === 0) return
 
@@ -209,24 +204,6 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 			setTodaysHoliday(_todaysHolidays[0])
 		}
 	}, [holidays, currentDay])
-
-	const getCurrentHoliday = (holidays: IHolidays): IHoliday[] => {
-		const today = new Date()
-		today.setHours(0, 0, 0, 0)
-
-		return holidays.filter(holiday => {
-			const start = new Date(`${today.getFullYear()}-${holiday.start}`)
-			const end = new Date(`${today.getFullYear()}-${holiday.end}`)
-			start.setHours(0, 0, 0, 0)
-			end.setHours(0, 0, 0, 0)
-
-			if (today <= end && today >= start) {
-				return true
-			}
-
-			return false
-		})
-	}
 
 	return (
 		<ScheduleContext.Provider
@@ -240,7 +217,7 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 				direction,
 				handleChangeBusStop,
 				SCHEDULE,
-				handleChangeDirection,
+				getDirectionKeys,
 				nextDay,
 				fetchInfo,
 				todaysHoliday,
