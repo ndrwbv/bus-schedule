@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 
 import { Header } from '../../shared/ui/Header/Header'
 import { LeaveFeedbackButton } from 'features/LeaveFeedbackButton'
-import { Info } from 'features/Info'
 import { SelectBusStopText } from 'entities/SelectBusStopText'
 import HowMuchLeft from '../../features/HowMuchLeft/HowMuchLeft'
 import { InlineOptions } from '../../shared/ui/InlineOptions'
@@ -18,12 +17,11 @@ import { StopKeys } from 'widget/Schedule/types/Stops'
 import useFavoriteBusStop, { getFavoriteBusStop } from './model/useFavoriteBusStop'
 import { useScheduleContext } from 'widget/Schedule/model/ScheduleContext'
 
-import { OtherTime, selectStyles, TimeStamp, TranslationLink } from './ui/styled'
+import { OtherTime, selectStyles, TimeStamp } from './ui/styled'
 import Complains from 'features/Complains/ui/Complains'
 import { useComplainsContext } from 'features/Complains/model/ComplainsContext'
-import { TRANSLATION_LINK } from 'shared/common'
 import { ComplainType } from 'features/Complains'
-import { DirectionChanger } from 'features/DirectionChanger'
+import { TranslationLink } from 'entities/TranslationLink'
 
 interface IScheduleProps {}
 const Schedule: React.FC<IScheduleProps> = () => {
@@ -104,9 +102,6 @@ const Schedule: React.FC<IScheduleProps> = () => {
 
 	return (
 		<>
-			<Info />
-			<DirectionChanger />
-
 			<Container>
 				<Card>
 					<Header text={t('Bus stop')}>
@@ -130,21 +125,9 @@ const Schedule: React.FC<IScheduleProps> = () => {
 				</Card>
 			</Container>
 
-			<Container>
-				<Card>
-					<Complains />
-				</Card>
-			</Container>
+			<Complains />
 
-			<Container>
-				<TranslationLink
-					href={TRANSLATION_LINK}
-					target="_blank"
-					onClick={() => AndrewLytics('clickTranslation')}
-				>
-					Онлайн трансляция с моста
-				</TranslationLink>
-			</Container>
+			<TranslationLink />
 
 			{favoriteList.length !== 0 && (
 				<Container>

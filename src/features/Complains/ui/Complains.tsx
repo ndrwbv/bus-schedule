@@ -1,8 +1,7 @@
 import React, { useMemo, useState } from 'react'
-import { Popup, PopupWrapper } from 'shared/ui'
 import ComplainMessage from './ComplainsMessage'
 import { useComplainsContext } from 'features/Complains/model/ComplainsContext'
-import { MiniButton } from 'shared/ui/common'
+import { Card, Container, MiniButton } from 'shared/ui/common'
 
 import { HeaderText } from 'shared/ui/Header/styled'
 import { getHumanDate } from '../helpers'
@@ -36,41 +35,43 @@ function Complains() {
 	}
 
 	return (
-		<>
-			<BottomSheet
-				open={isOpen}
-				onDismiss={() => setIsOpen(false)}
-				defaultSnap={({ maxHeight }) => maxHeight / 2}
-				snapPoints={({ maxHeight }) => [maxHeight - maxHeight / 10, maxHeight / 4, maxHeight * 0.6]}
-			>
-				<PopupContent ref={contentRef}>
-					<InfoText>
-						Жалобы попадают автоматически после выбора опции «Приехал раньше» или «Приехал позже». Кнопки
-						появлюятся в секции Остановка при выбранной остановке.
-					</InfoText>
-					{complains.map(c => (
-						<ComplainMessage {...c} key={c.id} />
-					))}
-				</PopupContent>
-			</BottomSheet>
+		<Container>
+			<Card>
+				<BottomSheet
+					open={isOpen}
+					onDismiss={() => setIsOpen(false)}
+					defaultSnap={({ maxHeight }) => maxHeight / 2}
+					snapPoints={({ maxHeight }) => [maxHeight - maxHeight / 10, maxHeight / 4, maxHeight * 0.6]}
+				>
+					<PopupContent ref={contentRef}>
+						<InfoText>
+							Жалобы попадают автоматически после выбора опции «Приехал раньше» или «Приехал позже».
+							Кнопки появлюятся в секции Остановка при выбранной остановке.
+						</InfoText>
+						{complains.map(c => (
+							<ComplainMessage {...c} key={c.id} />
+						))}
+					</PopupContent>
+				</BottomSheet>
 
-			<ComplainsContainer>
-				<div>
-					<ComplainsBlockContainer>
-						<ComplainsBlockText>
-							Жалобы <ComplainCount>{complains.length}</ComplainCount>
-						</ComplainsBlockText>
-						<ComplainsLabel>{latestTime}</ComplainsLabel>
-					</ComplainsBlockContainer>
+				<ComplainsContainer>
+					<div>
+						<ComplainsBlockContainer>
+							<ComplainsBlockText>
+								Жалобы <ComplainCount>{complains.length}</ComplainCount>
+							</ComplainsBlockText>
+							<ComplainsLabel>{latestTime}</ComplainsLabel>
+						</ComplainsBlockContainer>
 
-					<HeaderText></HeaderText>
-				</div>
+						<HeaderText></HeaderText>
+					</div>
 
-				<MiniButton disabled={complains.length === 0} onClick={handleOpenComplains}>
-					Смотреть
-				</MiniButton>
-			</ComplainsContainer>
-		</>
+					<MiniButton disabled={complains.length === 0} onClick={handleOpenComplains}>
+						Смотреть
+					</MiniButton>
+				</ComplainsContainer>
+			</Card>
+		</Container>
 	)
 }
 

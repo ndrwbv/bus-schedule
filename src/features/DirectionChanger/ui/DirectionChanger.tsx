@@ -1,9 +1,8 @@
-import { useScheduleContext } from 'widget/Schedule/model/ScheduleContext'
 import { useTranslation } from 'react-i18next'
 import SVG from 'react-inlinesvg'
 import Web from '../img/web.svg'
 
-import { Card, Container, ImageWrapper } from 'shared/ui'
+import { Card, Container } from 'shared/ui'
 import {
 	DirectionContainer,
 	DirectionPlaceholder,
@@ -18,9 +17,11 @@ import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { directionSelector, setDirection } from 'widget/Schedule/model/busStopInfoSlice'
 import { DirectionsNew } from 'widget/Schedule/types/Stops'
+import { useUrlDirection } from '../model/useUrlDirection'
 
 const SIZE = 43
 export const DirectionChanger = () => {
+	useUrlDirection()
 	const direction = useSelector(directionSelector)
 	const dispatch = useDispatch()
 

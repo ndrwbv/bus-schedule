@@ -21,6 +21,8 @@ import { Footer } from 'shared/ui/Footer'
 import { Map } from 'widget/Map'
 import { BottomSheet, BottomSheetRef } from 'react-spring-bottom-sheet'
 import { useRef, useState } from 'react'
+import { Info } from 'features/Info'
+import { DirectionChanger } from 'features/DirectionChanger'
 
 const currentDay = new Date().getDay()
 const nextDay = getNextDay(currentDay)
@@ -59,6 +61,8 @@ export const Home = ({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSc
 						blocking={false}
 					>
 						<MainLayout>
+							<Info />
+							<DirectionChanger />
 							<Schedule />
 
 							<Container>

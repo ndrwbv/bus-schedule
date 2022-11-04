@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import featureToggle from 'App/model/featureToggleSlice'
 import busStopInfo from 'widget/Schedule/model/busStopInfoSlice'
 import scheduleSlice from 'widget/Schedule/model/scheduleSlice'
-import { listenerMiddleware } from '../../widget/Schedule/model/listenerMiddleware'
+import { changeBusStopOnDirection } from '../../widget/Schedule/model/changeBusStopIfNotInDirectionMiddleware'
 
 export const store = configureStore({
 	reducer: {
@@ -11,7 +11,7 @@ export const store = configureStore({
 		scheduleSlice,
 	},
 	devTools: process.env.NODE_ENV !== 'production',
-	middleware: getDefaultMiddleware => getDefaultMiddleware().prepend(listenerMiddleware.middleware),
+	middleware: getDefaultMiddleware => getDefaultMiddleware().prepend([changeBusStopOnDirection.middleware]),
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
