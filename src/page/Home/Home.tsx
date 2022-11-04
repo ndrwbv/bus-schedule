@@ -1,11 +1,8 @@
 import { fetchInfo, fetchSchedule } from 'shared/api'
 
-import { MainLayout } from 'widget/Schedule/ui/styled'
-
 import { Logo } from 'entities/Logo'
 import { HeaderInner, HeaderContainer, HeaderActions } from 'entities/Logo/ui/styled'
 
-import Schedule from '../../widget/Schedule/Schedule'
 import { Container } from 'shared/ui/common'
 
 import ScheduleProvider from 'widget/Schedule/model/ScheduleContext'
@@ -23,6 +20,14 @@ import { BottomSheet, BottomSheetRef } from 'react-spring-bottom-sheet'
 import { useRef, useState } from 'react'
 import { Info } from 'features/Info'
 import { DirectionChanger } from 'features/DirectionChanger'
+import { BusStop } from 'widget/BusStop'
+import Complains from 'features/Complains/ui/Complains'
+import { TranslationLink } from 'entities/TranslationLink'
+import { FavoriteStops } from 'features/FavoriteStops'
+import { TodaysBuses } from 'widget/TodaysBuses'
+import { LeaveFeedbackButton } from 'features/LeaveFeedbackButton'
+import { OtherTimeBusses } from 'features/OtherTimeBuses'
+import { MainLayout } from 'shared/ui/MainLayout'
 
 const currentDay = new Date().getDay()
 const nextDay = getNextDay(currentDay)
@@ -63,7 +68,18 @@ export const Home = ({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSc
 						<MainLayout>
 							<Info />
 							<DirectionChanger />
-							<Schedule />
+							<BusStop />
+
+							<Complains />
+
+							<TranslationLink />
+
+							<FavoriteStops />
+
+							<TodaysBuses />
+							<LeaveFeedbackButton />
+
+							<OtherTimeBusses />
 
 							<Container>
 								<WriteMe />
