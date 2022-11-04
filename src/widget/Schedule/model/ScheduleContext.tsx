@@ -107,7 +107,6 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 
 	let [searchParams, setSearchParams] = useSearchParams()
 
-	
 	const getDirectionKeys = useCallback(
 		(d: Directions) => (d ? Object.keys(SCHEDULE[d][currentDayKey]) : []),
 		[SCHEDULE, currentDayKey],
@@ -115,7 +114,7 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 
 	// url handling parsing from url
 	useEffect(() => {
-		const parsed = queryString.parse(searchParams.toString())
+		const parsed = queryString.parse(window.location.search)
 
 		const _busStop = parsed['b'] as StopKeys
 		const _direction: Directions | undefined = ['in', 'out'].includes(parsed['d'] as Directions)
@@ -138,7 +137,7 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 		if (_direction) {
 			dispatch(setDirection(_direction as DirectionsNew))
 		}
-	}, [searchParams, getDirectionKeys])
+	}, [getDirectionKeys])
 
 	// url handling direction
 	useEffect(() => {
