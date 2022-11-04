@@ -218,6 +218,8 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 		return holidays.filter(holiday => {
 			const start = new Date(`${today.getFullYear()}-${holiday.start}`)
 			const end = new Date(`${today.getFullYear()}-${holiday.end}`)
+			start.setHours(0, 0, 0, 0)
+			end.setHours(0, 0, 0, 0)
 
 			if (today <= end && today >= start) {
 				return true
