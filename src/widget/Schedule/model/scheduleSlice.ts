@@ -33,5 +33,7 @@ export const busStopInfoSlice = createSlice({
 export const { setSchedule } = busStopInfoSlice.actions
 
 export const scheduleSelector = (state: RootState) => state.scheduleSlice.schedule
+export const currentDaySelector = (state: RootState) => state.scheduleSlice.currentDayKey
+export const nextDaySelector = (state: RootState) => state.scheduleSlice.nextDayKey
 
 export default busStopInfoSlice.reducer

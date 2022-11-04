@@ -1,9 +1,6 @@
-import React, { useContext, createContext, useCallback, useState, useEffect } from 'react'
+import React, { useContext, createContext, useCallback, useState, useEffect, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import queryString from 'query-string'
-
-import { StopsInOptions } from '../const/stopsInOptions'
-import { StopsOutOptions } from '../const/stopsOutOptions'
 
 import { AndrewLytics } from 'shared/lib'
 import { calculateHowMuchIsLeft, findClosesTime, findClosesTimeArray } from 'widget/Schedule/helpers/schedule'
@@ -13,9 +10,8 @@ import useEveryMinuteUpdater from 'widget/Schedule/helpers/useEveryMinuteUpdater
 
 import { FetchInfoResponse } from 'shared/api'
 
-import { ISchedule } from 'widget/Schedule/types/ISchedule'
 import { ITime } from 'widget/Schedule/types/ITime'
-import { Directions, DirectionsNew, IOption, StopKeys, StopKeysIn, StopKeysOut } from 'widget/Schedule/types/Stops'
+import { Directions, StopKeys } from 'widget/Schedule/types/Stops'
 import { IHoliday } from 'widget/Schedule/types/IHolidays'
 import { useDispatch, useSelector } from 'react-redux'
 import { busStopSelector, directionSelector, setBusStop, setDirection, stopsOptionsSelector } from './busStopInfoSlice'
@@ -40,17 +36,11 @@ const DEFAULT_SCHEDULE = {
 }
 
 const DEFAULT_PROPS = {
-	busStop: null,
 	left: DEFAULT_LEFT,
 	closestTimeArray: [],
 	closestTime: '',
 	shouldShowFastReply: false,
-	stopsOptions: StopsOutOptions,
-	direction: 'out' as Directions,
-	SCHEDULE: DEFAULT_SCHEDULE,
 	nextDay: 1,
-	getDirectionKeys: () => [],
-	handleChangeBusStop: () => {},
 	fetchInfo: async () => {
 		return DEFAULT_FETCH_INFO
 	},
@@ -62,17 +52,10 @@ const DEFAULT_PROPS = {
 export const ScheduleContext = createContext<ContextProps>(DEFAULT_PROPS)
 
 interface ContextProps {
-	busStop: StopKeys | null
 	left: ITime
 	closestTimeArray: string[]
 	closestTime: string
 	shouldShowFastReply: boolean
-	stopsOptions: IOption<StopKeysIn | StopKeysOut | null>[]
-	direction: Directions
-	SCHEDULE: ISchedule
-	handleChangeBusStop: (busStop: StopKeys, analyticKey?: string) => void
-	getDirectionKeys: (d: Directions) => string[]
-	nextDay: number
 	fetchInfo: () => FetchInfoResponse
 	todaysHoliday: IHoliday | null
 	currentDay: number
@@ -91,7 +74,6 @@ interface IProviderProps {
 export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay, fetchInfo }: IProviderProps) => {
 	const busStop = useSelector(busStopSelector)
 	const direction = useSelector(directionSelector)
-	const stopsOptions = useSelector(stopsOptionsSelector)
 	const dispatch = useDispatch()
 
 	const [left, setLeft] = useState<ITime>(DEFAULT_LEFT)
@@ -132,10 +114,6 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 			} else {
 				dispatch(setBusStop(_busStop))
 			}
-		}
-
-		if (_direction) {
-			dispatch(setDirection(_direction as DirectionsNew))
 		}
 	}, [getDirectionKeys])
 
@@ -204,29 +182,21 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 		}
 	}, [holidays, currentDay])
 
-	return (
-		<ScheduleContext.Provider
-			value={{
-				busStop,
-				left,
-				closestTimeArray,
-				closestTime,
-				shouldShowFastReply,
-				stopsOptions,
-				direction,
-				handleChangeBusStop,
-				SCHEDULE,
-				getDirectionKeys,
-				nextDay,
-				fetchInfo,
-				todaysHoliday,
-				currentDay,
-				currentDayKey,
-			}}
-		>
-			{children}
-		</ScheduleContext.Provider>
+	const values = useMemo(
+		() => ({
+			left,
+			closestTimeArray,
+			closestTime,
+			shouldShowFastReply,
+			fetchInfo,
+			todaysHoliday,
+			currentDay,
+			currentDayKey,
+		}),
+		[left, closestTimeArray, closestTime, shouldShowFastReply, fetchInfo, todaysHoliday, currentDay, currentDayKey],
 	)
+
+	return <ScheduleContext.Provider value={values}>{children}</ScheduleContext.Provider>
 }
 
 export const useScheduleContext = () => {

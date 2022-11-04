@@ -8,7 +8,7 @@ import { busStopSelector, setBusStop, stopsOptionsSelector } from 'widget/Schedu
 import { StopKeys } from 'widget/Schedule/types/Stops'
 import { favoriteStopsSelector } from '../model/favoriteStopsSlice'
 
-export const MyStops = () => {
+export const FavoriteStops = () => {
 	const { t } = useTranslation()
 
 	const favoriteBusStops = useSelector(favoriteStopsSelector)
