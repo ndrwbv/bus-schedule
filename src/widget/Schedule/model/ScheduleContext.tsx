@@ -128,11 +128,6 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 		setSearchParams(new URLSearchParams({ ...queryString.parse(searchParams.toString()), b: busStop }))
 	}, [busStop, setSearchParams, searchParams])
 
-	const handleChangeBusStop = (busStop: StopKeys, analyticKey: string = 'selectBusStop') => {
-		analyticKey && AndrewLytics(analyticKey)
-		dispatch(setBusStop(busStop))
-	}
-
 	// fastreply logic
 	useEffect(() => {
 		if (left.hours === null) return

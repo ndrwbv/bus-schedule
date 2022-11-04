@@ -2,3 +2,9 @@
 - https://stackoverflow.com/questions/68015246/how-to-setinterval-on-redux-action-without-re-rendering-the-whole-app
 - сделать мидлвару которая будет заниматься пересчитыванием каждую секунду. Если обновилась остановка или направление то отменять таймаут
 - complains вынести в rtkquery
+- changeBusStopOnBusStopChange подключить
+- // url handling parsing from url вынести часть с выбором остановки в фичу выбора остановки 
+- вынести все оставшиеся хенлинг урлов
+- вынести holiday логиуку
+- отдельный слайс на лефт и следующее время. Вынести его в shared/store
+- пройтись по всем файлам и посмотреть чтобы фичи не использовали виджеты
