@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import featureToggle from 'App/model/featureToggleSlice'
 import busStopInfo from 'widget/Schedule/model/busStopInfoSlice'
 import scheduleSlice from 'widget/Schedule/model/scheduleSlice'
+import favoriteStops from 'features/FavoriteStops/model/favoriteStopsSlice'
 import { changeBusStopOnDirection } from '../../widget/Schedule/model/changeBusStopIfNotInDirectionMiddleware'
 
 export const store = configureStore({
@@ -9,6 +10,7 @@ export const store = configureStore({
 		featureToggle,
 		busStopInfo,
 		scheduleSlice,
+		favoriteStops,
 	},
 	devTools: process.env.NODE_ENV !== 'production',
 	middleware: getDefaultMiddleware => getDefaultMiddleware().prepend([changeBusStopOnDirection.middleware]),
