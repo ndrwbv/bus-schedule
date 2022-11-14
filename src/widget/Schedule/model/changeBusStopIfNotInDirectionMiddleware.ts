@@ -6,6 +6,7 @@ import { RootState, store } from '../../../App/model/configureStore';
 
 // Create the middleware instance and methods
 export const changeBusStopOnDirection = createListenerMiddleware();
+
 changeBusStopOnDirection.startListening({
 	actionCreator: setDirection,
 	effect: async (action, listenerApi) => {
@@ -24,7 +25,8 @@ changeBusStopOnDirection.startListening({
 });
 
 export const changeBusStopOnBusStopChange = createListenerMiddleware();
-changeBusStopOnDirection.startListening({
+
+changeBusStopOnBusStopChange.startListening({
 	actionCreator: setBusStop,
 	effect: async (action, listenerApi) => {
 		const state = listenerApi.getState() as RootState;
