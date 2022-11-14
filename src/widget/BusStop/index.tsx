@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next'
 import { ComplainType } from 'features/Complains'
 import { StopKeys } from 'widget/Schedule/types/Stops'
 import { selectStyles } from 'shared/ui/SelectStyles'
+import { useSearchParams } from 'react-router-dom'
 
 export const BusStop = () => {
 	const { t } = useTranslation()
@@ -28,6 +29,7 @@ export const BusStop = () => {
 	const { left, shouldShowFastReply, todaysHoliday } = useScheduleContext()
 
 	const { addComplain } = useComplainsContext()
+	let [searchParams, setSearchParams] = useSearchParams()
 
 	const handleComplain = (type: ComplainType) => {
 		if (!busStop || left.minutes === null) return
@@ -46,8 +48,13 @@ export const BusStop = () => {
 	}
 
 	const handleChangeBusStop = useCallback((e: any) => {
+		const busStopToChange = e?.value as StopKeys
+
 		AndrewLytics('selectBusStop')
-		dispatch(setBusStop(e?.value as StopKeys))
+		dispatch(setBusStop(busStopToChange))
+
+		searchParams.set('b', busStopToChange)
+		setSearchParams(searchParams)
 	}, [])
 
 	const currentBusStop = useMemo(() => stopsOptions.find(stop => stop.value === busStop), [stopsOptions, busStop])

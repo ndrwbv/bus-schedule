@@ -1,5 +1,4 @@
 import React, { useContext, createContext, useCallback, useState, useEffect, useMemo } from 'react'
-import { useSearchParams } from 'react-router-dom'
 import queryString from 'query-string'
 
 import { AndrewLytics } from 'shared/lib'
@@ -14,7 +13,7 @@ import { ITime } from 'widget/Schedule/types/ITime'
 import { Directions, StopKeys } from 'widget/Schedule/types/Stops'
 import { IHoliday } from 'widget/Schedule/types/IHolidays'
 import { useDispatch, useSelector } from 'react-redux'
-import { busStopSelector, directionSelector, setBusStop, setDirection, stopsOptionsSelector } from './busStopInfoSlice'
+import { busStopSelector, directionSelector, setBusStop } from './busStopInfoSlice'
 import { getCurrentHoliday } from '../helpers/getCurrentHoliday'
 
 const DEFAULT_LEFT = {
@@ -28,11 +27,6 @@ const DEFAULT_FETCH_INFO = {
 		id: null,
 		link: null,
 	},
-}
-
-const DEFAULT_SCHEDULE = {
-	in: [],
-	out: [],
 }
 
 const DEFAULT_PROPS = {
@@ -87,8 +81,6 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 	const { SCHEDULE, holidays } = useSchedule(fetchSchedule)
 	const [todaysHoliday, setTodaysHoliday] = useState<IHoliday | null>(null)
 
-	let [searchParams, setSearchParams] = useSearchParams()
-
 	const getDirectionKeys = useCallback(
 		(d: Directions) => (d ? Object.keys(SCHEDULE[d][currentDayKey]) : []),
 		[SCHEDULE, currentDayKey],
@@ -116,17 +108,6 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 			}
 		}
 	}, [getDirectionKeys])
-
-	// url handling direction
-	useEffect(() => {
-		setSearchParams(new URLSearchParams({ ...queryString.parse(searchParams.toString()), d: direction }))
-	}, [direction, setSearchParams, searchParams])
-
-	// url handling bus stop
-	useEffect(() => {
-		if (busStop === null) return
-		setSearchParams(new URLSearchParams({ ...queryString.parse(searchParams.toString()), b: busStop }))
-	}, [busStop, setSearchParams, searchParams])
 
 	// fastreply logic
 	useEffect(() => {

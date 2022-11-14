@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import ComplainMessage from './ComplainsMessage'
-import { useComplainsContext } from 'features/Complains/model/ComplainsContext'
+import { useComplainsContext } from '../model/ComplainsContext'
 import { Card, Container, MiniButton } from 'shared/ui/common'
 
 import { HeaderText } from 'shared/ui/Header/styled'
