@@ -1,5 +1,4 @@
-import React, { useContext, createContext, useCallback, useState, useEffect, useMemo } from 'react'
-import queryString from 'query-string'
+import React, { useContext, createContext, useState, useEffect, useMemo } from 'react'
 
 import { AndrewLytics } from 'shared/lib'
 import { calculateHowMuchIsLeft, findClosesTime, findClosesTimeArray } from 'widget/Schedule/helpers/schedule'
@@ -10,9 +9,8 @@ import useEveryMinuteUpdater from 'widget/Schedule/helpers/useEveryMinuteUpdater
 import { FetchInfoResponse } from 'shared/api'
 
 import { ITime } from 'widget/Schedule/types/ITime'
-import { Directions, StopKeys } from 'widget/Schedule/types/Stops'
 import { IHoliday } from 'widget/Schedule/types/IHolidays'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { busStopSelector, directionSelector, setBusStop } from './busStopInfoSlice'
 import { getCurrentHoliday } from '../helpers/getCurrentHoliday'
 
@@ -68,7 +66,6 @@ interface IProviderProps {
 export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay, fetchInfo }: IProviderProps) => {
 	const busStop = useSelector(busStopSelector)
 	const direction = useSelector(directionSelector)
-	const dispatch = useDispatch()
 
 	const [left, setLeft] = useState<ITime>(DEFAULT_LEFT)
 	const [closestTimeArray, setClossestTimeArray] = useState<string[]>([])
@@ -80,34 +77,6 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 	const _everyMinuteUpdate = useEveryMinuteUpdater()
 	const { SCHEDULE, holidays } = useSchedule(fetchSchedule)
 	const [todaysHoliday, setTodaysHoliday] = useState<IHoliday | null>(null)
-
-	const getDirectionKeys = useCallback(
-		(d: Directions) => (d ? Object.keys(SCHEDULE[d][currentDayKey]) : []),
-		[SCHEDULE, currentDayKey],
-	)
-
-	// url handling parsing from url
-	useEffect(() => {
-		const parsed = queryString.parse(window.location.search)
-
-		const _busStop = parsed['b'] as StopKeys
-		const _direction: Directions | undefined = ['in', 'out'].includes(parsed['d'] as Directions)
-			? (parsed['d'] as Directions)
-			: undefined
-
-		if (!_direction || !_busStop) return
-
-		if (_busStop) {
-			const scheduleKeys = getDirectionKeys(_direction)
-			const isBusStopNotInKeys = !scheduleKeys.includes(_busStop)
-
-			if (isBusStopNotInKeys) {
-				dispatch(setBusStop(scheduleKeys[0] as StopKeys))
-			} else {
-				dispatch(setBusStop(_busStop))
-			}
-		}
-	}, [getDirectionKeys])
 
 	// fastreply logic
 	useEffect(() => {

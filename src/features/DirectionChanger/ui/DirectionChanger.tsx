@@ -18,28 +18,22 @@ import { useDispatch, useSelector } from 'react-redux'
 import { directionSelector, setDirection } from 'widget/Schedule/model/busStopInfoSlice'
 import { DirectionsNew } from 'widget/Schedule/types/Stops'
 import { useUrlDirection } from '../model/useUrlDirection'
-import { useSearchParams } from 'react-router-dom'
 
 const SIZE = 43
 export const DirectionChanger = () => {
-	useUrlDirection()
+	const { setQueryParams } = useUrlDirection()
 	const direction = useSelector(directionSelector)
 	const dispatch = useDispatch()
-	let [searchParams, setSearchParams] = useSearchParams()
 	const isHalloweenMode = useTypedSelector(isHalloween)
 	const { t } = useTranslation()
 
 	const [isWebVisible, setIsWebVisible] = useState(true)
 
-	const setQueryParams = (d: DirectionsNew) => {
-		searchParams.set('d', d)
-		setSearchParams(searchParams)
-	}
-
 	const handleChangeDirection = (_direction: DirectionsNew) => {
 		const directionToChange = _direction as DirectionsNew
 
 		dispatch(setDirection(directionToChange))
+		setQueryParams(directionToChange)
 
 		AndrewLytics('changeDirection')
 	}
@@ -51,10 +45,6 @@ export const DirectionChanger = () => {
 	const onDirectionClick = () => {
 		handleChangeDirection(direction === DirectionsNew.in ? DirectionsNew.out : DirectionsNew.in)
 	}
-
-	useEffect(() => {
-		setQueryParams(direction)
-	}, [direction])
 
 	return (
 		<Container>
