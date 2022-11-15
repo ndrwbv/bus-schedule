@@ -3,7 +3,7 @@ import Select from 'react-select'
 
 import { Header } from 'shared/ui/Header/Header'
 import { SelectBusStopText } from '../../entities/SelectBusStopText'
-import { IOption } from 'widget/Schedule/types/Stops'
+import { IOption } from 'shared/store/busStop/Stops'
 import { useTranslation } from 'react-i18next'
 import { AndrewLytics } from 'shared/lib'
 import { Card, Container } from 'shared/ui'

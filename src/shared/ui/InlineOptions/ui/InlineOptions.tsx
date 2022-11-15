@@ -1,4 +1,4 @@
-import { IOption } from 'widget/Schedule/types/Stops'
+import { IOption } from 'shared/store/busStop/Stops'
 import { InlineOptionsContainer, InlineOptionsItem, OverLayContainer } from './styled'
 
 interface IProps {

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'App/model/configureStore'
-import { StopKeys } from 'widget/Schedule/types/Stops'
+import { StopKeys } from 'shared/store/busStop/Stops'
 import { getFavoriteBusStop } from '../helpers/getFavoriteBusStop'
 
 export interface FavoriteStopsState {

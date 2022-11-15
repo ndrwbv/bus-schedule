@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { setBusStop } from 'shared/store/busStop/busStopInfoSlice'
 import queryString from 'query-string'
-import { StopKeys } from 'widget/Schedule/types/Stops'
+import { StopKeys } from 'shared/store/busStop/Stops'
 import { useSearchParams } from 'react-router-dom'
 
 export const useUrlBusStop = () => {

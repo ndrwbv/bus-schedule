@@ -3,7 +3,7 @@ import SVG from 'react-inlinesvg'
 import { useTranslation } from 'react-i18next'
 
 import { ITime } from 'widget/Schedule/types/ITime'
-import { StopKeys } from 'widget/Schedule/types/Stops'
+import { StopKeys } from 'shared/store/busStop/Stops'
 import NextBus from './img/next-bus.svg'
 import Pumpkin from './img/pumpkin.svg'
 import EvilFace from './img/evil-face.svg'

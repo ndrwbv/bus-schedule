@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'App/model/configureStore'
 import { SCHEDULE } from 'shared/common'
 import { getNextDay } from '../../../widget/Schedule/helpers/schedule'
-import { ISchedule } from '../../../widget/Schedule/types/ISchedule'
+import { ISchedule } from './ISchedule'
 
 export interface BusStopInfoState {
 	schedule: ISchedule

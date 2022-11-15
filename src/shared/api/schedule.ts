@@ -1,6 +1,6 @@
 import { config } from 'shared/configs'
 import { IHolidays } from 'shared/store/holidays/IHolidays'
-import { ISchedule } from 'widget/Schedule/types/ISchedule'
+import { ISchedule } from 'shared/store/schedule/ISchedule'
 import { baseRequest, IContentfulResponse } from 'shared/lib'
 
 interface IScheduleResponse {

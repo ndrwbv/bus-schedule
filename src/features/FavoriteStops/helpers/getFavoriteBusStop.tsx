@@ -1,4 +1,4 @@
-import { StopKeys } from 'widget/Schedule/types/Stops';
+import { StopKeys } from 'shared/store/busStop/Stops';
 
 
 export const getFavoriteBusStop = (): StopKeys[] => {

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AndrewLytics } from 'shared/lib'
 import { CustomButton } from 'shared/ui'
 import { busStopSelector } from 'shared/store/busStop/busStopInfoSlice'
-import { StopKeys } from 'widget/Schedule/types/Stops'
+import { StopKeys } from 'shared/store/busStop/Stops'
 import { favoriteStopsSelector, saveFavoriteBusStops } from '../model/favoriteStopsSlice'
 
 export const FavoriteButton = () => {

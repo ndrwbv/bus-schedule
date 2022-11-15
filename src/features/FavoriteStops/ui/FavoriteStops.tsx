@@ -5,7 +5,7 @@ import { Card, Container } from 'shared/ui'
 import { Header } from 'shared/ui/Header'
 import { InlineOptions } from 'shared/ui/InlineOptions'
 import { busStopSelector, setBusStop, stopsOptionsSelector } from 'shared/store/busStop/busStopInfoSlice'
-import { StopKeys } from 'widget/Schedule/types/Stops'
+import { StopKeys } from 'shared/store/busStop/Stops'
 import { favoriteStopsSelector } from '../model/favoriteStopsSlice'
 
 export const FavoriteStops = () => {

@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { setDirection } from 'shared/store/busStop/busStopInfoSlice'
 import queryString from 'query-string'
-import { DirectionsNew } from 'widget/Schedule/types/Stops'
+import { DirectionsNew } from 'shared/store/busStop/Stops'
 import { useSearchParams } from 'react-router-dom'
 
 export const useUrlDirection = () => {

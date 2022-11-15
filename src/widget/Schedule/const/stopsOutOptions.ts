@@ -1,4 +1,4 @@
-import { IOption, StopKeysOut } from "../types/Stops";
+import { IOption, StopKeysOut } from "../../../shared/store/busStop/Stops";
 
 export const StopsOutOptions: IOption<StopKeysOut | null>[] = [
   {
