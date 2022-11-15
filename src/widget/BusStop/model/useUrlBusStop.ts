@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { setBusStop } from 'widget/Schedule/model/busStopInfoSlice'
+import { setBusStop } from 'shared/store/busStopInfoSlice'
 import queryString from 'query-string'
 import { StopKeys } from 'widget/Schedule/types/Stops'
 import { useSearchParams } from 'react-router-dom'

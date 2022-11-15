@@ -1,12 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
 import featureToggle from 'App/model/featureToggleSlice'
-import busStopInfo from 'widget/Schedule/model/busStopInfoSlice'
-import scheduleSlice from 'widget/Schedule/model/scheduleSlice'
+import busStopInfo from 'shared/store/busStopInfoSlice'
+import scheduleSlice from 'shared/store/scheduleSlice'
 import favoriteStops from 'features/FavoriteStops/model/favoriteStopsSlice'
 import {
 	changeBusStopOnBusStopChange,
 	changeBusStopOnDirection,
-} from '../../widget/Schedule/model/changeBusStopIfNotInDirectionMiddleware'
+} from '../../shared/store/middlewares/changeBusStopIfNotInDirectionMiddleware'
 
 export const store = configureStore({
 	reducer: {

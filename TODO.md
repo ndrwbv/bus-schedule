@@ -1,8 +1,9 @@
 - setClossestTime каждую минут смотрит какое ближайшее время, setLeft на основе это сетит сколько осталось до него. Надо объеденить их. Пересчитывать все один раз. 
 - https://stackoverflow.com/questions/68015246/how-to-setinterval-on-redux-action-without-re-rendering-the-whole-app
 - сделать мидлвару которая будет заниматься пересчитыванием каждую секунду. Если обновилась остановка или направление то отменять таймаут
-
-- complains вынести в rtkquery
-- вынести holiday логиуку
 - отдельный слайс на лефт и следующее время. Вынести его в shared/store
+
+- shared store для busStopSlice, sheduleSlice. В scheduleSlice лежит мидлвара которая обрабатывает праздники 
+
 - пройтись по всем файлам и посмотреть чтобы фичи не использовали виджеты
+- complains вынести в rtkquery

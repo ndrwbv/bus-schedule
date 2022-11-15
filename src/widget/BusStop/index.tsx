@@ -7,7 +7,7 @@ import {
 	directionSelector,
 	setBusStop,
 	stopsOptionsSelector,
-} from 'widget/Schedule/model/busStopInfoSlice'
+} from 'shared/store/busStopInfoSlice'
 import HowMuchLeft from 'features/HowMuchLeft/HowMuchLeft'
 import { AndrewLytics } from 'shared/lib'
 import { useCallback, useMemo } from 'react'

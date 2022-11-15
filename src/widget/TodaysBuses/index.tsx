@@ -6,7 +6,7 @@ import { Card, Container } from 'shared/ui'
 import { Header } from 'shared/ui/Header'
 import { OtherTime } from 'shared/ui/OtherTime'
 import { TimeStamp } from 'shared/ui/TimeStamp'
-import { busStopSelector } from 'widget/Schedule/model/busStopInfoSlice'
+import { busStopSelector } from 'shared/store/busStopInfoSlice'
 import { useScheduleContext } from 'widget/Schedule/model/ScheduleContext'
 
 export const TodaysBuses = () => {

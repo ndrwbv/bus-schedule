@@ -11,7 +11,7 @@ import { FetchInfoResponse } from 'shared/api'
 import { ITime } from 'widget/Schedule/types/ITime'
 import { IHoliday } from 'widget/Schedule/types/IHolidays'
 import { useSelector } from 'react-redux'
-import { busStopSelector, directionSelector, setBusStop } from './busStopInfoSlice'
+import { busStopSelector, directionSelector, setBusStop } from '../../../shared/store/busStopInfoSlice'
 import { getCurrentHoliday } from '../helpers/getCurrentHoliday'
 
 const DEFAULT_LEFT = {

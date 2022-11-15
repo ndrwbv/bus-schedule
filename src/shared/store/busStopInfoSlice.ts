@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'App/model/configureStore'
-import { StopsInOptions } from '../const/stopsInOptions'
-import { StopsOutOptions } from '../const/stopsOutOptions'
-import { DirectionsNew, IOption, StopKeys, StopKeysIn, StopKeysOut } from '../types/Stops'
+import { StopsInOptions } from '../../widget/Schedule/const/stopsInOptions'
+import { StopsOutOptions } from '../../widget/Schedule/const/stopsOutOptions'
+import { DirectionsNew, IOption, StopKeys, StopKeysIn, StopKeysOut } from '../../widget/Schedule/types/Stops'
 
 export interface BusStopInfoState {
 	busStop: StopKeys | null
