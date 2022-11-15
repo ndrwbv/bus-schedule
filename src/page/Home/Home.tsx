@@ -11,8 +11,8 @@ import ComplainsProvider from 'features/Complains/model/ComplainsContext'
 import { HeaderScore } from 'features/HeaderScore'
 import { Footer } from 'shared/ui/Footer'
 import { Map } from 'widget/Map'
-import { BottomSheet, BottomSheetRef } from 'react-spring-bottom-sheet'
-import { useRef, useState } from 'react'
+// import { BottomSheet, BottomSheetRef } from 'react-spring-bottom-sheet'
+// import { useRef, useState } from 'react'
 import { Info } from 'features/Info'
 import { DirectionChanger } from 'features/DirectionChanger'
 import { BusStop } from 'widget/BusStop'
@@ -28,9 +28,9 @@ import useSchedule from 'shared/store/schedule/useSchedule'
 export const Home = () => {
 	useSchedule()
 
-	const sheetRef = useRef<BottomSheetRef>(null)
-	const [expandOnContentDrag, setExpandOnContentDrag] = useState(true)
-	const focusRef = useRef<HTMLButtonElement>(null)
+	// const sheetRef = useRef<BottomSheetRef>(null)
+	// const [expandOnContentDrag, setExpandOnContentDrag] = useState(true)
+	// const focusRef = useRef<HTMLButtonElement>(null)
 
 	return (
 		<ComplainsProvider>
@@ -48,7 +48,7 @@ export const Home = () => {
 
 				<Map />
 
-				<BottomSheet
+				{/* <BottomSheet
 					open
 					skipInitialTransition
 					// sibling={<CloseExample className="z-10" />}
@@ -58,7 +58,7 @@ export const Home = () => {
 					snapPoints={({ maxHeight }) => [maxHeight - maxHeight / 10, maxHeight / 4, maxHeight * 0.6]}
 					expandOnContentDrag={expandOnContentDrag}
 					blocking={false}
-				>
+				> */}
 					<MainLayout>
 						<Info />
 						<DirectionChanger />
@@ -81,7 +81,7 @@ export const Home = () => {
 					</MainLayout>
 
 					<Footer />
-				</BottomSheet>
+				{/* </BottomSheet> */}
 			</AppContainer>
 		</ComplainsProvider>
 	)
