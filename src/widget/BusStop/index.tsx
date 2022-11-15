@@ -10,7 +10,7 @@ import {
 } from 'shared/store/busStop/busStopInfoSlice'
 import HowMuchLeft from 'features/HowMuchLeft/HowMuchLeft'
 import { AndrewLytics } from 'shared/lib'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useScheduleContext } from 'widget/Schedule/model/ScheduleContext'
 import { useComplainsContext } from 'features/Complains/model/ComplainsContext'
 import { useTranslation } from 'react-i18next'
@@ -53,10 +53,13 @@ export const BusStop = () => {
 		const busStopToChange = e?.value as StopKeys
 
 		dispatch(setBusStop(busStopToChange))
-		setQueryParams(busStopToChange)
 
 		AndrewLytics('selectBusStop')
 	}, [])
+
+	useEffect(() => {
+		setQueryParams(busStop)
+	}, [busStop])
 
 	const currentBusStop = useMemo(() => stopsOptions.find(stop => stop.value === busStop), [stopsOptions, busStop])
 
