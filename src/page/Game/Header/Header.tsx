@@ -4,11 +4,10 @@ import { LeftToString } from 'features/HowMuchLeft/HowMuchLeft'
 import { GameLink, GameUIContainer, Title } from 'page/Game/common'
 import RecordTable from 'page/Game/RecordTable/RecordTable'
 
-import { useScheduleContext } from 'widget/Schedule/model/ScheduleContext'
-
 import { HeaderContainer } from './styled'
 import { useSelector } from 'react-redux'
 import { busStopSelector } from 'shared/store/busStop/busStopInfoSlice'
+import { leftSelector } from 'shared/store/timeLeft/timeLeftSlice'
 
 interface IGameHeaderProps {
 	score: number
@@ -29,7 +28,7 @@ const Header: React.FC<IGameHeaderProps> = ({
 	isGameOver = false,
 	bestScore,
 }) => {
-	const { left } = useScheduleContext()
+	const left = useSelector(leftSelector)
 	const busStop = useSelector(busStopSelector)
 
 	return (

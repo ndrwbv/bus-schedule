@@ -11,7 +11,6 @@ import {
 import HowMuchLeft from 'features/HowMuchLeft/HowMuchLeft'
 import { AndrewLytics } from 'shared/lib'
 import { useCallback, useEffect, useMemo } from 'react'
-import { useScheduleContext } from 'widget/Schedule/model/ScheduleContext'
 import { useComplainsContext } from 'features/Complains/model/ComplainsContext'
 import { useTranslation } from 'react-i18next'
 import { ComplainType } from 'features/Complains'
@@ -19,8 +18,13 @@ import { StopKeys } from 'shared/store/busStop/Stops'
 import { selectStyles } from 'shared/ui/SelectStyles'
 import { useUrlBusStop } from './model/useUrlBusStop'
 import { todayHolidaySelector } from 'shared/store/holidays/holidaysSlice'
+import { leftSelector } from 'shared/store/timeLeft/timeLeftSlice'
+import { useFastReplay } from './model/useFastReplay'
+import { useTimeLeftUpdater } from 'shared/store/timeLeft/useTimeLeftUpdater'
 
 export const BusStop = () => {
+	useTimeLeftUpdater()
+
 	const { setQueryParams } = useUrlBusStop()
 	const { t } = useTranslation()
 	const dispatch = useDispatch()
@@ -28,9 +32,9 @@ export const BusStop = () => {
 	const busStop = useSelector(busStopSelector)
 	const direction = useSelector(directionSelector)
 	const todaysHoliday = useSelector(todayHolidaySelector)
+	const left = useSelector(leftSelector)
 
-	const { left, shouldShowFastReply } = useScheduleContext()
-
+	const { shouldShowFastReply } = useFastReplay()
 	const { addComplain } = useComplainsContext()
 
 	const handleComplain = (type: ComplainType) => {

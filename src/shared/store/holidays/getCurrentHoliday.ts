@@ -10,7 +10,6 @@ export const getCurrentHoliday = (holidays: IHolidays): IHoliday[] => {
 		start.setHours(0, 0, 0, 0);
 		end.setHours(0, 0, 0, 0);
 
-		console.log(start, end)
 		if (today <= end && today >= start) {
 			return true;
 		}

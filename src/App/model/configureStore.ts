@@ -4,6 +4,7 @@ import busStopInfo from 'shared/store/busStop/busStopInfoSlice'
 import scheduleSlice from 'shared/store/schedule/scheduleSlice'
 import favoriteStops from 'features/FavoriteStops/model/favoriteStopsSlice'
 import holidaysSlice from 'shared/store/holidays/holidaysSlice'
+import timeLeftSlice from 'shared/store/timeLeft/timeLeftSlice'
 import {
 	changeBusStopOnBusStopChange,
 	changeBusStopOnDirection,
@@ -18,6 +19,7 @@ export const store = configureStore({
 		scheduleSlice,
 		favoriteStops,
 		holidaysSlice,
+		timeLeftSlice,
 		[infoApi.reducerPath]: infoApi.reducer,
 	},
 	devTools: process.env.NODE_ENV !== 'production',
@@ -26,6 +28,7 @@ export const store = configureStore({
 			changeBusStopOnDirection.middleware,
 			changeBusStopOnBusStopChange.middleware,
 			holidaysSetter.middleware,
+			infoApi.middleware,
 		]),
 })
 

@@ -7,11 +7,10 @@ import { Header } from 'shared/ui/Header'
 import { OtherTime } from 'shared/ui/OtherTime'
 import { TimeStamp } from 'shared/ui/TimeStamp'
 import { busStopSelector } from 'shared/store/busStop/busStopInfoSlice'
-import { useScheduleContext } from 'widget/Schedule/model/ScheduleContext'
+import { closestTimeArraySelector } from 'shared/store/timeLeft/timeLeftSlice'
 
 export const TodaysBuses = () => {
-	const { closestTimeArray } = useScheduleContext()
-
+	const closestTimeArray = useSelector(closestTimeArraySelector)
 	const busStop = useSelector(busStopSelector)
 
 	const { t } = useTranslation()

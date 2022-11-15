@@ -3,8 +3,6 @@ import { HeaderInner, HeaderContainer, HeaderActions } from 'entities/Logo/ui/st
 
 import { Container } from 'shared/ui/common'
 
-import ScheduleProvider from 'widget/Schedule/model/ScheduleContext'
-
 import WriteMe from 'entities/WriteMe/WriteMe'
 
 import { AppContainer } from 'App/styled'
@@ -25,65 +23,66 @@ import { TodaysBuses } from 'widget/TodaysBuses'
 import { LeaveFeedbackButton } from 'features/LeaveFeedbackButton'
 import { OtherTimeBusses } from 'features/OtherTimeBuses'
 import { MainLayout } from 'shared/ui/MainLayout'
+import useSchedule from 'shared/store/schedule/useSchedule'
 
 export const Home = () => {
+	useSchedule()
+
 	const sheetRef = useRef<BottomSheetRef>(null)
 	const [expandOnContentDrag, setExpandOnContentDrag] = useState(true)
 	const focusRef = useRef<HTMLButtonElement>(null)
 
 	return (
-		<ScheduleProvider>
-			<ComplainsProvider>
-				<AppContainer>
-					<HeaderContainer>
-						<HeaderInner>
-							<Logo />
+		<ComplainsProvider>
+			<AppContainer>
+				<HeaderContainer>
+					<HeaderInner>
+						<Logo />
 
-							<HeaderActions>
-								<HeaderScore />
-								<Share />
-							</HeaderActions>
-						</HeaderInner>
-					</HeaderContainer>
+						<HeaderActions>
+							<HeaderScore />
+							<Share />
+						</HeaderActions>
+					</HeaderInner>
+				</HeaderContainer>
 
-					<Map />
+				<Map />
 
-					<BottomSheet
-						open
-						skipInitialTransition
-						// sibling={<CloseExample className="z-10" />}
-						ref={sheetRef}
-						initialFocusRef={focusRef}
-						defaultSnap={({ maxHeight }) => maxHeight / 2}
-						snapPoints={({ maxHeight }) => [maxHeight - maxHeight / 10, maxHeight / 4, maxHeight * 0.6]}
-						expandOnContentDrag={expandOnContentDrag}
-						blocking={false}
-					>
-						<MainLayout>
-							<Info />
-							<DirectionChanger />
-							<BusStop />
+				<BottomSheet
+					open
+					skipInitialTransition
+					// sibling={<CloseExample className="z-10" />}
+					ref={sheetRef}
+					initialFocusRef={focusRef}
+					defaultSnap={({ maxHeight }) => maxHeight / 2}
+					snapPoints={({ maxHeight }) => [maxHeight - maxHeight / 10, maxHeight / 4, maxHeight * 0.6]}
+					expandOnContentDrag={expandOnContentDrag}
+					blocking={false}
+				>
+					<MainLayout>
+						<Info />
+						<DirectionChanger />
+						<BusStop />
 
-							<Complains />
+						<Complains />
 
-							<TranslationLink />
+						<TranslationLink />
 
-							<FavoriteStops />
+						<FavoriteStops />
 
-							<TodaysBuses />
-							<LeaveFeedbackButton />
+						<TodaysBuses />
+						<LeaveFeedbackButton />
 
-							<OtherTimeBusses />
+						<OtherTimeBusses />
 
-							<Container>
-								<WriteMe />
-							</Container>
-						</MainLayout>
+						<Container>
+							<WriteMe />
+						</Container>
+					</MainLayout>
 
-						<Footer />
-					</BottomSheet>
-				</AppContainer>
-			</ComplainsProvider>
-		</ScheduleProvider>
+					<Footer />
+				</BottomSheet>
+			</AppContainer>
+		</ComplainsProvider>
 	)
 }

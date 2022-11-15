@@ -16,7 +16,6 @@ holidaysSetter.startListening({
 
 		const _todaysHolidays = getCurrentHoliday(action.payload)
 
-		console.log(_todaysHolidays)
 		if (_todaysHolidays.length !== 0) {
 			store.dispatch(setCurrentDayKey(_todaysHolidays[0]?.key ? _todaysHolidays[0].key : DEFAULT_HOLIDAY_KEY))
 			store.dispatch(setTodayHoliday(_todaysHolidays[0]))
