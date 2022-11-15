@@ -1,5 +1,5 @@
 import { config } from 'shared/configs'
-import { IHolidays } from 'widget/Schedule/types/IHolidays'
+import { IHolidays } from 'shared/store/holidays/IHolidays'
 import { ISchedule } from 'widget/Schedule/types/ISchedule'
 import { baseRequest, IContentfulResponse } from 'shared/lib'
 

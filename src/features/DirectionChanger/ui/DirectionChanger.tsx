@@ -15,7 +15,7 @@ import { AndrewLytics, useTypedSelector } from 'shared/lib'
 import { isHalloween } from 'App/model/selectors/isHalloween'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { directionSelector, setDirection } from 'shared/store/busStopInfoSlice'
+import { directionSelector, setDirection } from 'shared/store/busStop/busStopInfoSlice'
 import { DirectionsNew } from 'widget/Schedule/types/Stops'
 import { useUrlDirection } from '../model/useUrlDirection'
 

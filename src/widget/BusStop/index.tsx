@@ -7,7 +7,7 @@ import {
 	directionSelector,
 	setBusStop,
 	stopsOptionsSelector,
-} from 'shared/store/busStopInfoSlice'
+} from 'shared/store/busStop/busStopInfoSlice'
 import HowMuchLeft from 'features/HowMuchLeft/HowMuchLeft'
 import { AndrewLytics } from 'shared/lib'
 import { useCallback, useMemo } from 'react'
@@ -18,6 +18,7 @@ import { ComplainType } from 'features/Complains'
 import { StopKeys } from 'widget/Schedule/types/Stops'
 import { selectStyles } from 'shared/ui/SelectStyles'
 import { useUrlBusStop } from './model/useUrlBusStop'
+import { todayHolidaySelector } from 'shared/store/holidays/holidaysSlice'
 
 export const BusStop = () => {
 	const { setQueryParams } = useUrlBusStop()
@@ -26,8 +27,9 @@ export const BusStop = () => {
 	const stopsOptions = useSelector(stopsOptionsSelector)
 	const busStop = useSelector(busStopSelector)
 	const direction = useSelector(directionSelector)
+	const todaysHoliday = useSelector(todayHolidaySelector)
 
-	const { left, shouldShowFastReply, todaysHoliday } = useScheduleContext()
+	const { left, shouldShowFastReply } = useScheduleContext()
 
 	const { addComplain } = useComplainsContext()
 

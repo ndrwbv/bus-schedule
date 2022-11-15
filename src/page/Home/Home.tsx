@@ -6,7 +6,6 @@ import { HeaderInner, HeaderContainer, HeaderActions } from 'entities/Logo/ui/st
 import { Container } from 'shared/ui/common'
 
 import ScheduleProvider from 'widget/Schedule/model/ScheduleContext'
-import { getNextDay } from 'widget/Schedule/helpers/schedule'
 
 import WriteMe from 'entities/WriteMe/WriteMe'
 
@@ -29,16 +28,13 @@ import { LeaveFeedbackButton } from 'features/LeaveFeedbackButton'
 import { OtherTimeBusses } from 'features/OtherTimeBuses'
 import { MainLayout } from 'shared/ui/MainLayout'
 
-const currentDay = new Date().getDay()
-const nextDay = getNextDay(currentDay)
-
-export const Home = ({ c = currentDay, n = nextDay, fi = fetchInfo, fs = fetchSchedule }: any) => {
+export const Home = ({ fi = fetchInfo, fs = fetchSchedule }: any) => {
 	const sheetRef = useRef<BottomSheetRef>(null)
 	const [expandOnContentDrag, setExpandOnContentDrag] = useState(true)
 	const focusRef = useRef<HTMLButtonElement>(null)
 
 	return (
-		<ScheduleProvider currentDay={c} nextDay={n} fetchSchedule={fs} fetchInfo={fi}>
+		<ScheduleProvider fetchSchedule={fs} fetchInfo={fi}>
 			<ComplainsProvider>
 				<AppContainer>
 					<HeaderContainer>

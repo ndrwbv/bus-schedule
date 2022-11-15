@@ -13,7 +13,7 @@ import { ImageWrapper } from '../../shared/ui/ImageWrapper'
 import { SelectBusStopText } from 'entities/SelectBusStopText'
 
 import { Holiday } from 'entities/Holiday'
-import { IHoliday } from 'widget/Schedule/types/IHolidays'
+import { IHoliday } from 'shared/store/holidays/IHolidays'
 import { InlineOptions } from 'shared/ui/InlineOptions'
 import { ComplainType } from 'features/Complains'
 

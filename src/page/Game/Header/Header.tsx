@@ -8,7 +8,7 @@ import { useScheduleContext } from 'widget/Schedule/model/ScheduleContext'
 
 import { HeaderContainer } from './styled'
 import { useSelector } from 'react-redux'
-import { busStopSelector } from 'shared/store/busStopInfoSlice'
+import { busStopSelector } from 'shared/store/busStop/busStopInfoSlice'
 
 interface IGameHeaderProps {
 	score: number

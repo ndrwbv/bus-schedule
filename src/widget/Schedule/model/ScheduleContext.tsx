@@ -9,10 +9,9 @@ import useEveryMinuteUpdater from 'widget/Schedule/helpers/useEveryMinuteUpdater
 import { FetchInfoResponse } from 'shared/api'
 
 import { ITime } from 'widget/Schedule/types/ITime'
-import { IHoliday } from 'widget/Schedule/types/IHolidays'
 import { useSelector } from 'react-redux'
-import { busStopSelector, directionSelector, setBusStop } from '../../../shared/store/busStopInfoSlice'
-import { getCurrentHoliday } from '../helpers/getCurrentHoliday'
+import { busStopSelector, directionSelector } from '../../../shared/store/busStop/busStopInfoSlice'
+import { currentDaySelector } from 'shared/store/schedule/scheduleSlice'
 
 const DEFAULT_LEFT = {
 	hours: 0,
@@ -32,13 +31,9 @@ const DEFAULT_PROPS = {
 	closestTimeArray: [],
 	closestTime: '',
 	shouldShowFastReply: false,
-	nextDay: 1,
 	fetchInfo: async () => {
 		return DEFAULT_FETCH_INFO
 	},
-	todaysHoliday: null,
-	currentDay: 1,
-	currentDayKey: 1,
 }
 
 export const ScheduleContext = createContext<ContextProps>(DEFAULT_PROPS)
@@ -49,21 +44,16 @@ interface ContextProps {
 	closestTime: string
 	shouldShowFastReply: boolean
 	fetchInfo: () => FetchInfoResponse
-	todaysHoliday: IHoliday | null
-	currentDay: number
-	currentDayKey: number
 }
 
 export const VISIT_TIME = new Date().toISOString()
 interface IProviderProps {
 	children: React.ReactElement
-	currentDay: number
-	nextDay: number
 	fetchSchedule: any
 	fetchInfo: any
 }
 
-export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay, fetchInfo }: IProviderProps) => {
+export const ScheduleProvider = ({ children, fetchSchedule, fetchInfo }: IProviderProps) => {
 	const busStop = useSelector(busStopSelector)
 	const direction = useSelector(directionSelector)
 
@@ -72,11 +62,10 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 	const [closestTime, setClossestTime] = useState<string>('')
 	const [shouldShowFastReply, setShouldShowFastReply] = useState<boolean>(false)
 
-	const [currentDayKey, setCurrentDayKey] = useState(currentDay)
-
+	const currentDayKey = useSelector(currentDaySelector)
+	
 	const _everyMinuteUpdate = useEveryMinuteUpdater()
-	const { SCHEDULE, holidays } = useSchedule(fetchSchedule)
-	const [todaysHoliday, setTodaysHoliday] = useState<IHoliday | null>(null)
+	const { SCHEDULE } = useSchedule(fetchSchedule)
 
 	// fastreply logic
 	useEffect(() => {
@@ -114,19 +103,6 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 		setLeft(left)
 	}, [_everyMinuteUpdate, closestTime])
 
-	// setting holliday if exists
-	useEffect(() => {
-		if (holidays.length === 0) return
-
-		const _todaysHolidays = getCurrentHoliday(holidays)
-
-		if (_todaysHolidays.length !== 0) {
-			setCurrentDayKey(_todaysHolidays[0]?.key ? _todaysHolidays[0].key : 0)
-
-			setTodaysHoliday(_todaysHolidays[0])
-		}
-	}, [holidays, currentDay])
-
 	const values = useMemo(
 		() => ({
 			left,
@@ -134,11 +110,8 @@ export const ScheduleProvider = ({ children, fetchSchedule, currentDay, nextDay,
 			closestTime,
 			shouldShowFastReply,
 			fetchInfo,
-			todaysHoliday,
-			currentDay,
-			currentDayKey,
 		}),
-		[left, closestTimeArray, closestTime, shouldShowFastReply, fetchInfo, todaysHoliday, currentDay, currentDayKey],
+		[left, closestTimeArray, closestTime, shouldShowFastReply, fetchInfo],
 	)
 
 	return <ScheduleContext.Provider value={values}>{children}</ScheduleContext.Provider>

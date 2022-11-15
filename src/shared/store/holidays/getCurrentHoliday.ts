@@ -1,4 +1,4 @@
-import { IHoliday, IHolidays } from 'widget/Schedule/types/IHolidays';
+import { IHoliday, IHolidays } from 'shared/store/holidays/IHolidays';
 
 export const getCurrentHoliday = (holidays: IHolidays): IHoliday[] => {
 	const today = new Date();
@@ -7,7 +7,10 @@ export const getCurrentHoliday = (holidays: IHolidays): IHoliday[] => {
 	return holidays.filter(holiday => {
 		const start = new Date(`${today.getFullYear()}-${holiday.start}`);
 		const end = new Date(`${today.getFullYear()}-${holiday.end}`);
+		start.setHours(0, 0, 0, 0);
+		end.setHours(0, 0, 0, 0);
 
+		console.log(start, end)
 		if (today <= end && today >= start) {
 			return true;
 		}

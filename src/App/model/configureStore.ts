@@ -1,12 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit'
 import featureToggle from 'App/model/featureToggleSlice'
-import busStopInfo from 'shared/store/busStopInfoSlice'
-import scheduleSlice from 'shared/store/scheduleSlice'
+import busStopInfo from 'shared/store/busStop/busStopInfoSlice'
+import scheduleSlice from 'shared/store/schedule/scheduleSlice'
 import favoriteStops from 'features/FavoriteStops/model/favoriteStopsSlice'
+import holidaysSlice from 'shared/store/holidays/holidaysSlice'
 import {
 	changeBusStopOnBusStopChange,
 	changeBusStopOnDirection,
-} from '../../shared/store/middlewares/changeBusStopIfNotInDirectionMiddleware'
+} from '../../shared/store/busStop/changeBusStopIfNotInDirectionMiddleware'
+import { holidaysSetter } from 'shared/store/holidays/holidaysMiddleware'
 
 export const store = configureStore({
 	reducer: {
@@ -14,10 +16,15 @@ export const store = configureStore({
 		busStopInfo,
 		scheduleSlice,
 		favoriteStops,
+		holidaysSlice,
 	},
 	devTools: process.env.NODE_ENV !== 'production',
 	middleware: getDefaultMiddleware =>
-		getDefaultMiddleware().prepend([changeBusStopOnDirection.middleware, changeBusStopOnBusStopChange.middleware]),
+		getDefaultMiddleware().prepend([
+			changeBusStopOnDirection.middleware,
+			changeBusStopOnBusStopChange.middleware,
+			holidaysSetter.middleware,
+		]),
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

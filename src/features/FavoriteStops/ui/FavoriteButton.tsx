@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { AndrewLytics } from 'shared/lib'
 import { CustomButton } from 'shared/ui'
-import { busStopSelector } from 'shared/store/busStopInfoSlice'
+import { busStopSelector } from 'shared/store/busStop/busStopInfoSlice'
 import { StopKeys } from 'widget/Schedule/types/Stops'
 import { favoriteStopsSelector, saveFavoriteBusStops } from '../model/favoriteStopsSlice'
 
