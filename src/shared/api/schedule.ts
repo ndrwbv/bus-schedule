@@ -10,7 +10,7 @@ interface IScheduleResponse {
 
 export type FetchScheduleResponse = IContentfulResponse<IScheduleResponse>
 
-export const fetchSchedule = () => {
+export const fetchSchedule = (): Promise<FetchScheduleResponse> => {
 	return baseRequest<FetchScheduleResponse>(
 		`https://cdn.contentful.com/spaces/jms7gencs5gy/environments/master/entries/43nolroEBc5PNSMub6VR8G?access_token=${config.CONTENTFUL_TOKEN}`,
 	)

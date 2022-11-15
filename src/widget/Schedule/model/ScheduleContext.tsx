@@ -6,8 +6,6 @@ import { calculateHowMuchIsLeft, findClosesTime, findClosesTimeArray } from 'wid
 import useSchedule from 'widget/Schedule/model/useSchedule'
 import useEveryMinuteUpdater from 'widget/Schedule/helpers/useEveryMinuteUpdater'
 
-import { FetchInfoResponse } from 'shared/api'
-
 import { ITime } from 'widget/Schedule/types/ITime'
 import { useSelector } from 'react-redux'
 import { busStopSelector, directionSelector } from '../../../shared/store/busStop/busStopInfoSlice'
@@ -18,22 +16,11 @@ const DEFAULT_LEFT = {
 	minutes: 0,
 }
 
-const DEFAULT_FETCH_INFO = {
-	fields: {
-		message: null,
-		id: null,
-		link: null,
-	},
-}
-
 const DEFAULT_PROPS = {
 	left: DEFAULT_LEFT,
 	closestTimeArray: [],
 	closestTime: '',
 	shouldShowFastReply: false,
-	fetchInfo: async () => {
-		return DEFAULT_FETCH_INFO
-	},
 }
 
 export const ScheduleContext = createContext<ContextProps>(DEFAULT_PROPS)
@@ -43,17 +30,14 @@ interface ContextProps {
 	closestTimeArray: string[]
 	closestTime: string
 	shouldShowFastReply: boolean
-	fetchInfo: () => FetchInfoResponse
 }
 
 export const VISIT_TIME = new Date().toISOString()
 interface IProviderProps {
 	children: React.ReactElement
-	fetchSchedule: any
-	fetchInfo: any
 }
 
-export const ScheduleProvider = ({ children, fetchSchedule, fetchInfo }: IProviderProps) => {
+export const ScheduleProvider = ({ children }: IProviderProps) => {
 	const busStop = useSelector(busStopSelector)
 	const direction = useSelector(directionSelector)
 
@@ -63,9 +47,9 @@ export const ScheduleProvider = ({ children, fetchSchedule, fetchInfo }: IProvid
 	const [shouldShowFastReply, setShouldShowFastReply] = useState<boolean>(false)
 
 	const currentDayKey = useSelector(currentDaySelector)
-	
+
 	const _everyMinuteUpdate = useEveryMinuteUpdater()
-	const { SCHEDULE } = useSchedule(fetchSchedule)
+	const { SCHEDULE } = useSchedule()
 
 	// fastreply logic
 	useEffect(() => {
@@ -109,9 +93,8 @@ export const ScheduleProvider = ({ children, fetchSchedule, fetchInfo }: IProvid
 			closestTimeArray,
 			closestTime,
 			shouldShowFastReply,
-			fetchInfo,
 		}),
-		[left, closestTimeArray, closestTime, shouldShowFastReply, fetchInfo],
+		[left, closestTimeArray, closestTime, shouldShowFastReply],
 	)
 
 	return <ScheduleContext.Provider value={values}>{children}</ScheduleContext.Provider>

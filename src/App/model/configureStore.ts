@@ -9,6 +9,7 @@ import {
 	changeBusStopOnDirection,
 } from '../../shared/store/busStop/changeBusStopIfNotInDirectionMiddleware'
 import { holidaysSetter } from 'shared/store/holidays/holidaysMiddleware'
+import { infoApi } from 'features/Info/model/info'
 
 export const store = configureStore({
 	reducer: {
@@ -17,6 +18,7 @@ export const store = configureStore({
 		scheduleSlice,
 		favoriteStops,
 		holidaysSlice,
+		[infoApi.reducerPath]: infoApi.reducer,
 	},
 	devTools: process.env.NODE_ENV !== 'production',
 	middleware: getDefaultMiddleware =>

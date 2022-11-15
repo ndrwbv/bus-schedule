@@ -1,11 +1,11 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { FetchScheduleResponse } from 'shared/api/schedule'
+import { fetchSchedule, FetchScheduleResponse } from 'shared/api/schedule'
 import { AndrewLytics } from 'shared/lib'
 import { holidaysSelector, setHolidays } from 'shared/store/holidays/holidaysSlice'
 import { scheduleSelector, setSchedule } from '../../../shared/store/schedule/scheduleSlice'
 
-const useSchedule = (fetchSchedule: () => FetchScheduleResponse) => {
+const useSchedule = () => {
 	const dispatch = useDispatch()
 	const schedule = useSelector(scheduleSelector)
 	const holidays = useSelector(holidaysSelector)
@@ -27,7 +27,7 @@ const useSchedule = (fetchSchedule: () => FetchScheduleResponse) => {
 			.catch(() => {
 				AndrewLytics('cannotLoad')
 			})
-	}, [fetchSchedule])
+	}, [])
 
 	return {
 		SCHEDULE: schedule,

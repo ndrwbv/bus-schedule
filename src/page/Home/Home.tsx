@@ -1,5 +1,3 @@
-import { fetchInfo, fetchSchedule } from 'shared/api'
-
 import { Logo } from 'entities/Logo'
 import { HeaderInner, HeaderContainer, HeaderActions } from 'entities/Logo/ui/styled'
 
@@ -28,13 +26,13 @@ import { LeaveFeedbackButton } from 'features/LeaveFeedbackButton'
 import { OtherTimeBusses } from 'features/OtherTimeBuses'
 import { MainLayout } from 'shared/ui/MainLayout'
 
-export const Home = ({ fi = fetchInfo, fs = fetchSchedule }: any) => {
+export const Home = () => {
 	const sheetRef = useRef<BottomSheetRef>(null)
 	const [expandOnContentDrag, setExpandOnContentDrag] = useState(true)
 	const focusRef = useRef<HTMLButtonElement>(null)
 
 	return (
-		<ScheduleProvider fetchSchedule={fs} fetchInfo={fi}>
+		<ScheduleProvider>
 			<ComplainsProvider>
 				<AppContainer>
 					<HeaderContainer>

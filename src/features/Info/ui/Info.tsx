@@ -1,16 +1,15 @@
 import SVG from 'react-inlinesvg'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import InfoCloseCross from '../img/infoclosecross.svg'
 import { AndrewLytics } from 'shared/lib'
-import useInfo from '../model/useInfo'
 import { Container } from 'shared/ui/common'
 import { InfoWrapper, InfoLink, InfoText, InfoCloseButton } from './styled'
+import { useGetInfoQuery } from '../model/info'
 
 export const Info: React.FC = () => {
-	const [isInfoShow, setIsInfoShow] = React.useState(false)
-	const infoMessage = useInfo()
-	const { message: text, link } = infoMessage
+	const [isInfoShow, setIsInfoShow] = useState(false)
+	const { data: infoMessage } = useGetInfoQuery()
 
 	const onLinkClick = () => {
 		AndrewLytics('infoBlockLinkClick')
@@ -18,19 +17,21 @@ export const Info: React.FC = () => {
 
 	const onInfoCrossClick = () => {
 		setIsInfoShow(false)
-		infoMessage.id && localStorage.setItem('infoMessageId', String(infoMessage.id))
+		infoMessage?.id && localStorage.setItem('infoMessageId', String(infoMessage.id))
 
 		AndrewLytics('infoBlockHide')
 	}
 
-	React.useEffect(() => {
-		if (!infoMessage.id) return
+	useEffect(() => {
+		if (!infoMessage?.id) return
 
 		const _infoMessageId = localStorage.getItem('infoMessageId')
 		Number(_infoMessageId) !== Number(infoMessage.id) && setIsInfoShow(true)
-	}, [infoMessage.id])
+	}, [infoMessage])
 
-	if (!text || !isInfoShow) return null
+	if (!infoMessage || !isInfoShow) return null
+
+	const { message: text, link } = infoMessage
 
 	return (
 		<Container>
