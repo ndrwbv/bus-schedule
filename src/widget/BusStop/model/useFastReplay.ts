@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { AndrewLytics } from 'shared/lib'
 import { leftSelector } from 'shared/store/timeLeft/timeLeftSlice'
-import { calculateHowMuchIsLeft } from 'widget/Schedule/helpers/schedule'
+import { calculateHowMuchIsLeft } from "shared/lib/time/calculateHowMuchIsLeft"
 
 export const VISIT_TIME = new Date().toISOString()
 

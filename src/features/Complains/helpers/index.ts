@@ -1,4 +1,4 @@
-import { calculateHowMuchIsLeft } from 'widget/Schedule/helpers/schedule'
+import { calculateHowMuchIsLeft } from "shared/lib/time/calculateHowMuchIsLeft"
 import { Directions } from 'shared/store/busStop/Stops'
 import { ComplainType } from '../model/Complains'
 

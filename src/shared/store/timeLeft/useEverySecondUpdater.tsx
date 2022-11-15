@@ -1,6 +1,6 @@
 import React from 'react'
 
-const useSecondMinuteUpdater = () => {
+const useEverySecondUpdater = () => {
 	const [_everyMinuteUpdate, _setUpdate] = React.useState(0)
 
 	React.useEffect(() => {
@@ -14,4 +14,4 @@ const useSecondMinuteUpdater = () => {
 	return _everyMinuteUpdate
 }
 
-export default useSecondMinuteUpdater
+export default useEverySecondUpdater

@@ -1,5 +1,5 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit';
-import { getDirectionKeys } from 'widget/Schedule/helpers/getDirectionKeys';
+import { getDirectionKeys } from 'shared/store/busStop/getDirectionKeys';
 import { setBusStop, setDirection } from 'shared/store/busStop/busStopInfoSlice';
 import { StopKeys } from 'shared/store/busStop/Stops';
 import { RootState, store } from '../../../App/model/configureStore';
