@@ -12,11 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.4.0
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: 16.14.0
           cache: 'yarn'
-      - uses: actions/cache@v2.1.7
+      - uses: actions/cache@v3
         with:
           path: |
             node_modules
@@ -26,8 +26,8 @@ jobs:
       - name: Install deps
         run: yarn
         
-      - name: Run tests
-        run: yarn ci-test
+      # - name: Run tests
+      #   run: yarn ci-test
 
       - name: Build
         run: yarn build
