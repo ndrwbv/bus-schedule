@@ -1,5 +1,5 @@
 import { AndrewLytics } from 'shared/lib'
-import { Directions, StopKeys } from 'widget/Schedule/types/Stops'
+import { Directions, StopKeys } from 'shared/store/busStop/Stops'
 import { useEffect, useState } from 'react'
 import { ComplainType } from '../model/Complains'
 export interface IComplains {

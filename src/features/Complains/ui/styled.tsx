@@ -58,11 +58,6 @@ export const ComplainsBlockText = styled.p`
 	font-weight: 600;
 `
 
-export const PopupContent = styled.div`
-	padding: 20px 0;
-	overflow-y: auto;
-`
-
 export const ComplainCount = styled.span`
 	color: #717171;
 `

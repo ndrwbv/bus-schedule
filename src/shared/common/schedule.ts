@@ -1,4 +1,4 @@
-import { ISchedule } from '../../widget/Schedule/types/ISchedule'
+import { ISchedule } from '../store/schedule/ISchedule'
 
 // 1 - Monday
 // 6 - Saturday

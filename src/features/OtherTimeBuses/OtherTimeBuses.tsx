@@ -2,16 +2,24 @@ import { useMemo, useState } from 'react'
 import Select from 'react-select'
 
 import { Header } from 'shared/ui/Header/Header'
-import { OtherTime, selectStyles, TimeStamp } from 'widget/Schedule/ui/styled'
 import { SelectBusStopText } from '../../entities/SelectBusStopText'
-import { useScheduleContext } from 'widget/Schedule/model/ScheduleContext'
-import { IOption } from 'widget/Schedule/types/Stops'
+import { IOption } from 'shared/store/busStop/Stops'
 import { useTranslation } from 'react-i18next'
 import { AndrewLytics } from 'shared/lib'
 import { Card, Container } from 'shared/ui'
+import { useSelector } from 'react-redux'
+import { nextDaySelector, scheduleSelector } from 'shared/store/schedule/scheduleSlice'
+import { busStopSelector, directionSelector } from 'shared/store/busStop/busStopInfoSlice'
+import { selectStyles } from 'shared/ui/SelectStyles'
+import { TimeStamp } from 'shared/ui/TimeStamp'
+import { OtherTime } from 'shared/ui/OtherTime'
 
 export const OtherTimeBusses = () => {
-	const { nextDay, busStop, SCHEDULE, direction } = useScheduleContext()
+	const busStop = useSelector(busStopSelector)
+	const nextDay = useSelector(nextDaySelector)
+	const SCHEDULE = useSelector(scheduleSelector)
+	const direction = useSelector(directionSelector)
+
 	const { t } = useTranslation()
 
 	const DaysOptions = [

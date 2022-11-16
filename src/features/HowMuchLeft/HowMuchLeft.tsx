@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import SVG from 'react-inlinesvg'
 import { useTranslation } from 'react-i18next'
 
-import { ITime } from 'widget/Schedule/types/ITime'
-import { StopKeys } from 'widget/Schedule/types/Stops'
+import { ITime } from 'shared/store/timeLeft/ITime'
+import { StopKeys } from 'shared/store/busStop/Stops'
 import NextBus from './img/next-bus.svg'
 import Pumpkin from './img/pumpkin.svg'
 import EvilFace from './img/evil-face.svg'
@@ -13,7 +13,7 @@ import { ImageWrapper } from '../../shared/ui/ImageWrapper'
 import { SelectBusStopText } from 'entities/SelectBusStopText'
 
 import { Holiday } from 'entities/Holiday'
-import { IHoliday } from 'widget/Schedule/types/IHolidays'
+import { IHoliday } from 'shared/store/holidays/IHolidays'
 import { InlineOptions } from 'shared/ui/InlineOptions'
 import { ComplainType } from 'features/Complains'
 
@@ -26,7 +26,7 @@ import {
 	TextWrapper,
 } from './styled'
 import { useTypedSelector } from 'shared/lib'
-import { isHalloween } from 'App/model/selectors/isHalloween'
+import { isHalloween } from 'shared/store/app/selectors/isHalloween'
 
 const SIZE = 45
 const COMPLAIN_DISAPPEAR_MS = 200000
