@@ -13,8 +13,8 @@ import {
 	ComplainsContainer,
 	ComplainsLabel,
 	InfoText,
-	PopupContent,
 } from './styled'
+import { PopupContent } from "../../../shared/ui/Popup/PopupContent"
 import { BottomSheet } from 'react-spring-bottom-sheet'
 
 export const Complains = () => (
@@ -27,7 +27,6 @@ function ComplainsConent() {
 	const [isOpen, setIsOpen] = useState(false)
 
 	const { complains } = useComplainsContext()
-	const contentRef = React.useRef(null)
 
 	const latestTime = useMemo(() => {
 		if (complains.length === 0) return 'сегодня ни одной жалобы'
@@ -49,7 +48,7 @@ function ComplainsConent() {
 					defaultSnap={({ maxHeight }) => maxHeight / 2}
 					snapPoints={({ maxHeight }) => [maxHeight - maxHeight / 10, maxHeight / 4, maxHeight * 0.6]}
 				>
-					<PopupContent ref={contentRef}>
+					<PopupContent>
 						<InfoText>
 							Жалобы попадают автоматически после выбора опции «Приехал раньше» или «Приехал позже».
 							Кнопки появлюятся в секции Остановка при выбранной остановке.
