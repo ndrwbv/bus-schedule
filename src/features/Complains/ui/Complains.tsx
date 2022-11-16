@@ -14,16 +14,10 @@ import {
 	ComplainsLabel,
 	InfoText,
 } from './styled'
-import { PopupContent } from "../../../shared/ui/Popup/PopupContent"
+import { PopupContent } from '../../../shared/ui/Popup/PopupContent'
 import { BottomSheet } from 'react-spring-bottom-sheet'
 
-export const Complains = () => (
-	<ComplainsProvider>
-		<ComplainsConent />
-	</ComplainsProvider>
-)
-
-function ComplainsConent() {
+export const Complains = () => {
 	const [isOpen, setIsOpen] = useState(false)
 
 	const { complains } = useComplainsContext()

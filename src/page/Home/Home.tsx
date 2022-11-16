@@ -23,6 +23,7 @@ import { LeaveFeedbackButton } from 'features/LeaveFeedbackButton'
 import { OtherTimeBusses } from 'features/OtherTimeBuses'
 import { MainLayout } from 'shared/ui/MainLayout'
 import useSchedule from 'shared/store/schedule/useSchedule'
+import ComplainsProvider from 'features/Complains/model/ComplainsContext'
 
 export const Home = () => {
 	useSchedule()
@@ -32,21 +33,22 @@ export const Home = () => {
 	// const focusRef = useRef<HTMLButtonElement>(null)
 
 	return (
-		<HomeContainer>
-			<HeaderContainer>
-				<HeaderInner>
-					<Logo />
+		<ComplainsProvider>
+			<HomeContainer>
+				<HeaderContainer>
+					<HeaderInner>
+						<Logo />
 
-					<HeaderActions>
-						<HeaderScore />
-						<Share />
-					</HeaderActions>
-				</HeaderInner>
-			</HeaderContainer>
+						<HeaderActions>
+							<HeaderScore />
+							<Share />
+						</HeaderActions>
+					</HeaderInner>
+				</HeaderContainer>
 
-			<Map />
+				<Map />
 
-			{/* <BottomSheet
+				{/* <BottomSheet
 					open
 					skipInitialTransition
 					// sibling={<CloseExample className="z-10" />}
@@ -57,29 +59,30 @@ export const Home = () => {
 					expandOnContentDrag={expandOnContentDrag}
 					blocking={false}
 				> */}
-			<MainLayout>
-				<Info />
-				<DirectionChanger />
-				<BusStop />
+				<MainLayout>
+					<Info />
+					<DirectionChanger />
+					<BusStop />
 
-				<Complains />
+					<Complains />
 
-				<TranslationLink />
+					<TranslationLink />
 
-				<FavoriteStops />
+					<FavoriteStops />
 
-				<TodaysBuses />
-				<LeaveFeedbackButton />
+					<TodaysBuses />
+					<LeaveFeedbackButton />
 
-				<OtherTimeBusses />
+					<OtherTimeBusses />
 
-				<Container>
-					<WriteMe />
-				</Container>
-			</MainLayout>
+					<Container>
+						<WriteMe />
+					</Container>
+				</MainLayout>
 
-			<Footer />
-			{/* </BottomSheet> */}
-		</HomeContainer>
+				<Footer />
+				{/* </BottomSheet> */}
+			</HomeContainer>
+		</ComplainsProvider>
 	)
 }
