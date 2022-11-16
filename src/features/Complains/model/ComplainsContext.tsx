@@ -1,5 +1,5 @@
-import useComplains, { IComplains, IComplainsResponse } from 'features/Complains/model/useComplains'
 import React, { useContext, createContext } from 'react'
+import useComplains, { IComplains, IComplainsResponse } from '../model/useComplains'
 
 const DEFAULT_PROPS = {
 	complains: [],

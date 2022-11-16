@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { RootState } from 'App/model/configureStore'
+import { RootState } from 'shared/store/app/configureStore'
 import { ITime } from './ITime'
 
 export const DEFAULT_LEFT = {

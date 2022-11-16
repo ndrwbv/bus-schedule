@@ -7,7 +7,7 @@ import { TelegramButton } from 'shared/ui'
 import { useTranslation } from 'react-i18next'
 import { HandWrapper } from './styled'
 
-const WriteMe = () => {
+export const WriteMe = () => {
 	const { t } = useTranslation()
 
 	return (
@@ -26,5 +26,3 @@ const WriteMe = () => {
 		</Card>
 	)
 }
-
-export default WriteMe

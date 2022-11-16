@@ -1,5 +1,5 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit'
-import { store } from '../../../App/model/configureStore'
+import { store } from 'shared/store/app/configureStore'
 import { setHolidays, setTodayHoliday } from './holidaysSlice'
 import { getCurrentHoliday } from './getCurrentHoliday'
 import { setCurrentDayKey } from '../schedule/scheduleSlice'

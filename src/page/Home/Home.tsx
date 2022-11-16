@@ -1,13 +1,12 @@
 import { Logo } from 'entities/Logo'
-import { HeaderInner, HeaderContainer, HeaderActions } from 'entities/Logo/ui/styled'
+import { HeaderInner, HeaderContainer, HeaderActions } from 'entities/Logo'
 
 import { Container } from 'shared/ui/common'
 
-import WriteMe from 'entities/WriteMe/WriteMe'
+import { WriteMe } from 'entities/WriteMe'
 
-import { AppContainer } from 'App/styled'
+import { HomeContainer } from './styled'
 import { Share } from '../../features/Share'
-import ComplainsProvider from 'features/Complains/model/ComplainsContext'
 import { HeaderScore } from 'features/HeaderScore'
 import { Footer } from 'shared/ui/Footer'
 import { Map } from 'widget/Map'
@@ -16,7 +15,7 @@ import { Map } from 'widget/Map'
 import { Info } from 'features/Info'
 import { DirectionChanger } from 'features/DirectionChanger'
 import { BusStop } from 'widget/BusStop'
-import Complains from 'features/Complains/ui/Complains'
+import { Complains } from 'features/Complains'
 import { TranslationLink } from 'entities/TranslationLink'
 import { FavoriteStops } from 'features/FavoriteStops'
 import { TodaysBuses } from 'widget/TodaysBuses'
@@ -33,22 +32,21 @@ export const Home = () => {
 	// const focusRef = useRef<HTMLButtonElement>(null)
 
 	return (
-		<ComplainsProvider>
-			<AppContainer>
-				<HeaderContainer>
-					<HeaderInner>
-						<Logo />
+		<HomeContainer>
+			<HeaderContainer>
+				<HeaderInner>
+					<Logo />
 
-						<HeaderActions>
-							<HeaderScore />
-							<Share />
-						</HeaderActions>
-					</HeaderInner>
-				</HeaderContainer>
+					<HeaderActions>
+						<HeaderScore />
+						<Share />
+					</HeaderActions>
+				</HeaderInner>
+			</HeaderContainer>
 
-				<Map />
+			<Map />
 
-				{/* <BottomSheet
+			{/* <BottomSheet
 					open
 					skipInitialTransition
 					// sibling={<CloseExample className="z-10" />}
@@ -59,30 +57,29 @@ export const Home = () => {
 					expandOnContentDrag={expandOnContentDrag}
 					blocking={false}
 				> */}
-					<MainLayout>
-						<Info />
-						<DirectionChanger />
-						<BusStop />
+			<MainLayout>
+				<Info />
+				<DirectionChanger />
+				<BusStop />
 
-						<Complains />
+				<Complains />
 
-						<TranslationLink />
+				<TranslationLink />
 
-						<FavoriteStops />
+				<FavoriteStops />
 
-						<TodaysBuses />
-						<LeaveFeedbackButton />
+				<TodaysBuses />
+				<LeaveFeedbackButton />
 
-						<OtherTimeBusses />
+				<OtherTimeBusses />
 
-						<Container>
-							<WriteMe />
-						</Container>
-					</MainLayout>
+				<Container>
+					<WriteMe />
+				</Container>
+			</MainLayout>
 
-					<Footer />
-				{/* </BottomSheet> */}
-			</AppContainer>
-		</ComplainsProvider>
+			<Footer />
+			{/* </BottomSheet> */}
+		</HomeContainer>
 	)
 }

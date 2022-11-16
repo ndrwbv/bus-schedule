@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { LeftToString } from 'features/HowMuchLeft/HowMuchLeft'
+import { LeftToString } from 'features/HowMuchLeft'
 import { GameLink, GameUIContainer, Title } from 'page/Game/common'
 import RecordTable from 'page/Game/RecordTable/RecordTable'
 

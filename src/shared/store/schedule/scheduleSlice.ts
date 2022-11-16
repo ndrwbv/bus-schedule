@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { RootState } from 'App/model/configureStore'
+import { RootState } from 'shared/store/app/configureStore'
 import { SCHEDULE } from 'shared/common'
 import { getNextDay } from "./getNextDay"
 import { ISchedule } from './ISchedule'

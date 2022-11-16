@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import ComplainMessage from './ComplainsMessage'
-import { useComplainsContext } from '../model/ComplainsContext'
+import ComplainsProvider, { useComplainsContext } from '../model/ComplainsContext'
 import { Card, Container, MiniButton } from 'shared/ui/common'
 
 import { HeaderText } from 'shared/ui/Header/styled'
@@ -17,7 +17,13 @@ import {
 } from './styled'
 import { BottomSheet } from 'react-spring-bottom-sheet'
 
-function Complains() {
+export const Complains = () => (
+	<ComplainsProvider>
+		<ComplainsConent />
+	</ComplainsProvider>
+)
+
+function ComplainsConent() {
 	const [isOpen, setIsOpen] = useState(false)
 
 	const { complains } = useComplainsContext()
@@ -74,5 +80,3 @@ function Complains() {
 		</Container>
 	)
 }
-
-export default Complains

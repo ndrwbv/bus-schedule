@@ -26,7 +26,7 @@ import {
 	TextWrapper,
 } from './styled'
 import { useTypedSelector } from 'shared/lib'
-import { isHalloween } from 'App/model/selectors/isHalloween'
+import { isHalloween } from 'shared/store/app/selectors/isHalloween'
 
 const SIZE = 45
 const COMPLAIN_DISAPPEAR_MS = 200000

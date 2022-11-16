@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
-import featureToggle from 'App/model/featureToggleSlice'
+import featureToggle from './featureToggleSlice'
 import busStopInfo from 'shared/store/busStop/busStopInfoSlice'
 import scheduleSlice from 'shared/store/schedule/scheduleSlice'
 import favoriteStops from 'features/FavoriteStops/model/favoriteStopsSlice'
@@ -8,7 +8,7 @@ import timeLeftSlice from 'shared/store/timeLeft/timeLeftSlice'
 import {
 	changeBusStopOnBusStopChange,
 	changeBusStopOnDirection,
-} from '../../shared/store/busStop/changeBusStopIfNotInDirectionMiddleware'
+} from 'shared/store/busStop/changeBusStopIfNotInDirectionMiddleware'
 import { holidaysSetter } from 'shared/store/holidays/holidaysMiddleware'
 import { infoApi } from 'features/Info/model/info'
 

@@ -2,7 +2,7 @@ import { createListenerMiddleware } from '@reduxjs/toolkit';
 import { getDirectionKeys } from 'shared/store/busStop/getDirectionKeys';
 import { setBusStop, setDirection } from 'shared/store/busStop/busStopInfoSlice';
 import { StopKeys } from 'shared/store/busStop/Stops';
-import { RootState, store } from '../../../App/model/configureStore';
+import { RootState, store } from 'shared/store/app/configureStore';
 
 // Create the middleware instance and methods
 export const changeBusStopOnDirection = createListenerMiddleware();

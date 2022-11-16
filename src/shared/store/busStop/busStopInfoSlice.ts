@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { RootState } from 'App/model/configureStore'
+import { RootState } from 'shared/store/app/configureStore'
 import { StopsInOptions } from './const/stopsInOptions'
 import { StopsOutOptions } from './const/stopsOutOptions'
 import { DirectionsNew, IOption, StopKeys, StopKeysIn, StopKeysOut } from './Stops'

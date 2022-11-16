@@ -12,8 +12,8 @@ import {
 	WebWrapper,
 } from './styled'
 import { AndrewLytics, useTypedSelector } from 'shared/lib'
-import { isHalloween } from 'App/model/selectors/isHalloween'
-import { useEffect, useState } from 'react'
+import { isHalloween } from 'shared/store/app/selectors/isHalloween'
+import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { directionSelector, setDirection } from 'shared/store/busStop/busStopInfoSlice'
 import { DirectionsNew } from 'shared/store/busStop/Stops'

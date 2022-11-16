@@ -5,7 +5,6 @@ import QRCode from 'react-qr-code'
 import QRCodeIcon from '../img/qr-code-icon.svg'
 import CopyIcon from '../img/copy-icon.svg'
 
-import { Popup, PopupWrapper } from 'shared/ui'
 import { copyTextToClipboard } from '../helpers/clickToClipBoard'
 
 import { AndrewLytics } from 'shared/lib'

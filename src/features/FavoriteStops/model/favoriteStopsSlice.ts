@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { RootState } from 'App/model/configureStore'
+import { RootState } from 'shared/store/app/configureStore'
 import { StopKeys } from 'shared/store/busStop/Stops'
 import { getFavoriteBusStop } from '../helpers/getFavoriteBusStop'
 
