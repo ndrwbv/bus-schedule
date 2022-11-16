@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { calculateHowMuchIsLeft } from "shared/lib/time/calculateHowMuchIsLeft"
+import { calculateHowMuchIsLeft } from 'shared/lib/time/calculateHowMuchIsLeft'
 import { findClosesTime } from 'shared/lib/time/findClosesTime'
 import { findClosesTimeArray } from 'shared/lib/time/findClosesTimeArray'
 import useSecondMinuteUpdater from 'shared/store/timeLeft/useEverySecondUpdater'
@@ -16,7 +16,7 @@ export const useTimeLeftUpdater = () => {
 	const shedule = useSelector(scheduleSelector)
 
 	const dispatch = useDispatch()
-	const _everyMinuteUpdate = useSecondMinuteUpdater()
+	const _everySecondUpdate = useSecondMinuteUpdater()
 
 	useEffect(() => {
 		if (!busStop) return
@@ -27,12 +27,12 @@ export const useTimeLeftUpdater = () => {
 			dispatch(setClosestTimeArray(findClosesTimeArray(shedule[direction][currentDayKey][busStop])))
 			dispatch(setClosestTime(_closestTime || ''))
 		}
-	}, [_everyMinuteUpdate, closestTime, busStop, direction, shedule, currentDayKey])
+	}, [_everySecondUpdate, closestTime, busStop, direction, shedule, currentDayKey])
 
 	// calculation how much left
 	useEffect(() => {
 		const left = calculateHowMuchIsLeft(closestTime)
 
 		dispatch(setLeft(left))
-	}, [_everyMinuteUpdate, closestTime])
+	}, [closestTime])
 }
