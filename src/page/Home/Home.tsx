@@ -1,5 +1,5 @@
 import { Logo } from 'entities/Logo'
-import { HeaderInner, HeaderContainer, HeaderActions } from 'entities/Logo'
+import { HeaderInnerStyled, HeaderContainerStyled, HeaderActionsStyled } from 'entities/Logo'
 
 import { Container } from 'shared/ui/common'
 
@@ -35,16 +35,16 @@ export const Home = () => {
 	return (
 		<ComplainsProvider>
 			<HomeContainer>
-				<HeaderContainer>
-					<HeaderInner>
+				<HeaderContainerStyled>
+					<HeaderInnerStyled>
 						<Logo />
 
-						<HeaderActions>
+						<HeaderActionsStyled>
 							<HeaderScore />
 							<Share />
-						</HeaderActions>
-					</HeaderInner>
-				</HeaderContainer>
+						</HeaderActionsStyled>
+					</HeaderInnerStyled>
+				</HeaderContainerStyled>
 
 				<Map />
 

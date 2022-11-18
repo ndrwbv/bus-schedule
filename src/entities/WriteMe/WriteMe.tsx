@@ -5,7 +5,7 @@ import { Card, CardHeader } from 'shared/ui/common'
 import Write from './img/write.svg'
 import { TelegramButton } from 'shared/ui'
 import { useTranslation } from 'react-i18next'
-import { HandWrapper } from './styled'
+import { HandWrapperStyled } from './styled'
 
 export const WriteMe = () => {
 	const { t } = useTranslation()
@@ -20,9 +20,9 @@ export const WriteMe = () => {
 
 			<TelegramButton />
 
-			<HandWrapper>
+			<HandWrapperStyled>
 				<SVG src={Write} width={109} height={100} uniquifyIDs={true} />
-			</HandWrapper>
+			</HandWrapperStyled>
 		</Card>
 	)
 }

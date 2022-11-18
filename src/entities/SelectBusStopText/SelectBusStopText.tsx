@@ -1,13 +1,13 @@
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
-const TextContainer = styled.p`
+const TextContainerStyled = styled.p`
 	opacity: 0.5;
 	font-size: 18px;
 `
 
-export const SelectBusStopText = () => {
+export const SelectBusStopText: React.FC = () => {
 	const { t } = useTranslation()
 
-	return <TextContainer>{t('Select bus stop to see schedule')}</TextContainer>
+	return <TextContainerStyled>{t(`Select bus stop to see schedule`)}</TextContainerStyled>
 }

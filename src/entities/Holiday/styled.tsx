@@ -1,11 +1,11 @@
 import styled from 'styled-components'
 
-export const HolidayContainer = styled.div`
+export const HolidayContainerStyled = styled.div`
 	position: relative;
 	display: flex;
-	margin: 12px 0  0 20px;
+	margin: 12px 0 0 20px;
 	color: #454545;
-    font-weight: 600;
+	font-weight: 600;
 
 	&::before {
 		content: '';

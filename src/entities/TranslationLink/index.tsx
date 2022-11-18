@@ -23,13 +23,13 @@ export const TranslationLinkStyled = styled.a`
 	}
 `
 
-export const TranslationLink = () => {
+export const TranslationLink: React.FC = () => {
 	return (
 		<Container>
 			<TranslationLinkStyled
 				href={TRANSLATION_LINK}
 				target="_blank"
-				onClick={() => AndrewLytics('clickTranslation')}
+				onClick={() => AndrewLytics(`clickTranslation`)}
 			>
 				Онлайн трансляция с моста
 			</TranslationLinkStyled>

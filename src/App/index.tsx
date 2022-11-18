@@ -1,21 +1,17 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-
-import { Home } from '../page/Home/Home'
-
-import { initGA } from 'shared/lib'
-import { configureI18next, YM } from 'shared/lib'
-
 import Game from 'page/Game/Game'
 import Intro from 'page/Game/Intro/Intro'
+import { configureI18next, initGA, YM } from 'shared/lib'
 
 import 'react-spring-bottom-sheet/dist/style.css'
 import 'shared/theme/styles/index.css'
+import { Home } from '../page/Home/Home'
 
 initGA()
 
 configureI18next()
 
-export const Root = () => (
+export const Root: React.FC = () => (
 	<>
 		<BrowserRouter>
 			<Routes>

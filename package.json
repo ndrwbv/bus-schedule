@@ -32,7 +32,7 @@
 		"ci-test": "react-scripts test --watchAll=false",
 		"eject": "react-scripts eject",
 		"deploy": "echo 'severbus.ru' > ./build/CNAME && gh-pages -d build",
-		"lint": "eslint ."
+		"lint": "eslint --fix --ext .ts,.tsx ."
 	},
 	"eslintConfig": {
 		"extends": [

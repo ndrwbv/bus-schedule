@@ -1,5 +1,5 @@
-import { HolidayContainer } from './styled'
+import { HolidayContainerStyled } from './styled'
 
-export const Holiday = () => {
-	return <HolidayContainer>праздничное расписание</HolidayContainer>
+export const Holiday: React.FC = () => {
+	return <HolidayContainerStyled>праздничное расписание</HolidayContainerStyled>
 }

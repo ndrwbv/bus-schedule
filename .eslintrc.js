@@ -10,6 +10,7 @@ module.exports = {
 	plugins: [`optimize-regex`, `simple-import-sort`, `styled-components-varname`],
 	ignorePatterns: [`**/dist/**/*.*`],
 	rules: {
+		'react/react-in-jsx-scope': `off`,
 		'import/prefer-default-export': [`off`],
 		'import/no-default-export': [`error`],
 		'react/function-component-definition': [
@@ -178,15 +179,7 @@ module.exports = {
 	},
 	settings: {
 		react: {
-			version: 'detect',
+			version: `detect`,
 		},
 	},
-	overrides: [
-		{
-			files: [`*.json`],
-			parserOptions: {
-				project: false,
-			},
-		},
-	],
 }

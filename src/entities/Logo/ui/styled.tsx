@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-export const HeaderInner = styled.div`
+export const HeaderInnerStyled = styled.div`
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -10,7 +10,7 @@ export const HeaderInner = styled.div`
 	width: 100%;
 `
 
-export const HeaderContainer = styled.nav`
+export const HeaderContainerStyled = styled.nav`
 	/* position: absolute;
 	top: 0;
 	left: 0;
@@ -23,7 +23,7 @@ export const HeaderContainer = styled.nav`
 	width: 100%;
 `
 
-export const HeaderActions = styled.div`
+export const HeaderActionsStyled = styled.div`
 	position: relative;
 	display: flex;
 	align-items: center;
