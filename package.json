@@ -31,7 +31,8 @@
 		"test": "react-scripts test",
 		"ci-test": "react-scripts test --watchAll=false",
 		"eject": "react-scripts eject",
-		"deploy": "echo 'severbus.ru' > ./build/CNAME && gh-pages -d build"
+		"deploy": "echo 'severbus.ru' > ./build/CNAME && gh-pages -d build",
+		"lint": "eslint ."
 	},
 	"eslintConfig": {
 		"extends": [
@@ -58,8 +59,27 @@
 		"@types/react": "^18.0.25",
 		"@types/react-dom": "^18.0.9",
 		"@types/styled-components": "^5.1.26",
+		"@typescript-eslint/eslint-plugin": "^5.43.0",
+		"@typescript-eslint/parser": "^5.43.0",
+		"eslint": "^8.27.0",
+		"eslint-config-airbnb": "^19.0.4",
+		"eslint-config-airbnb-typescript": "^17.0.0",
+		"eslint-config-prettier": "^8.5.0",
+		"eslint-plugin-import": "^2.26.0",
+		"eslint-plugin-jest": "^27.1.5",
+		"eslint-plugin-json": "^3.1.0",
+		"eslint-plugin-jsx-a11y": "^6.6.1",
+		"eslint-plugin-optimize-regex": "^1.2.1",
+		"eslint-plugin-prettier": "^4.2.1",
+		"eslint-plugin-promise": "^6.1.1",
+		"eslint-plugin-react": "^7.31.10",
+		"eslint-plugin-react-hooks": "^4.6.0",
+		"eslint-plugin-simple-import-sort": "^8.0.0",
+		"eslint-plugin-sonarjs": "^0.16.0",
+		"eslint-plugin-styled-components-varname": "^1.0.1",
 		"gh-pages": "^4.0.0",
 		"i18next": "^22.0.5",
+		"prettier": "^2.7.1",
 		"react-ga": "^3.3.1",
 		"react-i18next": "^12.0.0"
 	}
