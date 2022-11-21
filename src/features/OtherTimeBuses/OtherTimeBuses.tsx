@@ -1,20 +1,21 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { useMemo, useState } from 'react'
-import Select from 'react-select'
-
-import { Header } from 'shared/ui/Header/Header'
-import { SelectBusStopText } from '../../entities/SelectBusStopText'
-import { IOption } from 'shared/store/busStop/Stops'
 import { useTranslation } from 'react-i18next'
-import { AndrewLytics } from 'shared/lib'
-import { Card, Container } from 'shared/ui'
 import { useSelector } from 'react-redux'
-import { nextDaySelector, scheduleSelector } from 'shared/store/schedule/scheduleSlice'
+import Select from 'react-select'
+import { AndrewLytics } from 'shared/lib'
 import { busStopSelector, directionSelector } from 'shared/store/busStop/busStopInfoSlice'
+import { IOption } from 'shared/store/busStop/Stops'
+import { nextDaySelector, scheduleSelector } from 'shared/store/schedule/scheduleSlice'
+import { Card, Container } from 'shared/ui'
+import { Header } from 'shared/ui/Header/Header'
+import { OtherTime } from 'shared/ui/OtherTime'
 import { selectStyles } from 'shared/ui/SelectStyles'
 import { TimeStamp } from 'shared/ui/TimeStamp'
-import { OtherTime } from 'shared/ui/OtherTime'
 
-export const OtherTimeBusses = () => {
+import { SelectBusStopText } from '../../entities/SelectBusStopText'
+
+export const OtherTimeBusses: React.FC = () => {
 	const busStop = useSelector(busStopSelector)
 	const nextDay = useSelector(nextDaySelector)
 	const SCHEDULE = useSelector(scheduleSelector)
@@ -24,35 +25,35 @@ export const OtherTimeBusses = () => {
 
 	const DaysOptions = [
 		{
-			label: t('Tomorrow'),
+			label: t(`Tomorrow`),
 			value: nextDay,
 		},
 		{
-			label: t('Weekday'),
+			label: t(`Weekday`),
 			value: 1,
 		},
 		{
-			label: t('Saturday'),
+			label: t(`Saturday`),
 			value: 6,
 		},
 		{
-			label: t('Sunday'),
+			label: t(`Sunday`),
 			value: 0,
 		},
 	]
 
 	const [busOption, setBusOption] = useState<IOption<number>>(DaysOptions[0])
 
-	const handleChange = (e: IOption<number> | null) => {
+	const handleChange = (e: IOption<number> | null): void => {
 		if (!e) return
-		AndrewLytics('otherSchedule')
+		AndrewLytics(`otherSchedule`)
 		setBusOption(e)
 	}
 
 	const renderOtherTimeContent = useMemo(() => {
 		return busStop ? (
-			SCHEDULE[direction][busOption.value][busStop]?.map((d, index) => (
-				<TimeStamp key={`${d}-${index}`}>{d}</TimeStamp>
+			SCHEDULE[direction][busOption.value][busStop].map(timeKeys => (
+				<TimeStamp key={`${timeKeys}`}>{timeKeys}</TimeStamp>
 			))
 		) : (
 			<SelectBusStopText />
@@ -62,7 +63,7 @@ export const OtherTimeBusses = () => {
 	return (
 		<Container>
 			<Card>
-				<Header text={t('Buses for')}>
+				<Header text={t(`Buses for`)}>
 					<Select
 						isSearchable={false}
 						styles={selectStyles}

@@ -1,26 +1,26 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import SVG from 'react-inlinesvg'
-import Web from '../img/web.svg'
-
-import { Card, Container } from 'shared/ui'
-import {
-	DirectionContainer,
-	DirectionPlaceholder,
-	DirectionText,
-	GoButton,
-	GoButtonContainer,
-	WebWrapper,
-} from './styled'
+import { useDispatch, useSelector } from 'react-redux'
 import { AndrewLytics, useTypedSelector } from 'shared/lib'
 import { isHalloween } from 'shared/store/app/selectors/isHalloween'
-import { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { directionSelector, setDirection } from 'shared/store/busStop/busStopInfoSlice'
 import { DirectionsNew } from 'shared/store/busStop/Stops'
+import { Card, Container } from 'shared/ui'
+
+import Web from '../img/web.svg'
 import { useUrlDirection } from '../model/useUrlDirection'
+import {
+	DirectionContainerStyled,
+	DirectionPlaceholderStyled,
+	DirectionTextStyled,
+	GoButtonContainerStyled,
+	GoButtonStyled,
+	WebWrapper,
+} from './styled'
 
 const SIZE = 43
-export const DirectionChanger = () => {
+export const DirectionChanger = (): JSX.Element => {
 	const { setQueryParams } = useUrlDirection()
 	const direction = useSelector(directionSelector)
 	const dispatch = useDispatch()
@@ -29,20 +29,20 @@ export const DirectionChanger = () => {
 
 	const [isWebVisible, setIsWebVisible] = useState(true)
 
-	const handleChangeDirection = (_direction: DirectionsNew) => {
-		const directionToChange = _direction as DirectionsNew
+	const handleChangeDirection = (value: DirectionsNew): void => {
+		const directionToChange = value
 
 		dispatch(setDirection(directionToChange))
 		setQueryParams(directionToChange)
 
-		AndrewLytics('changeDirection')
+		AndrewLytics(`changeDirection`)
 	}
 
-	const handleWebClick = () => {
+	const handleWebClick = (): void => {
 		setIsWebVisible(false)
 	}
 
-	const onDirectionClick = () => {
+	const onDirectionClick = (): void => {
 		handleChangeDirection(direction === DirectionsNew.in ? DirectionsNew.out : DirectionsNew.in)
 	}
 
@@ -51,22 +51,22 @@ export const DirectionChanger = () => {
 			<Card>
 				{isHalloweenMode && isWebVisible && (
 					<WebWrapper w={SIZE} h={SIZE} onClick={handleWebClick}>
-						<SVG src={Web} width={SIZE} height={SIZE} uniquifyIDs={true} />
+						<SVG src={Web} width={SIZE} height={SIZE} uniquifyIDs />
 					</WebWrapper>
 				)}
 
-				<GoButtonContainer>
-					<DirectionContainer>
-						<DirectionPlaceholder>Направление</DirectionPlaceholder>
-						<DirectionText>
-							{direction === 'in' ? t('In north park') : t('Out of north park')}
-						</DirectionText>
-					</DirectionContainer>
+				<GoButtonContainerStyled>
+					<DirectionContainerStyled>
+						<DirectionPlaceholderStyled>Направление</DirectionPlaceholderStyled>
+						<DirectionTextStyled>
+							{direction === `in` ? t(`In north park`) : t(`Out of north park`)}
+						</DirectionTextStyled>
+					</DirectionContainerStyled>
 
-					<GoButton active={direction === 'in'} onClick={onDirectionClick}>
-						{direction === 'in' ? t('Out of north park') : t('In north park')}
-					</GoButton>
-				</GoButtonContainer>
+					<GoButtonStyled active={direction === `in`} onClick={onDirectionClick}>
+						{direction === `in` ? t(`Out of north park`) : t(`In north park`)}
+					</GoButtonStyled>
+				</GoButtonContainerStyled>
 			</Card>
 		</Container>
 	)

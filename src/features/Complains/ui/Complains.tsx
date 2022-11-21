@@ -1,36 +1,39 @@
 import React, { useMemo, useState } from 'react'
-import ComplainMessage from './ComplainsMessage'
-import ComplainsProvider, { useComplainsContext } from '../model/ComplainsContext'
-import { Card, Container, MiniButton } from 'shared/ui/common'
-
-import { HeaderText } from 'shared/ui/Header/styled'
-import { getHumanDate } from '../helpers'
-import { AndrewLytics } from 'shared/lib'
-import {
-	ComplainCount,
-	ComplainsBlockContainer,
-	ComplainsBlockText,
-	ComplainsContainer,
-	ComplainsLabel,
-	InfoText,
-} from './styled'
-import { PopupContent } from '../../../shared/ui/Popup/PopupContent'
 import { BottomSheet } from 'react-spring-bottom-sheet'
+import { AndrewLytics } from 'shared/lib'
+import { Card, Container, MiniButton } from 'shared/ui/common'
+import { HeaderText } from 'shared/ui/Header/styled'
 
-export const Complains = () => {
+import { PopupContent } from '../../../shared/ui/Popup/PopupContent'
+import { getHumanDate } from '../helpers'
+import { useComplainsContext } from '../model/ComplainsContext'
+import { ComplainsMessage } from './ComplainsMessage'
+import {
+	ComplainCountStyled,
+	ComplainsBlockContainerStyled,
+	ComplainsBlockTextStyled,
+	ComplainsContainerStyled,
+	ComplainsLabelStyled,
+	InfoTextStyled,
+} from './styled'
+
+export const Complains: React.FC = () => {
 	const [isOpen, setIsOpen] = useState(false)
 
 	const { complains } = useComplainsContext()
 
 	const latestTime = useMemo(() => {
-		if (complains.length === 0) return 'сегодня ни одной жалобы'
+		if (complains.length === 0) return `сегодня ни одной жалобы`
 		const latest = complains[0]
-		return `последняя ${getHumanDate(latest.date)}`
+
+		const humanDate = getHumanDate(latest.date)
+
+		return `последняя ${humanDate}`
 	}, [complains])
 
-	const handleOpenComplains = () => {
+	const handleOpenComplains = (): void => {
 		setIsOpen(true)
-		AndrewLytics('openComplains')
+		AndrewLytics(`openComplains`)
 	}
 
 	return (
@@ -43,32 +46,32 @@ export const Complains = () => {
 					snapPoints={({ maxHeight }) => [maxHeight - maxHeight / 10, maxHeight / 4, maxHeight * 0.6]}
 				>
 					<PopupContent>
-						<InfoText>
+						<InfoTextStyled>
 							Жалобы попадают автоматически после выбора опции «Приехал раньше» или «Приехал позже».
 							Кнопки появлюятся в секции Остановка при выбранной остановке.
-						</InfoText>
+						</InfoTextStyled>
 						{complains.map(c => (
-							<ComplainMessage {...c} key={c.id} />
+							<ComplainsMessage {...c} key={c.id} />
 						))}
 					</PopupContent>
 				</BottomSheet>
 
-				<ComplainsContainer>
+				<ComplainsContainerStyled>
 					<div>
-						<ComplainsBlockContainer>
-							<ComplainsBlockText>
-								Жалобы <ComplainCount>{complains.length}</ComplainCount>
-							</ComplainsBlockText>
-							<ComplainsLabel>{latestTime}</ComplainsLabel>
-						</ComplainsBlockContainer>
+						<ComplainsBlockContainerStyled>
+							<ComplainsBlockTextStyled>
+								Жалобы <ComplainCountStyled>{complains.length}</ComplainCountStyled>
+							</ComplainsBlockTextStyled>
+							<ComplainsLabelStyled>{latestTime}</ComplainsLabelStyled>
+						</ComplainsBlockContainerStyled>
 
-						<HeaderText></HeaderText>
+						<HeaderText />
 					</div>
 
 					<MiniButton disabled={complains.length === 0} onClick={handleOpenComplains}>
 						Смотреть
 					</MiniButton>
-				</ComplainsContainer>
+				</ComplainsContainerStyled>
 			</Card>
 		</Container>
 	)

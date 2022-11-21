@@ -1,1 +1,1 @@
-export const TIME_ZONE = 'Asia/Tomsk';
+export const TIME_ZONE = `Asia/Tomsk`

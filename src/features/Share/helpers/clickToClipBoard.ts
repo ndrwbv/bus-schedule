@@ -1,38 +1,44 @@
-export function fallbackCopyTextToClipboard(text: string) {
-	var textArea = document.createElement('textarea')
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
+/* eslint-disable no-console */
+/* eslint-disable promise/always-return */
+/* eslint-disable func-names */
+/* eslint-disable promise/catch-or-return */
+export const fallbackCopyTextToClipboard = (text: string): void => {
+	const textArea = document.createElement(`textarea`)
 	textArea.value = text
 
 	// Avoid scrolling to bottom
-	textArea.style.top = '0'
-	textArea.style.left = '0'
-	textArea.style.position = 'fixed'
+	textArea.style.top = `0`
+	textArea.style.left = `0`
+	textArea.style.position = `fixed`
 
 	document.body.appendChild(textArea)
 	textArea.focus()
 	textArea.select()
 
 	try {
-		var successful = document.execCommand('copy')
-		var msg = successful ? 'successful' : 'unsuccessful'
-		console.log('Fallback: Copying text command was ' + msg)
+		const successful = document.execCommand(`copy`)
+		const msg = successful ? `successful` : `unsuccessful`
+		console.log(`Fallback: Copying text command was ${msg}`)
 	} catch (err) {
-		console.error('Fallback: Oops, unable to copy', err)
+		console.error(`Fallback: Oops, unable to copy`, err)
 	}
 
 	document.body.removeChild(textArea)
 }
 
-export function copyTextToClipboard(text: string) {
+export const copyTextToClipboard = (text: string): void => {
 	if (!navigator.clipboard) {
 		fallbackCopyTextToClipboard(text)
+
 		return
 	}
 	navigator.clipboard.writeText(text).then(
 		function () {
-			console.log('Async: Copying to clipboard was successful!')
+			console.log(`Async: Copying to clipboard was successful!`)
 		},
 		function (err) {
-			console.error('Async: Could not copy text: ', err)
+			console.error(`Async: Could not copy text: `, err)
 		},
 	)
 }

@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-export const HowMuchLeftContainer = styled.div<{ isFancy: boolean; defaultColor: string }>`
+export const HowMuchLeftContainerStyled = styled.div<{ isFancy: boolean; defaultColor: string }>`
 	display: flex;
 	align-items: center;
 	flex-direction: column;
@@ -8,33 +8,33 @@ export const HowMuchLeftContainer = styled.div<{ isFancy: boolean; defaultColor:
 	padding: 18px 17px;
 	background: ${props =>
 		props.isFancy
-			? 'linear-gradient(93.72deg, #5020CA 9.83%, #5020CA 9.84%, #8365E0 96.15%);'
+			? `linear-gradient(93.72deg, #5020CA 9.83%, #5020CA 9.84%, #8365E0 96.15%);`
 			: props.defaultColor};
-	color: ${props => (props.isFancy ? 'white' : 'black')};
+	color: ${props => (props.isFancy ? `white` : `black`)};
 	border-radius: 13px;
 `
 
-export const NextBusContainer = styled.div`
+export const NextBusContainerStyled = styled.div`
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 `
 
-export const FastReplyContainer = styled.div`
+export const FastReplyContainerStyled = styled.div`
 	margin-top: 18px;
 	width: 100%;
 `
 
-export const FastReplyButton = styled.button`
+export const FastReplyButtonStyled = styled.button`
 	background: #e4f5d6;
 	border-radius: 13px;
 	color: black;
 	padding: 15px;
 	width: 100%;
 `
-export const TextWrapper = styled.div``
+export const TextWrapperStyled = styled.div``
 
-export const HighLighted = styled.span`
+export const HighLightedStyled = styled.span`
 	font-weight: bold;
 	/* animation-duration: 2s;
 	animation-name: flashing;
@@ -55,11 +55,11 @@ export const HighLighted = styled.span`
 	} */
 `
 
-export const BusEstimation = styled.div`
+export const BusEstimationStyled = styled.div`
 	font-size: 18px;
 	margin-left: 19px;
 `
 
-export const ComplainOptionContainer = styled.div`
+export const ComplainOptionContainerStyled = styled.div`
 	margin-top: 12px;
 `

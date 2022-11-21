@@ -2,13 +2,14 @@ import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { AndrewLytics } from 'shared/lib'
-import { CustomButton } from 'shared/ui'
 import { busStopSelector } from 'shared/store/busStop/busStopInfoSlice'
 import { StopKeys } from 'shared/store/busStop/Stops'
+import { CustomButton } from 'shared/ui'
+
 import { favoriteStopsSelector, saveFavoriteBusStops } from '../model/favoriteStopsSlice'
 
-export const FavoriteButton = () => {
-    const { t } = useTranslation()
+export const FavoriteButton: React.FC = () => {
+	const { t } = useTranslation()
 	const busStop = useSelector(busStopSelector)
 	const favoriteBusStops = useSelector(favoriteStopsSelector)
 	const dispatch = useDispatch()
@@ -21,8 +22,8 @@ export const FavoriteButton = () => {
 		const newStops: StopKeys[] = [busStop, ...favoriteBusStops]
 		dispatch(saveFavoriteBusStops(newStops))
 
-		AndrewLytics('addStop')
-	}, [busStop, favoriteBusStops, saveFavoriteBusStops])
+		AndrewLytics(`addStop`)
+	}, [busStop, favoriteBusStops, dispatch])
 
 	const handleRemoveFavoriteStatus = useCallback(() => {
 		if (!busStop) return
@@ -31,7 +32,7 @@ export const FavoriteButton = () => {
 
 		const newStops: StopKeys[] = favoriteBusStops.filter(stop => stop !== busStop)
 		dispatch(saveFavoriteBusStops(newStops))
-	}, [busStop, favoriteBusStops, saveFavoriteBusStops])
+	}, [busStop, favoriteBusStops, dispatch])
 
 	const isBusStopFavorite = useMemo(
 		() => (busStop ? favoriteBusStops.includes(busStop) : false),
@@ -40,11 +41,11 @@ export const FavoriteButton = () => {
 
 	return (
 		<CustomButton
-			status={isBusStopFavorite ? 'danger' : 'primary'}
+			status={isBusStopFavorite ? `danger` : `primary`}
 			mt="12px"
 			onClick={isBusStopFavorite ? handleRemoveFavoriteStatus : handleAddFavoriteStatus}
 		>
-			{isBusStopFavorite ? t('Remove stop from favorite') : t('Add stop to favorite')}
+			{isBusStopFavorite ? t(`Remove stop from favorite`) : t(`Add stop to favorite`)}
 		</CustomButton>
 	)
 }

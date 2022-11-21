@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-export const InfoWrapper = styled.div`
+export const InfoWrapperStyled = styled.div`
 	width: 100%;
 	padding: 15px 30px 15px 15px;
 
@@ -11,7 +11,7 @@ export const InfoWrapper = styled.div`
 	position: relative;
 `
 
-export const InfoText = styled.p`
+export const InfoTextStyled = styled.p`
 	font-style: normal;
 	font-weight: normal;
 	font-size: 16px;
@@ -20,7 +20,7 @@ export const InfoText = styled.p`
 	color: #ffffff;
 `
 
-export const InfoLink = styled.a`
+export const InfoLinkStyled = styled.a`
 	font-style: normal;
 	font-weight: normal;
 	font-size: 16px;
@@ -36,7 +36,7 @@ export const InfoLink = styled.a`
 	}
 `
 
-export const InfoCloseButton = styled.div`
+export const InfoCloseButtonStyled = styled.div`
 	position: absolute;
 	top: 9px;
 	right: 9px;

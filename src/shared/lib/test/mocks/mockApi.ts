@@ -5,9 +5,9 @@ export function createMockApi() {
 		fetchSchedule: async () => ({ fields: { schedule: SCHEDULE, holidays: { data: [] } } }),
 		fetchInfo: async () => ({
 			fields: {
-				message: 'Leave your feedback',
+				message: `Leave your feedback`,
 				id: 1,
-				link: 'https://forms.gle/NstJzZ4Ck8RoEtEF8',
+				link: `https://forms.gle/NstJzZ4Ck8RoEtEF8`,
 			},
 		}),
 	}

@@ -1,14 +1,16 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
+import { busStopSelector, setBusStop, stopsOptionsSelector } from 'shared/store/busStop/busStopInfoSlice'
+import { StopKeys } from 'shared/store/busStop/Stops'
 import { Card, Container } from 'shared/ui'
 import { Header } from 'shared/ui/Header'
 import { InlineOptions } from 'shared/ui/InlineOptions'
-import { busStopSelector, setBusStop, stopsOptionsSelector } from 'shared/store/busStop/busStopInfoSlice'
-import { StopKeys } from 'shared/store/busStop/Stops'
+
 import { favoriteStopsSelector } from '../model/favoriteStopsSlice'
 
-export const FavoriteStops = () => {
+export const FavoriteStops: React.FC = () => {
 	const { t } = useTranslation()
 
 	const favoriteBusStops = useSelector(favoriteStopsSelector)
@@ -21,16 +23,19 @@ export const FavoriteStops = () => {
 		[stopsOptions, favoriteBusStops],
 	)
 
-	const handleChangeBusStop = useCallback((busStop: StopKeys) => {
-		dispatch(setBusStop(busStop))
-	}, [])
+	const handleChangeBusStop = useCallback(
+		(busStopToChange: StopKeys) => {
+			dispatch(setBusStop(busStopToChange))
+		},
+		[dispatch],
+	)
 
 	if (favoriteList.length === 0) return null
 
 	return (
 		<Container>
 			<Card>
-				<Header text={t('My stops')} />
+				<Header text={t(`My stops`)} />
 				<InlineOptions list={favoriteList} activeId={busStop} onClick={handleChangeBusStop} />
 			</Card>
 		</Container>

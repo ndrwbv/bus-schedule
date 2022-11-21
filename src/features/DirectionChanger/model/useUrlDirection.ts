@@ -1,33 +1,41 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { setDirection } from 'shared/store/busStop/busStopInfoSlice'
-import queryString from 'query-string'
-import { DirectionsNew } from 'shared/store/busStop/Stops'
 import { useSearchParams } from 'react-router-dom'
+import queryString from 'query-string'
+import { setDirection } from 'shared/store/busStop/busStopInfoSlice'
+import { DirectionsNew } from 'shared/store/busStop/Stops'
 
-export const useUrlDirection = () => {
+interface IReturns {
+	setQueryParams: (d: DirectionsNew) => void
+}
+
+export const useUrlDirection = (): IReturns => {
 	const dispatch = useDispatch()
-	let [searchParams, setSearchParams] = useSearchParams()
+	const [searchParams, setSearchParams] = useSearchParams()
 
-	const setQueryParams = (d: DirectionsNew) => {
-		searchParams.set('d', d)
-		setSearchParams(searchParams)
-	}
+	const setQueryParams = useCallback(
+		(d: DirectionsNew) => {
+			searchParams.set(`d`, d)
+			setSearchParams(searchParams)
+		},
+		[searchParams, setSearchParams],
+	)
 
 	useEffect(() => {
 		const parsed = queryString.parse(window.location.search)
 
-		const _direction: DirectionsNew | undefined = ['in', 'out'].includes(parsed['d'] as DirectionsNew)
-			? (parsed['d'] as DirectionsNew)
+		const diretionToSet: DirectionsNew | undefined = [`in`, `out`].includes(parsed.d as DirectionsNew)
+			? (parsed.d as DirectionsNew)
 			: undefined
 
-		if (!_direction) {
+		if (!diretionToSet) {
 			setQueryParams(DirectionsNew.out)
+
 			return
 		}
-		
-		dispatch(setDirection(_direction as DirectionsNew))
-	}, [])
+
+		dispatch(setDirection(diretionToSet))
+	}, [dispatch, setQueryParams])
 
 	return {
 		setQueryParams,

@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'shared/store/app/configureStore'
+
 import { IHoliday, IHolidays } from './IHolidays'
 
 export interface HolidaysState {
@@ -12,7 +13,7 @@ const initialState: HolidaysState = {
 }
 
 export const holidaysSlice = createSlice({
-	name: 'holidaysSlice',
+	name: `holidaysSlice`,
 	initialState,
 	reducers: {
 		setHolidays: (state, action: PayloadAction<IHolidays>) => {
@@ -27,7 +28,7 @@ export const holidaysSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const { setHolidays, setTodayHoliday } = holidaysSlice.actions
 
-export const holidaysSelector = (state: RootState) => state.holidaysSlice.holidays
-export const todayHolidaySelector = (state: RootState) => state.holidaysSlice.todayHoliday
+export const holidaysSelector = (state: RootState): IHolidays => state.holidaysSlice.holidays
+export const todayHolidaySelector = (state: RootState): IHoliday | null => state.holidaysSlice.todayHoliday
 
 export default holidaysSlice.reducer

@@ -1,6 +1,5 @@
+export const getNextDay = (currentDay: number): number => {
+	if (currentDay === 6) return 0
 
-export const getNextDay = (currentDay: number) => {
-	if (currentDay === 6)
-		return 0;
-	return currentDay + 1;
-};
+	return currentDay + 1
+}

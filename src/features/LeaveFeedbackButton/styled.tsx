@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-export const FeedbackLink = styled.a`
+export const FeedbackLinkStyled = styled.a`
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -17,7 +17,7 @@ export const FeedbackLink = styled.a`
 	}
 `
 
-export const FeedbackText = styled.div`
+export const FeedbackTextStyled = styled.div`
 	font-weight: 600;
 	font-size: 17px;
 	line-height: 19px;
@@ -25,11 +25,11 @@ export const FeedbackText = styled.div`
 	color: #000000;
 `
 
-export const BirdWrapper = styled.div`
+export const BirdWrapperStyled = styled.div`
 	position: relative;
 `
 
-export const BirdContainer = styled.div`
+export const BirdContainerStyled = styled.div`
 	position: absolute;
 	top: -44px;
 	right: 9px;

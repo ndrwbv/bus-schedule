@@ -1,31 +1,28 @@
-import { Logo } from 'entities/Logo'
-import { HeaderInnerStyled, HeaderContainerStyled, HeaderActionsStyled } from 'entities/Logo'
-
-import { Container } from 'shared/ui/common'
-
+import { HeaderActionsStyled, HeaderContainerStyled, HeaderInnerStyled, Logo } from 'entities/Logo'
+import { TranslationLink } from 'entities/TranslationLink'
 import { WriteMe } from 'entities/WriteMe'
-
-import { HomeContainer } from './styled'
-import { Share } from '../../features/Share'
+import { Complains } from 'features/Complains'
+import { ComplainsProvider } from 'features/Complains/model/ComplainsContext'
+import { DirectionChanger } from 'features/DirectionChanger'
+import { FavoriteStops } from 'features/FavoriteStops'
 import { HeaderScore } from 'features/HeaderScore'
-import { Footer } from 'shared/ui/Footer'
-import { Map } from 'widget/Map'
 // import { BottomSheet, BottomSheetRef } from 'react-spring-bottom-sheet'
 // import { useRef, useState } from 'react'
 import { Info } from 'features/Info'
-import { DirectionChanger } from 'features/DirectionChanger'
-import { BusStop } from 'widget/BusStop'
-import { Complains } from 'features/Complains'
-import { TranslationLink } from 'entities/TranslationLink'
-import { FavoriteStops } from 'features/FavoriteStops'
-import { TodaysBuses } from 'widget/TodaysBuses'
 import { LeaveFeedbackButton } from 'features/LeaveFeedbackButton'
 import { OtherTimeBusses } from 'features/OtherTimeBuses'
-import { MainLayout } from 'shared/ui/MainLayout'
 import useSchedule from 'shared/store/schedule/useSchedule'
-import ComplainsProvider from 'features/Complains/model/ComplainsContext'
+import { Container } from 'shared/ui/common'
+import { Footer } from 'shared/ui/Footer'
+import { MainLayout } from 'shared/ui/MainLayout'
+import { BusStop } from 'widget/BusStop'
+import { Map } from 'widget/Map'
+import { TodaysBuses } from 'widget/TodaysBuses'
 
-export const Home = () => {
+import { Share } from '../../features/Share'
+import { HomeContainerStyled } from './styled'
+
+export const Home: React.FC = () => {
 	useSchedule()
 
 	// const sheetRef = useRef<BottomSheetRef>(null)
@@ -34,7 +31,7 @@ export const Home = () => {
 
 	return (
 		<ComplainsProvider>
-			<HomeContainer>
+			<HomeContainerStyled>
 				<HeaderContainerStyled>
 					<HeaderInnerStyled>
 						<Logo />
@@ -82,7 +79,7 @@ export const Home = () => {
 
 				<Footer />
 				{/* </BottomSheet> */}
-			</HomeContainer>
+			</HomeContainerStyled>
 		</ComplainsProvider>
 	)
 }

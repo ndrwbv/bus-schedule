@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react'
 import { AndrewLytics } from 'shared/lib'
 import { Directions, StopKeys } from 'shared/store/busStop/Stops'
-import { useEffect, useState } from 'react'
-import { ComplainType } from '../model/Complains'
+
+import { ComplainType } from './Complains'
+
 export interface IComplains {
 	stop: StopKeys
 	direction: Directions
@@ -13,29 +15,41 @@ export interface IComplains {
 export interface IComplainsResponse extends IComplains {
 	id: number
 }
+interface IReturns {
+	complains: IComplainsResponse[]
+	addComplain: (data: IComplains) => void
+}
 
-function useComplains() {
+export const useComplains = (): IReturns => {
 	const [complains, setComplains] = useState<IComplainsResponse[]>([])
 
-	const fetchComplains = () => {
-		fetch('https://popooga.ru/graphql', {
+	const fetchComplains = (): void => {
+		fetch(`https://popooga.ru/graphql`, {
 			headers: {
-				accept: '*/*',
-				'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
-				'content-type': 'application/json',
-				'sec-fetch-dest': 'empty',
-				'sec-fetch-mode': 'cors',
-				'sec-fetch-site': 'same-origin',
+				accept: `*/*`,
+				'accept-language': `ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7`,
+				'content-type': `application/json`,
+				'sec-fetch-dest': `empty`,
+				'sec-fetch-mode': `cors`,
+				'sec-fetch-site': `same-origin`,
 			},
-			referrer: 'https://popooga.ru/graphql',
-			referrerPolicy: 'strict-origin-when-cross-origin',
-			body: '{"operationName":"C","variables":{},"query":"query C {\\n  findComplains {\\n    id\\n    stop\\n    direction\\n    date\\n    type\\n    on\\n  }\\n}\\n"}',
-			method: 'POST',
-			mode: 'cors',
-			credentials: 'omit',
+			referrer: `https://popooga.ru/graphql`,
+			referrerPolicy: `strict-origin-when-cross-origin`,
+			body: `{"operationName":"C","variables":{},"query":"query C {\\n  findComplains {\\n    id\\n    stop\\n    direction\\n    date\\n    type\\n    on\\n  }\\n}\\n"}`,
+			method: `POST`,
+			mode: `cors`,
+			credentials: `omit`,
 		})
 			.then(res => res.json())
-			.then(res => setComplains(res.data.findComplains))
+			.then(res => {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+				if (res?.data?.findComplains) {
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+					setComplains(res.data.findComplains)
+				}
+
+				return null
+			})
 			.catch(() => {})
 	}
 
@@ -50,8 +64,8 @@ function useComplains() {
 		}
 	}, [])
 
-	const addComplain = (data: IComplains) => {
-		AndrewLytics('addComplainMethod')
+	const addComplain = (data: IComplains): void => {
+		AndrewLytics(`addComplainMethod`)
 		const body = {
 			operationName: null,
 			variables: {
@@ -61,28 +75,26 @@ function useComplains() {
 			}`,
 		}
 
-		fetch('https://popooga.ru/graphql', {
+		fetch(`https://popooga.ru/graphql`, {
 			headers: {
-				accept: '*/*',
-				'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
-				'content-type': 'application/json',
-				'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="101", "Google Chrome";v="101"',
-				'sec-ch-ua-mobile': '?0',
-				'sec-ch-ua-platform': '"macOS"',
-				'sec-fetch-dest': 'empty',
-				'sec-fetch-mode': 'cors',
-				'sec-fetch-site': 'same-origin',
+				accept: `*/*`,
+				'accept-language': `ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7`,
+				'content-type': `application/json`,
+				'sec-ch-ua': `" Not A;Brand";v="99", "Chromium";v="101", "Google Chrome";v="101"`,
+				'sec-ch-ua-mobile': `?0`,
+				'sec-ch-ua-platform': `"macOS"`,
+				'sec-fetch-dest': `empty`,
+				'sec-fetch-mode': `cors`,
+				'sec-fetch-site': `same-origin`,
 			},
-			referrer: 'https://popooga.ru/graphql',
-			referrerPolicy: 'strict-origin-when-cross-origin',
+			referrer: `https://popooga.ru/graphql`,
+			referrerPolicy: `strict-origin-when-cross-origin`,
 			body: JSON.stringify(body),
-			method: 'POST',
-			mode: 'cors',
-			credentials: 'omit',
-		}).catch(e => {})
+			method: `POST`,
+			mode: `cors`,
+			credentials: `omit`,
+		}).catch(() => {})
 	}
 
-	return { complains: complains, addComplain }
+	return { complains, addComplain }
 }
-
-export default useComplains

@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { RootState } from 'shared/store/app/configureStore'
 import { SCHEDULE } from 'shared/common'
-import { getNextDay } from "./getNextDay"
+import { RootState } from 'shared/store/app/configureStore'
+
+import { getNextDay } from './getNextDay'
 import { ISchedule } from './ISchedule'
 
 export interface BusStopInfoState {
@@ -16,7 +17,7 @@ const initialState: BusStopInfoState = {
 }
 
 export const busStopInfoSlice = createSlice({
-	name: 'scheduleSlice',
+	name: `scheduleSlice`,
 	initialState,
 	reducers: {
 		setSchedule: (state, action: PayloadAction<ISchedule>) => {
@@ -32,8 +33,8 @@ export const busStopInfoSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const { setSchedule, setCurrentDayKey } = busStopInfoSlice.actions
 
-export const scheduleSelector = (state: RootState) => state.scheduleSlice.schedule
-export const currentDaySelector = (state: RootState) => state.scheduleSlice.currentDayKey
-export const nextDaySelector = (state: RootState) => state.scheduleSlice.nextDayKey
+export const scheduleSelector = (state: RootState): ISchedule => state.scheduleSlice.schedule
+export const currentDaySelector = (state: RootState): number => state.scheduleSlice.currentDayKey
+export const nextDaySelector = (state: RootState): number => state.scheduleSlice.nextDayKey
 
 export default busStopInfoSlice.reducer

@@ -10,9 +10,11 @@ module.exports = {
 	plugins: [`optimize-regex`, `simple-import-sort`, `styled-components-varname`],
 	ignorePatterns: [`**/dist/**/*.*`],
 	rules: {
+		'sonarjs/prefer-single-boolean-return': `off`,
+		'import/no-default-export': `off`,
+		'no-param-reassign': `off`,
 		'react/react-in-jsx-scope': `off`,
 		'import/prefer-default-export': [`off`],
-		'import/no-default-export': [`error`],
 		'react/function-component-definition': [
 			`error`,
 			{

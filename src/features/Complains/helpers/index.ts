@@ -37,13 +37,13 @@ export const getOnString = (on: number, type: ComplainType): string => {
 	return `${commingType} на ${on}${minutesString}`
 }
 
-export const getHumanDate = (date: string): string | undefined => {
+export const getHumanDate = (date: string): string => {
 	const time = calculateHowMuchIsLeft(date)
 	const d = new Date(date)
 	const min = d.getMinutes() < 9 ? `0${d.getMinutes()}` : d.getMinutes()
 	if (time.hours === null || time.hours >= 1) return `в ${d.getHours()}:${min}`
 
-	if (time.minutes === null) return undefined
+	if (time.minutes === null) return ``
 
 	const timeAmountString = time.minutes === 0 ? `` : time.minutes
 	const minutesString = getMinutesString(time.minutes)

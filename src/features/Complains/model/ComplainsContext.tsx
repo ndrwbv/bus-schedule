@@ -1,5 +1,6 @@
-import React, { useContext, createContext } from 'react'
-import useComplains, { IComplains, IComplainsResponse } from '../model/useComplains'
+import React, { createContext, useContext, useMemo } from 'react'
+
+import { IComplains, IComplainsResponse, useComplains } from './useComplains'
 
 const DEFAULT_PROPS = {
 	complains: [],
@@ -16,23 +17,14 @@ interface ContextProps {
 interface IProviderProps {
 	children: React.ReactElement
 }
-export const ComplainsProvider = ({ children }: IProviderProps) => {
+export const ComplainsProvider = ({ children }: IProviderProps): JSX.Element => {
 	const { complains, addComplain } = useComplains()
 
-	return (
-		<ComplainsContext.Provider
-			value={{
-				complains,
-				addComplain,
-			}}
-		>
-			{children}
-		</ComplainsContext.Provider>
-	)
+	const values = useMemo(() => ({ complains, addComplain }), [addComplain, complains])
+
+	return <ComplainsContext.Provider value={values}>{children}</ComplainsContext.Provider>
 }
 
-export const useComplainsContext = () => {
+export const useComplainsContext = (): ContextProps => {
 	return useContext(ComplainsContext)
 }
-
-export default ComplainsProvider

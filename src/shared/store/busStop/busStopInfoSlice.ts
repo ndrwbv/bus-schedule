@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'shared/store/app/configureStore'
+
 import { StopsInOptions } from './const/stopsInOptions'
 import { StopsOutOptions } from './const/stopsOutOptions'
 import { DirectionsNew, IOption, StopKeys, StopKeysIn, StopKeysOut } from './Stops'
@@ -16,7 +17,7 @@ const initialState: BusStopInfoState = {
 }
 
 export const busStopInfoSlice = createSlice({
-	name: 'busStopInfoSlice',
+	name: `busStopInfoSlice`,
 	initialState,
 	reducers: {
 		setDirection: (state, action: PayloadAction<DirectionsNew>) => {
@@ -32,8 +33,9 @@ export const busStopInfoSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const { setDirection, setBusStop } = busStopInfoSlice.actions
 
-export const busStopSelector = (state: RootState) => state.busStopInfo.busStop
-export const directionSelector = (state: RootState) => state.busStopInfo.direction
-export const stopsOptionsSelector = (state: RootState) => state.busStopInfo.stopsOptions
+export const busStopSelector = (state: RootState): StopKeys | null => state.busStopInfo.busStop
+export const directionSelector = (state: RootState): DirectionsNew => state.busStopInfo.direction
+export const stopsOptionsSelector = (state: RootState): IOption<StopKeysIn | StopKeysOut | null>[] =>
+	state.busStopInfo.stopsOptions
 
 export default busStopInfoSlice.reducer

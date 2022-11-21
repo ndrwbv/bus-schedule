@@ -9,12 +9,9 @@ const initialState: FeatureToggleState = {
 }
 
 export const featureToggleSlice = createSlice({
-	name: 'featureToggle',
+	name: `featureToggle`,
 	initialState,
 	reducers: {},
 })
-
-// Action creators are generated for each case reducer function
-export const {} = featureToggleSlice.actions
 
 export default featureToggleSlice.reducer

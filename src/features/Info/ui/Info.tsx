@@ -1,32 +1,34 @@
-import SVG from 'react-inlinesvg'
 import React, { useEffect, useState } from 'react'
-
-import InfoCloseCross from '../img/infoclosecross.svg'
+import SVG from 'react-inlinesvg'
 import { AndrewLytics } from 'shared/lib'
 import { Container } from 'shared/ui/common'
-import { InfoWrapper, InfoLink, InfoText, InfoCloseButton } from './styled'
+
+import InfoCloseCross from '../img/infoclosecross.svg'
 import { useGetInfoQuery } from '../model/info'
+import { InfoCloseButtonStyled, InfoLinkStyled, InfoTextStyled, InfoWrapperStyled } from './styled'
 
 export const Info: React.FC = () => {
 	const [isInfoShow, setIsInfoShow] = useState(false)
 	const { data: infoMessage } = useGetInfoQuery()
 
-	const onLinkClick = () => {
-		AndrewLytics('infoBlockLinkClick')
+	const onLinkClick = (): void => {
+		AndrewLytics(`infoBlockLinkClick`)
 	}
 
-	const onInfoCrossClick = () => {
+	const onInfoCrossClick = (): void => {
 		setIsInfoShow(false)
-		infoMessage?.id && localStorage.setItem('infoMessageId', String(infoMessage.id))
+		if (infoMessage?.id) {
+			localStorage.setItem(`infoMessageId`, String(infoMessage.id))
+		}
 
-		AndrewLytics('infoBlockHide')
+		AndrewLytics(`infoBlockHide`)
 	}
 
 	useEffect(() => {
 		if (!infoMessage?.id) return
 
-		const _infoMessageId = localStorage.getItem('infoMessageId')
-		Number(_infoMessageId) !== Number(infoMessage.id) && setIsInfoShow(true)
+		const infoMessageId = localStorage.getItem(`infoMessageId`)
+		if (Number(infoMessageId) !== Number(infoMessage.id)) setIsInfoShow(true)
 	}, [infoMessage])
 
 	if (!infoMessage || !isInfoShow) return null
@@ -35,18 +37,18 @@ export const Info: React.FC = () => {
 
 	return (
 		<Container>
-			<InfoWrapper>
+			<InfoWrapperStyled>
 				{link ? (
-					<InfoLink href={link} target="_blank" onClick={onLinkClick}>
+					<InfoLinkStyled href={link} target="_blank" onClick={onLinkClick}>
 						{text}
-					</InfoLink>
+					</InfoLinkStyled>
 				) : (
-					<InfoText>{text}</InfoText>
+					<InfoTextStyled>{text}</InfoTextStyled>
 				)}
-				<InfoCloseButton data-testid="hide-btn" onClick={onInfoCrossClick}>
+				<InfoCloseButtonStyled data-testid="hide-btn" onClick={onInfoCrossClick}>
 					<SVG className="closebutton" src={InfoCloseCross} />
-				</InfoCloseButton>
-			</InfoWrapper>
+				</InfoCloseButtonStyled>
+			</InfoWrapperStyled>
 		</Container>
 	)
 }

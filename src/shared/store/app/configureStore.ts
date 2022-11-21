@@ -1,16 +1,17 @@
 import { configureStore } from '@reduxjs/toolkit'
-import featureToggle from './featureToggleSlice'
-import busStopInfo from 'shared/store/busStop/busStopInfoSlice'
-import scheduleSlice from 'shared/store/schedule/scheduleSlice'
 import favoriteStops from 'features/FavoriteStops/model/favoriteStopsSlice'
-import holidaysSlice from 'shared/store/holidays/holidaysSlice'
-import timeLeftSlice from 'shared/store/timeLeft/timeLeftSlice'
+import { infoApi } from 'features/Info/model/info'
+import busStopInfo from 'shared/store/busStop/busStopInfoSlice'
 import {
 	changeBusStopOnBusStopChange,
 	changeBusStopOnDirection,
 } from 'shared/store/busStop/changeBusStopIfNotInDirectionMiddleware'
 import { holidaysSetter } from 'shared/store/holidays/holidaysMiddleware'
-import { infoApi } from 'features/Info/model/info'
+import holidaysSlice from 'shared/store/holidays/holidaysSlice'
+import scheduleSlice from 'shared/store/schedule/scheduleSlice'
+import timeLeftSlice from 'shared/store/timeLeft/timeLeftSlice'
+
+import featureToggle from './featureToggleSlice'
 
 export const store = configureStore({
 	reducer: {
@@ -22,7 +23,7 @@ export const store = configureStore({
 		timeLeftSlice,
 		[infoApi.reducerPath]: infoApi.reducer,
 	},
-	devTools: process.env.NODE_ENV !== 'production',
+	devTools: process.env.NODE_ENV !== `production`,
 	middleware: getDefaultMiddleware =>
 		getDefaultMiddleware().prepend([
 			changeBusStopOnDirection.middleware,

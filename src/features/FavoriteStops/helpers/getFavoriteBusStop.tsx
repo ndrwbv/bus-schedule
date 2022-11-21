@@ -1,9 +1,7 @@
-import { StopKeys } from 'shared/store/busStop/Stops';
-
+import { StopKeys } from 'shared/store/busStop/Stops'
 
 export const getFavoriteBusStop = (): StopKeys[] => {
-	const localStorageItem = localStorage.getItem('favoriteStops');
-	const favoriteStops = localStorageItem ? JSON.parse(localStorageItem) : [];
+	const localStorageItem = localStorage.getItem(`favoriteStops`)
 
-	return favoriteStops;
-};
+	return localStorageItem ? (JSON.parse(localStorageItem) as StopKeys[]) : []
+}

@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'shared/store/app/configureStore'
+
 import { ITime } from './ITime'
 
 export const DEFAULT_LEFT = {
@@ -15,11 +16,11 @@ export interface TimeLeftState {
 const initialState: TimeLeftState = {
 	left: DEFAULT_LEFT,
 	closestTimeArray: [],
-	closestTime: '',
+	closestTime: ``,
 }
 
 export const timeLeftSlice = createSlice({
-	name: 'timeLeftSlice',
+	name: `timeLeftSlice`,
 	initialState,
 	reducers: {
 		setLeft: (state, action: PayloadAction<ITime>) => {
@@ -37,8 +38,8 @@ export const timeLeftSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const { setLeft, setClosestTime, setClosestTimeArray } = timeLeftSlice.actions
 
-export const leftSelector = (state: RootState) => state.timeLeftSlice.left
-export const closestTimeArraySelector = (state: RootState) => state.timeLeftSlice.closestTimeArray
-export const closestTimeSelector = (state: RootState) => state.timeLeftSlice.closestTime
+export const leftSelector = (state: RootState): ITime => state.timeLeftSlice.left
+export const closestTimeArraySelector = (state: RootState): string[] => state.timeLeftSlice.closestTimeArray
+export const closestTimeSelector = (state: RootState): string => state.timeLeftSlice.closestTime
 
 export default timeLeftSlice.reducer

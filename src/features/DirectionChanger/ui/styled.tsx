@@ -2,26 +2,26 @@ import { MAIN_GREY } from 'shared/theme'
 import { ImageWrapper } from 'shared/ui'
 import styled from 'styled-components'
 
-export const GoButtonContainer = styled.div`
+export const GoButtonContainerStyled = styled.div`
 	display: flex;
 	align-items: flex-start;
 	flex-direction: column;
 `
 
-export const DirectionText = styled.p`
+export const DirectionTextStyled = styled.p`
 	font-size: 24px;
 	font-weight: 600;
 	margin-bottom: 12px;
 `
 
-export const DirectionContainer = styled.div`
+export const DirectionContainerStyled = styled.div`
 	padding-left: 6px;
 `
-export const DirectionPlaceholder = styled.span`
+export const DirectionPlaceholderStyled = styled.span`
 	font-size: 16px;
 	margin-bottom: 2px;
 `
-export const GoButton = styled.button<{ active?: boolean }>`
+export const GoButtonStyled = styled.button<{ active?: boolean }>`
 	width: 100%;
 	border-radius: 13px;
 	background-color: ${MAIN_GREY};
