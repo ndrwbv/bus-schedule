@@ -1,19 +1,20 @@
-import { HeaderContainer, HeaderItem, HeaderText } from './styled'
+import { DefaultTFuncReturn } from 'i18next'
+
+import { HeaderContainerStyled, HeaderItemStyled, HeaderTextStyled } from './styled'
 
 interface IHeaderProps {
-	text: string | any
-	imgSrc?: any
+	text: string | JSX.Element | DefaultTFuncReturn
 	children?: React.ReactNode
 }
 
-export const Header: React.FC<IHeaderProps> = ({ text: Text, imgSrc, children = null }) => {
+export const Header: React.FC<IHeaderProps> = ({ text: Text, children = null }) => {
 	return (
-		<HeaderContainer>
-			<HeaderItem>
-				<HeaderText>{typeof Text === 'string' ? Text : <Text />}</HeaderText>
-			</HeaderItem>
+		<HeaderContainerStyled>
+			<HeaderItemStyled>
+				<HeaderTextStyled>{Text}</HeaderTextStyled>
+			</HeaderItemStyled>
 
-			{children && <HeaderItem>{children}</HeaderItem>}
-		</HeaderContainer>
+			{children && <HeaderItemStyled>{children}</HeaderItemStyled>}
+		</HeaderContainerStyled>
 	)
 }

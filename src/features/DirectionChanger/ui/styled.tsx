@@ -1,5 +1,5 @@
 import { MAIN_GREY } from 'shared/theme'
-import { ImageWrapper } from 'shared/ui'
+import { ImageWrapperStyled } from 'shared/ui'
 import styled from 'styled-components'
 
 export const GoButtonContainerStyled = styled.div`
@@ -35,7 +35,7 @@ export const GoButtonStyled = styled.button<{ active?: boolean }>`
 	}
 `
 
-export const WebWrapper = styled(ImageWrapper)`
+export const WebWrapper = styled(ImageWrapperStyled)`
 	position: absolute;
 	right: 10px;
 	top: -10px;

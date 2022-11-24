@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import SVG from 'react-inlinesvg'
 import { AndrewLytics } from 'shared/lib'
-import { Container } from 'shared/ui/common'
+import { ContainerStyled } from 'shared/ui/common'
 
 import InfoCloseCross from '../img/infoclosecross.svg'
 import { useGetInfoQuery } from '../model/info'
@@ -36,7 +36,7 @@ export const Info: React.FC = () => {
 	const { message: text, link } = infoMessage
 
 	return (
-		<Container>
+		<ContainerStyled>
 			<InfoWrapperStyled>
 				{link ? (
 					<InfoLinkStyled href={link} target="_blank" onClick={onLinkClick}>
@@ -49,6 +49,6 @@ export const Info: React.FC = () => {
 					<SVG className="closebutton" src={InfoCloseCross} />
 				</InfoCloseButtonStyled>
 			</InfoWrapperStyled>
-		</Container>
+		</ContainerStyled>
 	)
 }

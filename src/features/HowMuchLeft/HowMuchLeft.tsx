@@ -11,7 +11,7 @@ import { IHoliday } from 'shared/store/holidays/IHolidays'
 import { ITime } from 'shared/store/timeLeft/ITime'
 import { InlineOptions } from 'shared/ui/InlineOptions'
 
-import { ImageWrapper } from '../../shared/ui/ImageWrapper'
+import { ImageWrapperStyled } from '../../shared/ui/ImageWrapper'
 import Dead from './img/dead.svg'
 import EvilFace from './img/evil-face.svg'
 import NextBus from './img/next-bus.svg'
@@ -77,7 +77,7 @@ interface ILeftProps {
 }
 export const HowMuchLeft: React.FC<ILeftProps> = ({ left, busStop, shouldShowFastReply, holiday, onComplain }) => {
 	const [isComplainClicked, setIsComplainClicked] = useState(false)
-	const [activeComplain, setActiveComplain] = useState<ComplainType | undefined>(undefined)
+	const [activeComplain, setActiveComplain] = useState<ComplainType | null>(null)
 	const isHalloweenMode = useTypedSelector(isHalloween)
 	const isFancy = isHalloweenMode || !!holiday
 	const [currentIcon, setIcon] = useState(isHalloweenMode ? Pumpkin : NextBus)
@@ -92,8 +92,8 @@ export const HowMuchLeft: React.FC<ILeftProps> = ({ left, busStop, shouldShowFas
 		return `#e7edec`
 	}
 
-	const handleFastReplyClick = (key: ComplainType): void => {
-		if (isComplainClicked) return
+	const handleFastReplyClick = (key: ComplainType | null): void => {
+		if (isComplainClicked || !key) return
 
 		setActiveComplain(key)
 		onComplain(key)
@@ -123,6 +123,7 @@ export const HowMuchLeft: React.FC<ILeftProps> = ({ left, busStop, shouldShowFas
 		if (isComplainClicked) {
 			setTimeout(() => {
 				setIsComplainClicked(false)
+				setActiveComplain(null)
 			}, COMPLAIN_DISAPPEAR_MS)
 		}
 	}, [isComplainClicked])
@@ -131,9 +132,9 @@ export const HowMuchLeft: React.FC<ILeftProps> = ({ left, busStop, shouldShowFas
 		<>
 			<HowMuchLeftContainerStyled isFancy={isFancy} defaultColor={getColorByLeftTime()}>
 				<NextBusContainerStyled>
-					<ImageWrapper w={SIZE} h={SIZE}>
+					<ImageWrapperStyled w={SIZE} h={SIZE}>
 						<SVG src={currentIcon} width={SIZE} height={SIZE} uniquifyIDs onClick={handleIconClick} />
-					</ImageWrapper>
+					</ImageWrapperStyled>
 
 					<BusEstimationStyled>
 						<LeftToString busStop={busStop} left={left} />
@@ -143,7 +144,11 @@ export const HowMuchLeft: React.FC<ILeftProps> = ({ left, busStop, shouldShowFas
 
 			{shouldShowFastReply && (
 				<ComplainOptionContainerStyled>
-					<InlineOptions list={ComplainsOptions} onClick={handleFastReplyClick} activeId={activeComplain} />
+					<InlineOptions<ComplainType>
+						list={ComplainsOptions}
+						onClick={handleFastReplyClick}
+						activeId={activeComplain}
+					/>
 				</ComplainOptionContainerStyled>
 			)}
 

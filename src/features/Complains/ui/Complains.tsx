@@ -1,10 +1,10 @@
 import React, { useMemo, useState } from 'react'
 import { BottomSheet } from 'react-spring-bottom-sheet'
 import { AndrewLytics } from 'shared/lib'
-import { Card, Container, MiniButton } from 'shared/ui/common'
-import { HeaderText } from 'shared/ui/Header/styled'
+import { CardStyled, ContainerStyled, MiniButtonStyled } from 'shared/ui/common'
+import { HeaderTextStyled } from 'shared/ui/Header/styled'
 
-import { PopupContent } from '../../../shared/ui/Popup/PopupContent'
+import { PopupContentStyled } from '../../../shared/ui/Popup/PopupContent'
 import { getHumanDate } from '../helpers'
 import { useComplainsContext } from '../model/ComplainsContext'
 import { ComplainsMessage } from './ComplainsMessage'
@@ -37,15 +37,15 @@ export const Complains: React.FC = () => {
 	}
 
 	return (
-		<Container>
-			<Card>
+		<ContainerStyled>
+			<CardStyled>
 				<BottomSheet
 					open={isOpen}
 					onDismiss={() => setIsOpen(false)}
 					defaultSnap={({ maxHeight }) => maxHeight / 2}
 					snapPoints={({ maxHeight }) => [maxHeight - maxHeight / 10, maxHeight / 4, maxHeight * 0.6]}
 				>
-					<PopupContent>
+					<PopupContentStyled>
 						<InfoTextStyled>
 							Жалобы попадают автоматически после выбора опции «Приехал раньше» или «Приехал позже».
 							Кнопки появлюятся в секции Остановка при выбранной остановке.
@@ -53,7 +53,7 @@ export const Complains: React.FC = () => {
 						{complains.map(c => (
 							<ComplainsMessage {...c} key={c.id} />
 						))}
-					</PopupContent>
+					</PopupContentStyled>
 				</BottomSheet>
 
 				<ComplainsContainerStyled>
@@ -65,14 +65,14 @@ export const Complains: React.FC = () => {
 							<ComplainsLabelStyled>{latestTime}</ComplainsLabelStyled>
 						</ComplainsBlockContainerStyled>
 
-						<HeaderText />
+						<HeaderTextStyled />
 					</div>
 
-					<MiniButton disabled={complains.length === 0} onClick={handleOpenComplains}>
+					<MiniButtonStyled disabled={complains.length === 0} onClick={handleOpenComplains}>
 						Смотреть
-					</MiniButton>
+					</MiniButtonStyled>
 				</ComplainsContainerStyled>
-			</Card>
-		</Container>
+			</CardStyled>
+		</ContainerStyled>
 	)
 }

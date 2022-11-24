@@ -1,6 +1,6 @@
 import { TRANSLATION_LINK } from 'shared/common'
 import { AndrewLytics } from 'shared/lib'
-import { Container } from 'shared/ui'
+import { ContainerStyled } from 'shared/ui'
 import styled from 'styled-components'
 
 export const TranslationLinkStyled = styled.a`
@@ -25,7 +25,7 @@ export const TranslationLinkStyled = styled.a`
 
 export const TranslationLink: React.FC = () => {
 	return (
-		<Container>
+		<ContainerStyled>
 			<TranslationLinkStyled
 				href={TRANSLATION_LINK}
 				target="_blank"
@@ -33,6 +33,6 @@ export const TranslationLink: React.FC = () => {
 			>
 				Онлайн трансляция с моста
 			</TranslationLinkStyled>
-		</Container>
+		</ContainerStyled>
 	)
 }

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AndrewLytics } from 'shared/lib'
 import { busStopSelector } from 'shared/store/busStop/busStopInfoSlice'
 import { StopKeys } from 'shared/store/busStop/Stops'
-import { CustomButton } from 'shared/ui'
+import { CustomButtonStyled } from 'shared/ui'
 
 import { favoriteStopsSelector, saveFavoriteBusStops } from '../model/favoriteStopsSlice'
 
@@ -40,12 +40,12 @@ export const FavoriteButton: React.FC = () => {
 	)
 
 	return (
-		<CustomButton
+		<CustomButtonStyled
 			status={isBusStopFavorite ? `danger` : `primary`}
 			mt="12px"
 			onClick={isBusStopFavorite ? handleRemoveFavoriteStatus : handleAddFavoriteStatus}
 		>
 			{isBusStopFavorite ? t(`Remove stop from favorite`) : t(`Add stop to favorite`)}
-		</CustomButton>
+		</CustomButtonStyled>
 	)
 }

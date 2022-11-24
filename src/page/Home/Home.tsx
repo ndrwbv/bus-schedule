@@ -12,9 +12,9 @@ import { Info } from 'features/Info'
 import { LeaveFeedbackButton } from 'features/LeaveFeedbackButton'
 import { OtherTimeBusses } from 'features/OtherTimeBuses'
 import useSchedule from 'shared/store/schedule/useSchedule'
-import { Container } from 'shared/ui/common'
+import { ContainerStyled } from 'shared/ui/common'
 import { Footer } from 'shared/ui/Footer'
-import { MainLayout } from 'shared/ui/MainLayout'
+import { MainLayoutStyled } from 'shared/ui/MainLayout'
 import { BusStop } from 'widget/BusStop'
 import { Map } from 'widget/Map'
 import { TodaysBuses } from 'widget/TodaysBuses'
@@ -56,7 +56,7 @@ export const Home: React.FC = () => {
 					expandOnContentDrag={expandOnContentDrag}
 					blocking={false}
 				> */}
-				<MainLayout>
+				<MainLayoutStyled>
 					<Info />
 					<DirectionChanger />
 					<BusStop />
@@ -72,10 +72,10 @@ export const Home: React.FC = () => {
 
 					<OtherTimeBusses />
 
-					<Container>
+					<ContainerStyled>
 						<WriteMe />
-					</Container>
-				</MainLayout>
+					</ContainerStyled>
+				</MainLayoutStyled>
 
 				<Footer />
 				{/* </BottomSheet> */}

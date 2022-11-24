@@ -3,7 +3,7 @@ import SVG from 'react-inlinesvg'
 import { Link, useSearchParams } from 'react-router-dom'
 import { FEEDBACK_LINK } from 'shared/common'
 import { AndrewLytics } from 'shared/lib'
-import { Container } from 'shared/ui'
+import { ContainerStyled } from 'shared/ui'
 
 import Bird from './img/bird-zamanuha.svg'
 import { BirdContainerStyled, BirdWrapperStyled, FeedbackLinkStyled, FeedbackTextStyled } from './styled'
@@ -17,7 +17,7 @@ export const LeaveFeedbackButton: React.FC = () => {
 	}
 
 	return (
-		<Container doubled>
+		<ContainerStyled doubled>
 			<BirdWrapperStyled>
 				<FeedbackLinkStyled href={FEEDBACK_LINK} onClick={onFeedbackClick}>
 					<FeedbackTextStyled>{t(`Leave feedback`)}</FeedbackTextStyled>
@@ -29,6 +29,6 @@ export const LeaveFeedbackButton: React.FC = () => {
 					</Link>
 				</BirdContainerStyled>
 			</BirdWrapperStyled>
-		</Container>
+		</ContainerStyled>
 	)
 }

@@ -3,7 +3,7 @@ import SVG from 'react-inlinesvg'
 import QRCode from 'react-qr-code'
 import { BottomSheet, BottomSheetRef } from 'react-spring-bottom-sheet'
 import { AndrewLytics } from 'shared/lib'
-import { PopupContent } from 'shared/ui/Popup/PopupContent'
+import { PopupContentStyled } from 'shared/ui/Popup/PopupContent'
 
 import { copyTextToClipboard } from '../helpers/clickToClipBoard'
 import CopyIcon from '../img/copy-icon.svg'
@@ -40,7 +40,7 @@ export const Share: React.FC = () => {
 	return (
 		<>
 			<BottomSheet ref={sheetRef} initialFocusRef={focusRef} open={isOpen} onDismiss={() => setIsOpen(false)}>
-				<PopupContent>
+				<PopupContentStyled>
 					<ShareItemContainerStyled>
 						<ShareTitleStyled>Поделиться расписанием</ShareTitleStyled>
 					</ShareItemContainerStyled>
@@ -57,7 +57,7 @@ export const Share: React.FC = () => {
 							<SVG src={CopyIcon} width={20} height={20} uniquifyIDs style={{ display: `flex` }} />
 						</CopyFieldStyled>
 					</ShareItemContainerStyled>
-				</PopupContent>
+				</PopupContentStyled>
 			</BottomSheet>
 
 			<ShareContainerStyled onClick={handleOpenClick}>

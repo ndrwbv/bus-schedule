@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-export const TimeStamp = styled.div`
+export const TimeStampStyled = styled.div`
 	& + & {
 		margin-top: 8px;
 	}

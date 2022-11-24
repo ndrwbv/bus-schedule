@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-export const TelegramContainer = styled.button`
+export const TelegramContainerStyled = styled.button`
 	display: flex;
 	align-items: center;
 	padding: 10px 16px 10px 10px;
@@ -10,9 +10,8 @@ export const TelegramContainer = styled.button`
 	border-radius: 13px;
 	cursor: pointer;
 `
-export const TelegramText = styled.p`
+export const TelegramTextStyled = styled.p`
 	color: #ffffff;
 	margin: 0 0 0 10px;
 	font-weight: 600;
-
 `

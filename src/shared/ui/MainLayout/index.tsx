@@ -1,6 +1,6 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
-export const MainLayout = styled.main`
+export const MainLayoutStyled = styled.main`
 	padding: 22px 8px 15px 8px;
 	max-width: 768px;
 	width: 100%;

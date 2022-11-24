@@ -1,28 +1,29 @@
-import { Card, Container } from 'shared/ui'
-import { Header } from 'shared/ui/Header'
-import Select from 'react-select'
+import { useCallback, useEffect, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
+import Select, { SingleValue } from 'react-select'
+import { ComplainType } from 'features/Complains'
+import { useComplainsContext } from 'features/Complains/model/ComplainsContext'
+import { HowMuchLeft } from 'features/HowMuchLeft/HowMuchLeft'
+import { AndrewLytics } from 'shared/lib'
 import {
 	busStopSelector,
 	directionSelector,
 	setBusStop,
 	stopsOptionsSelector,
 } from 'shared/store/busStop/busStopInfoSlice'
-import HowMuchLeft from 'features/HowMuchLeft/HowMuchLeft'
-import { AndrewLytics } from 'shared/lib'
-import { useCallback, useEffect, useMemo } from 'react'
-import { useComplainsContext } from 'features/Complains/model/ComplainsContext'
-import { useTranslation } from 'react-i18next'
-import { ComplainType } from 'features/Complains'
-import { StopKeys } from 'shared/store/busStop/Stops'
-import { selectStyles } from 'shared/ui/SelectStyles'
-import { useUrlBusStop } from './model/useUrlBusStop'
+import { IOption, StopKeys } from 'shared/store/busStop/Stops'
 import { todayHolidaySelector } from 'shared/store/holidays/holidaysSlice'
 import { leftSelector } from 'shared/store/timeLeft/timeLeftSlice'
-import { useFastReplay } from './model/useFastReplay'
 import { useTimeLeftUpdater } from 'shared/store/timeLeft/useTimeLeftUpdater'
+import { CardStyled, ContainerStyled } from 'shared/ui'
+import { Header } from 'shared/ui/Header'
+import { selectStyles } from 'shared/ui/SelectStyles'
 
-export const BusStop = () => {
+import { useFastReplay } from './model/useFastReplay'
+import { useUrlBusStop } from './model/useUrlBusStop'
+
+export const BusStop: React.FC = () => {
 	useTimeLeftUpdater()
 
 	const { setQueryParams } = useUrlBusStop()
@@ -37,40 +38,45 @@ export const BusStop = () => {
 	const { shouldShowFastReply } = useFastReplay()
 	const { addComplain } = useComplainsContext()
 
-	const handleComplain = (type: ComplainType) => {
+	const handleComplain = (type: ComplainType): void => {
 		if (!busStop || left.minutes === null) return
 
 		const date = new Date().toISOString()
 
 		addComplain({
 			stop: busStop,
-			direction: direction,
-			date: date,
-			type: type,
+			direction,
+			date,
+			type,
 			on: 0,
 		})
 
-		AndrewLytics('fastReply')
+		AndrewLytics(`fastReply`)
 	}
 
-	const handleChangeBusStop = useCallback((e: any) => {
-		const busStopToChange = e?.value as StopKeys
+	const handleChangeBusStop = useCallback(
+		(e: SingleValue<IOption<StopKeys | null>>) => {
+			const busStopToChange = e?.value as StopKeys
 
-		dispatch(setBusStop(busStopToChange))
+			dispatch(setBusStop(busStopToChange))
 
-		AndrewLytics('selectBusStop')
-	}, [])
+			AndrewLytics(`selectBusStop`)
+		},
+		[dispatch],
+	)
 
 	useEffect(() => {
 		setQueryParams(busStop)
-	}, [busStop])
+	}, [busStop, setQueryParams])
 
 	const currentBusStop = useMemo(() => stopsOptions.find(stop => stop.value === busStop), [stopsOptions, busStop])
 
+	const headerText = t(`Bus stop`)
+
 	return (
-		<Container>
-			<Card>
-				<Header text={t('Bus stop')}>
+		<ContainerStyled>
+			<CardStyled>
+				<Header text={headerText}>
 					<Select
 						isSearchable={false}
 						styles={selectStyles}
@@ -88,7 +94,7 @@ export const BusStop = () => {
 					shouldShowFastReply={shouldShowFastReply}
 					onComplain={handleComplain}
 				/>
-			</Card>
-		</Container>
+			</CardStyled>
+		</ContainerStyled>
 	)
 }

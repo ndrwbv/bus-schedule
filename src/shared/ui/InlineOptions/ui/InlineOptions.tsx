@@ -1,28 +1,36 @@
 import { IOption } from 'shared/store/busStop/Stops'
-import { InlineOptionsContainer, InlineOptionsItem, OverLayContainer } from './styled'
 
-interface IProps {
-	list: IOption<any>[]
-	activeId: any
-	onClick: (value: any) => void
+import { InlineOptionsContainerStyled, InlineOptionsItemStyled, OverLayContainerStyled } from './styled'
+
+type ValueType = number | string | null
+
+interface IProps<T = ValueType> {
+	list: IOption<T>[]
+	activeId: T
+	onClick: (value: T) => void
 	defaultColor?: string
 }
 
-export const InlineOptions: React.FC<IProps> = ({ list, activeId, onClick, defaultColor = undefined }) => {
+export const InlineOptions = <T,>({
+	list,
+	activeId,
+	onClick,
+	defaultColor = undefined,
+}: React.PropsWithChildren<IProps<T | null>>): JSX.Element => {
 	return (
-		<OverLayContainer>
-			<InlineOptionsContainer>
+		<OverLayContainerStyled>
+			<InlineOptionsContainerStyled>
 				{list.map(option => (
-					<InlineOptionsItem
+					<InlineOptionsItemStyled
 						active={option.value === activeId}
 						defaultColor={defaultColor}
-						key={option.value}
+						key={option.value as string}
 						onClick={() => onClick(option.value)}
 					>
 						{option.label}
-					</InlineOptionsItem>
+					</InlineOptionsItemStyled>
 				))}
-			</InlineOptionsContainer>
-		</OverLayContainer>
+			</InlineOptionsContainerStyled>
+		</OverLayContainerStyled>
 	)
 }

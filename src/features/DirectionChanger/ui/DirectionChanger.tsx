@@ -6,7 +6,7 @@ import { AndrewLytics, useTypedSelector } from 'shared/lib'
 import { isHalloween } from 'shared/store/app/selectors/isHalloween'
 import { directionSelector, setDirection } from 'shared/store/busStop/busStopInfoSlice'
 import { DirectionsNew } from 'shared/store/busStop/Stops'
-import { Card, Container } from 'shared/ui'
+import { CardStyled, ContainerStyled } from 'shared/ui'
 
 import Web from '../img/web.svg'
 import { useUrlDirection } from '../model/useUrlDirection'
@@ -47,8 +47,8 @@ export const DirectionChanger = (): JSX.Element => {
 	}
 
 	return (
-		<Container>
-			<Card>
+		<ContainerStyled>
+			<CardStyled>
 				{isHalloweenMode && isWebVisible && (
 					<WebWrapper w={SIZE} h={SIZE} onClick={handleWebClick}>
 						<SVG src={Web} width={SIZE} height={SIZE} uniquifyIDs />
@@ -67,7 +67,7 @@ export const DirectionChanger = (): JSX.Element => {
 						{direction === `in` ? t(`Out of north park`) : t(`In north park`)}
 					</GoButtonStyled>
 				</GoButtonContainerStyled>
-			</Card>
-		</Container>
+			</CardStyled>
+		</ContainerStyled>
 	)
 }

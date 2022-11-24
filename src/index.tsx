@@ -5,6 +5,7 @@ import { Root } from 'App'
 import { store } from 'shared/store/app/configureStore'
 
 const container = document.getElementById(`root`)
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const root = createRoot(container!)
 
 root.render(

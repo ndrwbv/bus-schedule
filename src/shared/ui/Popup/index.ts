@@ -1,2 +1,1 @@
-export * from './Popup'
-export * from './styled'
+export * from './PopupContent'

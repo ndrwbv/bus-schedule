@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 export const baseRequest = async <T>(input: RequestInfo, init?: RequestInit | undefined): Promise<T> => {

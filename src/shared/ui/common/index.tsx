@@ -1,13 +1,13 @@
 import styled from 'styled-components'
 
-export const Container = styled.article<{ doubled?: boolean }>`
+export const ContainerStyled = styled.article<{ doubled?: boolean }>`
 	& + & {
 		margin-top: 12px;
 	}
-	margin: ${props => (props.doubled ? '24px 0 !important' : 'inherit')};
+	margin: ${props => (props.doubled ? `24px 0 !important` : `inherit`)};
 `
 
-export const Card = styled.div<{ isOverflow?: boolean | undefined; isNew?: boolean }>`
+export const CardStyled = styled.div<{ isOverflow?: boolean | undefined; isNew?: boolean }>`
 	position: relative;
 
 	background: #ffffff;
@@ -16,10 +16,10 @@ export const Card = styled.div<{ isOverflow?: boolean | undefined; isNew?: boole
 
 	padding: 18px 14px 14px 14px;
 
-	overflow: ${props => (props.isOverflow === true ? 'hidden' : 'initial')};
+	overflow: ${props => (props.isOverflow === true ? `hidden` : `initial`)};
 
 	&::after {
-		content: ${props => (props.isNew ? "'New'" : 'unset')};
+		content: ${props => (props.isNew ? `'New'` : `unset`)};
 		position: absolute;
 		top: -10px;
 		right: 15px;
@@ -32,7 +32,7 @@ export const Card = styled.div<{ isOverflow?: boolean | undefined; isNew?: boole
 	}
 `
 
-export const GrayText = styled.p`
+export const GrayTextStyled = styled.p`
 	margin: 0;
 	color: #a5a5a5;
 	font-size: 14px;
@@ -46,22 +46,22 @@ export const GrayText = styled.p`
 	}
 `
 
-export const CardHeader = styled.p`
+export const CardHeaderStyled = styled.p`
 	margin-bottom: 20px;
 	font-weight: 600;
 	font-size: 20px;
 `
 
 export type ButtonType = 'primary' | 'danger'
-export const CustomButton = styled.button<{
+export const CustomButtonStyled = styled.button<{
 	status: ButtonType
 	mt?: string
 }>`
 	width: 100%;
 	border: none;
 	border-radius: 13px;
-	background-color: ${props => (props.status === 'primary' ? '#1191FB' : '#FFB2B2')};
-	color: ${props => (props.status === 'primary' ? 'white' : '#9B2727')};
+	background-color: ${props => (props.status === `primary` ? `#1191FB` : `#FFB2B2`)};
+	color: ${props => (props.status === `primary` ? `white` : `#9B2727`)};
 	padding: 17px;
 
 	margin-top: ${props => props.mt};
@@ -78,7 +78,7 @@ export const CustomButton = styled.button<{
 	}
 `
 
-export const MiniButton = styled.button`
+export const MiniButtonStyled = styled.button`
 	cursor: pointer;
 	font-weight: 600;
 	font-size: 16px;

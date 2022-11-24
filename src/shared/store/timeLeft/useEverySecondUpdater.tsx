@@ -1,17 +1,17 @@
 import React from 'react'
 
-const useEverySecondUpdater = () => {
-	const [_everyMinuteUpdate, _setUpdate] = React.useState(0)
+const useEverySecondUpdater = (): number => {
+	const [everyMinuteUpdate, setUpdate] = React.useState(0)
 
 	React.useEffect(() => {
-		const int = setInterval(() => _setUpdate(Date.now()), 10000)
+		const int = setInterval(() => setUpdate(Date.now()), 10000)
 
 		return () => {
 			clearInterval(int)
 		}
-	}, [_everyMinuteUpdate])
+	}, [everyMinuteUpdate])
 
-	return _everyMinuteUpdate
+	return everyMinuteUpdate
 }
 
 export default useEverySecondUpdater

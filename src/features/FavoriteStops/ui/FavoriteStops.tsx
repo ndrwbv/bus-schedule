@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { busStopSelector, setBusStop, stopsOptionsSelector } from 'shared/store/busStop/busStopInfoSlice'
 import { StopKeys } from 'shared/store/busStop/Stops'
-import { Card, Container } from 'shared/ui'
+import { CardStyled, ContainerStyled } from 'shared/ui'
 import { Header } from 'shared/ui/Header'
 import { InlineOptions } from 'shared/ui/InlineOptions'
 
@@ -24,20 +24,22 @@ export const FavoriteStops: React.FC = () => {
 	)
 
 	const handleChangeBusStop = useCallback(
-		(busStopToChange: StopKeys) => {
-			dispatch(setBusStop(busStopToChange))
+		(busStopToChange: StopKeys | null) => {
+			if (busStopToChange) dispatch(setBusStop(busStopToChange))
 		},
 		[dispatch],
 	)
 
 	if (favoriteList.length === 0) return null
 
+	const myStops = t(`My stops`)
+
 	return (
-		<Container>
-			<Card>
-				<Header text={t(`My stops`)} />
-				<InlineOptions list={favoriteList} activeId={busStop} onClick={handleChangeBusStop} />
-			</Card>
-		</Container>
+		<ContainerStyled>
+			<CardStyled>
+				<Header text={myStops} />
+				<InlineOptions<StopKeys> list={favoriteList} activeId={busStop} onClick={handleChangeBusStop} />
+			</CardStyled>
+		</ContainerStyled>
 	)
 }

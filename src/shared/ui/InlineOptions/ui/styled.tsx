@@ -1,7 +1,7 @@
-import styled from 'styled-components'
 import { MAIN_BLUE, MAIN_GREY } from 'shared/theme'
+import styled from 'styled-components'
 
-export const InlineOptionsItem = styled.div<{
+export const InlineOptionsItemStyled = styled.div<{
 	active: boolean
 	defaultColor?: string | undefined
 }>`
@@ -10,7 +10,7 @@ export const InlineOptionsItem = styled.div<{
 
 	border-radius: 16px;
 	background-color: ${props => (props.active ? MAIN_BLUE : props.defaultColor ?? MAIN_GREY)};
-	color: ${props => (props.active ? 'white' : 'black')};
+	color: ${props => (props.active ? `white` : `black`)};
 
 	font-weight: 600;
 	white-space: nowrap;
@@ -24,7 +24,7 @@ export const InlineOptionsItem = styled.div<{
 	}
 `
 
-export const InlineOptionsContainer = styled.div`
+export const InlineOptionsContainerStyled = styled.div`
 	display: flex;
 	align-items: center;
 
@@ -43,7 +43,7 @@ export const InlineOptionsContainer = styled.div`
 	}
 `
 
-export const OverLayContainer = styled.div`
+export const OverLayContainerStyled = styled.div`
 	position: relative;
 	margin: 0 -12px;
 

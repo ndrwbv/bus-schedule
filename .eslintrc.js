@@ -8,8 +8,9 @@ module.exports = {
 		`plugin:prettier/recommended`,
 	],
 	plugins: [`optimize-regex`, `simple-import-sort`, `styled-components-varname`],
-	ignorePatterns: [`**/dist/**/*.*`],
+	ignorePatterns: [`**/dist/**/*.*`, `src/page/Game/*`],
 	rules: {
+		'react/prop-types': `off`,
 		'sonarjs/prefer-single-boolean-return': `off`,
 		'import/no-default-export': `off`,
 		'no-param-reassign': `off`,
