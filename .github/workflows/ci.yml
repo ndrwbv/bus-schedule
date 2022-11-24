@@ -3,11 +3,10 @@
 name: CI
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
+  pull_request
 
 jobs:
-  deploy:
+  ci:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.4.0
