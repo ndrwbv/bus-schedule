@@ -30,18 +30,13 @@
 		"dev": "vite",
 		"build": "vite build",
 		"preview": "vite preview",
+		"lint": "eslint --ext .ts,.tsx .",
+		"lint:fix": "eslint --fix --ext .ts,.tsx .",
 		"start": "DISABLE_ESLINT_PLUGIN=true  react-scripts start",
 		"test": "react-scripts test",
 		"ci-test": "react-scripts test --watchAll=false",
 		"eject": "react-scripts eject",
-		"deploy": "echo 'severbus.ru' > ./build/CNAME && gh-pages -d build",
-		"lint": "eslint --fix --ext .ts,.tsx ."
-	},
-	"eslintConfig": {
-		"extends": [
-			"react-app",
-			"react-app/jest"
-		]
+		"deploy": "echo 'severbus.ru' > ./build/CNAME && gh-pages -d build"
 	},
 	"browserslist": {
 		"production": [
@@ -65,6 +60,13 @@
 		"@typescript-eslint/eslint-plugin": "^5.43.0",
 		"@typescript-eslint/parser": "^5.43.0",
 		"@vitejs/plugin-react": "^2.2.0",
+		"gh-pages": "^4.0.0",
+		"i18next": "^22.0.5",
+		"prettier": "^2.7.1",
+		"react-ga": "^3.3.1",
+		"react-i18next": "^12.0.0",
+		"vite-plugin-checker": "^0.5.1",
+		"vite-tsconfig-paths": "^3.6.0",
 		"eslint": "^8.27.0",
 		"eslint-config-airbnb": "^19.0.4",
 		"eslint-config-airbnb-typescript": "^17.0.0",
@@ -80,13 +82,6 @@
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"eslint-plugin-simple-import-sort": "^8.0.0",
 		"eslint-plugin-sonarjs": "^0.16.0",
-		"eslint-plugin-styled-components-varname": "^1.0.1",
-		"gh-pages": "^4.0.0",
-		"i18next": "^22.0.5",
-		"prettier": "^2.7.1",
-		"react-ga": "^3.3.1",
-		"react-i18next": "^12.0.0",
-		"vite-plugin-checker": "^0.5.1",
-		"vite-tsconfig-paths": "^3.6.0"
+		"eslint-plugin-styled-components-varname": "^1.0.1"
 	}
 }

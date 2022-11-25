@@ -37,5 +37,4 @@ export default defineConfig(({ mode }) => ({
 		},
 	},
 	publicDir,
-	esbuild: { jsx: `automatic` },
 }))
