@@ -1,7 +1,29 @@
 {
 	"name": "bus-schedule",
+	"author": "Andrew Boev & Friends",
 	"version": "0.1.0",
 	"private": true,
+	"homepage": "https://severbus.ru",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview",
+		"lint": "eslint --ext .ts,.tsx .",
+		"lint:fix": "eslint --fix --ext .ts,.tsx .",
+		"deploy": "echo 'severbus.ru' > ./build/CNAME && gh-pages -d build"
+	},
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	},
 	"dependencies": {
 		"@reduxjs/toolkit": "^1.9.0",
 		"@testing-library/jest-dom": "^5.16.5",
@@ -16,39 +38,15 @@
 		"react-qr-code": "^2.0.8",
 		"react-redux": "^8.0.5",
 		"react-router-dom": "6.4.3",
-		"react-scripts": "5.0.1",
 		"react-select": "^5.6.1",
 		"react-spring-bottom-sheet": "^3.4.1",
 		"react-yandex-metrika": "^2.6.0",
 		"styled-components": "^5.3.6",
 		"typescript": "^4.9.3",
 		"vite": "^3.2.4",
-		"web-vitals": "^3.1.0"
-	},
-	"homepage": "https://severbus.ru",
-	"scripts": {
-		"dev": "vite",
-		"build": "vite build",
-		"preview": "vite preview",
-		"lint": "eslint --ext .ts,.tsx .",
-		"lint:fix": "eslint --fix --ext .ts,.tsx .",
-		"start": "DISABLE_ESLINT_PLUGIN=true  react-scripts start",
-		"test": "react-scripts test",
-		"ci-test": "react-scripts test --watchAll=false",
-		"eject": "react-scripts eject",
-		"deploy": "echo 'severbus.ru' > ./build/CNAME && gh-pages -d build"
-	},
-	"browserslist": {
-		"production": [
-			">0.2%",
-			"not dead",
-			"not op_mini all"
-		],
-		"development": [
-			"last 1 chrome version",
-			"last 1 firefox version",
-			"last 1 safari version"
-		]
+		"react-ga": "^3.3.1",
+		"i18next": "^22.0.5",
+		"react-i18next": "^12.0.0"
 	},
 	"devDependencies": {
 		"@types/jest": "^29.2.3",
@@ -77,10 +75,7 @@
 		"eslint-plugin-sonarjs": "^0.16.0",
 		"eslint-plugin-styled-components-varname": "^1.0.1",
 		"gh-pages": "^4.0.0",
-		"i18next": "^22.0.5",
 		"prettier": "^2.7.1",
-		"react-ga": "^3.3.1",
-		"react-i18next": "^12.0.0",
 		"rollup-plugin-visualizer": "^5.8.3",
 		"vite-plugin-checker": "^0.5.1",
 		"vite-tsconfig-paths": "^3.6.0"
