@@ -1,5 +1,6 @@
 import process from 'node:process'
 import path from 'path'
+// import visualizer from 'rollup-plugin-visualizer'
 import { defineConfig } from 'vite'
 import checker from 'vite-plugin-checker'
 import tsconfigPaths from 'vite-tsconfig-paths'
@@ -35,7 +36,6 @@ export default defineConfig(({ mode }) => ({
 			input: app,
 			preserveEntrySignatures: `strict`,
 		},
-		minify: false
 	},
 	publicDir,
 }))

@@ -6,4 +6,3 @@
 vite:
 - асеты все свалены в кучу
 - TypeError: Cannot convert undefined or null to object
-- оптимизировать все картинки
