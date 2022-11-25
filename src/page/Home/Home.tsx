@@ -43,7 +43,7 @@ export const Home: React.FC = () => {
 					</HeaderInnerStyled>
 				</HeaderContainerStyled>
 
-				<Map />
+				{/* <Map /> */}
 
 				{/* <BottomSheet
 					open
