@@ -1,25 +1,16 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Game from 'page/Game/Game'
-import Intro from 'page/Game/Intro/Intro'
-import { configureI18next, initGA, YM } from 'shared/lib'
+import React from 'react'
+import { createRoot } from 'react-dom/client'
+import { Provider } from 'react-redux'
+import { store } from 'shared/store/app/configureStore'
 
-import 'react-spring-bottom-sheet/dist/style.css'
-import 'shared/theme/styles/index.css'
-import { Home } from '../page/Home/Home'
+import { Root } from './App'
 
-initGA()
+const container = document.getElementById(`root`)
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const root = createRoot(container!)
 
-configureI18next()
-
-export const Root: React.FC = () => (
-	<>
-		<BrowserRouter>
-			<Routes>
-				<Route path="/" element={<Home />} />
-				<Route path="/game" element={<Intro />} />
-				<Route path="/game/doubles" element={<Game />} />
-			</Routes>
-		</BrowserRouter>
-		<YM />
-	</>
+root.render(
+	<Provider store={store}>
+		<Root />
+	</Provider>,
 )
