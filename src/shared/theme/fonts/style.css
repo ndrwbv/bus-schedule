@@ -3,9 +3,7 @@
   font-display: auto;
   font-weight: normal;
   font-style: normal;
-  src:
-    local('Roboto'),
-    url("Roboto-Regular.ttf") format('ttf');
+  src: url("Roboto-Regular.ttf");
 }
 
 @font-face {
@@ -13,9 +11,7 @@
   font-display: auto;
   font-weight: 600;
   font-style: normal;
-  src:
-    local('Roboto'),
-    url("Roboto-Medium.ttf") format('ttf');
+  src: url("Roboto-Medium.ttf");
 }
 
 @font-face {
@@ -23,7 +19,5 @@
   font-display: auto;
   font-weight: 700;
   font-style: normal;
-  src:
-    local('Roboto'),
-    url("Roboto-Bold.ttf") format('ttf');
+  src: url("Roboto-Bold.ttf");
 }
