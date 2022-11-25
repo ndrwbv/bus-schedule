@@ -35,6 +35,7 @@ export default defineConfig(({ mode }) => ({
 			input: app,
 			preserveEntrySignatures: `strict`,
 		},
+		minify: false
 	},
 	publicDir,
 }))
