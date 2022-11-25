@@ -30,8 +30,10 @@ export const GoButtonStyled = styled.button<{ active?: boolean }>`
 	text-align: left;
 	cursor: pointer;
 
-	&:hover {
-		opacity: 0.8;
+	@media (hover: hover) {
+		&:hover {
+			opacity: 0.8;
+		}
 	}
 `
 

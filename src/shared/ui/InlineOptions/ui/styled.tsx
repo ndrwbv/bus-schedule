@@ -19,8 +19,10 @@ export const InlineOptionsItemStyled = styled.div<{
 		margin-left: 12px;
 	}
 
-	&:hover {
-		opacity: 0.8;
+	@media (hover: hover) {
+		&:hover {
+			opacity: 0.8;
+		}
 	}
 `
 

@@ -73,8 +73,10 @@ export const CustomButtonStyled = styled.button<{
 		opacity: 0.5;
 	}
 
-	&:hover {
-		opacity: 0.8;
+	@media (hover: hover) {
+		&:hover {
+			opacity: 0.8;
+		}
 	}
 `
 
@@ -91,7 +93,9 @@ export const MiniButtonStyled = styled.button`
 		opacity: 0.5;
 	}
 
-	&:hover {
-		opacity: 0.8;
+	@media (hover: hover) {
+		&:hover {
+			opacity: 0.8;
+		}
 	}
 `

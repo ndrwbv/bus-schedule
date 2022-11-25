@@ -12,8 +12,10 @@ export const FeedbackLinkStyled = styled.a`
 	background: #caeaff;
 	border-radius: 15px;
 
-	&:hover {
-		opacity: 0.8;
+	@media (hover: hover) {
+		&:hover {
+			opacity: 0.8;
+		}
 	}
 `
 
