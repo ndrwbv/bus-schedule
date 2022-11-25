@@ -99,8 +99,10 @@ import{c as A,i as u0,a as q0,j as t,l as z0,y as K0,R as e0,u as p,b as G0,f as
 		opacity: 0.5;
 	}
 
-	&:hover {
-		opacity: 0.8;
+	@media (hover: hover) {
+		&:hover {
+			opacity: 0.8;
+		}
 	}
 `,n1=i.button`
 	cursor: pointer;
@@ -115,8 +117,10 @@ import{c as A,i as u0,a as q0,j as t,l as z0,y as K0,R as e0,u as p,b as G0,f as
 		opacity: 0.5;
 	}
 
-	&:hover {
-		opacity: 0.8;
+	@media (hover: hover) {
+		&:hover {
+			opacity: 0.8;
+		}
 	}
 `,k0=i.div`
 	padding: 20px 12px;
@@ -229,8 +233,10 @@ import{c as A,i as u0,a as q0,j as t,l as z0,y as K0,R as e0,u as p,b as G0,f as
 	text-align: left;
 	cursor: pointer;
 
-	&:hover {
-		opacity: 0.8;
+	@media (hover: hover) {
+		&:hover {
+			opacity: 0.8;
+		}
 	}
 `,_1=i(z)`
 	position: absolute;
@@ -251,8 +257,10 @@ import{c as A,i as u0,a as q0,j as t,l as z0,y as K0,R as e0,u as p,b as G0,f as
 		margin-left: 12px;
 	}
 
-	&:hover {
-		opacity: 0.8;
+	@media (hover: hover) {
+		&:hover {
+			opacity: 0.8;
+		}
 	}
 `,M1=i.div`
 	display: flex;
@@ -488,8 +496,10 @@ import{c as A,i as u0,a as q0,j as t,l as z0,y as K0,R as e0,u as p,b as G0,f as
 	background: #caeaff;
 	border-radius: 15px;
 
-	&:hover {
-		opacity: 0.8;
+	@media (hover: hover) {
+		&:hover {
+			opacity: 0.8;
+		}
 	}
 `,eu=i.div`
 	font-weight: 600;
@@ -629,4 +639,4 @@ import{c as A,i as u0,a as q0,j as t,l as z0,y as K0,R as e0,u as p,b as G0,f as
 	flex-direction: column;
 	align-items: center;
 	height: 100%;
-`,Ku=()=>(iu(),t(D1,{children:l(zu,{children:[t(Y4,{children:l(V4,{children:[t(W4,{}),l(Q4,{children:[t(j1,{}),t(qu,{})]})]})}),l(lu,{children:[t(J1,{}),t(H1,{}),t(Lu,{}),t(w1,{}),t(s1,{}),t(q1,{}),t(Ou,{}),t(ou,{}),t(ru,{}),t(x,{children:t(a1,{})})]}),t(cu,{})]})})),Gu=v.lazy(()=>A0(()=>import("./Game.2fa23923.js"),["assets/Game.2fa23923.js","assets/vendor.fa1a4161.js","assets/index.e48b268e.js"])),ju=v.lazy(()=>A0(()=>import("./Intro.c67cf162.js"),["assets/Intro.c67cf162.js","assets/vendor.fa1a4161.js","assets/index.e48b268e.js"]));r4();o4();const Wu=()=>l($,{children:[t(Y0,{children:l(Q0,{children:[t(G,{path:"/",element:t(Ku,{})}),t(G,{path:"/game",element:t(v.Suspense,{fallback:t($,{children:"..."}),children:t(ju,{})})}),t(G,{path:"/game/doubles",element:t(v.Suspense,{fallback:t($,{children:"..."}),children:t(Gu,{})})})]})}),t(s4,{})]}),Vu=document.getElementById("root"),Yu=Z0(Vu);Yu.render(t(J0,{store:N,children:t(Wu,{})}));export{f as A,Xu as B,Zu as G,bu as L,Ju as W,K1 as a,k as b,w0 as l};
+`,Ku=()=>(iu(),t(D1,{children:l(zu,{children:[t(Y4,{children:l(V4,{children:[t(W4,{}),l(Q4,{children:[t(j1,{}),t(qu,{})]})]})}),l(lu,{children:[t(J1,{}),t(H1,{}),t(Lu,{}),t(w1,{}),t(s1,{}),t(q1,{}),t(Ou,{}),t(ou,{}),t(ru,{}),t(x,{children:t(a1,{})})]}),t(cu,{})]})})),Gu=v.lazy(()=>A0(()=>import("./Game.4915cb2a.js"),["assets/Game.4915cb2a.js","assets/vendor.fa1a4161.js","assets/index.e48b268e.js"])),ju=v.lazy(()=>A0(()=>import("./Intro.a55d8d87.js"),["assets/Intro.a55d8d87.js","assets/vendor.fa1a4161.js","assets/index.e48b268e.js"]));r4();o4();const Wu=()=>l($,{children:[t(Y0,{children:l(Q0,{children:[t(G,{path:"/",element:t(Ku,{})}),t(G,{path:"/game",element:t(v.Suspense,{fallback:t($,{children:"..."}),children:t(ju,{})})}),t(G,{path:"/game/doubles",element:t(v.Suspense,{fallback:t($,{children:"..."}),children:t(Gu,{})})})]})}),t(s4,{})]}),Vu=document.getElementById("root"),Yu=Z0(Vu);Yu.render(t(J0,{store:N,children:t(Wu,{})}));export{f as A,Xu as B,Zu as G,bu as L,Ju as W,K1 as a,k as b,w0 as l};
