@@ -16,7 +16,7 @@ import { ContainerStyled } from 'shared/ui/common'
 import { Footer } from 'shared/ui/Footer'
 import { MainLayoutStyled } from 'shared/ui/MainLayout'
 import { BusStop } from 'widget/BusStop'
-import { Map } from 'widget/Map'
+// import { Map } from 'widget/Map'
 import { TodaysBuses } from 'widget/TodaysBuses'
 
 import { Share } from '../../features/Share'
@@ -43,7 +43,7 @@ export const Home: React.FC = () => {
 					</HeaderInnerStyled>
 				</HeaderContainerStyled>
 
-				<Map />
+				{/* <Map /> */}
 
 				{/* <BottomSheet
 					open
