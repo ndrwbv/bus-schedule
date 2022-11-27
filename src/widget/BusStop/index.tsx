@@ -55,8 +55,10 @@ export const BusStop: React.FC = () => {
 	}
 
 	const handleChangeBusStop = useCallback(
-		(e: SingleValue<IOption<StopKeys | null>>) => {
-			const busStopToChange = e?.value as StopKeys
+		(e: SingleValue<IOption<string | null>>) => {
+			if (!e?.value) return
+
+			const busStopToChange = e.value as StopKeys
 
 			dispatch(setBusStop(busStopToChange))
 
@@ -89,7 +91,7 @@ export const BusStop: React.FC = () => {
 
 				<HowMuchLeft
 					holiday={todaysHoliday}
-					busStop={busStop}
+					busStoLabel={busStop}
 					left={left}
 					shouldShowFastReply={shouldShowFastReply}
 					onComplain={handleComplain}

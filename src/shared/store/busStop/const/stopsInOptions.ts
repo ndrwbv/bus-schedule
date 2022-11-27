@@ -1,4 +1,4 @@
-import { DirectionsNew, IOption, IStops, StopKeysIn } from '../Stops'
+import { DirectionsNew, IOption, IStops, StopKeys } from '../Stops'
 
 export const STOPS_IN: IStops<DirectionsNew.in>[] = [
 	{
@@ -105,7 +105,7 @@ export const STOPS_IN: IStops<DirectionsNew.in>[] = [
 	},
 ]
 
-export const StopsInOptions: IOption<StopKeysIn | null>[] = [
+export const StopsInOptions: IOption<StopKeys | null>[] = [
 	{
 		label: `Не выбрано`,
 		value: null,
