@@ -11,10 +11,10 @@ export const HeaderInnerStyled = styled.div`
 `
 
 export const HeaderContainerStyled = styled.nav`
-	/* position: absolute;
+	position: absolute;
 	top: 0;
 	left: 0;
-	z-index: 2; */
+	z-index: 2;
 
 	display: flex;
 	align-items: center;

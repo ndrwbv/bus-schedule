@@ -1,5 +1,6 @@
-import React from 'react'
-import { MapContainer, TileLayer } from 'react-leaflet'
+import React, { useState } from 'react'
+import { MapContainer, Marker, TileLayer } from 'react-leaflet'
+import { LatLngExpression } from 'leaflet'
 import styled from 'styled-components'
 
 import 'leaflet/dist/leaflet.css'
@@ -10,13 +11,35 @@ const MapStyled = styled(MapContainer)`
 	width: 100vw;
 `
 
+const GeoLocationStyled = styled.div`
+	width: 20px;
+	height: 20px;
+	background-color: red;
+	border-radius: 50%;
+`
+
 export const Map: React.FC = () => {
+	const [mapCenter, setMapCenter] = useState<LatLngExpression>([56.47177, 84.899966])
+
 	return (
-		<MapStyled center={[56.46779, 84.90553]} zoom={15} zoomControl={false} scrollWheelZoom={false}>
+		<MapStyled center={mapCenter} zoom={15} zoomControl={false} scrollWheelZoom>
 			<TileLayer
-				attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-				url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+				attribution="google"
+				url="http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}"
+				subdomains={[`mt0`, `mt1`, `mt2`, `mt3`]}
+				updateWhenIdle={false}
 			/>
+
+			<Marker
+				position={[56.47177, 84.899966]}
+				eventHandlers={{
+					click: e => {
+						console.log(`marker clicked`, e)
+						setMapCenter(e.latlng)
+					},
+				}}
+			/>
+			<GeoLocationStyled />
 		</MapStyled>
 	)
 }
