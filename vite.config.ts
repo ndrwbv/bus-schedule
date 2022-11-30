@@ -1,6 +1,6 @@
 import process from 'node:process'
 import path from 'path'
-// import visualizer from 'rollup-plugin-visualizer'
+import visualizer from 'rollup-plugin-visualizer'
 import { defineConfig } from 'vite'
 import checker from 'vite-plugin-checker'
 import tsconfigPaths from 'vite-tsconfig-paths'
@@ -24,10 +24,10 @@ export default defineConfig(({ mode }) => ({
 		splitVendorChunkPlugin(),
 		checker({ typescript: mode === `production` }),
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-call
-		// visualizer({
-		// 	filename: `index.html`,
-		// 	open: true,
-		// }),
+		visualizer({
+			filename: `build.html`,
+			open: true,
+		}),
 	],
 	build: {
 		emptyOutDir: true,
