@@ -1,6 +1,9 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { MapContainer, Marker, TileLayer } from 'react-leaflet'
+import { useSelector } from 'react-redux'
 import { LatLngExpression } from 'leaflet'
+import { busStopNewSelector } from 'shared/store/busStop/busStopInfoSlice'
+import { STOPS } from 'shared/store/busStop/const/stops'
 import styled from 'styled-components'
 
 import 'leaflet/dist/leaflet.css'
@@ -17,10 +20,12 @@ const GeoLocationStyled = styled.div`
 	background-color: red;
 	border-radius: 50%;
 `
+const STOPS_WITH_COORDS = STOPS.filter(stop => stop.latLon !== null)
 
 export const Map: React.FC = () => {
 	const [mapCenter, setMapCenter] = useState<LatLngExpression>([56.47177, 84.899966])
-
+	const busStop = useSelector(busStopNewSelector)
+console.log(STOPS_WITH_COORDS)
 	return (
 		<MapStyled center={mapCenter} zoom={15} zoomControl={false} scrollWheelZoom>
 			<TileLayer
@@ -30,15 +35,17 @@ export const Map: React.FC = () => {
 				updateWhenIdle={false}
 			/>
 
-			<Marker
-				position={[56.47177, 84.899966]}
-				eventHandlers={{
-					click: e => {
-						console.log(`marker clicked`, e)
-						setMapCenter(e.latlng)
-					},
-				}}
-			/>
+			{STOPS_WITH_COORDS.map(stop => (
+				<Marker
+					position={stop.latLon}
+					eventHandlers={{
+						click: e => {
+							console.log(`marker clicked`, e)
+							setMapCenter(e.latlng)
+						},
+					}}
+				/>
+			))}
 			<GeoLocationStyled />
 		</MapStyled>
 	)
