@@ -1,6 +1,0 @@
-mutation Complain($data: ComplainsInputDTO!) {
-    createComplain(data: $data) 
-  	{
-        id
-    }
-}

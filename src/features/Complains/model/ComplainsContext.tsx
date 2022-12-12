@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useMemo } from 'react'
 
-import { IComplains, IComplainsResponse, useComplains } from './useComplains'
+import { IComplains } from './Complains'
+import { IComplainsResponse, useComplains } from './useComplains'
 
 const DEFAULT_PROPS = {
 	complains: [],

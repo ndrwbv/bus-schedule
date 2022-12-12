@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
+import { complainsApi } from 'features/Complains/model/complainsApi'
 import favoriteStops from 'features/FavoriteStops/model/favoriteStopsSlice'
 import { infoApi } from 'features/Info/model/info'
 import busStopInfo from 'shared/store/busStop/busStopInfoSlice'
@@ -22,6 +23,7 @@ export const store = configureStore({
 		holidaysSlice,
 		timeLeftSlice,
 		[infoApi.reducerPath]: infoApi.reducer,
+		[complainsApi.reducerPath]: complainsApi.reducer,
 	},
 	devTools: process.env.NODE_ENV !== `production`,
 	middleware: getDefaultMiddleware =>
@@ -30,6 +32,7 @@ export const store = configureStore({
 			changeBusStopOnBusStopChange.middleware,
 			holidaysSetter.middleware,
 			infoApi.middleware,
+			complainsApi.middleware,
 		]),
 })
 

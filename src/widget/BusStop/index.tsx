@@ -39,7 +39,7 @@ export const BusStop: React.FC = () => {
 	const { addComplain } = useComplainsContext()
 
 	const handleComplain = (type: ComplainType): void => {
-		if (!busStop || left.minutes === null) return
+		// if (!busStop || left.minutes === null) return
 
 		const date = new Date().toISOString()
 
@@ -91,7 +91,7 @@ export const BusStop: React.FC = () => {
 					holiday={todaysHoliday}
 					busStop={busStop}
 					left={left}
-					shouldShowFastReply={shouldShowFastReply}
+					shouldShowFastReply={true}
 					onComplain={handleComplain}
 				/>
 			</CardStyled>
