@@ -2,21 +2,21 @@ import { useCallback, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
 import queryString from 'query-string'
-import { setBusStop } from 'shared/store/busStop/busStopInfoSlice'
-import { StopKeys } from 'shared/store/busStop/Stops'
+import { setBusStopNew } from 'shared/store/busStop/busStopInfoSlice'
+import { DirectionsNew, IStops } from 'shared/store/busStop/Stops'
 
 interface IReturns {
-	setQueryParams: (b: string | null) => void
+	setQueryParams: (b: IStops<DirectionsNew> | null) => void
 }
 export const useUrlBusStop = (): IReturns => {
 	const dispatch = useDispatch()
 	const [searchParams, setSearchParams] = useSearchParams()
 
 	const setQueryParams = useCallback(
-		(b: string | null): void => {
+		(b: IStops<DirectionsNew> | null): void => {
 			if (!b) return
 
-			searchParams.set(`b`, b)
+			searchParams.set(`stop`, b.id)
 			setSearchParams(searchParams)
 		},
 		[searchParams, setSearchParams],
@@ -25,10 +25,10 @@ export const useUrlBusStop = (): IReturns => {
 	useEffect(() => {
 		const parsed = queryString.parse(window.location.search)
 
-		const busStopToSet = parsed.b
+		const busStopId = parsed.stop
 
-		if (!busStopToSet) return
-		dispatch(setBusStop(busStopToSet as StopKeys))
+		if (!busStopId) return
+		dispatch(setBusStopNew(busStopId as string))
 	}, [dispatch])
 
 	return {

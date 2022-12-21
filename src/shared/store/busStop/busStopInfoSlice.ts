@@ -31,21 +31,27 @@ export const busStopInfoSlice = createSlice({
 			state.stopsOptions = action.payload === DirectionsNew.in ? StopsInOptions : StopsOutOptions
 		},
 		setBusStop: (state, action: PayloadAction<StopKeys | null>) => {
-			const stop = STOPS.find(s => s.label === action.payload && s.direction === state.direction) || null
-
 			state.busStop = action.payload
+
+			const stop = STOPS.find(s => s.label === action.payload && s.direction === state.direction) || null
 			state.busStopNew = stop
 		},
 		setBusStopNew: (state, action: PayloadAction<string | null>) => {
-			const stop = STOPS.find(s => s.id === action.payload && s.direction === state.direction) || null
+			const stop = STOPS.find(s => s.id === action.payload) || null
 
 			state.busStopNew = stop
+
+			if (stop) {
+				state.direction = stop.direction
+				state.stopsOptions = stop.direction === DirectionsNew.in ? StopsInOptions : StopsOutOptions
+				state.busStop = stop.label
+			}
 		},
 	},
 })
 
 // Action creators are generated for each case reducer function
-export const { setDirection, setBusStop } = busStopInfoSlice.actions
+export const { setDirection, setBusStop, setBusStopNew } = busStopInfoSlice.actions
 
 export const busStopSelector = (state: RootState): StopKeys | null => state.busStopInfo.busStop
 export const busStopNewSelector = (state: RootState): IStops<DirectionsNew> | null => state.busStopInfo.busStopNew

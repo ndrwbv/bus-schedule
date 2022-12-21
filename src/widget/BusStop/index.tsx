@@ -7,7 +7,7 @@ import { useComplainsContext } from 'features/Complains/model/ComplainsContext'
 import { HowMuchLeft } from 'features/HowMuchLeft/HowMuchLeft'
 import { AndrewLytics } from 'shared/lib'
 import {
-	busStopSelector,
+	busStopNewSelector,
 	directionSelector,
 	setBusStop,
 	stopsOptionsSelector,
@@ -30,7 +30,7 @@ export const BusStop: React.FC = () => {
 	const { t } = useTranslation()
 	const dispatch = useDispatch()
 	const stopsOptions = useSelector(stopsOptionsSelector)
-	const busStop = useSelector(busStopSelector)
+	const busStopNew = useSelector(busStopNewSelector)
 	const direction = useSelector(directionSelector)
 	const todaysHoliday = useSelector(todayHolidaySelector)
 	const left = useSelector(leftSelector)
@@ -39,12 +39,12 @@ export const BusStop: React.FC = () => {
 	const { addComplain } = useComplainsContext()
 
 	const handleComplain = (type: ComplainType): void => {
-		if (!busStop || left.minutes === null) return
+		if (!busStopNew || left.minutes === null) return
 
 		const date = new Date().toISOString()
 
 		addComplain({
-			stop: busStop,
+			stop: busStopNew.label,
 			direction,
 			date,
 			type,
@@ -68,10 +68,13 @@ export const BusStop: React.FC = () => {
 	)
 
 	useEffect(() => {
-		setQueryParams(busStop)
-	}, [busStop, setQueryParams])
+		setQueryParams(busStopNew)
+	}, [busStopNew, setQueryParams])
 
-	const currentBusStop = useMemo(() => stopsOptions.find(stop => stop.value === busStop), [stopsOptions, busStop])
+	const currentBusStop = useMemo(
+		() => stopsOptions.find(stop => stop.value === busStopNew?.label),
+		[stopsOptions, busStopNew],
+	) // TODO remove find
 
 	const headerText = t(`Bus stop`)
 
@@ -91,7 +94,7 @@ export const BusStop: React.FC = () => {
 
 				<HowMuchLeft
 					holiday={todaysHoliday}
-					busStoLabel={busStop}
+					busStopLabel={busStopNew?.label || null}
 					left={left}
 					shouldShowFastReply={shouldShowFastReply}
 					onComplain={handleComplain}
