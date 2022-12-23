@@ -1,8 +1,7 @@
-import { useRef, useState } from 'react'
-import { BottomSheet, BottomSheetRef } from 'react-spring-bottom-sheet'
 import { HeaderActionsStyled, HeaderContainerStyled, HeaderInnerStyled, Logo } from 'entities/Logo'
 import { TranslationLink } from 'entities/TranslationLink'
 import { WriteMe } from 'entities/WriteMe'
+import { BottomSheetCustom } from 'features/BottomSheet/BottomSheet'
 import { Complains } from 'features/Complains'
 import { ComplainsProvider } from 'features/Complains/model/ComplainsContext'
 import { DirectionChanger } from 'features/DirectionChanger'
@@ -25,10 +24,6 @@ import { HomeContainerStyled } from './styled'
 export const Home: React.FC = () => {
 	useSchedule()
 
-	const sheetRef = useRef<BottomSheetRef>(null)
-	const [expandOnContentDrag] = useState<boolean>(true)
-	const focusRef = useRef<HTMLButtonElement>(null)
-
 	return (
 		<ComplainsProvider>
 			<HomeContainerStyled>
@@ -45,40 +40,32 @@ export const Home: React.FC = () => {
 
 				<Map />
 
-				<BottomSheet
-					open
-					skipInitialTransition
-					// sibling={<CloseExample className="z-10" />}
-					ref={sheetRef}
-					initialFocusRef={focusRef}
-					defaultSnap={({ maxHeight }) => maxHeight / 2}
-					snapPoints={({ maxHeight }) => [maxHeight - maxHeight / 10, maxHeight / 4, maxHeight * 0.6]}
-					expandOnContentDrag={expandOnContentDrag}
-					blocking={false}
-				>
-					<MainLayoutStyled>
-						<Info />
-						<DirectionChanger />
-						<BusStop />
+				<BottomSheetCustom>
+					<>
+						<MainLayoutStyled>
+							<Info />
+							<DirectionChanger />
+							<BusStop />
 
-						<Complains />
+							<Complains />
 
-						<TranslationLink />
+							<TranslationLink />
 
-						<FavoriteStops />
+							<FavoriteStops />
 
-						<TodaysBuses />
-						<LeaveFeedbackButton />
+							<TodaysBuses />
+							<LeaveFeedbackButton />
 
-						<OtherTimeBusses />
+							<OtherTimeBusses />
 
-						<ContainerStyled>
-							<WriteMe />
-						</ContainerStyled>
-					</MainLayoutStyled>
+							<ContainerStyled>
+								<WriteMe />
+							</ContainerStyled>
+						</MainLayoutStyled>
 
-					<Footer />
-				</BottomSheet>
+						<Footer />
+					</>
+				</BottomSheetCustom>
 			</HomeContainerStyled>
 		</ComplainsProvider>
 	)

@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from 'react-leaflet'
 import { useDispatch, useSelector } from 'react-redux'
+import { BottomSheetStates, setBottomSheetPosition } from 'features/BottomSheet/model/bottomSheetSlice'
 import { LatLngExpression } from 'leaflet'
 import { busStopNewSelector, setBusStopNew } from 'shared/store/busStop/busStopInfoSlice'
 import { STOPS } from 'shared/store/busStop/const/stops'
@@ -46,6 +47,7 @@ const MapContent: React.FC = () => {
 						click: e => {
 							dispath(dispath(setBusStopNew(stop.id)))
 							map.flyTo({ lat: e.latlng.lat, lng: e.latlng.lng - 0.000357 }, 18)
+							dispath(setBottomSheetPosition(BottomSheetStates.MID))
 						},
 					}}
 				/>
