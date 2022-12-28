@@ -44,8 +44,8 @@ export const Home: React.FC = () => {
 
 				<BottomSheetCustom>
 					<>
-						<MyLocation />
 						<MainLayoutStyled>
+						<MyLocation />
 							<Info />
 							<NearestStops />
 							<DirectionChanger />

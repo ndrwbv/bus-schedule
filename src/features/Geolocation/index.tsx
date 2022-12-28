@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { setLocation, setLocationError, setNoGeolocation } from './model/myLocationSlice'
 
 const GeoLocationStyled = styled.div`
-	position: absolute;
+	/* position: absolute; */
 	top: -30px;
 	left: 10px;
 	width: 20px;

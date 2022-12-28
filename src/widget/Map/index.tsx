@@ -67,7 +67,7 @@ export const Map: React.FC = () => {
 		<MapStyled center={MAP_CENTER_DEFAULT} zoom={15} zoomControl={false} scrollWheelZoom>
 			<TileLayer
 				attribution="google"
-				url="http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}"
+				url="https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}"
 				subdomains={[`mt0`, `mt1`, `mt2`, `mt3`]}
 				updateWhenIdle={false}
 			/>
