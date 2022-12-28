@@ -3,10 +3,8 @@ import { MapContainer, Marker, TileLayer, useMap, useMapEvents } from 'react-lea
 import { useDispatch, useSelector } from 'react-redux'
 import { BottomSheetStates, setBottomSheetPosition } from 'features/BottomSheet/model/bottomSheetSlice'
 import { userLocationSelector } from 'features/Geolocation/model/myLocationSlice'
-import L from 'leaflet'
 import { busStopNewSelector, setBusStopNew } from 'shared/store/busStop/busStopInfoSlice'
 import { STOPS } from 'shared/store/busStop/const/stops'
-import { DirectionsNew, IStops } from 'shared/store/busStop/Stops'
 import styled from 'styled-components'
 
 import 'leaflet/dist/leaflet.css'
@@ -16,10 +14,6 @@ const MapStyled = styled(MapContainer)`
 	height: 100vh;
 	width: 100vw;
 `
-
-const STOPS_WITH_COORDS = STOPS.filter(
-	(stop: IStops<DirectionsNew.in> | IStops<DirectionsNew.out>) => stop.latLon !== null,
-)
 
 const MapContent: React.FC = () => {
 	const map = useMap()
@@ -34,7 +28,7 @@ const MapContent: React.FC = () => {
 	})
 
 	useEffect(() => {
-		if (busStop && busStop.latLon) {
+		if (busStop) {
 			map.flyTo(busStop.latLon, 18)
 		}
 	}, [busStop, map])
@@ -48,7 +42,7 @@ const MapContent: React.FC = () => {
 
 	return (
 		<>
-			{STOPS_WITH_COORDS.map(stop => (
+			{STOPS.map(stop => (
 				<Marker
 					key={stop.id}
 					position={stop.latLon}
@@ -66,7 +60,8 @@ const MapContent: React.FC = () => {
 	)
 }
 
-const MAP_CENTER_DEFAULT = [56.47177, 84.899966]
+const MAP_CENTER_DEFAULT = { lat: 56.47177, lng: 84.899966 }
+
 export const Map: React.FC = () => {
 	return (
 		<MapStyled center={MAP_CENTER_DEFAULT} zoom={15} zoomControl={false} scrollWheelZoom>

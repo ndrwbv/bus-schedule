@@ -50,7 +50,7 @@ export interface IStops<T extends DirectionsNew> {
 	id: string
 	direction: T
 	label: StopKeysMap[T]
-	latLon: ICoordites | null
+	latLon: ICoordites
 }
 
 type StopKeysMap = {
