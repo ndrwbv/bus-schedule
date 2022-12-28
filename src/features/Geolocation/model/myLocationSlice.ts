@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'shared/store/app/configureStore'
-import { StopKeys } from 'shared/store/busStop/Stops'
 
 export interface MyLocationState {
 	location: GeolocationPosition | undefined
@@ -33,6 +32,7 @@ export const myLocationSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const { setLocation, setLocationError, setNoGeolocation } = myLocationSlice.actions
 
-export const favoriteStopsSelector = (state: RootState): StopKeys[] => state.favoriteStops.stops
+export const userLocationSelector = (state: RootState): GeolocationPosition | undefined =>
+	state.myLocationSlice.location
 
 export default myLocationSlice.reducer

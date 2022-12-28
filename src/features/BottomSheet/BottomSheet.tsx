@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { BottomSheet, BottomSheetRef } from 'react-spring-bottom-sheet'
+import styled from 'styled-components'
 
 import { getSnapPoints, getSnapValue, snapBottom, snapMid, snapTop } from './helpers/getSnapPoints'
 import {
@@ -11,6 +12,9 @@ import {
 	setMaxHeight,
 } from './model/bottomSheetSlice'
 
+const BottomSheetStyled = styled(BottomSheet)`
+	background-color: red;
+`
 interface IProps {
 	children: JSX.Element
 }
@@ -64,7 +68,7 @@ export const BottomSheetCustom: React.FC<IProps> = ({ children }) => {
 	}
 
 	return (
-		<BottomSheet
+		<BottomSheetStyled
 			open
 			skipInitialTransition
 			ref={sheetRef}
@@ -76,6 +80,6 @@ export const BottomSheetCustom: React.FC<IProps> = ({ children }) => {
 			onSpringEnd={handleSpringEnd}
 		>
 			{children}
-		</BottomSheet>
+		</BottomSheetStyled>
 	)
 }
