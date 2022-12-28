@@ -3,6 +3,7 @@ import { MapContainer, Marker, TileLayer, useMap, useMapEvents } from 'react-lea
 import { useDispatch, useSelector } from 'react-redux'
 import { BottomSheetStates, setBottomSheetPosition } from 'features/BottomSheet/model/bottomSheetSlice'
 import { userLocationSelector } from 'features/Geolocation/model/myLocationSlice'
+import L from 'leaflet'
 import { busStopNewSelector, setBusStopNew } from 'shared/store/busStop/busStopInfoSlice'
 import { STOPS } from 'shared/store/busStop/const/stops'
 import { DirectionsNew, IStops } from 'shared/store/busStop/Stops'

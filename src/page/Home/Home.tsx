@@ -10,6 +10,7 @@ import { MyLocation } from 'features/Geolocation'
 import { HeaderScore } from 'features/HeaderScore'
 import { Info } from 'features/Info'
 import { LeaveFeedbackButton } from 'features/LeaveFeedbackButton'
+import { NearestStops } from 'features/NearestStops'
 import { OtherTimeBusses } from 'features/OtherTimeBuses'
 import useSchedule from 'shared/store/schedule/useSchedule'
 import { ContainerStyled } from 'shared/ui/common'
@@ -46,6 +47,7 @@ export const Home: React.FC = () => {
 						<MyLocation />
 						<MainLayoutStyled>
 							<Info />
+							<NearestStops />
 							<DirectionChanger />
 							<BusStop />
 
