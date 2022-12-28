@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from 'react-leaflet'
+import React, { useEffect, useState } from 'react'
+import { MapContainer, Marker, TileLayer, useMap, useMapEvents } from 'react-leaflet'
 import { useDispatch, useSelector } from 'react-redux'
 import { BottomSheetStates, setBottomSheetPosition } from 'features/BottomSheet/model/bottomSheetSlice'
 import { LatLngExpression } from 'leaflet'
@@ -16,12 +16,6 @@ const MapStyled = styled(MapContainer)`
 	width: 100vw;
 `
 
-const GeoLocationStyled = styled.div`
-	width: 20px;
-	height: 20px;
-	background-color: red;
-	border-radius: 50%;
-`
 const STOPS_WITH_COORDS = STOPS.filter(
 	(stop: IStops<DirectionsNew.in> | IStops<DirectionsNew.out>) => stop.latLon !== null,
 )
@@ -30,6 +24,14 @@ const MapContent: React.FC = () => {
 	const map = useMap()
 	const busStop = useSelector(busStopNewSelector)
 	const dispath = useDispatch()
+	useMapEvents({
+		dragstart: () => {
+			dispath(setBottomSheetPosition(BottomSheetStates.BOTTOM))
+		},
+		// dragend: () => {
+		// 	dispath(setBottomSheetPosition(BottomSheetStates.MID))
+		// },
+	})
 
 	useEffect(() => {
 		if (busStop && busStop.latLon) {
@@ -69,7 +71,6 @@ export const Map: React.FC = () => {
 			/>
 
 			<MapContent />
-			<GeoLocationStyled />
 		</MapStyled>
 	)
 }

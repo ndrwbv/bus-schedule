@@ -1,6 +1,6 @@
 import { BottomSheetStates } from '../model/bottomSheetSlice'
 
-export const snapTop = (maxHeight: number): number => maxHeight - maxHeight / 10
+export const snapTop = (maxHeight: number): number => maxHeight - maxHeight / 5
 export const snapMid = (maxHeight: number): number => maxHeight / 2
 export const snapBottom = (maxHeight: number): number => maxHeight * 0.2
 

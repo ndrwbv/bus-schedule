@@ -6,6 +6,7 @@ import { Complains } from 'features/Complains'
 import { ComplainsProvider } from 'features/Complains/model/ComplainsContext'
 import { DirectionChanger } from 'features/DirectionChanger'
 import { FavoriteStops } from 'features/FavoriteStops'
+import { MyLocation } from 'features/Geolocation'
 import { HeaderScore } from 'features/HeaderScore'
 import { Info } from 'features/Info'
 import { LeaveFeedbackButton } from 'features/LeaveFeedbackButton'
@@ -42,6 +43,7 @@ export const Home: React.FC = () => {
 
 				<BottomSheetCustom>
 					<>
+						<MyLocation />
 						<MainLayoutStyled>
 							<Info />
 							<DirectionChanger />
