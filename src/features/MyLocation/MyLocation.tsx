@@ -1,16 +1,14 @@
-import { useRef } from 'react'
 import SVG from 'react-inlinesvg'
-import { useDispatch, useSelector } from 'react-redux'
-import { bottomSheetPositionSelector, BottomSheetStates } from 'features/BottomSheet/model/bottomSheetSlice'
+import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
 
 import { getLocation } from './helpers/getLocation'
 import LocationSVG from './img/location.svg'
 import { setLocation, setLocationError, setNoGeolocation } from './model/myLocationSlice'
 
-export const GeoLocationStyled = styled.div<{ top: number }>`
+export const GeoLocationStyled = styled.div`
 	position: absolute;
-	top: ${props => props.top}px;
+	top: -63px;
 	left: 10px;
 
 	width: 50px;
@@ -23,26 +21,13 @@ export const GeoLocationStyled = styled.div<{ top: number }>`
 	justify-content: center;
 
 	z-index: 3;
-`
 
-const getTopByPosition = (pos: BottomSheetStates): number => {
-	switch (pos) {
-		case BottomSheetStates.BOTTOM:
-			return 120
-		case BottomSheetStates.TOP:
-			return 40
-		case BottomSheetStates.MID:
-			return 80
-		default:
-			return -100
-	}
-}
+	box-shadow: 0px 1px 13px rgba(0, 0, 0, 0.08);
+`
 const SIZE = 16
 export const MyLocation: React.FC = () => {
 	const dispatch = useDispatch()
-	const bottomSheetPosition = useSelector(bottomSheetPositionSelector)
-	const ref = useRef(document.querySelector(`body > reach-portal > div`))
-	console.log(ref, document.querySelector(`body > reach-portal > div`))
+
 	const onSuccess = (position: GeolocationPosition): void => {
 		dispatch(
 			setLocation({
@@ -81,7 +66,7 @@ export const MyLocation: React.FC = () => {
 	}
 
 	return (
-		<GeoLocationStyled onClick={handleClick} top={getTopByPosition(bottomSheetPosition)}>
+		<GeoLocationStyled onClick={handleClick}>
 			<SVG src={LocationSVG} width={SIZE} height={SIZE} uniquifyIDs />
 		</GeoLocationStyled>
 	)

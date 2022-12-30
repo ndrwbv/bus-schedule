@@ -9,7 +9,6 @@ import { FavoriteStops } from 'features/FavoriteStops'
 import { HeaderScore } from 'features/HeaderScore'
 import { Info } from 'features/Info'
 import { LeaveFeedbackButton } from 'features/LeaveFeedbackButton'
-import { MyLocation } from 'features/MyLocation'
 import { NearestStops } from 'features/NearestStops'
 import { OtherTimeBusses } from 'features/OtherTimeBuses'
 import useSchedule from 'shared/store/schedule/useSchedule'
@@ -42,7 +41,6 @@ export const Home: React.FC = () => {
 
 				<Map />
 
-				<MyLocation />
 				<BottomSheetCustom>
 					<>
 						<MainLayoutStyled>
