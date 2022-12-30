@@ -34,3 +34,7 @@ body > reach-portal > div > div {
   border-top-left-radius: 18px !important;
   border-top-right-radius: 18px !important;
 }
+
+#root > div > div > div.leaflet-control-container > div.leaflet-bottom.leaflet-right {
+  display: none;
+}
