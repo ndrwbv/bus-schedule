@@ -10,7 +10,7 @@
   --rsbs-max-w: auto;
   --rsbs-ml: env(safe-area-inset-left);
   --rsbs-mr: env(safe-area-inset-right);
-  --rsbs-overlay-rounded: 16px;
+  --rsbs-overlay-rounded: 18px;
 
   --rsbs-max-w: 768px;
   --rsbs-ml: auto;
@@ -18,8 +18,6 @@
 }
 
 body > reach-portal > div > div > div:nth-child(1) {
-  padding-bottom: 0;
-  padding-top: 0;
   padding: 0;
   box-shadow: none;
 }
@@ -30,4 +28,9 @@ body > reach-portal > div > div > div:nth-child(1)::before {
   width: 36px;
   height: 6px;
   border-radius: 12px;
+}
+
+body > reach-portal > div > div {
+  border-top-left-radius: 18px !important;
+  border-top-right-radius: 18px !important;
 }
