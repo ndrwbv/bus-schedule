@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { userLocationSelector } from 'features/Geolocation/model/myLocationSlice'
+import { userLocationSelector } from 'features/MyLocation/model/myLocationSlice'
 import L from 'leaflet'
 import { STOPS } from 'shared/store/busStop/const/stops'
 import { DirectionsNew, IStops } from 'shared/store/busStop/Stops'

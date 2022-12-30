@@ -6,10 +6,10 @@ import { Complains } from 'features/Complains'
 import { ComplainsProvider } from 'features/Complains/model/ComplainsContext'
 import { DirectionChanger } from 'features/DirectionChanger'
 import { FavoriteStops } from 'features/FavoriteStops'
-import { MyLocation } from 'features/Geolocation'
 import { HeaderScore } from 'features/HeaderScore'
 import { Info } from 'features/Info'
 import { LeaveFeedbackButton } from 'features/LeaveFeedbackButton'
+import { MyLocation } from 'features/MyLocation'
 import { NearestStops } from 'features/NearestStops'
 import { OtherTimeBusses } from 'features/OtherTimeBuses'
 import useSchedule from 'shared/store/schedule/useSchedule'
@@ -42,10 +42,10 @@ export const Home: React.FC = () => {
 
 				<Map />
 
+				<MyLocation />
 				<BottomSheetCustom>
 					<>
 						<MainLayoutStyled>
-						<MyLocation />
 							<Info />
 							<NearestStops />
 							<DirectionChanger />
