@@ -7,10 +7,6 @@ import LocationSVG from './img/location.svg'
 import { setLocation, setLocationError, setNoGeolocation } from './model/myLocationSlice'
 
 export const GeoLocationStyled = styled.div`
-	position: absolute;
-	top: -63px;
-	left: 10px;
-
 	width: 50px;
 	height: 50px;
 	background-color: #fff;

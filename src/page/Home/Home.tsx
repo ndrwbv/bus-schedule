@@ -15,6 +15,7 @@ import useSchedule from 'shared/store/schedule/useSchedule'
 import { ContainerStyled } from 'shared/ui/common'
 import { Footer } from 'shared/ui/Footer'
 import { MainLayoutStyled } from 'shared/ui/MainLayout'
+import { BottomSheetHeader } from 'widget/BottomSheetHeader'
 import { BusStop } from 'widget/BusStop'
 import { Map } from 'widget/Map'
 import { TodaysBuses } from 'widget/TodaysBuses'
@@ -41,7 +42,7 @@ export const Home: React.FC = () => {
 
 				<Map />
 
-				<BottomSheetCustom>
+				<BottomSheetCustom header={<BottomSheetHeader />}>
 					<>
 						<MainLayoutStyled>
 							<Info />

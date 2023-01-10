@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { BottomSheet, BottomSheetRef } from 'react-spring-bottom-sheet'
-import { MyLocation } from 'features/MyLocation'
 
 import { getSnapPoints, getSnapValue, snapBottom, snapMid, snapTop } from './helpers/getSnapPoints'
 import {
@@ -14,8 +13,9 @@ import {
 
 interface IProps {
 	children: JSX.Element
+	header: JSX.Element
 }
-export const BottomSheetCustom: React.FC<IProps> = ({ children }) => {
+export const BottomSheetCustom: React.FC<IProps> = ({ children, header }) => {
 	const sheetRef = useRef<BottomSheetRef>(null)
 	const [expandOnContentDrag] = useState<boolean>(true)
 	const focusRef = useRef<HTMLButtonElement>(null)
@@ -75,7 +75,7 @@ export const BottomSheetCustom: React.FC<IProps> = ({ children }) => {
 			expandOnContentDrag={expandOnContentDrag}
 			blocking={false}
 			onSpringEnd={handleSpringEnd}
-			header={<MyLocation />}
+			header={header}
 		>
 			{children}
 		</BottomSheet>
