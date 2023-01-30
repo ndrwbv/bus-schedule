@@ -3,17 +3,24 @@ import { Marker, useMap, useMapEvents } from 'react-leaflet'
 import { useDispatch, useSelector } from 'react-redux'
 import { BottomSheetStates, setBottomSheetPosition } from 'features/BottomSheet/model/bottomSheetSlice'
 import { userLocationSelector } from 'features/MyLocation/model/myLocationSlice'
+import L from 'leaflet'
 import { busStopNewSelector, setBusStopNew } from 'shared/store/busStop/busStopInfoSlice'
 import { STOPS } from 'shared/store/busStop/const/stops'
+import { leftSelector } from 'shared/store/timeLeft/timeLeftSlice'
 
 import { myLocationIcon, stopIcon } from './styled'
+
+// Если зум N взять остановки рядом и начать считать для них время
+// Если зум/тач то эти остановки сбрасываются
+// По умолчанию показывают сокращенное название остановки
+// Добавить слежение за геолокацией и тогда перерисовывать на ходу
 
 export const MapContent: React.FC = () => {
 	const map = useMap()
 	const dispath = useDispatch()
 	const busStop = useSelector(busStopNewSelector)
 	const userLocation = useSelector(userLocationSelector)
-
+	const left = useSelector(leftSelector)
 	useMapEvents({
 		dragstart: () => {
 			dispath(setBottomSheetPosition(BottomSheetStates.BOTTOM))
@@ -35,9 +42,11 @@ export const MapContent: React.FC = () => {
 
 	return (
 		<>
-			{STOPS.map(stop => (
+			{/* {STOPS.map(stop => (
 				<Marker
-					icon={stopIcon}
+					icon={L.divIcon({
+						html: `<div>${left.minutes || 0}</div>`,
+					})}
 					key={stop.id}
 					position={stop.latLon}
 					eventHandlers={{
@@ -48,7 +57,7 @@ export const MapContent: React.FC = () => {
 						},
 					}}
 				/>
-			))}
+			))} */}
 			{userLocation && (
 				<Marker
 					icon={myLocationIcon}

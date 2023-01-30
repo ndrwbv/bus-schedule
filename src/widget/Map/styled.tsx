@@ -8,7 +8,7 @@ import StopSVG from './stop.svg'
 export const stopIcon = new L.Icon({
 	iconUrl: StopSVG,
 	iconRetinaUrl: StopSVG,
-	iconSize: new L.Point(50, 50),
+	iconSize: new L.Point(90, 90),
 })
 export const myLocationIcon = new L.Icon({
 	iconUrl: MyLocationSVG,

@@ -1,101 +1,54 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   version="1.0"
-   width="400"
-   height="400"
-   id="svgServizio"
-   sodipodi:version="0.32"
-   inkscape:version="0.44.1"
-   sodipodi:docname="Feature suburban buses.svg"
-   sodipodi:docbase="E:\Profili\Raf\Documenti\Immagini\Wikipedia\Ferrovie">
-  <metadata
-     id="metadataServizio">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <cc:license
-           rdf:resource="http://web.resource.org/cc/PublicDomain" />
-        <dc:title>Simbolo di capolinea di linee extraurbane</dc:title>
-        <dc:date>2006-11-15</dc:date>
-        <dc:creator>
-          <cc:Agent>
-            <dc:title>Raffaello Di Napoli</dc:title>
-          </cc:Agent>
-        </dc:creator>
-        <dc:rights>
-          <cc:Agent>
-            <dc:title>Raffaello Di Napoli</dc:title>
-          </cc:Agent>
-        </dc:rights>
-        <dc:publisher>
-          <cc:Agent>
-            <dc:title>Raffaello Di Napoli</dc:title>
-          </cc:Agent>
-        </dc:publisher>
-        <dc:language>it-IT</dc:language>
-        <dc:subject>
-          <rdf:Bag>
-            <rdf:li>linee extraurbane</rdf:li>
-          </rdf:Bag>
-        </dc:subject>
-        <dc:description>Indicazione di capolinea di linee extraurbane</dc:description>
-      </cc:Work>
-      <cc:License
-         rdf:about="http://web.resource.org/cc/PublicDomain">
-        <cc:permits
-           rdf:resource="http://web.resource.org/cc/Reproduction" />
-        <cc:permits
-           rdf:resource="http://web.resource.org/cc/Distribution" />
-        <cc:permits
-           rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
-      </cc:License>
-    </rdf:RDF>
-  </metadata>
-  <sodipodi:namedview
-     inkscape:window-height="977"
-     inkscape:window-width="1280"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     guidetolerance="10.0"
-     gridtolerance="10.0"
-     objecttolerance="10.0"
-     borderopacity="1.0"
-     bordercolor="#666666"
-     pagecolor="#ffffff"
-     id="base"
-     inkscape:zoom="1"
-     inkscape:cx="211.08"
-     inkscape:cy="198.42"
-     inkscape:window-x="-4"
-     inkscape:window-y="-4"
-     inkscape:current-layer="svgServizio"
-     width="400px"
-     height="400px" />
-  <defs
-     id="defsServizio" />
-  <rect
-     style="fill:#0063b3;fill-opacity:1;fill-rule:evenodd;stroke:none"
-     id="rectSfondo"
-     width="400"
-     height="400"
-     x="0"
-     y="0"
-     rx="50"
-     ry="50" />
-  <path
-     id="pathBus"
-     style="fill:white;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-     d="M 353,119 L 36,119 C 34,119 34,120 34,121 L 34,135 C 36,137 41,137 40,141 L 17,206 L 17,256 C 18,259 20,261 22,262 L 64,262 C 64,212 139,212 139,262 L 247,262 C 247,212 323,212 323,262 L 369,263 C 374,261 379,260 383,250 L 383,194 C 374,168 371,123 353,119 L 353,119 z M 177,137 C 178,137 180,138 181,142 L 194,188 C 194,191 192,193 190,194 L 155,194 C 153,193 152,192 152,190 L 138,144 C 138,141 139,138 141,137 L 177,137 z M 231,137 C 232,137 234,138 235,142 L 248,188 C 248,191 246,193 244,194 L 209,194 C 207,193 206,192 206,190 L 192,144 C 192,141 193,138 195,137 L 231,137 z M 285.21,136.7 C 286.75,137.32 288.24,138.35 289.32,141.96 L 302.51,187.63 C 302.22,190.97 300.29,192.5 298.43,194.12 L 263.79,194.23 C 261.61,193.45 260.84,191.57 260.05,189.71 L 246.64,143.99 C 246.57,140.71 247.41,138.15 249.72,136.77 L 285.21,136.7 z M 98.42,136.73 L 122.35,136.77 C 123.9,137.39 125.39,138.43 126.46,142.03 L 139.65,187.75 C 139.36,191.08 137.43,192.58 135.58,194.19 L 99.16,194.38 C 96.98,193.6 95.61,191.83 94.83,189.97 L 94.83,140.81 C 95.59,138.12 96.11,138.11 98.42,136.73 z M 340.15,136.77 C 341.69,137.39 343.15,138.43 344.22,142.03 L 357.41,187.75 C 357.12,191.08 355.19,192.58 353.33,194.19 L 318.73,194.3 C 316.55,193.52 315.78,191.65 314.99,189.78 L 301.58,144.07 C 301.51,140.78 302.31,138.22 304.62,136.84 L 340.15,136.77 z M 53.07,136.84 L 80.23,136.99 C 82.54,138.37 83.34,139.01 83.27,142.29 L 83.19,189.86 C 82.4,191.72 81.64,193.6 79.45,194.38 L 36.63,194.08 C 34.77,192.47 32.88,190.97 32.59,187.63 L 48.96,142.1 C 50.04,138.5 51.53,137.47 53.07,136.84 z M 315.68,262.29 C 315.68,279.14 302.03,292.8 285.18,292.8 C 268.33,292.8 254.69,279.14 254.69,262.29 C 254.69,245.44 268.33,231.78 285.18,231.78 C 302.03,231.78 315.68,245.44 315.68,262.29 z M 132.36,262.47 C 132.36,279.31 118.71,292.98 101.86,292.98 C 85.02,292.98 71.37,279.31 71.37,262.47 C 71.37,245.62 85.02,231.96 101.86,231.96 C 118.71,231.96 132.36,245.62 132.36,262.47 z "
-     sodipodi:nodetypes="cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccsssscssss" />
+<svg width="46" height="89" viewBox="0 0 46 89" fill="none" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="23" cy="77" rx="17" ry="12" fill="url(#paint0_radial_1306_1037)" fill-opacity="0.41"/>
+<line x1="22.5" y1="73.5" x2="22.5" y2="45.5" stroke="url(#paint1_linear_1306_1037)" stroke-width="5" stroke-linecap="round"/>
+<mask id="mask0_1306_1037" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="46" height="46">
+<circle cx="22.9765" cy="22.9765" r="22.9765" fill="#D9D9D9"/>
+</mask>
+<g mask="url(#mask0_1306_1037)">
+<g filter="url(#filter0_d_1306_1037)">
+<circle cx="22.9765" cy="22.9765" r="22.9765" fill="url(#paint2_linear_1306_1037)"/>
+<circle cx="22.9765" cy="22.9765" r="22.9765" fill="url(#paint3_radial_1306_1037)" fill-opacity="0.2"/>
+</g>
+<circle cx="6" cy="12" r="31" fill="url(#paint4_radial_1306_1037)"/>
+<path d="M16.8716 21.0625L18.8096 20.8984C18.9531 21.8418 19.2847 22.5527 19.8042 23.0312C20.3306 23.5029 20.9629 23.7388 21.7012 23.7388C22.5898 23.7388 23.3418 23.4038 23.957 22.7339C24.5723 22.064 24.8799 21.1753 24.8799 20.0679C24.8799 19.0151 24.5825 18.1846 23.9878 17.5762C23.3999 16.9678 22.6274 16.6636 21.6704 16.6636C21.0757 16.6636 20.5391 16.8003 20.0605 17.0737C19.582 17.3403 19.2061 17.689 18.9326 18.1196L17.1997 17.894L18.6558 10.1729H26.1309V11.9365H20.1323L19.3223 15.9766C20.2246 15.3477 21.1714 15.0332 22.1626 15.0332C23.4751 15.0332 24.5825 15.4878 25.4849 16.397C26.3872 17.3062 26.8384 18.4751 26.8384 19.9038C26.8384 21.2642 26.4419 22.4399 25.6489 23.4312C24.6851 24.6479 23.3691 25.2563 21.7012 25.2563C20.334 25.2563 19.2163 24.8735 18.3481 24.1079C17.4868 23.3423 16.9946 22.3271 16.8716 21.0625Z" fill="white"/>
+<path d="M11.8887 30.2588H13.666L15.437 35.6543L17.4048 30.2588H19.0488V37H17.9062V31.5728L15.9131 37H14.8911L13.0059 31.3125V37H11.8887V30.2588ZM20.4044 30.2588H21.547V35.4004L24.7145 30.2588H25.9459V37H24.8034V31.8901L21.6359 37H20.4044V30.2588ZM27.2825 30.2588H28.4251V33.0645H31.5926V30.2588H32.7351V37H31.5926V34.0103H28.4251V37H27.2825V30.2588Z" fill="white"/>
+</g>
+<defs>
+<filter id="filter0_d_1306_1037" x="-4" y="0" width="53.9531" height="53.9531" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="4"/>
+<feGaussianBlur stdDeviation="2"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.02 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1306_1037"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1306_1037" result="shape"/>
+</filter>
+<radialGradient id="paint0_radial_1306_1037" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(23 77) rotate(90) scale(12 17)">
+<stop stop-opacity="0.38"/>
+<stop offset="0.244792" stop-opacity="0.33"/>
+<stop offset="0.526042" stop-opacity="0.25"/>
+<stop offset="0.791667" stop-opacity="0.09"/>
+<stop offset="1" stop-opacity="0"/>
+</radialGradient>
+<linearGradient id="paint1_linear_1306_1037" x1="8" y1="59.5" x2="33.5" y2="59.5" gradientUnits="userSpaceOnUse">
+<stop stop-color="white"/>
+<stop offset="0.578399" stop-color="#1CA338"/>
+<stop offset="1" stop-color="white"/>
+</linearGradient>
+<linearGradient id="paint2_linear_1306_1037" x1="8" y1="-2.5" x2="23" y2="46" gradientUnits="userSpaceOnUse">
+<stop offset="0.239583" stop-color="#2BD800"/>
+<stop offset="1" stop-color="#2DC658"/>
+</linearGradient>
+<radialGradient id="paint3_radial_1306_1037" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(22.9765 22.9765) rotate(90) scale(22.9765)">
+<stop offset="0.781226" stop-color="white" stop-opacity="0"/>
+<stop offset="0.90723" stop-color="white"/>
+<stop offset="1" stop-color="white"/>
+<stop offset="1" stop-color="white"/>
+</radialGradient>
+<radialGradient id="paint4_radial_1306_1037" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(6 12) rotate(90) scale(31)">
+<stop offset="0.229167" stop-color="#FFCE00" stop-opacity="0.34"/>
+<stop offset="1" stop-color="#D9D9D9" stop-opacity="0"/>
+</radialGradient>
+</defs>
 </svg>
