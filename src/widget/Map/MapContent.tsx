@@ -42,7 +42,7 @@ export const MapContent: React.FC = () => {
 
 	return (
 		<>
-			{/* {STOPS.map(stop => (
+			{STOPS.map(stop => (
 				<Marker
 					icon={L.divIcon({
 						html: `<div>${left.minutes || 0}</div>`,
@@ -57,7 +57,7 @@ export const MapContent: React.FC = () => {
 						},
 					}}
 				/>
-			))} */}
+			))}
 			{userLocation && (
 				<Marker
 					icon={myLocationIcon}
