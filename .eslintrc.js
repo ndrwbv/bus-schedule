@@ -6,15 +6,22 @@ module.exports = {
 		`plugin:sonarjs/recommended`,
 		`plugin:prettier/recommended`,
 	],
-	plugins: [`optimize-regex`, `simple-import-sort`, `styled-components-varname`],
-	ignorePatterns: [`**/dist/**/*.*`, `src/page/Game/*`, `vite.config.ts`],
+	plugins: [
+		`optimize-regex`,
+		`simple-import-sort`,
+		`styled-components-varname`,
+		`better-styled-components`,
+		`prefer-arrow-functions`,
+	],
+	ignorePatterns: [`**/dist/**/*.*`,  `src/page/Game/*`, `vite.config.ts`],
 	rules: {
-		'react/prop-types': `off`,
+'react/prop-types': `off`,
 		'sonarjs/prefer-single-boolean-return': `off`,
 		'import/no-default-export': `off`,
 		'no-param-reassign': `off`,
 		'react/react-in-jsx-scope': `off`,
 		'import/prefer-default-export': [`off`],
+		'import/no-default-export': [`error`],
 		'react/function-component-definition': [
 			`error`,
 			{
@@ -23,6 +30,7 @@ module.exports = {
 		],
 		'react/jsx-props-no-spreading': [`off`],
 		'react/require-default-props': [`off`],
+		'react/jsx-key': [`error`],
 		'no-restricted-syntax': [`error`, `ForInStatement`, `LabeledStatement`, `WithStatement`],
 		'no-plusplus': [`off`],
 		'no-void': [
@@ -37,7 +45,10 @@ module.exports = {
 		'simple-import-sort/imports': [
 			`error`,
 			{
-				groups: [[`^react`, `^@?\\w`]],
+				groups: [
+					[`^react`, `^@?\\w`],
+					[`^(app|features|shared|processes|entities|pages)(/.*|$)`, `^\\.`],
+				],
 			},
 		],
 		'optimize-regex/optimize-regex': `warn`,
@@ -66,8 +77,9 @@ module.exports = {
 				printWidth: 120,
 				tabWidth: 4,
 				useTabs: true,
-				semi: false,
+				semi: true,
 				singleQuote: true,
+				jsxSingleQuote: true,
 				trailingComma: `all`,
 				bracketSpacing: true,
 				jsxBracketSameLine: false,
@@ -83,12 +95,20 @@ module.exports = {
 				},
 			},
 		],
+		'better-styled-components/sort-declarations-grouped': [`error`],
 		'import/no-extraneous-dependencies': [
 			`error`,
 			{
 				devDependencies: true,
 			},
 		],
+		'import/no-cycle': [`error`],
+		'arrow-body-style': [`error`, `as-needed`],
+		'sonarjs/no-nested-template-literals': [`off`],
+		'promise/prefer-await-to-then': [`error`],
+		'prefer-arrow-functions/prefer-arrow-functions': `error`,
+		'no-param-reassign': [`error`, { props: false }],
+		'react/react-in-jsx-scope': [`off`],
 	},
 	overrides: [
 		{
@@ -131,6 +151,16 @@ module.exports = {
 				],
 				'@typescript-eslint/quotes': [`error`, `backtick`],
 				'@typescript-eslint/no-unused-vars': [`error`],
+				'arrow-body-style': [`error`, `as-needed`],
+				curly: [`error`, `all`],
+				'@typescript-eslint/naming-convention': [
+					`error`,
+					{
+						selector: `variable`,
+						format: [`camelCase`, `PascalCase`, `UPPER_CASE`],
+					},
+				],
+				'react/prop-types': [`off`],
 			},
 		},
 		{
@@ -175,13 +205,4 @@ module.exports = {
 			},
 		},
 	],
-	parserOptions: {
-		project: `tsconfig.json`,
-		sourceType: `module`,
-	},
-	settings: {
-		react: {
-			version: `detect`,
-		},
-	},
-}
+};

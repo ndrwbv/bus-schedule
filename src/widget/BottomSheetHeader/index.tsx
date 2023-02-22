@@ -10,7 +10,7 @@ const ContainerStyled = styled.div<{ isFullHeight: boolean }>`
 	padding: 0 10px;
 `
 export const BottomSheetHeader: React.FC = () => {
-	const isBusStopSelected = false
+	const isBusStopSelected = true
 
 	return (
 		<ContainerStyled isFullHeight={isBusStopSelected}>
