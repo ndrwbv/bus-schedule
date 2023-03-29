@@ -6,6 +6,7 @@ import checker from 'vite-plugin-checker'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import { splitVendorChunkPlugin } from 'vite'
 import react from '@vitejs/plugin-react'
+import mkcert from 'vite-plugin-mkcert'
 
 const root = process.cwd()
 const appRootPath = path.join(root, `./src/App`)
@@ -14,28 +15,38 @@ const outDir = path.join(root, `./build`)
 const app = path.join(root, `./src/App/index.html`)
 
 // eslint-disable-next-line import/no-default-export
-export default defineConfig(({ mode }) => ({
-	root: appRootPath,
-	plugins: [
+export default defineConfig(({ mode }) => {
+	let plugins = [
 		react(),
 		tsconfigPaths({
 			root,
 		}),
 		splitVendorChunkPlugin(),
-		checker({ typescript: mode === `production` }),
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-call
-		// visualizer({
-		// 	filename: `index.html`,
-		// 	open: true,
-		// }),
-	],
-	build: {
-		emptyOutDir: true,
-		outDir,
-		rollupOptions: {
-			input: app,
-			preserveEntrySignatures: `strict`,
+	]
+
+	if (mode === `production`) {
+		plugins.push(checker({ typescript: mode === `production` }))
+	}
+
+	if (mode !== `production`) {
+		plugins.push(mkcert())
+	}
+
+	console.log(mode)
+	return {
+		root: appRootPath,
+		plugins,
+		build: {
+			emptyOutDir: true,
+			outDir,
+			rollupOptions: {
+				input: app,
+				preserveEntrySignatures: `strict`,
+			},
 		},
-	},
-	publicDir,
-}))
+		publicDir,
+		server: {
+			https: true
+		  },
+	}
+})

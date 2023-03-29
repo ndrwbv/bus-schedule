@@ -15,6 +15,8 @@ module.exports = {
 		'no-param-reassign': `off`,
 		'react/react-in-jsx-scope': `off`,
 		'import/prefer-default-export': [`off`],
+		'@typescript-eslint/no-unsafe-member-access': `off`,
+		'@typescript-eslint/no-unsafe-assignment': `off`,
 		'react/function-component-definition': [
 			`error`,
 			{

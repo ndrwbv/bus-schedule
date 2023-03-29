@@ -9,7 +9,6 @@ import { DirectionsNew } from 'shared/store/busStop/Stops'
 import { CardStyled, ContainerStyled } from 'shared/ui'
 
 import Web from '../img/web.svg'
-import { useUrlDirection } from '../model/useUrlDirection'
 import {
 	DirectionContainerStyled,
 	DirectionPlaceholderStyled,
@@ -21,7 +20,6 @@ import {
 
 const SIZE = 43
 export const DirectionChanger = (): JSX.Element => {
-	const { setQueryParams } = useUrlDirection()
 	const direction = useSelector(directionSelector)
 	const dispatch = useDispatch()
 	const isHalloweenMode = useTypedSelector(isHalloween)
@@ -33,7 +31,6 @@ export const DirectionChanger = (): JSX.Element => {
 		const directionToChange = value
 
 		dispatch(setDirection(directionToChange))
-		setQueryParams(directionToChange)
 
 		AndrewLytics(`changeDirection`)
 	}

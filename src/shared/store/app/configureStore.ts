@@ -1,6 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit'
+import bottomSheetSlice from 'features/BottomSheet/model/bottomSheetSlice'
 import favoriteStops from 'features/FavoriteStops/model/favoriteStopsSlice'
 import { infoApi } from 'features/Info/model/info'
+import myLocationSlice from 'features/MyLocation/model/myLocationSlice'
 import busStopInfo from 'shared/store/busStop/busStopInfoSlice'
 import {
 	changeBusStopOnBusStopChange,
@@ -21,6 +23,8 @@ export const store = configureStore({
 		favoriteStops,
 		holidaysSlice,
 		timeLeftSlice,
+		bottomSheetSlice,
+		myLocationSlice,
 		[infoApi.reducerPath]: infoApi.reducer,
 	},
 	devTools: process.env.NODE_ENV !== `production`,

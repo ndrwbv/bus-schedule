@@ -23,5 +23,14 @@
   },
   "include": [
     "src"
-  ]
+  ],
+  "paths": {
+    "pages/*": ["src/pages/*"],
+    "features/*": ["src/features/*"],
+    "entities/*": ["src/entities/*"],
+    "shared/*": ["src/shared/*"],
+    "app/*": ["src/app/*"],
+    "processes/*": ["src/processes/*"],
+    "widget/*": ["src/widget/*"]
+  }
 }

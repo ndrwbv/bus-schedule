@@ -43,3 +43,17 @@ export interface IOption<ValueType> {
 	value: ValueType
 	label: string
 }
+
+export type ICoordites = [number, number]
+
+export interface IStops<T extends DirectionsNew> {
+	id: string
+	direction: T
+	label: StopKeysMap[T]
+	latLon: ICoordites
+}
+
+type StopKeysMap = {
+	[DirectionsNew.in]: StopKeysIn
+	[DirectionsNew.out]: StopKeysOut
+}

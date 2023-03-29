@@ -11,10 +11,20 @@ export const HeaderInnerStyled = styled.div`
 `
 
 export const HeaderContainerStyled = styled.nav`
-	/* position: absolute;
+	z-index: 2;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	width: 100%;
+`
+
+export const HeaderContainerBetaStyled = styled.nav`
+	position: absolute;
 	top: 0;
 	left: 0;
-	z-index: 2; */
+	z-index: 2;
 
 	display: flex;
 	align-items: center;

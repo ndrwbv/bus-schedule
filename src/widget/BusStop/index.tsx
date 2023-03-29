@@ -6,12 +6,6 @@ import { ComplainType } from 'features/Complains'
 import { useComplainsContext } from 'features/Complains/model/ComplainsContext'
 import { HowMuchLeft } from 'features/HowMuchLeft/HowMuchLeft'
 import { AndrewLytics } from 'shared/lib'
-import {
-	busStopSelector,
-	directionSelector,
-	setBusStop,
-	stopsOptionsSelector,
-} from 'shared/store/busStop/busStopInfoSlice'
 import { IOption, StopKeys } from 'shared/store/busStop/Stops'
 import { todayHolidaySelector } from 'shared/store/holidays/holidaysSlice'
 import { leftSelector } from 'shared/store/timeLeft/timeLeftSlice'
@@ -20,6 +14,12 @@ import { CardStyled, ContainerStyled } from 'shared/ui'
 import { Header } from 'shared/ui/Header'
 import { selectStyles } from 'shared/ui/SelectStyles'
 
+import {
+	busStopNewSelector,
+	directionSelector,
+	setBusStop,
+	stopsOptionsSelector,
+} from '../../shared/store/busStop/busStopInfoSlice'
 import { useFastReplay } from './model/useFastReplay'
 import { useUrlBusStop } from './model/useUrlBusStop'
 
@@ -30,7 +30,7 @@ export const BusStop: React.FC = () => {
 	const { t } = useTranslation()
 	const dispatch = useDispatch()
 	const stopsOptions = useSelector(stopsOptionsSelector)
-	const busStop = useSelector(busStopSelector)
+	const busStopNew = useSelector(busStopNewSelector)
 	const direction = useSelector(directionSelector)
 	const todaysHoliday = useSelector(todayHolidaySelector)
 	const left = useSelector(leftSelector)
@@ -39,12 +39,12 @@ export const BusStop: React.FC = () => {
 	const { addComplain } = useComplainsContext()
 
 	const handleComplain = (type: ComplainType): void => {
-		if (!busStop || left.minutes === null) return
+		if (!busStopNew || left.minutes === null) return
 
 		const date = new Date().toISOString()
 
 		addComplain({
-			stop: busStop,
+			stop: busStopNew.label,
 			direction,
 			date,
 			type,
@@ -55,8 +55,10 @@ export const BusStop: React.FC = () => {
 	}
 
 	const handleChangeBusStop = useCallback(
-		(e: SingleValue<IOption<StopKeys | null>>) => {
-			const busStopToChange = e?.value as StopKeys
+		(e: SingleValue<IOption<string | null>>) => {
+			if (!e?.value) return
+
+			const busStopToChange = e.value as StopKeys
 
 			dispatch(setBusStop(busStopToChange))
 
@@ -66,10 +68,13 @@ export const BusStop: React.FC = () => {
 	)
 
 	useEffect(() => {
-		setQueryParams(busStop)
-	}, [busStop, setQueryParams])
+		setQueryParams(busStopNew)
+	}, [busStopNew, setQueryParams])
 
-	const currentBusStop = useMemo(() => stopsOptions.find(stop => stop.value === busStop), [stopsOptions, busStop])
+	const currentBusStop = useMemo(
+		() => stopsOptions.find(stop => stop.value === busStopNew?.label),
+		[stopsOptions, busStopNew],
+	) // TODO remove find
 
 	const headerText = t(`Bus stop`)
 
@@ -89,7 +94,7 @@ export const BusStop: React.FC = () => {
 
 				<HowMuchLeft
 					holiday={todaysHoliday}
-					busStop={busStop}
+					busStopLabel={busStopNew?.label || null}
 					left={left}
 					shouldShowFastReply={shouldShowFastReply}
 					onComplain={handleComplain}

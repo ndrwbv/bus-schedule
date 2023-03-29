@@ -37,7 +37,7 @@ changeBusStopOnBusStopChange.startListening({
 			state.scheduleSlice.currentDayKey,
 		)
 
-		if (!scheduleKeys.includes(action.payload)) {
+		if (action.payload && !scheduleKeys.includes(action.payload)) {
 			store.dispatch(setBusStop(scheduleKeys[0] as StopKeys))
 		}
 	},

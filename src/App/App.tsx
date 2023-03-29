@@ -1,5 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { HomeBeta } from 'page/HomeBeta'
 import { configureI18next, initGA, YM } from 'shared/lib'
 
 import 'react-spring-bottom-sheet/dist/style.css'
@@ -18,6 +19,7 @@ export const Root: React.FC = () => (
 		<BrowserRouter>
 			<Routes>
 				<Route path="/" element={<Home />} />
+				<Route path="/beta" element={<HomeBeta />} />
 				<Route
 					path="/game"
 					element={

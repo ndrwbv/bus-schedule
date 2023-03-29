@@ -4,15 +4,37 @@
 
 :root {
   --rsbs-backdrop-bg: rgba(0, 0, 0, 0.6);
-  /* --rsbs-bg: #f4f4f2; */
-  --rsbs-bg: white;
+  --rsbs-bg: #f4f4f2;
+  /* --rsbs-bg: white; */
   --rsbs-handle-bg: hsla(0, 0%, 0%, 0.14);
   --rsbs-max-w: auto;
   --rsbs-ml: env(safe-area-inset-left);
   --rsbs-mr: env(safe-area-inset-right);
-  --rsbs-overlay-rounded: 16px;
+  --rsbs-overlay-rounded: 18px;
 
   --rsbs-max-w: 768px;
   --rsbs-ml: auto;
   --rsbs-mr: auto;
+}
+
+body > reach-portal > div > div > div:nth-child(1) {
+  padding: 0;
+  box-shadow: none;
+}
+
+body > reach-portal > div > div > div:nth-child(1)::before {
+  top: calc(-18px + env(safe-area-inset-top));
+  background-color: rgb(0 0 0 / 24%);
+  width: 36px;
+  height: 6px;
+  border-radius: 12px;
+}
+
+body > reach-portal > div > div {
+  border-top-left-radius: 18px !important;
+  border-top-right-radius: 18px !important;
+}
+
+#root > div > div > div.leaflet-control-container > div.leaflet-bottom.leaflet-right {
+  display: none;
 }

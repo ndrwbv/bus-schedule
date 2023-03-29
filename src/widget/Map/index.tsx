@@ -1,22 +1,23 @@
 import React from 'react'
-import { MapContainer, TileLayer } from 'react-leaflet'
-import styled from 'styled-components'
+import { TileLayer } from 'react-leaflet'
 
 import 'leaflet/dist/leaflet.css'
+import { MapContent } from './MapContent'
+import { MapStyled } from './styled'
 
-const MapStyled = styled(MapContainer)`
-	z-index: 1;
-	height: 100vh;
-	width: 100vw;
-`
+const MAP_CENTER_DEFAULT = { lat: 56.47177, lng: 84.899966 }
 
 export const Map: React.FC = () => {
 	return (
-		<MapStyled center={[56.46779, 84.90553]} zoom={15} zoomControl={false} scrollWheelZoom={false}>
+		<MapStyled center={MAP_CENTER_DEFAULT} zoom={15} zoomControl={false} scrollWheelZoom>
 			<TileLayer
-				attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-				url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+				attribution="google"
+				url="https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}"
+				subdomains={[`mt0`, `mt1`, `mt2`, `mt3`]}
+				updateWhenIdle={false}
 			/>
+
+			<MapContent />
 		</MapStyled>
 	)
 }

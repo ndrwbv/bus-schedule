@@ -6,3 +6,9 @@ export const MainLayoutStyled = styled.main`
 	width: 100%;
 	flex-grow: 1;
 `
+
+export const MainLayoutBetaStyled = styled.main`
+	max-width: 768px;
+	width: 100%;
+	flex-grow: 1;
+`

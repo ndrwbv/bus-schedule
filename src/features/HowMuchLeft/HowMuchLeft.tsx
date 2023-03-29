@@ -70,12 +70,12 @@ export const LeftToString: React.FC<{ left: ITime; busStop: StopKeys | null }> =
 
 interface ILeftProps {
 	left: ITime
-	busStop: StopKeys | null
+	busStopLabel: StopKeys | null
 	shouldShowFastReply: boolean
 	holiday: IHoliday | null
 	onComplain: (key: ComplainType) => void
 }
-export const HowMuchLeft: React.FC<ILeftProps> = ({ left, busStop, shouldShowFastReply, holiday, onComplain }) => {
+export const HowMuchLeft: React.FC<ILeftProps> = ({ left, busStopLabel, shouldShowFastReply, holiday, onComplain }) => {
 	const [isComplainClicked, setIsComplainClicked] = useState(false)
 	const [activeComplain, setActiveComplain] = useState<ComplainType | null>(null)
 	const isHalloweenMode = useTypedSelector(isHalloween)
@@ -137,7 +137,7 @@ export const HowMuchLeft: React.FC<ILeftProps> = ({ left, busStop, shouldShowFas
 					</ImageWrapperStyled>
 
 					<BusEstimationStyled>
-						<LeftToString busStop={busStop} left={left} />
+						<LeftToString busStop={busStopLabel} left={left} />
 					</BusEstimationStyled>
 				</NextBusContainerStyled>
 			</HowMuchLeftContainerStyled>
