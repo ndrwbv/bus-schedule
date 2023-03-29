@@ -32,7 +32,11 @@ export const Footer: React.FC = () => {
 							{AVTOTRANS}
 						</a>
 					</GrayTextStyled>
-					<GrayTextStyled>{COPYRIGHT}</GrayTextStyled>
+					<GrayTextStyled>
+						<Link to={`/beta?${searchParams.toString()}`} onClick={() => AndrewLytics(`game.footerPlay`)}>
+							{COPYRIGHT}
+						</Link>
+					</GrayTextStyled>
 				</div>
 			</ContainerStyled>
 		</FooterStyled>
