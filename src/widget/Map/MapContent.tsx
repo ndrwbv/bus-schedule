@@ -149,6 +149,7 @@ export const MapContent: React.FC = () => {
 				<Marker
 					
 					icon={L.divIcon({
+						className: 'my-div-icon',
 						html: getPinContent(getCurrentTime(stop)),
 					})}
 					key={stop.id}
