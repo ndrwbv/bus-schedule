@@ -1,4 +1,4 @@
-import { HeaderActionsStyled, HeaderContainerStyled, HeaderInnerStyled, Logo } from 'entities/Logo'
+import { HeaderActionsStyled, HeaderContainerBetaStyled, HeaderInnerStyled, Logo } from 'entities/Logo'
 import { TranslationLink } from 'entities/TranslationLink'
 import { WriteMe } from 'entities/WriteMe'
 import { BottomSheetCustom } from 'features/BottomSheet/BottomSheet'
@@ -14,7 +14,7 @@ import { OtherTimeBusses } from 'features/OtherTimeBuses'
 import useSchedule from 'shared/store/schedule/useSchedule'
 import { ContainerStyled } from 'shared/ui/common'
 import { Footer } from 'shared/ui/Footer'
-import { MainLayoutStyled } from 'shared/ui/MainLayout'
+import { MainLayoutBetaStyled } from 'shared/ui/MainLayout'
 import { BottomSheetHeader } from 'widget/BottomSheetHeader'
 import { BusStop } from 'widget/BusStop'
 import { Map } from 'widget/Map'
@@ -29,7 +29,7 @@ export const HomeBeta: React.FC = () => {
 	return (
 		<ComplainsProvider>
 			<HomeContainerStyled>
-				<HeaderContainerStyled>
+				<HeaderContainerBetaStyled>
 					<HeaderInnerStyled>
 						<Logo />
 
@@ -38,13 +38,13 @@ export const HomeBeta: React.FC = () => {
 							<Share />
 						</HeaderActionsStyled>
 					</HeaderInnerStyled>
-				</HeaderContainerStyled>
+				</HeaderContainerBetaStyled>
 
 				<Map />
 
 				<BottomSheetCustom header={<BottomSheetHeader />}>
 					<>
-						<MainLayoutStyled>
+						<MainLayoutBetaStyled>
 							<Info />
 							<NearestStops />
 							<DirectionChanger />
@@ -64,7 +64,7 @@ export const HomeBeta: React.FC = () => {
 							<ContainerStyled>
 								<WriteMe />
 							</ContainerStyled>
-						</MainLayoutStyled>
+						</MainLayoutBetaStyled>
 
 						<Footer />
 					</>
