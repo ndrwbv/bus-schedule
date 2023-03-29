@@ -147,9 +147,8 @@ export const MapContent: React.FC = () => {
 			<GlobalStyle />
 			{STOPS.map(stop => (
 				<Marker
-					
 					icon={L.divIcon({
-						className: 'my-div-icon',
+						className: `my-div-icon`,
 						html: getPinContent(getCurrentTime(stop)),
 					})}
 					key={stop.id}
