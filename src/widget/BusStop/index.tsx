@@ -6,12 +6,6 @@ import { ComplainType } from 'features/Complains'
 import { useComplainsContext } from 'features/Complains/model/ComplainsContext'
 import { HowMuchLeft } from 'features/HowMuchLeft/HowMuchLeft'
 import { AndrewLytics } from 'shared/lib'
-import {
-	busStopNewSelector,
-	directionSelector,
-	setBusStop,
-	stopsOptionsSelector,
-} from '../../shared/store/busStop/busStopInfoSlice'
 import { IOption, StopKeys } from 'shared/store/busStop/Stops'
 import { todayHolidaySelector } from 'shared/store/holidays/holidaysSlice'
 import { leftSelector } from 'shared/store/timeLeft/timeLeftSlice'
@@ -20,6 +14,12 @@ import { CardStyled, ContainerStyled } from 'shared/ui'
 import { Header } from 'shared/ui/Header'
 import { selectStyles } from 'shared/ui/SelectStyles'
 
+import {
+	busStopNewSelector,
+	directionSelector,
+	setBusStop,
+	stopsOptionsSelector,
+} from '../../shared/store/busStop/busStopInfoSlice'
 import { useFastReplay } from './model/useFastReplay'
 import { useUrlBusStop } from './model/useUrlBusStop'
 
