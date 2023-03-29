@@ -1,6 +1,7 @@
 import { HeaderActionsStyled, HeaderContainerStyled, HeaderInnerStyled, Logo } from 'entities/Logo'
 import { TranslationLink } from 'entities/TranslationLink'
 import { WriteMe } from 'entities/WriteMe'
+import { BottomSheetCustom } from 'features/BottomSheet/BottomSheet'
 import { Complains } from 'features/Complains'
 import { ComplainsProvider } from 'features/Complains/model/ComplainsContext'
 import { DirectionChanger } from 'features/DirectionChanger'
@@ -14,13 +15,15 @@ import useSchedule from 'shared/store/schedule/useSchedule'
 import { ContainerStyled } from 'shared/ui/common'
 import { Footer } from 'shared/ui/Footer'
 import { MainLayoutStyled } from 'shared/ui/MainLayout'
+import { BottomSheetHeader } from 'widget/BottomSheetHeader'
 import { BusStop } from 'widget/BusStop'
+import { Map } from 'widget/Map'
 import { TodaysBuses } from 'widget/TodaysBuses'
 
 import { Share } from '../../features/Share'
-import { HomeContainerStyled } from './styled'
+import { HomeContainerStyled } from './HomeBeta.styled'
 
-export const Home: React.FC = () => {
+export const HomeBeta: React.FC = () => {
 	useSchedule()
 
 	return (
@@ -37,29 +40,35 @@ export const Home: React.FC = () => {
 					</HeaderInnerStyled>
 				</HeaderContainerStyled>
 
-				<MainLayoutStyled>
-					<Info />
-					<NearestStops />
-					<DirectionChanger />
-					<BusStop />
+				<Map />
 
-					<Complains />
+				<BottomSheetCustom header={<BottomSheetHeader />}>
+					<>
+						<MainLayoutStyled>
+							<Info />
+							<NearestStops />
+							<DirectionChanger />
+							<BusStop />
 
-					<TranslationLink />
+							<Complains />
 
-					<FavoriteStops />
+							<TranslationLink />
 
-					<TodaysBuses />
-					<LeaveFeedbackButton />
+							<FavoriteStops />
 
-					<OtherTimeBusses />
+							<TodaysBuses />
+							<LeaveFeedbackButton />
 
-					<ContainerStyled>
-						<WriteMe />
-					</ContainerStyled>
-				</MainLayoutStyled>
+							<OtherTimeBusses />
 
-				<Footer />
+							<ContainerStyled>
+								<WriteMe />
+							</ContainerStyled>
+						</MainLayoutStyled>
+
+						<Footer />
+					</>
+				</BottomSheetCustom>
 			</HomeContainerStyled>
 		</ComplainsProvider>
 	)
