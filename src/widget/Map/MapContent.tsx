@@ -8,6 +8,7 @@ import { busStopNewSelector, setBusStopNew } from 'shared/store/busStop/busStopI
 import { STOPS } from 'shared/store/busStop/const/stops'
 import { leftSelector } from 'shared/store/timeLeft/timeLeftSlice'
 
+import { pinIcon } from './icon'
 import { myLocationIcon } from './styled'
 
 // Если зум N взять остановки рядом и начать считать для них время
@@ -45,7 +46,7 @@ export const MapContent: React.FC = () => {
 			{STOPS.map(stop => (
 				<Marker
 					icon={L.divIcon({
-						html: `<div>${left.minutes || 0}</div>`,
+						html: pinIcon(`GREEN`),
 					})}
 					key={stop.id}
 					position={stop.latLon}
