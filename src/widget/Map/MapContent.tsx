@@ -150,6 +150,9 @@ export const MapContent: React.FC = () => {
 					icon={L.divIcon({
 						className: `my-div-icon`,
 						html: getPinContent(getCurrentTime(stop)),
+						iconAnchor: [22, 94],
+						shadowAnchor: [4, 62],
+						popupAnchor: [-3, -76],
 					})}
 					key={stop.id}
 					position={stop.latLon}
