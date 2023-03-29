@@ -1857,11 +1857,13 @@ __metadata:
     eslint-config-airbnb: ^19.0.4
     eslint-config-airbnb-typescript: ^17.0.0
     eslint-config-prettier: ^8.6.0
+    eslint-plugin-better-styled-components: latest
     eslint-plugin-import: ^2.27.5
     eslint-plugin-jest: ^27.2.1
     eslint-plugin-json: ^3.1.0
     eslint-plugin-jsx-a11y: ^6.7.1
     eslint-plugin-optimize-regex: ^1.2.1
+    eslint-plugin-prefer-arrow-functions: ^3.1.4
     eslint-plugin-prettier: ^4.2.1
     eslint-plugin-promise: ^6.1.1
     eslint-plugin-react: ^7.32.1
@@ -2626,6 +2628,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-plugin-better-styled-components@npm:latest":
+  version: 1.1.2
+  resolution: "eslint-plugin-better-styled-components@npm:1.1.2"
+  dependencies:
+    postcss: ^7.0.2
+    requireindex: ~1.1.0
+  checksum: c03a7c13b16fc527d70f558469345c04a92773e9e777a2e601ba81dafb133bc44c86c1e7d9794d1f2ea7618b80bc5a554ff01136b311e0f29af88a908c6c36ec
+  languageName: node
+  linkType: hard
+
 "eslint-plugin-import@npm:^2.27.5":
   version: 2.27.5
   resolution: "eslint-plugin-import@npm:2.27.5"
@@ -2710,6 +2722,15 @@ __metadata:
   dependencies:
     regexp-tree: ^0.1.21
   checksum: 239af996f4187c6ecc91f805782b36db96d8d325d49a921d8aac18cb1007c318b2d25429732dca1306b6d45d3a654faf2321216cdd053f6c666d4de64bb5f252
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-prefer-arrow-functions@npm:^3.1.4":
+  version: 3.1.4
+  resolution: "eslint-plugin-prefer-arrow-functions@npm:3.1.4"
+  peerDependencies:
+    eslint: ">=5.0.0"
+  checksum: 581f1be4ea056d70aad1866ee16a0def7ecece050e03ff3bc2a6695b8bdca3751d6360fcd0e4efccd0068a0e0557b7ab36586a301afa38957acc8c58d293560c
   languageName: node
   linkType: hard
 
@@ -4651,6 +4672,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"picocolors@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "picocolors@npm:0.2.1"
+  checksum: 3b0f441f0062def0c0f39e87b898ae7461c3a16ffc9f974f320b44c799418cabff17780ee647fda42b856a1dc45897e2c62047e1b546d94d6d5c6962f45427b2
+  languageName: node
+  linkType: hard
+
 "picocolors@npm:^1.0.0":
   version: 1.0.0
   resolution: "picocolors@npm:1.0.0"
@@ -4701,6 +4729,16 @@ __metadata:
   version: 4.2.0
   resolution: "postcss-value-parser@npm:4.2.0"
   checksum: 819ffab0c9d51cf0acbabf8996dffbfafbafa57afc0e4c98db88b67f2094cb44488758f06e5da95d7036f19556a4a732525e84289a425f4f6fd8e412a9d7442f
+  languageName: node
+  linkType: hard
+
+"postcss@npm:^7.0.2":
+  version: 7.0.39
+  resolution: "postcss@npm:7.0.39"
+  dependencies:
+    picocolors: ^0.2.1
+    source-map: ^0.6.1
+  checksum: 4ac793f506c23259189064bdc921260d869a115a82b5e713973c5af8e94fbb5721a5cc3e1e26840500d7e1f1fa42a209747c5b1a151918a9bc11f0d7ed9048e3
   languageName: node
   linkType: hard
 
@@ -5460,6 +5498,13 @@ __metadata:
   version: 0.5.7
   resolution: "source-map@npm:0.5.7"
   checksum: 5dc2043b93d2f194142c7f38f74a24670cd7a0063acdaf4bf01d2964b402257ae843c2a8fa822ad5b71013b5fcafa55af7421383da919752f22ff488bc553f4d
+  languageName: node
+  linkType: hard
+
+"source-map@npm:^0.6.1":
+  version: 0.6.1
+  resolution: "source-map@npm:0.6.1"
+  checksum: 59ce8640cf3f3124f64ac289012c2b8bd377c238e316fb323ea22fbfe83da07d81e000071d7242cad7a23cd91c7de98e4df8830ec3f133cb6133a5f6e9f67bc2
   languageName: node
   linkType: hard
 

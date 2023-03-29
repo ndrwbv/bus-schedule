@@ -11,7 +11,7 @@ import {
 	directionSelector,
 	setBusStop,
 	stopsOptionsSelector,
-} from 'shared/store/busStop/busStopInfoSlice'
+} from '../../shared/store/busStop/busStopInfoSlice'
 import { IOption, StopKeys } from 'shared/store/busStop/Stops'
 import { todayHolidaySelector } from 'shared/store/holidays/holidaysSlice'
 import { leftSelector } from 'shared/store/timeLeft/timeLeftSlice'

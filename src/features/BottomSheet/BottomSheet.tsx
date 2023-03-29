@@ -13,7 +13,7 @@ import {
 
 interface IProps {
 	children: JSX.Element
-	header: JSX.Element
+	header?: JSX.Element
 }
 export const BottomSheetCustom: React.FC<IProps> = ({ children, header }) => {
 	const sheetRef = useRef<BottomSheetRef>(null)

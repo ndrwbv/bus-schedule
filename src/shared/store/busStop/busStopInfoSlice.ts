@@ -33,7 +33,7 @@ export const busStopInfoSlice = createSlice({
 		setBusStop: (state, action: PayloadAction<StopKeys | null>) => {
 			state.busStop = action.payload
 
-			const stop = STOPS.find(s => s.label === action.payload && s.direction === state.direction) || null
+			const stop = STOPS.find(s => s.label === action.payload && s.direction === state.direction)
 			state.busStopNew = stop
 		},
 		setBusStopNew: (state, action: PayloadAction<string | null>) => {

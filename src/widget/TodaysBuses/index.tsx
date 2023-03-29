@@ -10,7 +10,6 @@ import { Header } from 'shared/ui/Header'
 import { OtherTimeStyled } from 'shared/ui/OtherTime'
 import { TimeStampStyled } from 'shared/ui/TimeStamp'
 
-console.log(23)
 export const TodaysBuses: React.FC = () => {
 	const closestTimeArray = useSelector(closestTimeArraySelector)
 	const busStop = useSelector(busStopSelector)

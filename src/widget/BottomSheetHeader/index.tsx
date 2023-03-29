@@ -1,21 +1,15 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import { MyLocation } from 'features/MyLocation'
 import styled from 'styled-components'
-import { BusStop } from 'widget/BusStop'
 
-const ContainerStyled = styled.div<{ isFullHeight: boolean }>`
+const ContainerStyled = styled.div`
 	position: absolute;
-	top: ${props => (props.isFullHeight ? -192 : -63)}px;
-	/* left: 10px; */
+	top: -63px;
 	padding: 0 10px;
 `
 export const BottomSheetHeader: React.FC = () => {
-	const isBusStopSelected = true
-
 	return (
-		<ContainerStyled isFullHeight={isBusStopSelected}>
+		<ContainerStyled>
 			<MyLocation />
-			{isBusStopSelected && <BusStop />}
 		</ContainerStyled>
 	)
 }

@@ -8,7 +8,7 @@ import { busStopNewSelector, setBusStopNew } from 'shared/store/busStop/busStopI
 import { STOPS } from 'shared/store/busStop/const/stops'
 import { leftSelector } from 'shared/store/timeLeft/timeLeftSlice'
 
-import { myLocationIcon, stopIcon } from './styled'
+import { myLocationIcon } from './styled'
 
 // Если зум N взять остановки рядом и начать считать для них время
 // Если зум/тач то эти остановки сбрасываются

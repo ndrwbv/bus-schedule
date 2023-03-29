@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit'
 import bottomSheetSlice from 'features/BottomSheet/model/bottomSheetSlice'
 import favoriteStops from 'features/FavoriteStops/model/favoriteStopsSlice'
-import myLocationSlice from 'features/MyLocation/model/myLocationSlice'
 import { infoApi } from 'features/Info/model/info'
+import myLocationSlice from 'features/MyLocation/model/myLocationSlice'
 import busStopInfo from 'shared/store/busStop/busStopInfoSlice'
 import {
 	changeBusStopOnBusStopChange,
