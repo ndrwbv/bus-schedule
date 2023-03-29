@@ -34,7 +34,10 @@ export const busStopInfoSlice = createSlice({
 			state.busStop = action.payload
 
 			const stop = STOPS.find(s => s.label === action.payload && s.direction === state.direction)
-			state.busStopNew = stop
+
+			if (stop) {
+				state.busStopNew = stop
+			}
 		},
 		setBusStopNew: (state, action: PayloadAction<string | null>) => {
 			const stop = STOPS.find(s => s.id === action.payload) || null
@@ -50,7 +53,6 @@ export const busStopInfoSlice = createSlice({
 	},
 })
 
-// Action creators are generated for each case reducer function
 export const { setDirection, setBusStop, setBusStopNew } = busStopInfoSlice.actions
 
 export const busStopSelector = (state: RootState): StopKeys | null => state.busStopInfo.busStop
