@@ -12,10 +12,6 @@ import { ITime } from 'shared/store/timeLeft/ITime'
 import { InlineOptions } from 'shared/ui/InlineOptions'
 
 import { ImageWrapperStyled } from '../../shared/ui/ImageWrapper'
-import Dead from './img/dead.svg'
-import EvilFace from './img/evil-face.svg'
-import NextBus from './img/next-bus.svg'
-import Pumpkin from './img/pumpkin.svg'
 import {
 	BusEstimationStyled,
 	ComplainOptionContainerStyled,
@@ -23,7 +19,11 @@ import {
 	HowMuchLeftContainerStyled,
 	NextBusContainerStyled,
 	TextWrapperStyled,
-} from './styled'
+} from './HowMuchLeft.styled'
+import Dead from './img/dead.svg'
+import EvilFace from './img/evil-face.svg'
+import NextBus from './img/next-bus.svg'
+import Pumpkin from './img/pumpkin.svg'
 
 const SIZE = 45
 const COMPLAIN_DISAPPEAR_MS = 200000
