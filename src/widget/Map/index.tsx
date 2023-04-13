@@ -1,6 +1,7 @@
 import React from 'react'
 import { TileLayer } from 'react-leaflet'
 
+import 'leaflet.markercluster'
 import 'leaflet/dist/leaflet.css'
 import { MapContent } from './MapContent'
 import { MapStyled } from './styled'

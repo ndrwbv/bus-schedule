@@ -1,4 +1,8 @@
-import React, { useEffect } from 'react'
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import React, { useCallback, useEffect } from 'react'
 import { Marker, useMap, useMapEvents } from 'react-leaflet'
 import { useDispatch, useSelector } from 'react-redux'
 import { BottomSheetStates, setBottomSheetPosition } from 'features/BottomSheet/model/bottomSheetSlice'
@@ -14,6 +18,8 @@ import { ITime } from 'shared/store/timeLeft/ITime'
 import useEverySecondUpdater from 'shared/store/timeLeft/useEverySecondUpdater'
 import { createGlobalStyle } from 'styled-components'
 
+import { getClusterMarkerIcon } from './clusterIcon'
+import { clusterIconsCss } from './clusterIconCSS'
 import { pinIcon, TColorTypes } from './icon'
 import { myLocationIcon } from './styled'
 
@@ -48,6 +54,7 @@ const GlobalStyle = createGlobalStyle`
 	font-size: 13px
  }
 
+${clusterIconsCss}
 `
 
 // Если зум N взять остановки рядом и начать считать для них время
@@ -69,7 +76,7 @@ const colorDecider = (timeLeft: ITime): TColorTypes => {
 const getLeftString = (timeLeft: ITime): { text: string; unit: string | null } => {
 	if (timeLeft.hours === null || timeLeft.minutes === null || timeLeft.hours > 3)
 		return {
-			text: `(#__#)`,
+			text: `(^__^)`,
 			unit: null,
 		}
 
@@ -111,17 +118,20 @@ export const MapContent: React.FC = () => {
 
 	useEverySecondUpdater()
 
-	const getCurrentTime = (stop: IStops<DirectionsNew.in> | IStops<DirectionsNew.out>): ITime => {
-		const closestTime = findClosesTime(shedule[stop.direction][currentDayKey][stop.label])
+	const getCurrentTime = useCallback(
+		(stop: IStops<DirectionsNew.in> | IStops<DirectionsNew.out>): ITime => {
+			const closestTime = findClosesTime(shedule[stop.direction][currentDayKey][stop.label])
 
-		if (!closestTime)
-			return {
-				hours: null,
-				minutes: null,
-			}
+			if (!closestTime)
+				return {
+					hours: null,
+					minutes: null,
+				}
 
-		return calculateHowMuchIsLeft(closestTime)
-	}
+			return calculateHowMuchIsLeft(closestTime)
+		},
+		[currentDayKey, shedule],
+	)
 
 	useMapEvents({
 		dragstart: () => {
@@ -142,29 +152,47 @@ export const MapContent: React.FC = () => {
 		}
 	}, [userLocation, map, dispath])
 
+	const handleMarkerClick = useCallback(
+		(stop: IStops<DirectionsNew.in> | IStops<DirectionsNew.out>) => (e: L.LeafletMouseEvent) => {
+			dispath(dispath(setBusStopNew(stop.id)))
+			map.flyTo({ lat: e.latlng.lat, lng: e.latlng.lng - 0.000357 }, 18)
+			dispath(setBottomSheetPosition(BottomSheetStates.MID))
+		},
+		[dispath, map],
+	)
+
+	useEffect(() => {
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore leaflet.markerCluster должен был переопределить типы L, но не смог
+		const markers = L.markerClusterGroup({
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+			iconCreateFunction: (cluster: any) => getClusterMarkerIcon(cluster.getChildCount()),
+			spiderLegPolylineOptions: undefined,
+			disableClusteringAtZoom: true,
+		})
+
+		STOPS.forEach(stop => {
+			const icon = L.divIcon({
+				className: `my-div-icon`,
+				html: getPinContent(getCurrentTime(stop)),
+				iconAnchor: [22, 94],
+				shadowAnchor: [4, 62],
+				popupAnchor: [-3, -76],
+			})
+
+			const marker = L.marker(stop.latLon, {
+				icon,
+			}).on(`click`, handleMarkerClick(stop))
+
+			markers.addLayer(marker)
+		})
+
+		map.addLayer(markers)
+	}, [getCurrentTime, handleMarkerClick, map])
+
 	return (
 		<>
 			<GlobalStyle />
-			{STOPS.map(stop => (
-				<Marker
-					icon={L.divIcon({
-						className: `my-div-icon`,
-						html: getPinContent(getCurrentTime(stop)),
-						iconAnchor: [22, 94],
-						shadowAnchor: [4, 62],
-						popupAnchor: [-3, -76],
-					})}
-					key={stop.id}
-					position={stop.latLon}
-					eventHandlers={{
-						click: e => {
-							dispath(dispath(setBusStopNew(stop.id)))
-							map.flyTo({ lat: e.latlng.lat, lng: e.latlng.lng - 0.000357 }, 18)
-							dispath(setBottomSheetPosition(BottomSheetStates.MID))
-						},
-					}}
-				/>
-			))}
 			{userLocation && (
 				<Marker
 					icon={myLocationIcon}
