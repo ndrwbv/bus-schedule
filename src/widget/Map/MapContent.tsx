@@ -168,7 +168,7 @@ export const MapContent: React.FC = () => {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			iconCreateFunction: (cluster: any) => getClusterMarkerIcon(cluster.getChildCount()),
 			spiderLegPolylineOptions: undefined,
-			disableClusteringAtZoom: true,
+			maxClusterRadius: 30,
 		})
 
 		STOPS.forEach(stop => {
