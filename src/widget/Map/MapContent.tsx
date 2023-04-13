@@ -92,7 +92,7 @@ const getLeftString = (timeLeft: ITime): { text: string; unit: string | null } =
 	}
 }
 
-const getPinContent = (timeLeft: ITime): string => {
+const getPinContent = (timeLeft: ITime, stopId: string): string => {
 	const leftString = getLeftString(timeLeft)
 	const color = colorDecider(timeLeft)
 
@@ -103,7 +103,7 @@ const getPinContent = (timeLeft: ITime): string => {
 				${leftString.unit !== null ? `<p class="pin-text__unit">${leftString.unit}</p>` : ``} 
 			</div>
 
-			 ${pinIcon(color)}
+			 ${pinIcon(color, stopId)}
 		</div>
 	`
 }
@@ -168,13 +168,14 @@ export const MapContent: React.FC = () => {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			iconCreateFunction: (cluster: any) => getClusterMarkerIcon(cluster.getChildCount()),
 			spiderLegPolylineOptions: undefined,
-			maxClusterRadius: 30,
+			// disableClusteringAtZoom: true,
+			maxClusterRadius: 10,
 		})
 
 		STOPS.forEach(stop => {
 			const icon = L.divIcon({
 				className: `my-div-icon`,
-				html: getPinContent(getCurrentTime(stop)),
+				html: getPinContent(getCurrentTime(stop), stop.id),
 				iconAnchor: [22, 94],
 				shadowAnchor: [4, 62],
 				popupAnchor: [-3, -76],
