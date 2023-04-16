@@ -132,24 +132,24 @@ export const MapContentTiler: React.FC<{ map: any }> = ({ map }) => {
 		[currentDayKey, shedule],
 	)
 
-	useEffect(() => {
-		if (busStop) {
-			map.flyTo(busStop.latLon, 18)
-		}
-	}, [busStop, map])
+	// useEffect(() => {
+	// 	if (busStop) {
+	// 		map.flyTo(busStop.latLon, 18)
+	// 	}
+	// }, [busStop, map])
 
-	useEffect(() => {
-		if (userLocation) {
-			map.flyTo([userLocation.coords.latitude, userLocation.coords.longitude], 18)
-			dispath(setBottomSheetPosition(BottomSheetStates.MID))
-		}
-	}, [userLocation, map, dispath])
+	// useEffect(() => {
+	// 	if (userLocation) {
+	// 		map.flyTo([userLocation.coords.latitude, userLocation.coords.longitude], 18)
+	// 		dispath(setBottomSheetPosition(BottomSheetStates.MID))
+	// 	}
+	// }, [userLocation, map, dispath])
 
 	const handleMarkerClick = useCallback(
 		(stop: IStops<DirectionsNew.in> | IStops<DirectionsNew.out>) => (e: L.LeafletMouseEvent) => {
 			console.log('marker click', e)
 			dispath(dispath(setBusStopNew(stop.id)))
-			map.flyTo({ lat: e.latlng.lat, lng: e.latlng.lng - 0.000357 }, 18)
+			// map.flyTo({ lat: e.latlng.lat, lng: e.latlng.lng - 0.000357 }, 18)
 			dispath(setBottomSheetPosition(BottomSheetStates.MID))
 		},
 		[dispath, map],
