@@ -25,6 +25,7 @@
 		]
 	},
 	"devDependencies": {
+		"@maptiler/sdk": "^1.0.9",
 		"@reduxjs/toolkit": "^1.9.1",
 		"@testing-library/react": "^13.4.0",
 		"@testing-library/user-event": "^14.4.3",
