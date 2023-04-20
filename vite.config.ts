@@ -34,6 +34,9 @@ export default defineConfig(({ mode }) => {
 
 	console.log(mode)
 	return {
+		define: {
+			'process.env': process.env,
+		},
 		root: appRootPath,
 		plugins,
 		build: {
