@@ -1200,6 +1200,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/leaflet@npm:^1.9.3":
+  version: 1.9.3
+  resolution: "@types/leaflet@npm:1.9.3"
+  dependencies:
+    "@types/geojson": "*"
+  checksum: d12042edc3a043d074b4fd3b4c4800f479dfb01db3980d8c1151edbc70b23ca9e84ab7da72ce0d1c36c040f89ba1421bd36d9d9796ec3704a0d3c942985a87ae
+  languageName: node
+  linkType: hard
+
 "@types/mapbox__point-geometry@npm:*, @types/mapbox__point-geometry@npm:^0.1.2":
   version: 0.1.2
   resolution: "@types/mapbox__point-geometry@npm:0.1.2"
@@ -1969,6 +1978,7 @@ __metadata:
     "@reduxjs/toolkit": ^1.9.1
     "@testing-library/react": ^13.4.0
     "@testing-library/user-event": ^14.4.3
+    "@types/leaflet": ^1.9.3
     "@types/node": ^18.11.18
     "@types/react": ^18.0.27
     "@types/react-dom": ^18.0.10

@@ -1,4 +1,4 @@
-import { css } from 'styled-components';
+import { css } from 'styled-components'
 
 export const clusterIconsCss = css`
 	.cluster-icon {
@@ -31,4 +31,4 @@ export const clusterIconsCss = css`
 	.cluster-icon__amount-text {
 		margin-bottom: 10px;
 	}
-`;
+`

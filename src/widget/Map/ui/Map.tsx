@@ -11,6 +11,7 @@ const getMapApiKey = (): string => {
 		return process.env.MAPTILER_KEY
 	}
 
+	// eslint-disable-next-line no-console
 	console.error(`MAPTILER_KEY is not set`)
 
 	return ``
