@@ -43,6 +43,8 @@ export const Map: React.FC = () => {
 
 			let labelLayerId
 			for (let i = 0; i < layers.length; i++) {
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
 				if (layers[i].type === `symbol` && layers[i].layout[`text-field`]) {
 					labelLayerId = layers[i].id
 					break
