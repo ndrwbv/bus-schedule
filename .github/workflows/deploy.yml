@@ -2,6 +2,9 @@
    
 name: Deploy
 
+env:
+  MAPTILER_KEY: ${{secrets.MAPTILER_KEY}}
+
 on:
   push:
     branches:
