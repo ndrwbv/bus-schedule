@@ -3,11 +3,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React, { useCallback, useEffect } from 'react'
-import { Marker, useMap, useMapEvents } from 'react-leaflet'
 import { useDispatch, useSelector } from 'react-redux'
+import * as maptilersdk from '@maptiler/sdk'
 import { BottomSheetStates, setBottomSheetPosition } from 'features/BottomSheet/model/bottomSheetSlice'
 import { userLocationSelector } from 'features/MyLocation/model/myLocationSlice'
-import L from 'leaflet'
 import { calculateHowMuchIsLeft } from 'shared/lib/time/calculateHowMuchIsLeft'
 import { findClosesTime } from 'shared/lib/time/findClosesTime'
 import { busStopNewSelector, setBusStopNew } from 'shared/store/busStop/busStopInfoSlice'
@@ -18,10 +17,9 @@ import { ITime } from 'shared/store/timeLeft/ITime'
 import useEverySecondUpdater from 'shared/store/timeLeft/useEverySecondUpdater'
 import { createGlobalStyle } from 'styled-components'
 
-import { getClusterMarkerIcon } from './clusterIcon'
-import { clusterIconsCss } from './clusterIconCSS'
-import { pinIcon, TColorTypes } from './icon'
-import { myLocationIcon } from './styled'
+import { clusterIconsCss } from '../assets/clusterIconCSS'
+import { pinIcon, TColorTypes } from '../assets/icon'
+import { TMap } from '../TMap'
 
 const GlobalStyle = createGlobalStyle`
  .pin {
@@ -56,11 +54,6 @@ const GlobalStyle = createGlobalStyle`
 
 ${clusterIconsCss}
 `
-
-// Если зум N взять остановки рядом и начать считать для них время
-// Если зум/тач то эти остановки сбрасываются
-// По умолчанию показывают сокращенное название остановки
-// Добавить слежение за геолокацией и тогда перерисовывать на ходу
 
 const colorDecider = (timeLeft: ITime): TColorTypes => {
 	if (timeLeft.hours === null || timeLeft.minutes === null) return `BLACK`
@@ -108,8 +101,7 @@ const getPinContent = (timeLeft: ITime, stopId: string): string => {
 	`
 }
 
-export const MapContent: React.FC = () => {
-	const map = useMap()
+export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 	const dispath = useDispatch()
 	const busStop = useSelector(busStopNewSelector)
 	const userLocation = useSelector(userLocationSelector)
@@ -133,73 +125,71 @@ export const MapContent: React.FC = () => {
 		[currentDayKey, shedule],
 	)
 
-	useMapEvents({
-		dragstart: () => {
-			dispath(setBottomSheetPosition(BottomSheetStates.BOTTOM))
+	const flyToStop = useCallback(
+		(stop: IStops<DirectionsNew>) => {
+			map?.flyTo({
+				center: [stop.latLon[1], stop.latLon[0]],
+				essential: true,
+				zoom: 18,
+			})
 		},
-	})
+		[map],
+	)
 
 	useEffect(() => {
 		if (busStop) {
-			map.flyTo(busStop.latLon, 18)
+			flyToStop(busStop)
 		}
-	}, [busStop, map])
+	}, [busStop, flyToStop, map])
 
 	useEffect(() => {
 		if (userLocation) {
-			map.flyTo([userLocation.coords.latitude, userLocation.coords.longitude], 18)
+			map?.flyTo({
+				center: [userLocation.coords.longitude, userLocation.coords.latitude],
+				essential: true,
+				zoom: 15,
+			})
+
 			dispath(setBottomSheetPosition(BottomSheetStates.MID))
 		}
 	}, [userLocation, map, dispath])
 
 	const handleMarkerClick = useCallback(
-		(stop: IStops<DirectionsNew.in> | IStops<DirectionsNew.out>) => (e: L.LeafletMouseEvent) => {
+		(stop: IStops<DirectionsNew.in> | IStops<DirectionsNew.out>) => {
 			dispath(dispath(setBusStopNew(stop.id)))
-			map.flyTo({ lat: e.latlng.lat, lng: e.latlng.lng - 0.000357 }, 18)
+
+			flyToStop(stop)
+
 			dispath(setBottomSheetPosition(BottomSheetStates.MID))
 		},
-		[dispath, map],
+		[dispath, flyToStop],
 	)
 
 	useEffect(() => {
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore leaflet.markerCluster должен был переопределить типы L, но не смог
-		const markers = L.markerClusterGroup({
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-			iconCreateFunction: (cluster: any) => getClusterMarkerIcon(cluster.getChildCount()),
-			spiderLegPolylineOptions: undefined,
-			// disableClusteringAtZoom: true,
-			maxClusterRadius: 10,
-		})
+		if (!map) return
 
 		STOPS.forEach(stop => {
-			const icon = L.divIcon({
-				className: `my-div-icon`,
-				html: getPinContent(getCurrentTime(stop), stop.id),
-				iconAnchor: [22, 94],
-				shadowAnchor: [4, 62],
-				popupAnchor: [-3, -76],
+			const html = getPinContent(getCurrentTime(stop), stop.id)
+
+			const el = document.createElement(`div`)
+			el.innerHTML = html.trim()
+
+			el.addEventListener(`click`, () => {
+				handleMarkerClick(stop)
 			})
 
-			const marker = L.marker(stop.latLon, {
-				icon,
-			}).on(`click`, handleMarkerClick(stop))
-
-			markers.addLayer(marker)
+			new maptilersdk.Marker(el)
+				.on(`click`, () => handleMarkerClick(stop))
+				.setLngLat([stop.latLon[1], stop.latLon[0]])
+				.addTo(map)
 		})
-
-		map.addLayer(markers)
 	}, [getCurrentTime, handleMarkerClick, map])
 
-	return (
-		<>
-			<GlobalStyle />
-			{userLocation && (
-				<Marker
-					icon={myLocationIcon}
-					position={[userLocation.coords.latitude, userLocation.coords.longitude]}
-				/>
-			)}
-		</>
-	)
+	useEffect(() => {
+		map?.on(`dragstart`, () => {
+			dispath(setBottomSheetPosition(BottomSheetStates.BOTTOM))
+		})
+	}, [dispath, map])
+
+	return <GlobalStyle />
 }
