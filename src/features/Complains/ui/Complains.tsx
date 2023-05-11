@@ -48,7 +48,7 @@ export const Complains: React.FC = () => {
 					<PopupContentStyled>
 						<InfoTextStyled>
 							Жалобы попадают автоматически после выбора опции «Приехал раньше» или «Приехал позже».
-							Кнопки появлюятся в секции Остановка при выбранной остановке.
+							Кнопки появляются в секции «Остановка» при выбранной остановке.
 						</InfoTextStyled>
 						{complains.map(c => (
 							<ComplainsMessage {...c} key={c.id} />
