@@ -7,7 +7,7 @@ module.exports = {
 		`plugin:prettier/recommended`,
 	],
 	plugins: [`optimize-regex`, `simple-import-sort`, `styled-components-varname`],
-	ignorePatterns: [`**/dist/**/*.*`, `src/page/Game/*`, `vite.config.ts`],
+	ignorePatterns: [`**/dist/**/*.*`, `src/page/Game/*`, `vite.config.ts`, `dev-dist`],
 	rules: {
 		'react/prop-types': `off`,
 		'sonarjs/prefer-single-boolean-return': `off`,
