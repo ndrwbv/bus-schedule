@@ -7,6 +7,7 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 import { splitVendorChunkPlugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import mkcert from 'vite-plugin-mkcert'
+import { VitePWA } from 'vite-plugin-pwa'
 
 const root = process.cwd()
 const appRootPath = path.join(root, `./src/App`)
@@ -22,6 +23,16 @@ export default defineConfig(({ mode }) => {
 			root,
 		}),
 		splitVendorChunkPlugin(),
+		VitePWA({
+			includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+			registerType: 'autoUpdate',
+			devOptions: {
+				enabled: mode !== `production`,
+			},
+			workbox: {
+				globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+			}
+		}),
 	]
 
 	if (mode === `production`) {
@@ -32,7 +43,6 @@ export default defineConfig(({ mode }) => {
 		plugins.push(mkcert())
 	}
 
-	console.log(mode)
 	return {
 		define: {
 			'process.env': process.env,
@@ -49,7 +59,7 @@ export default defineConfig(({ mode }) => {
 		},
 		publicDir,
 		server: {
-			https: true
-		  },
+			https: true,
+		},
 	}
 })
