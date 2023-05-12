@@ -64,7 +64,7 @@ export const FAQ: React.FC = () => {
 					<QABlockStyled>
 						<h2>Хочу стать бета тестером</h2>
 						<p>
-							Великолепно! Заполни{` `}
+							Великолепно! Заполните{` `}
 							<a href={BETA_TESTER_LINK} target="_blank" rel="noreferrer">
 								эту форму
 							</a>

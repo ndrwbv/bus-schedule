@@ -20,7 +20,7 @@ import { BusStop } from 'widget/BusStop'
 import { Map } from 'widget/Map'
 import { TodaysBuses } from 'widget/TodaysBuses'
 
-import { Share } from '../../features/FAQ'
+import { FAQ } from '../../features/FAQ'
 import { HomeContainerStyled } from './HomeBeta.styled'
 
 export const HomeBeta: React.FC = () => {
@@ -35,7 +35,7 @@ export const HomeBeta: React.FC = () => {
 
 						<HeaderActionsStyled>
 							<HeaderScore />
-							<Share />
+							<FAQ />
 						</HeaderActionsStyled>
 					</HeaderInnerStyled>
 				</HeaderContainerBetaStyled>
