@@ -10,14 +10,7 @@ export const ShareContainerStyled = styled.div`
 `
 
 export const ShareTitleStyled = styled.h3`
-	font-size: 24px;
-`
-
-export const QRCodeContainerStyled = styled.div`
-	background: #f2f4f4;
-	border-radius: 34px;
-	padding: 40px;
-	width: 248px;
+	margin-top: 24px;
 `
 
 export const CopyFieldStyled = styled.div<{ clicked: boolean }>`
@@ -27,17 +20,40 @@ export const CopyFieldStyled = styled.div<{ clicked: boolean }>`
 	border-radius: 15px;
 	background: #f2f4f4;
 	text-align: left;
-	width: 100%;
 
 	display: flex;
 	justify-content: space-between;
 `
 
+export const QABlockStyled = styled.article`
+	h2 {
+		font-size: 19px;
+		font-weight: 600;
+		line-height: 30px;
+	}
+
+	p {
+		margin-top: 4px;
+		line-height: 26px;
+	}
+
+	a {
+		color: #336cff;
+
+		&:visited {
+			color: #2859d5;
+		}
+	}
+
+	& + & {
+		margin-top: 24px;
+	}
+`
 export const ShareItemContainerStyled = styled.div`
 	display: flex;
 	justify-content: center;
+`
 
-	& + & {
-		margin-top: 35px;
-	}
+export const ShareContentContainerStyled = styled.div`
+	margin-top: 56px;
 `

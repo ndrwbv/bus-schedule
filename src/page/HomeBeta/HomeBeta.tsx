@@ -20,7 +20,7 @@ import { BusStop } from 'widget/BusStop'
 import { Map } from 'widget/Map'
 import { TodaysBuses } from 'widget/TodaysBuses'
 
-import { Share } from '../../features/Share'
+import { Share } from '../../features/FAQ'
 import { HomeContainerStyled } from './HomeBeta.styled'
 
 export const HomeBeta: React.FC = () => {
@@ -43,7 +43,7 @@ export const HomeBeta: React.FC = () => {
 				<Map />
 
 				<BottomSheetCustom header={<BottomSheetHeader />}>
-					<>
+					<div style={{ background: `#f4f4f2`, borderRadius: `25px 25px 0 0` }}>
 						<MainLayoutBetaStyled>
 							<Info />
 							<NearestStops />
@@ -67,7 +67,7 @@ export const HomeBeta: React.FC = () => {
 						</MainLayoutBetaStyled>
 
 						<Footer />
-					</>
+					</div>
 				</BottomSheetCustom>
 			</HomeContainerStyled>
 		</ComplainsProvider>

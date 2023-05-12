@@ -1,6 +1,6 @@
 import { HeaderActionsStyled, HeaderContainerStyled, HeaderInnerStyled, Logo } from 'entities/Logo'
 import { TranslationLink } from 'entities/TranslationLink'
-import { WriteMe } from 'entities/WriteMe'
+// import { WriteMe } from 'entities/WriteMe'
 import { Complains } from 'features/Complains'
 import { ComplainsProvider } from 'features/Complains/model/ComplainsContext'
 import { DirectionChanger } from 'features/DirectionChanger'
@@ -11,13 +11,13 @@ import { LeaveFeedbackButton } from 'features/LeaveFeedbackButton'
 import { NearestStops } from 'features/NearestStops'
 import { OtherTimeBusses } from 'features/OtherTimeBuses'
 import useSchedule from 'shared/store/schedule/useSchedule'
-import { ContainerStyled } from 'shared/ui/common'
+// import { ContainerStyled } from 'shared/ui/common'
 import { Footer } from 'shared/ui/Footer'
 import { MainLayoutStyled } from 'shared/ui/MainLayout'
 import { BusStop } from 'widget/BusStop'
 import { TodaysBuses } from 'widget/TodaysBuses'
 
-import { Share } from '../../features/Share'
+import { FAQ } from '../../features/FAQ'
 import { HomeContainerStyled } from './styled'
 
 export const Home: React.FC = () => {
@@ -32,7 +32,7 @@ export const Home: React.FC = () => {
 
 						<HeaderActionsStyled>
 							<HeaderScore />
-							<Share />
+							<FAQ />
 						</HeaderActionsStyled>
 					</HeaderInnerStyled>
 				</HeaderContainerStyled>
@@ -50,13 +50,14 @@ export const Home: React.FC = () => {
 					<FavoriteStops />
 
 					<TodaysBuses />
-					<LeaveFeedbackButton />
 
 					<OtherTimeBusses />
 
-					<ContainerStyled>
+					<LeaveFeedbackButton />
+
+					{/* <ContainerStyled>
 						<WriteMe />
-					</ContainerStyled>
+					</ContainerStyled> */}
 				</MainLayoutStyled>
 
 				<Footer />

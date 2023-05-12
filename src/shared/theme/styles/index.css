@@ -4,7 +4,7 @@
 
 :root {
   --rsbs-backdrop-bg: rgba(0, 0, 0, 0.6);
-  --rsbs-bg: #f4f4f2;
+  --rsbs-bg: #fff;
   /* --rsbs-bg: white; */
   --rsbs-handle-bg: hsla(0, 0%, 0%, 0.14);
   --rsbs-max-w: auto;
