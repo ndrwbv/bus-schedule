@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import * as maptilersdk from '@maptiler/sdk'
 import { BottomSheetStates, setBottomSheetPosition } from 'features/BottomSheet/model/bottomSheetSlice'
@@ -107,8 +107,9 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 	const userLocation = useSelector(userLocationSelector)
 	const currentDayKey = useSelector(currentDaySelector)
 	const shedule = useSelector(scheduleSelector)
-
+	const [stopsCollection, setStopsCollections] = useState([])
 	useEverySecondUpdater()
+	const [mapLoaded, setMapLoaded] = useState(false)
 
 	const getCurrentTime = useCallback(
 		(stop: IStops<DirectionsNew.in> | IStops<DirectionsNew.out>): ITime => {
@@ -168,21 +169,156 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 	useEffect(() => {
 		if (!map) return
 
-		STOPS.forEach(stop => {
-			const html = getPinContent(getCurrentTime(stop), stop.id)
+		map.on(`load`, () => {
+			setMapLoaded(true)
+		})
+	}, [map])
 
-			const el = document.createElement(`div`)
-			el.innerHTML = html.trim()
+	useEffect(() => {
+		if (!map) return
 
-			el.addEventListener(`click`, () => {
-				handleMarkerClick(stop)
+		if (!mapLoaded) return
+
+		if (map.getSource(`earthquakes`)) {
+			map.removeLayer(`clusters`)
+			map.removeLayer(`cluster-count`)
+			map.removeLayer(`unclustered-point`)
+			map.removeSource(`earthquakes`)
+		}
+
+		// add a clustered GeoJSON source for a sample set of earthquakes
+		map.addSource(`earthquakes`, {
+			type: `geojson`,
+			data: {
+				type: `FeatureCollection`,
+				features: stopsCollection,
+			},
+			cluster: true,
+			clusterMaxZoom: 14, // Max zoom to cluster points on
+			clusterRadius: 50, // Radius of each cluster when clustering points (defaults to 50)
+		})
+
+		map.addLayer({
+			id: `clusters`,
+			type: `circle`,
+			source: `earthquakes`,
+			filter: [`has`, `point_count`],
+			paint: {
+				// Use step expressions (https://docs.maptiler.com/gl-style-specification/expressions/#step)
+				// with three steps to implement three types of circles:
+				//   * Blue, 20px circles when point count is less than 100
+				//   * Yellow, 30px circles when point count is between 100 and 750
+				//   * Pink, 40px circles when point count is greater than or equal to 750
+				'circle-color': [`step`, [`get`, `point_count`], `#51bbd6`, 100, `#f1f075`, 750, `#f28cb1`],
+				'circle-radius': [`step`, [`get`, `point_count`], 20, 100, 30, 750, 40],
+			},
+		})
+
+		map.addLayer({
+			id: `cluster-count`,
+			type: `symbol`,
+			source: `earthquakes`,
+			filter: [`has`, `point_count`],
+			layout: {
+				'text-field': `{point_count_abbreviated}`,
+				'text-font': [`DIN Offc Pro Medium`, `Arial Unicode MS Bold`],
+				'text-size': 12,
+			},
+		})
+
+		map.addLayer({
+			id: `unclustered-point`,
+			type: `circle`,
+			source: `earthquakes`,
+			filter: [`!`, [`has`, `point_count`]],
+			paint: {
+				'circle-color': `#11b4da`,
+				'circle-radius': 4,
+				'circle-stroke-width': 1,
+				'circle-stroke-color': `#fff`,
+			},
+		})
+
+		// inspect a cluster on click
+		map.on(`click`, `clusters`, function (e) {
+			const features = map.queryRenderedFeatures(e.point, {
+				layers: [`clusters`],
 			})
+			const clusterId = features[0].properties.cluster_id
+			map.getSource(`earthquakes`).getClusterExpansionZoom(clusterId, function (err, zoom) {
+				if (err) return
 
-			new maptilersdk.Marker(el)
-				.on(`click`, () => handleMarkerClick(stop))
-				.setLngLat([stop.latLon[1], stop.latLon[0]])
+				map.easeTo({
+					center: features[0].geometry.coordinates,
+					zoom,
+				})
+			})
+		})
+
+		// When a click event occurs on a feature in
+		// the unclustered-point layer, open a popup at
+		// the location of the feature, with
+		// description HTML from its properties.
+		map.on(`click`, `unclustered-point`, function (e) {
+			const coordinates = e.features[0].geometry.coordinates.slice()
+			const { mag } = e.features[0].properties
+			let tsunami
+
+			if (e.features[0].properties.tsunami === 1) {
+				tsunami = `yes`
+			} else {
+				tsunami = `no`
+			}
+
+			// Ensure that if the map is zoomed out such that
+			// multiple copies of the feature are visible, the
+			// popup appears over the copy being pointed to.
+			while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+				coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360
+			}
+
+			new maplibregl.Popup()
+				.setLngLat(coordinates)
+				.setHTML(`magnitude: ${mag}<br>Was there a tsunami?: ${tsunami}`)
 				.addTo(map)
 		})
+
+		map.on(`mouseenter`, `clusters`, function () {
+			map.getCanvas().style.cursor = `pointer`
+		})
+		map.on(`mouseleave`, `clusters`, function () {
+			map.getCanvas().style.cursor = ``
+		})
+	}, [map, stopsCollection, mapLoaded])
+
+	useEffect(() => {
+		if (!map) return
+
+		const features = STOPS.map(stop => ({
+			type: `Feature`,
+			properties: {
+				...stop,
+			},
+			geometry: { type: `Point`, coordinates: [stop.latLon[1], stop.latLon[0]] },
+		}))
+
+		setStopsCollections(features)
+
+		// STOPS.forEach(stop => {
+		// 	const html = getPinContent(getCurrentTime(stop), stop.id)
+
+		// 	const el = document.createElement(`div`)
+		// 	el.innerHTML = html.trim()
+
+		// 	el.addEventListener(`click`, () => {
+		// 		handleMarkerClick(stop)
+		// 	})
+
+		// 	new maptilersdk.Marker(el)
+		// 		.on(`click`, () => handleMarkerClick(stop))
+		// 		.setLngLat([stop.latLon[1], stop.latLon[0]])
+		// 		.addTo(map)
+		// })
 	}, [getCurrentTime, handleMarkerClick, map])
 
 	useEffect(() => {
