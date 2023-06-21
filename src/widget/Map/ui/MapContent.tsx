@@ -101,6 +101,8 @@ const getPinContent = (timeLeft: ITime, stopId: string): string => {
 	`
 }
 
+const STOPS_SOURCE_ID = `stopssource`
+
 export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 	const dispath = useDispatch()
 	const busStop = useSelector(busStopNewSelector)
@@ -108,7 +110,7 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 	const currentDayKey = useSelector(currentDaySelector)
 	const shedule = useSelector(scheduleSelector)
 	const [stopsCollection, setStopsCollections] = useState([])
-	useEverySecondUpdater()
+	const updater = useEverySecondUpdater()
 	const [mapLoaded, setMapLoaded] = useState(false)
 
 	const getCurrentTime = useCallback(
@@ -179,29 +181,112 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 
 		if (!mapLoaded) return
 
-		if (map.getSource(`earthquakes`)) {
+		const newMarkers: any = {}
+
+		const removeMarkers = (liveIds?: string[]): void => {
+			Object.keys(newMarkers).forEach(markerId => {
+				if (liveIds && liveIds.includes(markerId)) {
+					console.log(`skip`, markerId)
+
+					return
+				}
+
+				newMarkers[markerId].remove()
+				delete newMarkers[markerId]
+			})
+		}
+
+		const updateMarkers = (): void => {
+			const features = map.querySourceFeatures(STOPS_SOURCE_ID)
+
+			const featureIds = features.map(feature => feature.properties.id)
+			removeMarkers(featureIds)
+
+			for (let i = 0; i < features.length; i++) {
+				const coords = features[i].geometry.coordinates
+				const props = features[i].properties
+				const { id } = props
+
+				if (props.cluster_id) return
+
+				const stop = features[i].properties
+				const html = getPinContent(getCurrentTime(stop), stop.id)
+
+				const el = document.createElement(`div`)
+				el.innerHTML = html.trim()
+
+				el.addEventListener(`click`, () => {
+					handleMarkerClick(stop)
+				})
+
+				if (newMarkers[id]) {
+					newMarkers[id].remove()
+				}
+
+				const marker = new maptilersdk.Marker(el)
+					.on(`click`, () => handleMarkerClick(stop))
+					.setLngLat(coords)
+					.addTo(map)
+
+				newMarkers[id] = marker
+			}
+		}
+
+		const onLoad = (e: any): void => {
+			if (e.sourceId !== STOPS_SOURCE_ID || !e.isSourceLoaded) return
+
+			updateMarkers()
+		}
+
+		// after the GeoJSON data is loaded, update markers on the screen and do so on every map move/moveend
+		map.on(`data`, onLoad)
+
+		map.on(`zoomend`, () => {
+			console.log(map.getZoom())
+			if (map.getZoom() < 15) {
+				removeMarkers()
+			} else {
+				updateMarkers()
+			}
+		})
+
+		map.on(`dragend`, () => {
+			updateMarkers()
+		})
+
+		// eslint-disable-next-line consistent-return
+		return () => {
+			removeMarkers()
+		}
+	}, [getCurrentTime, handleMarkerClick, map, mapLoaded])
+
+	useEffect(() => {
+		if (!map) return
+
+		if (!mapLoaded) return
+
+		if (map.getSource(STOPS_SOURCE_ID)) {
 			map.removeLayer(`clusters`)
 			map.removeLayer(`cluster-count`)
 			map.removeLayer(`unclustered-point`)
-			map.removeSource(`earthquakes`)
+			map.removeSource(STOPS_SOURCE_ID)
 		}
 
-		// add a clustered GeoJSON source for a sample set of earthquakes
-		map.addSource(`earthquakes`, {
+		map.addSource(STOPS_SOURCE_ID, {
 			type: `geojson`,
 			data: {
 				type: `FeatureCollection`,
 				features: stopsCollection,
 			},
 			cluster: true,
-			clusterMaxZoom: 14, // Max zoom to cluster points on
-			clusterRadius: 50, // Radius of each cluster when clustering points (defaults to 50)
+			clusterMaxZoom: 14,
+			clusterRadius: 50,
 		})
 
 		map.addLayer({
 			id: `clusters`,
 			type: `circle`,
-			source: `earthquakes`,
+			source: STOPS_SOURCE_ID,
 			filter: [`has`, `point_count`],
 			paint: {
 				// Use step expressions (https://docs.maptiler.com/gl-style-specification/expressions/#step)
@@ -217,7 +302,7 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 		map.addLayer({
 			id: `cluster-count`,
 			type: `symbol`,
-			source: `earthquakes`,
+			source: STOPS_SOURCE_ID,
 			filter: [`has`, `point_count`],
 			layout: {
 				'text-field': `{point_count_abbreviated}`,
@@ -226,26 +311,13 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 			},
 		})
 
-		map.addLayer({
-			id: `unclustered-point`,
-			type: `circle`,
-			source: `earthquakes`,
-			filter: [`!`, [`has`, `point_count`]],
-			paint: {
-				'circle-color': `#11b4da`,
-				'circle-radius': 4,
-				'circle-stroke-width': 1,
-				'circle-stroke-color': `#fff`,
-			},
-		})
-
-		// inspect a cluster on click
 		map.on(`click`, `clusters`, function (e) {
 			const features = map.queryRenderedFeatures(e.point, {
 				layers: [`clusters`],
 			})
+
 			const clusterId = features[0].properties.cluster_id
-			map.getSource(`earthquakes`).getClusterExpansionZoom(clusterId, function (err, zoom) {
+			map.getSource(STOPS_SOURCE_ID).getClusterExpansionZoom(clusterId, function (err, zoom) {
 				if (err) return
 
 				map.easeTo({
@@ -255,41 +327,13 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 			})
 		})
 
-		// When a click event occurs on a feature in
-		// the unclustered-point layer, open a popup at
-		// the location of the feature, with
-		// description HTML from its properties.
-		map.on(`click`, `unclustered-point`, function (e) {
-			const coordinates = e.features[0].geometry.coordinates.slice()
-			const { mag } = e.features[0].properties
-			let tsunami
-
-			if (e.features[0].properties.tsunami === 1) {
-				tsunami = `yes`
-			} else {
-				tsunami = `no`
-			}
-
-			// Ensure that if the map is zoomed out such that
-			// multiple copies of the feature are visible, the
-			// popup appears over the copy being pointed to.
-			while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-				coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360
-			}
-
-			new maplibregl.Popup()
-				.setLngLat(coordinates)
-				.setHTML(`magnitude: ${mag}<br>Was there a tsunami?: ${tsunami}`)
-				.addTo(map)
-		})
-
 		map.on(`mouseenter`, `clusters`, function () {
 			map.getCanvas().style.cursor = `pointer`
 		})
 		map.on(`mouseleave`, `clusters`, function () {
 			map.getCanvas().style.cursor = ``
 		})
-	}, [map, stopsCollection, mapLoaded])
+	}, [map, stopsCollection, mapLoaded, getCurrentTime, handleMarkerClick])
 
 	useEffect(() => {
 		if (!map) return
@@ -303,23 +347,7 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 		}))
 
 		setStopsCollections(features)
-
-		// STOPS.forEach(stop => {
-		// 	const html = getPinContent(getCurrentTime(stop), stop.id)
-
-		// 	const el = document.createElement(`div`)
-		// 	el.innerHTML = html.trim()
-
-		// 	el.addEventListener(`click`, () => {
-		// 		handleMarkerClick(stop)
-		// 	})
-
-		// 	new maptilersdk.Marker(el)
-		// 		.on(`click`, () => handleMarkerClick(stop))
-		// 		.setLngLat([stop.latLon[1], stop.latLon[0]])
-		// 		.addTo(map)
-		// })
-	}, [getCurrentTime, handleMarkerClick, map])
+	}, [getCurrentTime, handleMarkerClick, map, updater])
 
 	useEffect(() => {
 		map?.on(`dragstart`, () => {
