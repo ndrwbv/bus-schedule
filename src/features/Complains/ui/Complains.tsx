@@ -3,6 +3,7 @@ import { BottomSheet } from 'react-spring-bottom-sheet'
 import { AndrewLytics } from 'shared/lib'
 import { CardStyled, ContainerStyled, MiniButtonStyled } from 'shared/ui/common'
 import { HeaderTextStyled } from 'shared/ui/Header/styled'
+import { BottomSheetBgStyled } from 'shared/ui/MainLayout'
 
 import { PopupContentStyled } from '../../../shared/ui/Popup/PopupContent'
 import { getHumanDate } from '../helpers'
@@ -45,15 +46,17 @@ export const Complains: React.FC = () => {
 					defaultSnap={({ maxHeight }) => maxHeight / 2}
 					snapPoints={({ maxHeight }) => [maxHeight - maxHeight / 10, maxHeight / 4, maxHeight * 0.6]}
 				>
-					<PopupContentStyled>
-						<InfoTextStyled>
-							Жалобы попадают автоматически после выбора опции «Приехал раньше» или «Приехал позже».
-							Кнопки появляются в секции «Остановка» при выбранной остановке.
-						</InfoTextStyled>
-						{complains.map(c => (
-							<ComplainsMessage {...c} key={c.id} />
-						))}
-					</PopupContentStyled>
+					<BottomSheetBgStyled bg="#fff">
+						<PopupContentStyled>
+							<InfoTextStyled>
+								Жалобы попадают автоматически после выбора опции «Приехал раньше» или «Приехал позже».
+								Кнопки появляются в секции «Остановка» при выбранной остановке.
+							</InfoTextStyled>
+							{complains.map(c => (
+								<ComplainsMessage {...c} key={c.id} />
+							))}
+						</PopupContentStyled>
+					</BottomSheetBgStyled>
 				</BottomSheet>
 
 				<ComplainsContainerStyled>

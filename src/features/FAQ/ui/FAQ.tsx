@@ -4,6 +4,7 @@ import QRCode from 'react-qr-code'
 import { BottomSheet, BottomSheetRef } from 'react-spring-bottom-sheet'
 import { AVTOTRANS_LINK, BETA_TESTER_LINK, TG_LINK } from 'shared/common'
 import { AndrewLytics } from 'shared/lib'
+import { BottomSheetBgStyled } from 'shared/ui/MainLayout'
 import { PopupContentStyled } from 'shared/ui/Popup/PopupContent'
 
 import QuestionIcon from '../img/question-icon.svg'
@@ -35,62 +36,64 @@ export const FAQ: React.FC = () => {
 				defaultSnap={({ maxHeight }) => maxHeight / 2}
 				snapPoints={({ maxHeight }) => [maxHeight - maxHeight / 10, maxHeight / 4, maxHeight * 0.6]}
 			>
-				<PopupContentStyled>
-					<QABlockStyled>
-						<h2>Что такое севербас</h2>
-						<p>Севербас — это сайт с расписанием автобуса 112С.</p>
-					</QABlockStyled>
+				<BottomSheetBgStyled bg="#fff">
+					<PopupContentStyled>
+						<QABlockStyled>
+							<h2>Что такое севербас</h2>
+							<p>Севербас — это сайт с расписанием автобуса 112С.</p>
+						</QABlockStyled>
 
-					<QABlockStyled>
-						<h2>Зачем</h2>
-						<p>
-							Актуальное расписание 112С публикует «Томскавтотранс» на своем{` `}
-							<a href={AVTOTRANS_LINK} target="_blank" rel="noreferrer">
-								сайте
-							</a>
-							{` `}в виде таблиц. В Яндекс Картах и 2ГИС расписание не совпадает с этими таблицами. Чтобы
-							смотреть актуальное расписание в приятном формате появился этот сайт.
-						</p>
-					</QABlockStyled>
+						<QABlockStyled>
+							<h2>Зачем</h2>
+							<p>
+								Актуальное расписание 112С публикует «Томскавтотранс» на своем{` `}
+								<a href={AVTOTRANS_LINK} target="_blank" rel="noreferrer">
+									сайте
+								</a>
+								{` `}в виде таблиц. В Яндекс Картах и 2ГИС расписание не совпадает с этими таблицами.
+								Чтобы смотреть актуальное расписание в приятном формате появился этот сайт.
+							</p>
+						</QABlockStyled>
 
-					<QABlockStyled>
-						<h2>Автобус приезжает не по расписанию</h2>
-						<p>
-							Ситуация на дорогах всегда разная, поэтому автобус не может приезжать минута в минуту.
-							Обычно, автобус приезжает +- 10 минут.
-						</p>
-					</QABlockStyled>
+						<QABlockStyled>
+							<h2>Автобус приезжает не по расписанию</h2>
+							<p>
+								Ситуация на дорогах всегда разная, поэтому автобус не может приезжать минута в минуту.
+								Обычно, автобус приезжает +- 10 минут.
+							</p>
+						</QABlockStyled>
 
-					<QABlockStyled>
-						<h2>Хочу стать бета тестером</h2>
-						<p>
-							Великолепно! Заполните{` `}
-							<a href={BETA_TESTER_LINK} target="_blank" rel="noreferrer">
-								эту форму
-							</a>
-							.
-						</p>
-					</QABlockStyled>
+						<QABlockStyled>
+							<h2>Хочу стать бета тестером</h2>
+							<p>
+								Великолепно! Заполните{` `}
+								<a href={BETA_TESTER_LINK} target="_blank" rel="noreferrer">
+									эту форму
+								</a>
+								.
+							</p>
+						</QABlockStyled>
 
-					<QABlockStyled>
-						<h2>Предложения, ошибки, сотрудничество</h2>
-						<p>
-							<a href={TG_LINK} target="_blank" rel="noreferrer">
-								Написать в телеграм
-							</a>
-						</p>
-					</QABlockStyled>
+						<QABlockStyled>
+							<h2>Предложения, ошибки, сотрудничество</h2>
+							<p>
+								<a href={TG_LINK} target="_blank" rel="noreferrer">
+									Написать в телеграм
+								</a>
+							</p>
+						</QABlockStyled>
 
-					<ShareContentContainerStyled>
-						<ShareItemContainerStyled>
-							<QRCode size={166} value="https://severbus.ru?utm=scan" bgColor="transparent" />
-						</ShareItemContainerStyled>
+						<ShareContentContainerStyled>
+							<ShareItemContainerStyled>
+								<QRCode size={166} value="https://severbus.ru?utm=scan" bgColor="transparent" />
+							</ShareItemContainerStyled>
 
-						<ShareItemContainerStyled>
-							<ShareTitleStyled>QR код с ссылкой на сайт</ShareTitleStyled>
-						</ShareItemContainerStyled>
-					</ShareContentContainerStyled>
-				</PopupContentStyled>
+							<ShareItemContainerStyled>
+								<ShareTitleStyled>QR код с ссылкой на сайт</ShareTitleStyled>
+							</ShareItemContainerStyled>
+						</ShareContentContainerStyled>
+					</PopupContentStyled>
+				</BottomSheetBgStyled>
 			</BottomSheet>
 
 			<ShareContainerStyled onClick={handleOpenClick}>
