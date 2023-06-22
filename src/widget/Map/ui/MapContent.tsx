@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
@@ -15,90 +17,18 @@ import { DirectionsNew, IStops } from 'shared/store/busStop/Stops'
 import { currentDaySelector, scheduleSelector } from 'shared/store/schedule/scheduleSlice'
 import { ITime } from 'shared/store/timeLeft/ITime'
 import useEverySecondUpdater from 'shared/store/timeLeft/useEverySecondUpdater'
-import { createGlobalStyle } from 'styled-components'
 
-import { clusterIconsCss } from '../assets/clusterIconCSS'
-import { pinIcon, TColorTypes } from '../assets/icon'
 import { TMap } from '../TMap'
+import { getPinContent } from './getPinContent'
+import { GlobalStyle } from './GlobalStyle'
 
-const GlobalStyle = createGlobalStyle`
- .pin {
-	position: relative
- }
-
- .pin-text {
-	position: absolute;
-	top: 0;
-	left: 0;
-
-	width: 46px;
-	height: 46px;
-
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	
-	font-weight: 400;
-	color: #ffff;
- }
-
- .pin-text__amount {
-	 font-size: 20px;
-	 line-height: 14px;
- }
-
- .pin-text__unit {
-	font-size: 13px
- }
-
-${clusterIconsCss}
-`
-
-const colorDecider = (timeLeft: ITime): TColorTypes => {
-	if (timeLeft.hours === null || timeLeft.minutes === null) return `BLACK`
-
-	if (timeLeft.hours > 3) return `BLACK`
-	if (timeLeft.minutes >= 40) return `BLUE`
-	if (timeLeft.minutes >= 20 && timeLeft.minutes < 40) return `GREEN`
-	if (timeLeft.minutes > 0 && timeLeft.minutes < 20) return `RED`
-
-	return `BLACK`
-}
-
-const getLeftString = (timeLeft: ITime): { text: string; unit: string | null } => {
-	if (timeLeft.hours === null || timeLeft.minutes === null || timeLeft.hours > 3)
-		return {
-			text: `(^__^)`,
-			unit: null,
-		}
-
-	if (timeLeft.hours !== 0)
-		return {
-			text: `>${timeLeft.hours}`,
-			unit: `час`,
-		}
-
-	return {
-		text: `${timeLeft.minutes}`,
-		unit: `мин`,
+interface IFeature {
+	type: 'Feature'
+	properties: IStops<DirectionsNew.in> | IStops<DirectionsNew.out>
+	geometry: {
+		type: `Point`
+		coordinates: [number, number]
 	}
-}
-
-const getPinContent = (timeLeft: ITime, stopId: string): string => {
-	const leftString = getLeftString(timeLeft)
-	const color = colorDecider(timeLeft)
-
-	return `
-		<div class="pin">
-			<div class="pin-text">
-				<p class="pin-text__amount">${leftString.text}</p>
-				${leftString.unit !== null ? `<p class="pin-text__unit">${leftString.unit}</p>` : ``} 
-			</div>
-
-			 ${pinIcon(color, stopId)}
-		</div>
-	`
 }
 
 const STOPS_SOURCE_ID = `stopssource`
@@ -109,7 +39,7 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 	const userLocation = useSelector(userLocationSelector)
 	const currentDayKey = useSelector(currentDaySelector)
 	const shedule = useSelector(scheduleSelector)
-	const [stopsCollection, setStopsCollections] = useState([])
+	const [stopsCollection, setStopsCollections] = useState<IFeature[]>([])
 	const updater = useEverySecondUpdater()
 	const [mapLoaded, setMapLoaded] = useState(false)
 
@@ -160,10 +90,9 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 	const handleMarkerClick = useCallback(
 		(stop: IStops<DirectionsNew.in> | IStops<DirectionsNew.out>) => {
 			dispath(dispath(setBusStopNew(stop.id)))
+			dispath(setBottomSheetPosition(BottomSheetStates.MID))
 
 			flyToStop(stop)
-
-			dispath(setBottomSheetPosition(BottomSheetStates.MID))
 		},
 		[dispath, flyToStop],
 	)
@@ -176,18 +105,16 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 		})
 	}, [map])
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (!map) return
-
 		if (!mapLoaded) return
 
-		const newMarkers: any = {}
+		const newMarkers: Record<string, maptilersdk.Marker> = {}
 
 		const removeMarkers = (liveIds?: string[]): void => {
 			Object.keys(newMarkers).forEach(markerId => {
 				if (liveIds && liveIds.includes(markerId)) {
-					console.log(`skip`, markerId)
-
 					return
 				}
 
@@ -197,19 +124,22 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 		}
 
 		const updateMarkers = (): void => {
-			const features = map.querySourceFeatures(STOPS_SOURCE_ID)
+			const features: any[] = map.querySourceFeatures(STOPS_SOURCE_ID)
 
-			const featureIds = features.map(feature => feature.properties.id)
+			const featureIds = features.map(feature => feature.properties.id as string)
 			removeMarkers(featureIds)
 
 			for (let i = 0; i < features.length; i++) {
 				const coords = features[i].geometry.coordinates
 				const props = features[i].properties
-				const { id } = props
 
 				if (props.cluster_id) return
 
+				const { id } = props as IStops<DirectionsNew.in> | IStops<DirectionsNew.out>
+
 				const stop = features[i].properties
+				stop.latLon = JSON.parse(stop.latLon)
+
 				const html = getPinContent(getCurrentTime(stop), stop.id)
 
 				const el = document.createElement(`div`)
@@ -219,6 +149,7 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 					handleMarkerClick(stop)
 				})
 
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 				if (newMarkers[id]) {
 					newMarkers[id].remove()
 				}
@@ -242,7 +173,6 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 		map.on(`data`, onLoad)
 
 		map.on(`zoomend`, () => {
-			console.log(map.getZoom())
 			if (map.getZoom() < 15) {
 				removeMarkers()
 			} else {
@@ -261,14 +191,11 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 	}, [getCurrentTime, handleMarkerClick, map, mapLoaded])
 
 	useEffect(() => {
-		if (!map) return
-
-		if (!mapLoaded) return
+		if (!map || !mapLoaded || !map.isStyleLoaded()) return
 
 		if (map.getSource(STOPS_SOURCE_ID)) {
 			map.removeLayer(`clusters`)
 			map.removeLayer(`cluster-count`)
-			map.removeLayer(`unclustered-point`)
 			map.removeSource(STOPS_SOURCE_ID)
 		}
 
@@ -294,7 +221,7 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 				//   * Blue, 20px circles when point count is less than 100
 				//   * Yellow, 30px circles when point count is between 100 and 750
 				//   * Pink, 40px circles when point count is greater than or equal to 750
-				'circle-color': [`step`, [`get`, `point_count`], `#51bbd6`, 100, `#f1f075`, 750, `#f28cb1`],
+				'circle-color': [`step`, [`get`, `point_count`], `#47daff`, 100, `#f1f075`, 750, `#f28cb1`],
 				'circle-radius': [`step`, [`get`, `point_count`], 20, 100, 30, 750, 40],
 			},
 		})
@@ -311,26 +238,28 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 			},
 		})
 
-		map.on(`click`, `clusters`, function (e) {
+		map.on(`click`, `clusters`, e => {
 			const features = map.queryRenderedFeatures(e.point, {
 				layers: [`clusters`],
 			})
 
 			const clusterId = features[0].properties.cluster_id
-			map.getSource(STOPS_SOURCE_ID).getClusterExpansionZoom(clusterId, function (err, zoom) {
+
+			// @ts-ignore
+			map.getSource(STOPS_SOURCE_ID)?.getClusterExpansionZoom(clusterId, (err: any, zoom: number) => {
 				if (err) return
 
 				map.easeTo({
-					center: features[0].geometry.coordinates,
+					center: (features[0] as any).geometry.coordinates,
 					zoom,
 				})
 			})
 		})
 
-		map.on(`mouseenter`, `clusters`, function () {
+		map.on(`mouseenter`, `clusters`, () => {
 			map.getCanvas().style.cursor = `pointer`
 		})
-		map.on(`mouseleave`, `clusters`, function () {
+		map.on(`mouseleave`, `clusters`, () => {
 			map.getCanvas().style.cursor = ``
 		})
 	}, [map, stopsCollection, mapLoaded, getCurrentTime, handleMarkerClick])
@@ -338,7 +267,7 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 	useEffect(() => {
 		if (!map) return
 
-		const features = STOPS.map(stop => ({
+		const features: IFeature[] = STOPS.map(stop => ({
 			type: `Feature`,
 			properties: {
 				...stop,
