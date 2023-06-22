@@ -36,7 +36,7 @@ export const Map: React.FC = () => {
 			terrainControl: false,
 			navigationControl: false,
 			maptilerLogo: false,
-			logoPosition: undefined
+			logoPosition: undefined,
 		})
 
 		setMapExt(map)
