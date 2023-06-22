@@ -14,7 +14,7 @@ import { OtherTimeBusses } from 'features/OtherTimeBuses'
 import useSchedule from 'shared/store/schedule/useSchedule'
 import { ContainerStyled } from 'shared/ui/common'
 import { Footer } from 'shared/ui/Footer'
-import { MainLayoutBetaStyled } from 'shared/ui/MainLayout'
+import { BottomSheetBgStyled, MainLayoutBetaStyled } from 'shared/ui/MainLayout'
 import { BottomSheetHeader } from 'widget/BottomSheetHeader'
 import { BusStop } from 'widget/BusStop'
 import { Map } from 'widget/Map'
@@ -43,7 +43,7 @@ export const HomeBeta: React.FC = () => {
 				<Map />
 
 				<BottomSheetCustom header={<BottomSheetHeader />}>
-					<div style={{ background: `#f4f4f2`, borderRadius: `25px 25px 0 0` }}>
+					<BottomSheetBgStyled>
 						<MainLayoutBetaStyled>
 							<Info />
 							<NearestStops />
@@ -67,7 +67,7 @@ export const HomeBeta: React.FC = () => {
 						</MainLayoutBetaStyled>
 
 						<Footer />
-					</div>
+					</BottomSheetBgStyled>
 				</BottomSheetCustom>
 			</HomeContainerStyled>
 		</ComplainsProvider>
