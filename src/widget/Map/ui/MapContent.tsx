@@ -127,7 +127,6 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 			const features: any[] = map.querySourceFeatures(STOPS_SOURCE_ID)
 
 			const featureIds = features.map(feature => feature.properties.id as string)
-			removeMarkers(featureIds)
 
 			for (let i = 0; i < features.length; i++) {
 				const coords = features[i].geometry.coordinates
@@ -149,18 +148,20 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 					handleMarkerClick(stop)
 				})
 
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				if (newMarkers[id]) {
-					newMarkers[id].remove()
-				}
-
 				const marker = new maptilersdk.Marker(el)
 					.on(`click`, () => handleMarkerClick(stop))
 					.setLngLat(coords)
 					.addTo(map)
 
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+				if (newMarkers[id]) {
+					newMarkers[id].remove()
+				}
+
 				newMarkers[id] = marker
 			}
+
+			removeMarkers(featureIds)
 		}
 
 		const onLoad = (e: any): void => {
