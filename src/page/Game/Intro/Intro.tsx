@@ -16,7 +16,7 @@ function Intro() {
 					</Link>
 				</BackToSchedule>
 				<GameUIContainer>
-					<Title>Помоги работнику томскавтотранс найти дубли в расписании</Title>
+					<Title>Помоги найти дубли в расписании</Title>
 				</GameUIContainer>
 
 				<GameUIContainer>
