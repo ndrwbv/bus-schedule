@@ -3,18 +3,16 @@ import { useTranslation } from 'react-i18next'
 import SVG from 'react-inlinesvg'
 import { Holiday } from 'entities/Holiday'
 import { SelectBusStopText } from 'entities/SelectBusStopText'
-import { ComplainType } from 'features/Complains'
+import { Fastreply } from 'features/Complains/ui/Fastreply'
 import { useTypedSelector } from 'shared/lib'
 import { isHalloween } from 'shared/store/app/selectors/isHalloween'
 import { StopKeys } from 'shared/store/busStop/Stops'
 import { IHoliday } from 'shared/store/holidays/IHolidays'
 import { ITime } from 'shared/store/timeLeft/ITime'
-import { InlineOptions } from 'shared/ui/InlineOptions'
 
 import { ImageWrapperStyled } from '../../shared/ui/ImageWrapper'
 import {
 	BusEstimationStyled,
-	ComplainOptionContainerStyled,
 	HighLightedStyled,
 	HowMuchLeftContainerStyled,
 	NextBusContainerStyled,
@@ -26,21 +24,6 @@ import NextBus from './img/next-bus.svg'
 import Pumpkin from './img/pumpkin.svg'
 
 const SIZE = 45
-const COMPLAIN_DISAPPEAR_MS = 200000
-const ComplainsOptions = [
-	{
-		value: ComplainType.earlier,
-		label: `Приехал раньше`,
-	},
-	{
-		value: ComplainType.later,
-		label: `Приехал позже`,
-	},
-	{
-		value: ComplainType.not_arrive,
-		label: `Не приехал`,
-	},
-]
 
 export const LeftToString: React.FC<{ left: ITime; busStop: StopKeys | null }> = ({ busStop, left }) => {
 	const { t } = useTranslation()
@@ -71,13 +54,10 @@ export const LeftToString: React.FC<{ left: ITime; busStop: StopKeys | null }> =
 interface ILeftProps {
 	left: ITime
 	busStopLabel: StopKeys | null
-	shouldShowFastReply: boolean
 	holiday: IHoliday | null
-	onComplain: (key: ComplainType) => void
 }
-export const HowMuchLeft: React.FC<ILeftProps> = ({ left, busStopLabel, shouldShowFastReply, holiday, onComplain }) => {
-	const [isComplainClicked, setIsComplainClicked] = useState(false)
-	const [activeComplain, setActiveComplain] = useState<ComplainType | null>(null)
+
+export const HowMuchLeft: React.FC<ILeftProps> = ({ left, busStopLabel, holiday }) => {
 	const isHalloweenMode = useTypedSelector(isHalloween)
 	const isFancy = isHalloweenMode || !!holiday
 	const [currentIcon, setIcon] = useState(isHalloweenMode ? Pumpkin : NextBus)
@@ -90,14 +70,6 @@ export const HowMuchLeft: React.FC<ILeftProps> = ({ left, busStopLabel, shouldSh
 		if (left.minutes <= 15) return `#FBDCDC`
 
 		return `#e7edec`
-	}
-
-	const handleFastReplyClick = (key: ComplainType | null): void => {
-		if (isComplainClicked || !key) return
-
-		setActiveComplain(key)
-		onComplain(key)
-		setIsComplainClicked(true)
 	}
 
 	const handleIconClick = (): void => {
@@ -119,15 +91,6 @@ export const HowMuchLeft: React.FC<ILeftProps> = ({ left, busStopLabel, shouldSh
 		}
 	}, [iconClickCounter, isHalloweenMode])
 
-	useEffect(() => {
-		if (isComplainClicked) {
-			setTimeout(() => {
-				setIsComplainClicked(false)
-				setActiveComplain(null)
-			}, COMPLAIN_DISAPPEAR_MS)
-		}
-	}, [isComplainClicked])
-
 	return (
 		<>
 			<HowMuchLeftContainerStyled isFancy={isFancy} defaultColor={getColorByLeftTime()}>
@@ -142,15 +105,7 @@ export const HowMuchLeft: React.FC<ILeftProps> = ({ left, busStopLabel, shouldSh
 				</NextBusContainerStyled>
 			</HowMuchLeftContainerStyled>
 
-			{shouldShowFastReply && (
-				<ComplainOptionContainerStyled>
-					<InlineOptions<ComplainType>
-						list={ComplainsOptions}
-						onClick={handleFastReplyClick}
-						activeId={activeComplain}
-					/>
-				</ComplainOptionContainerStyled>
-			)}
+			<Fastreply />
 
 			{holiday && <Holiday />}
 		</>
