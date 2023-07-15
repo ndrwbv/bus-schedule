@@ -1,5 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BetaRedirect } from 'page/BetaRedirect/BetaRedirect'
 import { HomeBeta } from 'page/HomeBeta'
 import { configureI18next, initGA, YM } from 'shared/lib'
 
@@ -19,6 +20,7 @@ export const Root: React.FC = () => (
 		<BrowserRouter>
 			<Routes>
 				<Route path="/" element={<HomeBeta />} />
+				<Route path="/beta" element={<BetaRedirect />} />
 				<Route path="/old" element={<Home />} />
 				<Route
 					path="/game"
