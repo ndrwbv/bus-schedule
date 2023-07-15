@@ -32,8 +32,8 @@ export const MessageDateStyled = styled.span`
 	justify-content: flex-end;
 `
 
-export const ComplainsStopStyled = styled.p<{ isCurrentStop?: boolean }>`
-	color: ${props => (props.isCurrentStop ? `#1191FB` : `black`)};
+export const ComplainsStopStyled = styled.p<{ $isCurrentStop?: boolean }>`
+	color: ${props => (props.$isCurrentStop ? `#1191FB` : `black`)};
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;

@@ -12,7 +12,7 @@ export const TelegramButton: React.FC = () => {
 	return (
 		<a href={TG_LINK} target="_blank" rel="noreferrer">
 			<TelegramContainerStyled>
-				<ImageWrapperStyled w={20} h={20}>
+				<ImageWrapperStyled $w={20} $h={20}>
 					<SVG src={TelegramLogo} width={20} height={20} title="Menu" uniquifyIDs />
 				</ImageWrapperStyled>
 

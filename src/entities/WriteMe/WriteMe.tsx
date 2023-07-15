@@ -10,7 +10,7 @@ export const WriteMe: React.FC = () => {
 	const { t } = useTranslation()
 
 	return (
-		<CardStyled isOverflow>
+		<CardStyled $isOverflow>
 			<CardHeaderStyled>
 				{t(`Did you see an error?`)}
 				<br />

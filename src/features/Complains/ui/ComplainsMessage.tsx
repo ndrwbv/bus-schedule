@@ -13,7 +13,7 @@ export const ComplainsMessage: React.FC<Props> = ({ date, on, type, direction, s
 
 	return (
 		<MessageContainerStyled>
-			<ComplainsStopStyled isCurrentStop={isCurrentStop}>{stop}</ComplainsStopStyled>
+			<ComplainsStopStyled $isCurrentStop={isCurrentStop}>{stop}</ComplainsStopStyled>
 			<ComplainsDirectionStyled>{directionString}</ComplainsDirectionStyled>
 			<p>{onString}</p>
 			<MessageDateStyled>{left}</MessageDateStyled>

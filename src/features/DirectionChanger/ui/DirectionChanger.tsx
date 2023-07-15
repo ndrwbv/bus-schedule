@@ -47,7 +47,7 @@ export const DirectionChanger = (): JSX.Element => {
 		<ContainerStyled>
 			<CardStyled>
 				{isHalloweenMode && isWebVisible && (
-					<WebWrapper w={SIZE} h={SIZE} onClick={handleWebClick}>
+					<WebWrapper $w={SIZE} $h={SIZE} onClick={handleWebClick}>
 						<SVG src={Web} width={SIZE} height={SIZE} uniquifyIDs />
 					</WebWrapper>
 				)}
@@ -60,7 +60,7 @@ export const DirectionChanger = (): JSX.Element => {
 						</DirectionTextStyled>
 					</DirectionContainerStyled>
 
-					<GoButtonStyled active={direction === `in`} onClick={onDirectionClick}>
+					<GoButtonStyled $active={direction === `in`} onClick={onDirectionClick}>
 						{direction === `in` ? t(`Out of north park`) : t(`In north park`)}
 					</GoButtonStyled>
 				</GoButtonContainerStyled>

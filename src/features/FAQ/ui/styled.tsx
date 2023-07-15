@@ -13,9 +13,9 @@ export const ShareTitleStyled = styled.h3`
 	margin-top: 24px;
 `
 
-export const CopyFieldStyled = styled.div<{ clicked: boolean }>`
+export const CopyFieldStyled = styled.div<{ $clicked: boolean }>`
 	padding: 13px 18px;
-	color: ${props => (props.clicked ? `green` : `#336cff`)};
+	color: ${props => (props.$clicked ? `green` : `#336cff`)};
 	font-weight: 500;
 	border-radius: 15px;
 	background: #f2f4f4;

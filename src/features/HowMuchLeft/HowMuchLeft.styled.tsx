@@ -1,16 +1,16 @@
 import styled from 'styled-components'
 
-export const HowMuchLeftContainerStyled = styled.div<{ isFancy: boolean; defaultColor: string }>`
+export const HowMuchLeftContainerStyled = styled.div<{ $isFancy: boolean; $defaultColor: string }>`
 	display: flex;
 	align-items: center;
 	flex-direction: column;
 
 	padding: 18px 17px;
 	background: ${props =>
-		props.isFancy
+		props.$isFancy
 			? `linear-gradient(93.72deg, #5020CA 9.83%, #5020CA 9.84%, #8365E0 96.15%);`
-			: props.defaultColor};
-	color: ${props => (props.isFancy ? `white` : `black`)};
+			: props.$defaultColor};
+	color: ${props => (props.$isFancy ? `white` : `black`)};
 	border-radius: 13px;
 `
 

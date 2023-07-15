@@ -93,9 +93,9 @@ export const HowMuchLeft: React.FC<ILeftProps> = ({ left, busStopLabel, holiday 
 
 	return (
 		<>
-			<HowMuchLeftContainerStyled isFancy={isFancy} defaultColor={getColorByLeftTime()}>
+			<HowMuchLeftContainerStyled $isFancy={isFancy} $defaultColor={getColorByLeftTime()}>
 				<NextBusContainerStyled>
-					<ImageWrapperStyled w={SIZE} h={SIZE}>
+					<ImageWrapperStyled $w={SIZE} $h={SIZE}>
 						<SVG src={currentIcon} width={SIZE} height={SIZE} uniquifyIDs onClick={handleIconClick} />
 					</ImageWrapperStyled>
 

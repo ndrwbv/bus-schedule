@@ -36,7 +36,7 @@ export const FAQ: React.FC = () => {
 				defaultSnap={({ maxHeight }) => maxHeight / 2}
 				snapPoints={({ maxHeight }) => [maxHeight - maxHeight / 10, maxHeight / 4, maxHeight * 0.6]}
 			>
-				<BottomSheetBgStyled bg="#fff">
+				<BottomSheetBgStyled $bg="#fff">
 					<PopupContentStyled>
 						<QABlockStyled>
 							<h2>Что такое севербас</h2>

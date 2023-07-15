@@ -22,8 +22,8 @@ export const InlineOptions = <T,>({
 			<InlineOptionsContainerStyled>
 				{list.map(option => (
 					<InlineOptionsItemStyled
-						active={option.value === activeId}
-						defaultColor={defaultColor}
+						$active={option.value === activeId}
+						$defaultColor={defaultColor}
 						key={option.value as string}
 						onClick={() => onClick(option.value)}
 					>

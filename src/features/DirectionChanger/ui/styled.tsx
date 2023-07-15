@@ -21,7 +21,7 @@ export const DirectionPlaceholderStyled = styled.span`
 	font-size: 16px;
 	margin-bottom: 2px;
 `
-export const GoButtonStyled = styled.button<{ active?: boolean }>`
+export const GoButtonStyled = styled.button<{ $active?: boolean }>`
 	width: 100%;
 	border-radius: 13px;
 	background-color: ${MAIN_GREY};

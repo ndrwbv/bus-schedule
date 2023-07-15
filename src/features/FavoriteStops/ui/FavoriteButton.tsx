@@ -41,8 +41,8 @@ export const FavoriteButton: React.FC = () => {
 
 	return (
 		<CustomButtonStyled
-			status={isBusStopFavorite ? `danger` : `primary`}
-			mt="12px"
+			$status={isBusStopFavorite ? `danger` : `primary`}
+			$mt="12px"
 			onClick={isBusStopFavorite ? handleRemoveFavoriteStatus : handleAddFavoriteStatus}
 		>
 			{isBusStopFavorite ? t(`Remove stop from favorite`) : t(`Add stop to favorite`)}

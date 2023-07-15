@@ -17,7 +17,7 @@ export const LeaveFeedbackButton: React.FC = () => {
 	}
 
 	return (
-		<ContainerStyled doubled>
+		<ContainerStyled $doubled>
 			<BirdWrapperStyled>
 				<FeedbackLinkStyled href={FEEDBACK_LINK} onClick={onFeedbackClick}>
 					<FeedbackTextStyled>{t(`Leave feedback`)}</FeedbackTextStyled>

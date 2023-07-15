@@ -2,15 +2,15 @@ import { MAIN_BLUE, MAIN_GREY } from 'shared/theme'
 import styled from 'styled-components'
 
 export const InlineOptionsItemStyled = styled.div<{
-	active: boolean
-	defaultColor?: string | undefined
+	$active: boolean
+	$defaultColor?: string | undefined
 }>`
 	cursor: pointer;
 	padding: 17px 17px;
 
 	border-radius: 16px;
-	background-color: ${props => (props.active ? MAIN_BLUE : props.defaultColor ?? MAIN_GREY)};
-	color: ${props => (props.active ? `white` : `black`)};
+	background-color: ${props => (props.$active ? MAIN_BLUE : props.$defaultColor ?? MAIN_GREY)};
+	color: ${props => (props.$active ? `white` : `black`)};
 
 	font-weight: 600;
 	white-space: nowrap;
