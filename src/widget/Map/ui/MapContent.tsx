@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import * as maptilersdk from '@maptiler/sdk'
 import { BottomSheetStates, setBottomSheetPosition } from 'features/BottomSheet/model/bottomSheetSlice'
 import { userLocationSelector } from 'features/MyLocation/model/myLocationSlice'
+import { AndrewLytics } from 'shared/lib'
 import { calculateHowMuchIsLeft } from 'shared/lib/time/calculateHowMuchIsLeft'
 import { findClosesTime } from 'shared/lib/time/findClosesTime'
 import { busStopNewSelector, setBusStopNew } from 'shared/store/busStop/busStopInfoSlice'
@@ -77,6 +78,8 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 
 	useEffect(() => {
 		if (userLocation) {
+			AndrewLytics(`map:flytouser`)
+
 			map?.flyTo({
 				center: [userLocation.coords.longitude, userLocation.coords.latitude],
 				essential: true,
@@ -93,6 +96,8 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 			dispath(setBottomSheetPosition(BottomSheetStates.MID))
 
 			flyToStop(stop)
+
+			AndrewLytics(`map:markerclick`)
 		},
 		[dispath, flyToStop],
 	)
@@ -179,6 +184,8 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 			} else {
 				updateMarkers()
 			}
+
+			AndrewLytics(`map:zoomend`)
 		})
 
 		map.on(`dragend`, () => {
@@ -250,6 +257,8 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 			map.getSource(STOPS_SOURCE_ID)?.getClusterExpansionZoom(clusterId, (err: any, zoom: number) => {
 				if (err) return
 
+				AndrewLytics(`map:clusterclick`)
+
 				map.easeTo({
 					center: (features[0] as any).geometry.coordinates,
 					zoom,
@@ -282,6 +291,7 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 	useEffect(() => {
 		map?.on(`dragstart`, () => {
 			dispath(setBottomSheetPosition(BottomSheetStates.BOTTOM))
+			AndrewLytics(`map:dragstart`)
 		})
 	}, [dispath, map])
 

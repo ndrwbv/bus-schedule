@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 
 export const NearestStopStyled = styled.article`
+	cursor: pointer;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;

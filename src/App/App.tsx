@@ -18,8 +18,8 @@ export const Root: React.FC = () => (
 	<>
 		<BrowserRouter>
 			<Routes>
-				<Route path="/" element={<Home />} />
-				<Route path="/beta" element={<HomeBeta />} />
+				<Route path="/" element={<HomeBeta />} />
+				<Route path="/old" element={<Home />} />
 				<Route
 					path="/game"
 					element={

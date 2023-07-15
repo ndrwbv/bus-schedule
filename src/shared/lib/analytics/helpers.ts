@@ -7,7 +7,7 @@ export const AndrewLytics = (goal: string): void => {
 	const isProd = process.env.NODE_ENV === `production`
 
 	if (isProd) ym(`reachGoal`, goal)
-	else console.log(`AndrewLytics >`, goal)
+	else console.info(`AndrewLytics >`, goal)
 }
 
 export const initGA = (): void => {
