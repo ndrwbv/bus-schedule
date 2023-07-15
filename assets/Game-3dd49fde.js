@@ -1,4 +1,4 @@
-import{j as u,a as t,F as he,l as me,b as ge,L as pe,A as k,B as xe,G as Se,c as be,W as we}from"./index-297b73c6.js";import{s as d,S as ne,u as X,m as Te,r as a,L as ye}from"./vendor-14397659.js";import{G as S,a as Ie,T as I,M as R,H as ve,b as J,c as K,d as Me,e as Ce}from"./index-fc5558fa.js";const Q=4,Ee=3,x=4,Y=0,Z=0,ee=1,te=!1,se=500,Ne="/assets/game-star-69857334.svg",Ge="/assets/game-new-high-score-8104d64c.svg",Le=d.div`
+import{j as u,a as t,F as he,l as me,b as ge,L as pe,A as k,B as xe,G as Se,c as be,W as we}from"./index-f7a67a26.js";import{s as d,S as ne,u as X,m as Te,r as a,L as ye}from"./vendor-285dfc02.js";import{G as S,a as Ie,T as I,M as R,H as ve,b as J,c as K,d as Me,e as Ce}from"./index-910a908f.js";const Q=4,Ee=3,x=4,Y=0,Z=0,ee=1,te=!1,se=500,Ne="/assets/game-star-69857334.svg",Ge="/assets/game-new-high-score-8104d64c.svg",Le=d.div`
 	position: relative;
 
 	display: flex;
