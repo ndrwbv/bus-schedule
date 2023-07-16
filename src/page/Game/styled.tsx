@@ -24,7 +24,7 @@ export const GameContainer = styled.div<{ animate: boolean }>`
 const getColor = (selected: boolean, destroyed: boolean) => {
 	return `rgba(0, 0, 0, ${destroyed ? '0.54' : '0.74'})`
 }
-export const GameCell = styled.button<{ selected: boolean; destroyed: boolean }>`
+export const GameCell = styled.button<{ $selected: boolean; $destroyed: boolean }>`
 	position: relative;
 
 	padding: 0.9rem;
@@ -39,14 +39,14 @@ export const GameCell = styled.button<{ selected: boolean; destroyed: boolean }>
 	max-width: 100px;
 
 	border-radius: 8px;
-	background-color: ${props => getColor(props.selected, props.destroyed)};
+	background-color: ${props => getColor(props.$selected, props.$destroyed)};
 
-	color: ${props => (props.destroyed ? 'rgba(255, 255, 255, 0.64)' : 'white')};
+	color: ${props => (props.$destroyed ? 'rgba(255, 255, 255, 0.64)' : 'white')};
 
-	border: ${props => (props.selected ? '2px solid white' : '2px solid transparent')};
+	border: ${props => (props.$selected ? '2px solid white' : '2px solid transparent')};
 
 	&::after {
-		content: ${props => (props.destroyed ? 'unset' : "''")};
+		content: ${props => (props.$destroyed ? 'unset' : "''")};
 		position: absolute;
 		top: 3px;
 		left: 0;

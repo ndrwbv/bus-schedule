@@ -19,7 +19,7 @@ export const HeaderScore: React.FC = () => {
 
 	return (
 		<Link to={`/game?${searchParams.toString()}`} onClick={() => AndrewLytics(`game.headerScore`)}>
-			<StyledScore selected={false} destroyed={false}>
+			<StyledScore $selected={false} $destroyed={false}>
 				{score}
 			</StyledScore>
 		</Link>

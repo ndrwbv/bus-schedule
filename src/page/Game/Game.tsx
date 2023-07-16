@@ -310,8 +310,8 @@ const Game = () => {
 						<S.GameCell
 							key={cell.id}
 							onClick={() => handleClickTimeCode(cell)}
-							selected={cell.selected}
-							destroyed={cell.destroyed}
+							$selected={cell.selected}
+							$destroyed={cell.destroyed}
 						>
 							{cell.text}
 						</S.GameCell>
