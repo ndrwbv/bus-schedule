@@ -7,9 +7,9 @@ import { MapContainerStyled } from './Map.styled'
 import { MapContent } from './MapContent'
 
 const getMapApiKey = (attempt: number): string => {
-	if (process.env[`MAPTILER_KEY_${attempt}`]) {
-		console.info(`trying MAPTILER_KEY_${attempt}`)
+	console.info(`trying MAPTILER_KEY_${attempt}`)
 
+	if (process.env[`MAPTILER_KEY_${attempt}`]) {
 		return process.env[`MAPTILER_KEY_${attempt}`] ?? ``
 	}
 
