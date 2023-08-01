@@ -28,7 +28,7 @@ export const Map: React.FC = () => {
 		const map = new maptilersdk.Map({
 			style: maptilersdk.MapStyle.STREETS,
 			center: [84.899966, 56.47177],
-			zoom: 15.5,
+			zoom: 19.5,
 			pitch: 45,
 			bearing: 60,
 			container: `map`,
@@ -71,23 +71,21 @@ export const Map: React.FC = () => {
 				this.camera = new THREE.Camera()
 				this.scene = new THREE.Scene()
 
-				// create two three.js lights to illuminate the model
-				const directionalLight = new THREE.DirectionalLight(0xffffff)
-				directionalLight.position.set(0, -70, 100).normalize()
-				const helper1 = new THREE.DirectionalLightHelper(directionalLight, 10)
-				this.scene.add(directionalLight)
-				this.scene.add(helper1)
+				// LIGHT
+				// const light = new THREE.PointLight(0xff0000, 1.5, 100)
+				// const helper = new THREE.PointLightHelper(light, 5)
+				// light.position.set(-15, 15, 15)
+				// this.scene.add(light)
+				// this.scene.add(helper)
 
-				const directionalLight2 = new THREE.DirectionalLight(0xffffff)
-				directionalLight2.position.set(0, 100, 0).normalize()
+				// const light2 = new THREE.PointLight(0xff0000, 2, 100)
+				// const helper2 = new THREE.PointLightHelper(light2, 5)
+				// light2.position.set(10, 15, -15)
+				// this.scene.add(light2)
+				// this.scene.add(helper2)
 
-				const helper = new THREE.DirectionalLightHelper(directionalLight2)
-				
-				this.scene.add(directionalLight2)
-				this.scene.add(helper)
+				// -- LIGHT
 
-				const light = new THREE.AmbientLight(0xffffff, 0.5)
-				this.scene.add(light)
 				// use the three.js GLTF loader to add the 3D model to the three.js scene
 				const loader = new GLTFLoader()
 
@@ -146,9 +144,5 @@ export const Map: React.FC = () => {
 		setMapExt(map)
 	}, [])
 
-	return (
-		<MapContainerStyled id="map">
-			<MapContent map={mapExt} />
-		</MapContainerStyled>
-	)
+	return <MapContainerStyled id="map">{/* <MapContent map={mapExt} /> */}</MapContainerStyled>
 }
