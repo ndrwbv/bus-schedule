@@ -6,22 +6,27 @@ import { TMap } from '../TMap'
 import { MapContainerStyled } from './Map.styled'
 import { MapContent } from './MapContent'
 
-const getMapApiKey = (): string => {
-	if (process.env.MAPTILER_KEY) {
-		return process.env.MAPTILER_KEY
+const getMapApiKey = (attempt: number): string => {
+	if (process.env[`MAPTILER_KEY_${attempt}`]) {
+		console.info(`trying MAPTILER_KEY_${attempt}`)
+
+		return process.env[`MAPTILER_KEY_${attempt}`] ?? ``
 	}
 
 	// eslint-disable-next-line no-console
-	console.error(`MAPTILER_KEY is not set`)
+	console.info(`MAPTILER_KEY is not set. Attempt: `, attempt)
 
 	return ``
 }
 
+const MAX_KEY_AMOUNT = 10
+const KEY_START_INDEX = 1
 export const Map: React.FC = () => {
 	const [mapExt, setMapExt] = useState<TMap>(undefined)
+	const [mapApiKeyIndex, setMapApiKeyIndex] = useState(KEY_START_INDEX)
 
 	useEffect(() => {
-		maptilersdk.config.apiKey = getMapApiKey()
+		maptilersdk.config.apiKey = getMapApiKey(mapApiKeyIndex)
 
 		const map = new maptilersdk.Map({
 			style: maptilersdk.MapStyle.STREETS,
@@ -37,10 +42,18 @@ export const Map: React.FC = () => {
 			navigationControl: false,
 			maptilerLogo: false,
 			logoPosition: undefined,
+		}).on(`error`, e => {
+			if (mapApiKeyIndex === MAX_KEY_AMOUNT) {
+				console.log(`MAX_KEY_AMOUNT exceeded`)
+
+				return
+			}
+
+			setMapApiKeyIndex(prev => prev + 1)
 		})
 
 		setMapExt(map)
-	}, [])
+	}, [mapApiKeyIndex])
 
 	return (
 		<MapContainerStyled id="map">

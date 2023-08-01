@@ -3,7 +3,9 @@
 name: CI
 
 env:
-  MAPTILER_KEY: ${{secrets.MAPTILER_KEY}}
+  MAPTILER_KEY_1: ${{secrets.MAPTILER_KEY_1}}
+  MAPTILER_KEY_2: ${{secrets.MAPTILER_KEY_2}}
+  MAPTILER_KEY_3: ${{secrets.MAPTILER_KEY_3}}
 
 on:
   pull_request:
