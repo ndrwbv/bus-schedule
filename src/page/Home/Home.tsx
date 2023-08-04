@@ -17,7 +17,7 @@ import { MainLayoutStyled } from 'shared/ui/MainLayout'
 import { BusStop } from 'widget/BusStop'
 import { TodaysBuses } from 'widget/TodaysBuses'
 
-import { FAQ } from '../../features/FAQ'
+import { FAQ } from '../../entities/FAQ'
 import { HomeContainerStyled } from './styled'
 
 export const Home: React.FC = () => {

@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
-import bottomSheetSlice from 'features/BottomSheet/model/bottomSheetSlice'
+import bottomSheetSlice from 'entities/BottomSheet/model/bottomSheetSlice'
 import favoriteStops from 'features/FavoriteStops/model/favoriteStopsSlice'
 import { infoApi } from 'features/Info/model/info'
 import myLocationSlice from 'features/MyLocation/model/myLocationSlice'

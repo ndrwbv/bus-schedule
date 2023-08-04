@@ -7,7 +7,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import * as maptilersdk from '@maptiler/sdk'
-import { BottomSheetStates, setBottomSheetPosition } from 'features/BottomSheet/model/bottomSheetSlice'
+import { BottomSheetStates, setBottomSheetPosition } from 'entities/BottomSheet/model/bottomSheetSlice'
 import { userLocationSelector } from 'features/MyLocation/model/myLocationSlice'
 import { AndrewLytics } from 'shared/lib'
 import { calculateHowMuchIsLeft } from 'shared/lib/time/calculateHowMuchIsLeft'
