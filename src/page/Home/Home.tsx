@@ -15,7 +15,7 @@ import { OtherTimeBusses } from 'features/OtherTimeBuses'
 import useSchedule from 'shared/store/schedule/useSchedule'
 import { ContainerStyled } from 'shared/ui/common'
 import { Footer } from 'shared/ui/Footer'
-import { BottomSheetBgStyled, MainLayoutBetaStyled } from 'shared/ui/MainLayout'
+import { BottomSheetBgStyled, MainLayoutStyled } from 'shared/ui/MainLayout'
 import { BottomSheetHeader } from 'widget/BottomSheetHeader'
 import { BusStop } from 'widget/BusStop'
 import { Map } from 'widget/Map'
@@ -44,7 +44,7 @@ export const Home: React.FC = () => {
 
 				<BottomSheetCustom header={<BottomSheetHeader />}>
 					<BottomSheetBgStyled>
-						<MainLayoutBetaStyled>
+						<MainLayoutStyled>
 							<Info />
 							<NearestStops />
 							<DirectionChanger />
@@ -64,7 +64,7 @@ export const Home: React.FC = () => {
 							<ContainerStyled>
 								<WriteMe />
 							</ContainerStyled>
-						</MainLayoutBetaStyled>
+						</MainLayoutStyled>
 
 						<Footer />
 					</BottomSheetBgStyled>
