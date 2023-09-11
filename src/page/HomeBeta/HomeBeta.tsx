@@ -11,6 +11,7 @@ import { Info } from 'features/Info'
 import { LeaveFeedbackButton } from 'features/LeaveFeedbackButton'
 import { NearestStops } from 'features/NearestStops'
 import { OtherTimeBusses } from 'features/OtherTimeBuses'
+import { StripAd } from 'features/StripAd/StripAd'
 import useSchedule from 'shared/store/schedule/useSchedule'
 import { ContainerStyled } from 'shared/ui/common'
 import { Footer } from 'shared/ui/Footer'
@@ -49,6 +50,8 @@ export const HomeBeta: React.FC = () => {
 							<NearestStops />
 							<DirectionChanger />
 							<BusStop />
+
+							<StripAd />
 
 							<Complains />
 

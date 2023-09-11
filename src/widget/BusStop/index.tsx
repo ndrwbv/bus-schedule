@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import Select, { SingleValue } from 'react-select'
 import { HowMuchLeft } from 'features/HowMuchLeft/HowMuchLeft'
+import { StripBGCardStyled } from 'features/StripAd/StripAd.styles'
 import { AndrewLytics } from 'shared/lib'
 import { IOption, StopKeys } from 'shared/store/busStop/Stops'
 import { todayHolidaySelector } from 'shared/store/holidays/holidaysSlice'
@@ -52,20 +53,22 @@ export const BusStop: React.FC = () => {
 
 	return (
 		<ContainerStyled>
-			<CardStyled>
-				<Header text={headerText}>
-					<Select
-						isSearchable={false}
-						styles={selectStyles}
-						options={stopsOptions}
-						onChange={handleChangeBusStop}
-						value={currentBusStop}
-						defaultValue={stopsOptions[0]}
-					/>
-				</Header>
+			<StripBGCardStyled>
+				<CardStyled>
+					<Header text={headerText}>
+						<Select
+							isSearchable={false}
+							styles={selectStyles}
+							options={stopsOptions}
+							onChange={handleChangeBusStop}
+							value={currentBusStop}
+							defaultValue={stopsOptions[0]}
+						/>
+					</Header>
 
-				<HowMuchLeft holiday={todaysHoliday} busStopLabel={busStopNew?.label || null} left={left} />
-			</CardStyled>
+					<HowMuchLeft holiday={todaysHoliday} busStopLabel={busStopNew?.label || null} left={left} />
+				</CardStyled>
+			</StripBGCardStyled>
 		</ContainerStyled>
 	)
 }
