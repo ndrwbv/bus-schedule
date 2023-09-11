@@ -6,6 +6,15 @@ env:
   MAPTILER_KEY_1: ${{secrets.MAPTILER_KEY_1}}
   MAPTILER_KEY_2: ${{secrets.MAPTILER_KEY_2}}
   MAPTILER_KEY_3: ${{secrets.MAPTILER_KEY_3}}
+  MAPTILER_KEY_4: ${{secrets.MAPTILER_KEY_4}}
+  MAPTILER_KEY_5: ${{secrets.MAPTILER_KEY_5}}
+  MAPTILER_KEY_6: ${{secrets.MAPTILER_KEY_6}}
+  MAPTILER_KEY_7: ${{secrets.MAPTILER_KEY_7}}
+  MAPTILER_KEY_8: ${{secrets.MAPTILER_KEY_8}}
+  MAPTILER_KEY_9: ${{secrets.MAPTILER_KEY_9}}
+  MAPTILER_KEY_10: ${{secrets.MAPTILER_KEY_10}}
+  MAPTILER_KEY_11: ${{secrets.MAPTILER_KEY_11}}
+
 
 on:
   push:
