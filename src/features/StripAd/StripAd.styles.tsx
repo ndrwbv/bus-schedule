@@ -71,4 +71,5 @@ export const StripAdVideoBlockStyled = styled.div`
 	border-radius: 53px;
 	padding: 17px 33px;
 	border: 3px solid #ffffff24;
+	overflow: hidden;
 `
