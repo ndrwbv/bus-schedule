@@ -1,10 +1,21 @@
 import styled from 'styled-components'
 
+// interface IContainerProps {
+// 	$doubled?: boolean;
+
+// }
+
+// const getMargin = (props: IContainerProps) => {
+
+// }
+
 export const ContainerStyled = styled.article<{ $doubled?: boolean }>`
 	position: relative;
+
 	& + & {
 		margin-top: 12px;
 	}
+
 	margin: ${props => (props.$doubled ? `24px 0 !important` : `inherit`)};
 `
 
