@@ -30,7 +30,7 @@ export const StripAd: FC = () => {
 			>
 				<StipBottomSheetContainerStyled>
 					<StripBottomSheetHeaderContainerStyled>
-						<StripVideoContainerStyled>
+						<StripVideoContainerStyled $width={575} $radius="20px 20px 0 0">
 							<video src="/stripad/nastya.mp4" autoPlay muted loop />
 						</StripVideoContainerStyled>
 
@@ -116,10 +116,15 @@ export const StripAd: FC = () => {
 
 			<StripAdStyled onClick={() => setIsOpen(true)}>
 				<StripAdVideoBlockStyled>
+					<StripVideoContainerStyled $width={275} $radius="20px">
+						<video src="/stripad/nastya_croped.mp4" autoPlay muted loop />
+					</StripVideoContainerStyled>
+
 					<StripTextBlockStyled>
 						<StipDiscountStyled>
 							скидка <span>500₽</span>
 						</StipDiscountStyled>
+
 						<StipHeaderStyled>
 							На занятия по танцам{` `}
 							<svg

@@ -31,6 +31,9 @@ export const StipThumbnailContainerStyled = styled.div`
 `
 
 export const StripTextBlockStyled = styled.div`
+	position: absolute;
+	z-index: 3;
+
 	p + p {
 		margin-top: 8px;
 	}
@@ -59,9 +62,9 @@ export const StipBottomSheetContainerStyled = styled.div`
 	}
 `
 
-export const StripVideoContainerStyled = styled.div`
+export const StripVideoContainerStyled = styled.div<{ $width: number; $radius: string }>`
 	width: 100%;
-	max-height: 550px;
+	max-height: ${props => props.$width}px;
 	overflow: hidden;
 	position: absolute;
 	top: 0;
@@ -69,7 +72,7 @@ export const StripVideoContainerStyled = styled.div`
 	right: 0;
 	z-index: 1;
 
-	border-radius: 20px 20px 0 0;
+	border-radius: ${props => props.$radius};
 
 	video {
 		width: 100%;
