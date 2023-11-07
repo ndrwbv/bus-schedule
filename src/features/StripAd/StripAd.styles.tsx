@@ -78,7 +78,12 @@ export const StripVideoContainerStyled = styled.div`
 
 export const StripTextContainerStyled = styled.div`
 	display: flex;
-	align-items: center;
+	flex-direction: column;
+	padding: 35px;
+
+	div {
+		margin-top: 26px;
+	}
 `
 
 export const StipVideoHeaderStyled = styled.div`
@@ -100,4 +105,12 @@ export const StripBottomSheetHeaderContainerStyled = styled.div`
 
 	position: relative;
 	overflow: hidden;
+`
+
+export const StipActionsStyled = styled.div`
+	position: absolute;
+	bottom: 40px;
+	z-index: 2;
+	left: 50%;
+	transform: translate(-50%, 0);
 `
