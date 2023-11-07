@@ -113,4 +113,14 @@ export const StipActionsStyled = styled.div`
 	z-index: 2;
 	left: 50%;
 	transform: translate(-50%, 0);
+	display: flex;
+	gap: 40px;
+	align-items: center;
+`
+
+export const StripActionButtonStyled = styled.a`
+	border: 1px solid #fff;
+	border-radius: 23px;
+	color: #fff;
+	padding: 6px 14px;
 `
