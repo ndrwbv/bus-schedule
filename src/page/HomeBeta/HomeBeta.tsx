@@ -1,5 +1,4 @@
 import { HeaderActionsStyled, HeaderContainerBetaStyled, HeaderInnerStyled, Logo } from 'entities/Logo'
-import { TranslationLink } from 'entities/TranslationLink'
 import { WriteMe } from 'entities/WriteMe'
 import { BottomSheetCustom } from 'features/BottomSheet/BottomSheet'
 import { Complains } from 'features/Complains'
@@ -54,8 +53,6 @@ export const HomeBeta: React.FC = () => {
 							<StripAd />
 
 							<Complains />
-
-							<TranslationLink />
 
 							<FavoriteStops />
 

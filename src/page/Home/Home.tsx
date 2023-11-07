@@ -1,5 +1,4 @@
 import { HeaderActionsStyled, HeaderContainerStyled, HeaderInnerStyled, Logo } from 'entities/Logo'
-import { TranslationLink } from 'entities/TranslationLink'
 // import { WriteMe } from 'entities/WriteMe'
 import { Complains } from 'features/Complains'
 import { ComplainsProvider } from 'features/Complains/model/ComplainsContext'
@@ -44,8 +43,6 @@ export const Home: React.FC = () => {
 					<BusStop />
 
 					<Complains />
-
-					<TranslationLink />
 
 					<FavoriteStops />
 
