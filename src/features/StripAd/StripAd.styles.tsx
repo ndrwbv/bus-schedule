@@ -47,3 +47,57 @@ export const StipHeaderStyled = styled.p`
 	font-size: 24px;
 	font-weight: bold;
 `
+
+export const StipBottomSheetContainerStyled = styled.div`
+	background-color: #000;
+	color: #fff;
+	border-radius: 25px 25px 0 0;
+	min-height: 60vh;
+
+	@media all and (min-width: 766px) {
+		border-radius: 34px 34px 0 0;
+	}
+`
+
+export const StripVideoContainerStyled = styled.div`
+	width: 100%;
+	max-height: 550px;
+	overflow: hidden;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 1;
+
+	border-radius: 20px 20px 0 0;
+
+	video {
+		width: 100%;
+	}
+`
+
+export const StripTextContainerStyled = styled.div`
+	display: flex;
+	align-items: center;
+`
+
+export const StipVideoHeaderStyled = styled.div`
+	position: absolute;
+	top: 28px;
+	left: 50%;
+	transform: translate(-50%, 0);
+	z-index: 2;
+	text-align: center;
+
+	${StipHeaderStyled} {
+		white-space: nowrap;
+		margin-top: 9px;
+	}
+`
+
+export const StripBottomSheetHeaderContainerStyled = styled.div`
+	height: 50vh;
+
+	position: relative;
+	overflow: hidden;
+`
