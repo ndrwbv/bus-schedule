@@ -77,4 +77,9 @@ export const StripTextContainerStyled = styled.div`
 	div {
 		margin-top: 26px;
 	}
+
+	a {
+		color: #fff;
+		text-decoration: underline;
+	}
 `

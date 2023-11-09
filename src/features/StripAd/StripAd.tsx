@@ -6,6 +6,7 @@ import { ContainerStyled } from 'shared/ui'
 import { StripAdBlock } from './ui/StripAdBlock/StripAdBlock'
 import { StripAdBottomSheet } from './ui/StripAdBottomSheet/StripAdBottomSheet'
 
+const toggle = true
 export const StripAd: FC = () => {
 	const [isOpen, setIsOpen] = useState(false)
 	const [searchParams, setSearchParams] = useSearchParams()
@@ -29,6 +30,11 @@ export const StripAd: FC = () => {
 			setIsOpen(true)
 		}
 	}, [])
+
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	if (toggle === false) {
+		return null
+	}
 
 	return (
 		<ContainerStyled>
