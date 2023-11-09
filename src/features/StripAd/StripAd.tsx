@@ -1,5 +1,7 @@
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { BottomSheet } from 'react-spring-bottom-sheet'
+import queryString from 'query-string'
 import { ContainerStyled } from 'shared/ui'
 
 import {
@@ -19,12 +21,33 @@ import {
 
 export const StripAd: FC = () => {
 	const [isOpen, setIsOpen] = useState(false)
+	const [searchParams, setSearchParams] = useSearchParams()
+
+	const handleOpen = (): void => {
+		searchParams.set(`stripad`, `open`)
+		setSearchParams(searchParams)
+		setIsOpen(true)
+	}
+
+	const handleClose = (): void => {
+		searchParams.delete(`stripad`)
+		setSearchParams(searchParams)
+		setIsOpen(false)
+	}
+
+	useEffect(() => {
+		const parsed = queryString.parse(window.location.search) as { stripad?: string }
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		if (parsed?.stripad) {
+			setIsOpen(true)
+		}
+	}, [])
 
 	return (
 		<ContainerStyled>
 			<BottomSheet
 				open={isOpen}
-				onDismiss={() => setIsOpen(false)}
+				onDismiss={handleClose}
 				defaultSnap={({ maxHeight }) => maxHeight / 1.1}
 				snapPoints={({ maxHeight }) => [maxHeight - maxHeight / 10, maxHeight / 4, maxHeight * 0.6]}
 			>
@@ -124,7 +147,7 @@ export const StripAd: FC = () => {
 				</StipBottomSheetContainerStyled>
 			</BottomSheet>
 
-			<StripAdStyled onClick={() => setIsOpen(true)}>
+			<StripAdStyled onClick={handleOpen}>
 				<StripAdVideoBlockStyled>
 					<StripTextBlockStyled>
 						<StipDiscountStyled>
