@@ -10,12 +10,13 @@ export const StripBGCardStyled = styled.div`
 `
 
 export const StripAdVideoBlockStyled = styled.div`
-	border-radius: 20px;
+	border-radius: 25px;
 	overflow: hidden;
 	background-image: url('/stripad/strip-thumbnail.png');
 	background-size: cover;
-	min-height: 275px;
-	background-position: center;
+	min-height: 92px;
+	background-position-y: 150%;
+	background-position-x: 50px;
 
 	display: flex;
 	flex-direction: column;
@@ -35,7 +36,7 @@ export const StripTextBlockStyled = styled.div`
 	z-index: 3;
 
 	p + p {
-		margin-top: 8px;
+		margin-top: 4px;
 	}
 `
 
@@ -113,7 +114,7 @@ export const StripBottomSheetHeaderContainerStyled = styled.div`
 export const StipActionsStyled = styled.div`
 	position: absolute;
 	bottom: 40px;
-	z-index: 2;
+	z-index: 6;
 	left: 50%;
 	transform: translate(-50%, 0);
 	display: flex;

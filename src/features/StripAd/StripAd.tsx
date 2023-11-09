@@ -25,13 +25,23 @@ export const StripAd: FC = () => {
 			<BottomSheet
 				open={isOpen}
 				onDismiss={() => setIsOpen(false)}
-				defaultSnap={({ maxHeight }) => maxHeight / 2}
+				defaultSnap={({ maxHeight }) => maxHeight / 1.1}
 				snapPoints={({ maxHeight }) => [maxHeight - maxHeight / 10, maxHeight / 4, maxHeight * 0.6]}
 			>
 				<StipBottomSheetContainerStyled>
 					<StripBottomSheetHeaderContainerStyled>
+						<div
+							style={{
+								position: `absolute`,
+								top: 0,
+								left: 0,
+								right: 0,
+								bottom: 0,
+								zIndex: 5,
+							}}
+						/>
 						<StripVideoContainerStyled $width={575} $radius="20px 20px 0 0">
-							<video src="/stripad/nastya.mp4" autoPlay muted loop />
+							<video src="/stripad/nastya.mp4" autoPlay muted loop disablePictureInPicture playsInline />
 						</StripVideoContainerStyled>
 
 						<StipVideoHeaderStyled>
@@ -116,10 +126,6 @@ export const StripAd: FC = () => {
 
 			<StripAdStyled onClick={() => setIsOpen(true)}>
 				<StripAdVideoBlockStyled>
-					<StripVideoContainerStyled $width={275} $radius="20px">
-						<video src="/stripad/nastya_croped.mp4" autoPlay muted loop />
-					</StripVideoContainerStyled>
-
 					<StripTextBlockStyled>
 						<StipDiscountStyled>
 							скидка <span>500₽</span>

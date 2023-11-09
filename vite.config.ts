@@ -59,7 +59,7 @@ export default defineConfig(({ mode }) => {
 		},
 		publicDir,
 		server: {
-			https: true,
+			https: false,
 		},
 	}
 })
