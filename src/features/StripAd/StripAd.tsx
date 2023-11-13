@@ -2,6 +2,7 @@
 import { FC, useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import queryString from 'query-string'
+import { AndrewLytics } from 'shared/lib'
 import { ContainerStyled } from 'shared/ui'
 
 import { StripAdBlock } from './ui/StripAdBlock/StripAdBlock'
@@ -16,6 +17,7 @@ export const StripAd: FC = () => {
 		searchParams.set(`stripad`, `open`)
 		setSearchParams(searchParams)
 		setIsOpen(true)
+		AndrewLytics(`adStrip13novBannerClick`)
 	}
 
 	const handleClose = (): void => {
@@ -29,6 +31,7 @@ export const StripAd: FC = () => {
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		if (parsed?.stripad) {
 			setIsOpen(true)
+			AndrewLytics(`adStrip13novOpenFromUrl`)
 		}
 	}, [])
 

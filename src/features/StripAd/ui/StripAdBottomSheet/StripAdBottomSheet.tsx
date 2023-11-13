@@ -1,5 +1,6 @@
 import { FC } from 'react'
 import { BottomSheet } from 'react-spring-bottom-sheet'
+import { AndrewLytics } from 'shared/lib'
 
 import { INST_LINK, TG_LINK } from '../../const'
 import { StripHeader } from '../StripHeader/StripHeader'
@@ -12,9 +13,17 @@ import {
 	StripVideoHeaderStyled,
 } from './StripAdBottomSheet.styles'
 
+const tgClick = (): void => {
+	AndrewLytics(`adStrip13novTgClick`)
+}
+
+const instClick = (): void => {
+	AndrewLytics(`adStrip13novInstaClick`)
+}
+
 const InstagramIcon: FC = () => {
 	return (
-		<a href={INST_LINK} target="_blank" rel="noreferrer">
+		<a href={INST_LINK} target="_blank" rel="noreferrer" onClick={instClick}>
 			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<g clipPath="url(#clip0_1908_514)">
 					<path
@@ -60,7 +69,7 @@ export const StripAdBottomSheet: FC<IStripAdBottomSheetProps> = ({ open, onClose
 					</StripVideoHeaderStyled>
 
 					<StripActionsStyled>
-						<StripActionButtonStyled href={TG_LINK} target="_blank" rel="noreferrer">
+						<StripActionButtonStyled href={TG_LINK} target="_blank" rel="noreferrer" onClick={tgClick}>
 							Записаться
 						</StripActionButtonStyled>
 
@@ -105,12 +114,12 @@ export const StripAdBottomSheet: FC<IStripAdBottomSheetProps> = ({ open, onClose
 
 						<p>
 							Записаться можно через запрещенную соц. сеть{` `}
-							<a href={INST_LINK} target="_blank" rel="noreferrer">
+							<a href={INST_LINK} target="_blank" rel="noreferrer" onClick={instClick}>
 								@anastyabv
 							</a>
 							{` `}
 							или через телеграм{` `}
-							<a href={TG_LINK} target="_blank" rel="noreferrer">
+							<a href={TG_LINK} target="_blank" rel="noreferrer" onClick={tgClick}>
 								@anastyabv
 							</a>
 						</p>
