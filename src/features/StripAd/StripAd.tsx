@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import { FC, useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import queryString from 'query-string'
@@ -6,7 +7,7 @@ import { ContainerStyled } from 'shared/ui'
 import { StripAdBlock } from './ui/StripAdBlock/StripAdBlock'
 import { StripAdBottomSheet } from './ui/StripAdBottomSheet/StripAdBottomSheet'
 
-const toggle = true
+const toggle = false
 export const StripAd: FC = () => {
 	const [isOpen, setIsOpen] = useState(false)
 	const [searchParams, setSearchParams] = useSearchParams()
@@ -31,15 +32,10 @@ export const StripAd: FC = () => {
 		}
 	}, [])
 
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	if (toggle === false) {
-		return null
-	}
-
 	return (
 		<ContainerStyled>
 			<StripAdBottomSheet open={isOpen} onClose={handleClose} />
-			<StripAdBlock onOpen={handleOpen} />
+			{toggle ? <StripAdBlock onOpen={handleOpen} /> : null}
 		</ContainerStyled>
 	)
 }

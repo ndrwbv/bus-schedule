@@ -11,7 +11,7 @@ export const StripAdVideoBlockStyled = styled.div`
 	background-image: url('/stripad/strip-thumbnail.png');
 	background-size: cover;
 	min-height: 92px;
-	background-position-y: 150%;
+	background-position-y: 160%;
 	background-position-x: 50px;
 
 	display: flex;

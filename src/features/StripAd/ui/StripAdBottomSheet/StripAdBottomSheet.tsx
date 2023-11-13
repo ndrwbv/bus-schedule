@@ -4,13 +4,13 @@ import { BottomSheet } from 'react-spring-bottom-sheet'
 import { INST_LINK, TG_LINK } from '../../const'
 import { StripHeader } from '../StripHeader/StripHeader'
 import {
-	StripVideoHeaderStyled,
 	StripActionButtonStyled,
 	StripActionsStyled,
 	StripBottomSheetContainerStyled,
 	StripBottomSheetHeaderContainerStyled,
 	StripTextContainerStyled,
 	StripVideoContainerStyled,
+	StripVideoHeaderStyled,
 } from './StripAdBottomSheet.styles'
 
 const InstagramIcon: FC = () => {
@@ -89,7 +89,7 @@ export const StripAdBottomSheet: FC<IStripAdBottomSheetProps> = ({ open, onClose
 						<p>
 							<b>Расписание </b>
 						</p>
-						<p> вт, чт в 19:30</p>
+						<p>вт, чт в 19:30</p>
 					</div>
 
 					<div>
@@ -104,8 +104,7 @@ export const StripAdBottomSheet: FC<IStripAdBottomSheetProps> = ({ open, onClose
 							<b>Условия</b>
 						</p>
 						<p>
-							При записи на курс напишите, что вы с сервербаса. Акция действительна до 3 сентября 2023
-							года
+							При записи на курс напишите, что вы с сервербаса. Акция действительна до 30 ноября 2023 года
 						</p>
 					</div>
 
