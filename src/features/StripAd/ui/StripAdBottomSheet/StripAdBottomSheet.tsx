@@ -9,6 +9,7 @@ import {
 	StripBottomSheetContainerStyled,
 	StripBottomSheetHeaderContainerStyled,
 	StripTextContainerStyled,
+	StripVideoContainerStyled,
 	StripVideoHeaderStyled,
 } from './StripAdBottomSheet.styles'
 
@@ -55,6 +56,24 @@ export const StripAdBottomSheet: FC<IStripAdBottomSheetProps> = ({ open, onClose
 		>
 			<StripBottomSheetContainerStyled>
 				<StripBottomSheetHeaderContainerStyled>
+					<div
+						style={{
+							position: `relative`,
+						}}
+					>
+						<StripVideoContainerStyled $radius="20px 20px 0 0" tabIndex={-1}>
+							<video
+								src="/stripad/nastya.mp4"
+								autoPlay
+								muted
+								loop
+								disablePictureInPicture
+								playsInline
+								tabIndex={-1}
+							/>
+						</StripVideoContainerStyled>
+					</div>
+
 					<StripVideoHeaderStyled>
 						<StripHeader />
 					</StripVideoHeaderStyled>

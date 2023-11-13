@@ -13,15 +13,13 @@ export const StripBottomSheetHeaderContainerStyled = styled.div`
 	background-position-y: 50%;
 `
 
-export const StripVideoContainerStyled = styled.div<{ $width: number; $radius: string }>`
+export const StripVideoContainerStyled = styled.div<{ $radius: string }>`
 	width: 100%;
-	max-height: ${props => props.$width}px;
-	overflow: hidden;
 	position: absolute;
 	top: 0;
 	left: 0;
 	right: 0;
-	z-index: 1;
+	z-index: 0;
 
 	border-radius: ${props => props.$radius};
 
@@ -45,7 +43,6 @@ export const StripBottomSheetContainerStyled = styled.div`
 	background-color: #000;
 	color: #fff;
 	border-radius: 25px 25px 0 0;
-	min-height: 60vh;
 
 	overflow: hidden;
 
