@@ -7,6 +7,10 @@ export const StripBottomSheetHeaderContainerStyled = styled.div`
 
 	position: relative;
 	overflow: hidden;
+
+	background-image: url('/stripad/strip-thumbnail.png');
+	background-size: cover;
+	background-position-y: 50%;
 `
 
 export const StripVideoContainerStyled = styled.div<{ $width: number; $radius: string }>`
@@ -42,6 +46,8 @@ export const StripBottomSheetContainerStyled = styled.div`
 	color: #fff;
 	border-radius: 25px 25px 0 0;
 	min-height: 60vh;
+
+	overflow: hidden;
 
 	@media all and (min-width: 766px) {
 		border-radius: 34px 34px 0 0;

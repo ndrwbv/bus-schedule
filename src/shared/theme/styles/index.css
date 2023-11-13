@@ -24,7 +24,7 @@ body > reach-portal > div > div > div:nth-child(1) {
 
 body > reach-portal > div > div > div:nth-child(1)::before {
   top: calc(-18px + env(safe-area-inset-top));
-  background-color: rgb(0 0 0 / 24%);
+  background-color: rgb(0 0 0 / 44%);
   width: 36px;
   height: 6px;
   border-radius: 12px;

@@ -9,7 +9,6 @@ import {
 	StripBottomSheetContainerStyled,
 	StripBottomSheetHeaderContainerStyled,
 	StripTextContainerStyled,
-	StripVideoContainerStyled,
 	StripVideoHeaderStyled,
 } from './StripAdBottomSheet.styles'
 
@@ -50,25 +49,12 @@ export const StripAdBottomSheet: FC<IStripAdBottomSheetProps> = ({ open, onClose
 		<BottomSheet
 			open={open}
 			onDismiss={onClose}
-			defaultSnap={({ maxHeight }) => maxHeight / 1.1}
-			snapPoints={({ maxHeight }) => [maxHeight - maxHeight / 10, maxHeight / 4, maxHeight * 0.6]}
+			defaultSnap={({ maxHeight }) => maxHeight * 0.7}
+			snapPoints={({ maxHeight }) => [maxHeight * 0.7]}
+			expandOnContentDrag
 		>
 			<StripBottomSheetContainerStyled>
 				<StripBottomSheetHeaderContainerStyled>
-					<div
-						style={{
-							position: `absolute`,
-							top: 0,
-							left: 0,
-							right: 0,
-							bottom: 0,
-							zIndex: 5,
-						}}
-					/>
-					<StripVideoContainerStyled $width={575} $radius="20px 20px 0 0">
-						<video src="/stripad/nastya.mp4" autoPlay muted loop disablePictureInPicture playsInline />
-					</StripVideoContainerStyled>
-
 					<StripVideoHeaderStyled>
 						<StripHeader />
 					</StripVideoHeaderStyled>
