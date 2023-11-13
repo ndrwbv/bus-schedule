@@ -69,7 +69,11 @@ export const StripAdBottomSheet: FC<IStripAdBottomSheetProps> = ({ open, onClose
 				</StripBottomSheetHeaderContainerStyled>
 
 				<StripTextContainerStyled>
-					<p>Скидка 500₽ на курс по FRAME UP STRIP из 8 занятий.</p>
+					<p>
+						Скидка 500₽ на курс по FRAME UP STRIP из 8 занятий. Курс рассчитан на тех, кто раньше никогда не
+						танцевал. Неважно, сколько вам лет, какой у вас вес и т.д., присоединиться может любая. Курс
+						ведёт Анастасия Боева
+					</p>
 
 					<div>
 						<p>
