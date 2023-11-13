@@ -1,14 +1,5 @@
 import styled from 'styled-components'
 
-// interface IContainerProps {
-// 	$doubled?: boolean;
-
-// }
-
-// const getMargin = (props: IContainerProps) => {
-
-// }
-
 export const ContainerStyled = styled.article<{ $doubled?: boolean }>`
 	position: relative;
 
