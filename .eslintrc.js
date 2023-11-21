@@ -5,8 +5,12 @@ module.exports = {
 		`plugin:promise/recommended`,
 		`plugin:sonarjs/recommended`,
 		`plugin:prettier/recommended`,
+		`plugin:@typescript-eslint/recommended`,
+		`plugin:boundaries/recommended`,
+		`eslint:recommended`,
+		`@feature-sliced/eslint-config/rules/layers-slices`,
 	],
-	plugins: [`optimize-regex`, `simple-import-sort`, `styled-components-varname`],
+	plugins: [`@typescript-eslint`, `optimize-regex`, `simple-import-sort`, `styled-components-varname`],
 	ignorePatterns: [`**/dist/**/*.*`, `src/page/Game/*`, `vite.config.ts`, `dev-dist`],
 	rules: {
 		'react/prop-types': `off`,
@@ -84,12 +88,6 @@ module.exports = {
 				tagStyle: {
 					suffix: `Styled`,
 				},
-			},
-		],
-		'import/no-extraneous-dependencies': [
-			`error`,
-			{
-				devDependencies: true,
 			},
 		],
 	},
@@ -183,6 +181,11 @@ module.exports = {
 		sourceType: `module`,
 	},
 	settings: {
+		'import/resolver': {
+			typescript: {
+				alwaysTryTypes: true,
+			},
+		},
 		react: {
 			version: `detect`,
 		},

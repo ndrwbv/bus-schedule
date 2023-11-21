@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": "src",
+    "baseUrl": "./src",
     "target": "ESNext",
     "lib": [
       "dom",
@@ -22,15 +22,15 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src"
+    "src/**/*.ts"
   ],
   "paths": {
-    "pages/*": ["src/pages/*"],
-    "features/*": ["src/features/*"],
-    "entities/*": ["src/entities/*"],
-    "shared/*": ["src/shared/*"],
-    "app/*": ["src/app/*"],
-    "processes/*": ["src/processes/*"],
-    "widget/*": ["src/widget/*"]
+    "pages/*": ["pages/*"],
+    "features/*": ["features/*"],
+    "entities/*": ["entities/*"],
+    "shared/*": ["shared/*"],
+    "app/*": ["app/*"],
+    "processes/*": ["processes/*"],
+    "widget/*": ["widget/*"]
   }
 }

@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import Select from 'react-select'
+import { ComplainType } from 'features/Complains'
 import { AndrewLytics } from 'shared/lib'
 import { busStopSelector, directionSelector } from 'shared/store/busStop/busStopInfoSlice'
 import { IOption } from 'shared/store/busStop/Stops'
@@ -15,6 +16,7 @@ import { TimeStampStyled } from 'shared/ui/TimeStamp'
 
 import { SelectBusStopText } from '../../entities/SelectBusStopText'
 
+type T = ComplainType
 export const OtherTimeBusses: React.FC = () => {
 	const busStop = useSelector(busStopSelector)
 	const nextDay = useSelector(nextDaySelector)
