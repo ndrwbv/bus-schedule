@@ -8,7 +8,7 @@ import { ContainerStyled } from 'shared/ui'
 import { StripAdBlock } from './ui/StripAdBlock/StripAdBlock'
 import { StripAdBottomSheet } from './ui/StripAdBottomSheet/StripAdBottomSheet'
 
-const toggle = true
+const toggle = false
 export const StripAd: FC = () => {
 	const [isOpen, setIsOpen] = useState(false)
 	const [searchParams, setSearchParams] = useSearchParams()
