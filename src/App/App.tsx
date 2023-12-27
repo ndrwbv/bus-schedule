@@ -1,5 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { Dev } from 'page/Dev/Dev'
 import { Home } from 'page/Home'
 import { configureI18next, initGA, YM } from 'shared/lib'
 
@@ -18,6 +19,7 @@ export const Root: React.FC = () => (
 		<BrowserRouter>
 			<Routes>
 				<Route path="/" element={<Home />} />
+				<Route path="/dev" element={<Dev />} />
 				<Route
 					path="/game"
 					element={
