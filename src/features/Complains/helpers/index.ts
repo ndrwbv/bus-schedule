@@ -23,6 +23,8 @@ export const getTypeString = (type: ComplainType): string => {
 			return `приехал позже`
 		case ComplainType.not_arrive:
 			return `не приехал`
+		case ComplainType.passed_by:
+			return `проехал мимо`
 		default:
 			return ``
 	}

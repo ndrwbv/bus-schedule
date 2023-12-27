@@ -24,6 +24,10 @@ const ComplainsOptions = [
 		value: ComplainType.not_arrive,
 		label: `Не приехал`,
 	},
+	{
+		value: ComplainType.passed_by,
+		label: `Проехал мимо`,
+	},
 ]
 
 export const ComplainOptionContainerStyled = styled.div`
