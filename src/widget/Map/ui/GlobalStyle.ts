@@ -3,6 +3,15 @@ import { createGlobalStyle } from 'styled-components'
 import { clusterIconsCss } from '../assets/clusterIconCSS'
 
 export const GlobalStyle = createGlobalStyle`
+
+	[data-rsbs-is-blocking='false'] [data-rsbs-overlay], [data-rsbs-scroll]{
+		border-radius: 25px 25px 0 0 !important;
+
+		@media all and (min-width: 766px) {
+			border-radius: 34px 34px 0 0 !important;
+		}
+	}
+
  .pin {
 	position: relative
  }
