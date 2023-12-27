@@ -86,6 +86,12 @@ export const STOPS_IN: IStops<DirectionsNew.in>[] = [
 		latLon: [56.471773, 84.900123],
 	},
 	{
+		id: `32`,
+		label: `Маяк`,
+		direction: DirectionsNew.in,
+		latLon: [56.473628, 84.89927],
+	},
+	{
 		id: `29`,
 		label: `Марины Цветаевой`,
 		direction: DirectionsNew.in,
