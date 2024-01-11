@@ -1,1 +1,1 @@
-export const MAX_COMPLAINS = 10
+export const MAX_COMPLAINS = 2

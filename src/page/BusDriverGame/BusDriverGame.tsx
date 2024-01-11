@@ -30,19 +30,21 @@ interface IGameData {
 const filterDisembarkPassengers = (passengers: IPassenger[], currentStopIndex: number): IPassenger[] =>
 	passengers.filter(passenger => passenger.travel.toStopIndex !== currentStopIndex)
 
+const INITIAL_GAME_DATA = {
+	complains: [],
+	balance: 0,
+	transportedPassengers: 0,
+	currentPassengers: [],
+	rejectedPassegers: [],
+}
+
 export const BusDriverGame: FC = () => {
 	const [gameState, setGameState] = useState<IGameState>({
 		state: `onboarding`,
 		currentStopIndex: 0,
 	})
 
-	const [gameData, setGameData] = useState<IGameData>({
-		complains: [],
-		balance: 0,
-		transportedPassengers: 0,
-		currentPassengers: [],
-		rejectedPassegers: [],
-	})
+	const [gameData, setGameData] = useState<IGameData>(INITIAL_GAME_DATA)
 
 	const updatePassengersData = (accepted: IPassenger[], rejected: IPassenger[]): void => {
 		setGameData(prev => ({
@@ -82,7 +84,8 @@ export const BusDriverGame: FC = () => {
 	}
 
 	const handleNewGame = (): void => {
-		setGameState(prev => ({ ...prev, state: `riding` }))
+		setGameState({ currentStopIndex: 0, state: `riding` })
+		setGameData(INITIAL_GAME_DATA)
 	}
 
 	// Disembark passengers when arriving on stop
@@ -114,7 +117,7 @@ export const BusDriverGame: FC = () => {
 		case `onboarding`:
 			return <Onboarding startNewGame={handleNewGame} />
 		case `endgame`:
-			return <EndGame startNewGame={handleNewGame} />
+			return <EndGame startNewGame={handleNewGame} complains={gameData.complains} balance={gameData.balance} />
 		case `pickup`:
 			return (
 				<Pickup
