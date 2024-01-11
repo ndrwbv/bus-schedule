@@ -3,6 +3,7 @@ import { FC, useCallback, useEffect, useState } from 'react'
 import { FARE } from './const/FARE'
 import { MAX_COMPLAINS } from './const/MAX_COMPLAINS'
 import { EndGame } from './EndGame/EndGame'
+import { generatePassengers } from './entities/Passenger/helpers/generatePassengers'
 import { IPassenger } from './entities/Passenger/IPassenger'
 import { calculateComplains } from './features/GameComplain/calculateComplains'
 import { IGameComplain } from './features/GameComplain/IGameComplain'
@@ -40,6 +41,7 @@ export const BusDriverGame: FC = () => {
 	})
 
 	const updatePassengersData = (accepted: IPassenger[], rejected: IPassenger[]): void => {
+		console.log(`update`, { accepted, rejected })
 		setGameData(prev => ({
 			...prev,
 			currentPassengers: [...prev.currentPassengers, ...accepted],
@@ -95,13 +97,20 @@ export const BusDriverGame: FC = () => {
 		}))
 	}, [gameData.rejectedPassegers.length])
 
+	console.log(gameData)
 	switch (gameState.state) {
 		case `onboarding`:
 			return <Onboarding startNewGame={handleNewGame} />
 		case `endgame`:
 			return <EndGame startNewGame={handleNewGame} />
 		case `pickup`:
-			return <Pickup nextState={handleNextState} updatePassengersData={updatePassengersData} />
+			return (
+				<Pickup
+					nextState={handleNextState}
+					updatePassengersData={updatePassengersData}
+					waitingPassengers={generatePassengers()}
+				/>
+			)
 		case `riding`:
 			return <Riding nextState={handleNextState} passengers={gameData.currentPassengers} />
 

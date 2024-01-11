@@ -17,7 +17,7 @@ const PassengerAcceptence: FC<{
 	onReject: (passenger: IPassenger) => void
 }> = ({ passenger, onAccept, onReject }) => {
 	return (
-		<div>
+		<div style={{ border: `1px solid red` }}>
 			<PassengerDetails {...passenger} />
 			<button type="button" onClick={() => onAccept(passenger)}>
 				Accept
@@ -40,6 +40,7 @@ export const Pickup: FC<IProps> = ({ nextState, updatePassengersData, waitingPas
 
 	const handleReject = (passenger: IPassenger): void => {
 		setRejected(prev => [...prev, passenger])
+		setQueue(prev => prev.filter(p => p.id !== passenger.id))
 	}
 
 	useEffect(() => {
@@ -54,9 +55,6 @@ export const Pickup: FC<IProps> = ({ nextState, updatePassengersData, waitingPas
 			Pickup{` `}
 			<PassengerList list={queue} />
 			<PassengerAcceptence passenger={queue[0]} onAccept={handleAccept} onReject={handleReject} />
-			<button type="button" onClick={nextState}>
-				Далее
-			</button>
 		</PickupStyled>
 	)
 }
