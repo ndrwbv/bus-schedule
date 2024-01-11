@@ -1,4 +1,5 @@
 import { FC, useCallback, useEffect, useState } from 'react'
+import { STOPS } from 'shared/store/busStop/const/stops'
 
 import { FARE } from './const/FARE'
 import { MAX_COMPLAINS } from './const/MAX_COMPLAINS'
@@ -15,6 +16,7 @@ type TGameStates = 'onboarding' | 'riding' | 'pickup' | 'endgame'
 
 interface IGameState {
 	state: TGameStates
+	currentStopIndex: number
 }
 
 interface IGameData {
@@ -30,6 +32,7 @@ const filterDisembarkPassengers = (data: IPassenger[]): IPassenger[] => data
 export const BusDriverGame: FC = () => {
 	const [gameState, setGameState] = useState<IGameState>({
 		state: `onboarding`,
+		currentStopIndex: 0,
 	})
 
 	const [gameData, setGameData] = useState<IGameData>({
@@ -41,7 +44,6 @@ export const BusDriverGame: FC = () => {
 	})
 
 	const updatePassengersData = (accepted: IPassenger[], rejected: IPassenger[]): void => {
-		console.log(`update`, { accepted, rejected })
 		setGameData(prev => ({
 			...prev,
 			currentPassengers: [...prev.currentPassengers, ...accepted],
@@ -63,13 +65,23 @@ export const BusDriverGame: FC = () => {
 	}, [])
 
 	const handleNextState = (): void => {
-		setGameState(prev => ({
-			state: prev.state === `riding` ? `pickup` : `riding`,
-		}))
+		setGameState(prev => {
+			const nextState = prev.state === `riding` ? `pickup` : `riding`
+			let { currentStopIndex } = prev
+
+			if (prev.state === `pickup`) {
+				currentStopIndex = STOPS.length - 1 === prev.currentStopIndex ? 0 : prev.currentStopIndex + 1
+			}
+
+			return {
+				state: nextState,
+				currentStopIndex,
+			}
+		})
 	}
 
 	const handleNewGame = (): void => {
-		setGameState({ state: `riding` })
+		setGameState(prev => ({ ...prev, state: `riding` }))
 	}
 
 	// Disembark passengers when arriving on stop
@@ -84,7 +96,7 @@ export const BusDriverGame: FC = () => {
 		const isEndGame = gameData.complains.length >= MAX_COMPLAINS
 
 		if (isEndGame) {
-			setGameState({ state: `endgame` })
+			setGameState(prev => ({ ...prev, state: `endgame` }))
 		}
 	}, [gameData.complains.length])
 
@@ -97,7 +109,6 @@ export const BusDriverGame: FC = () => {
 		}))
 	}, [gameData.rejectedPassegers.length])
 
-	console.log(gameData)
 	switch (gameState.state) {
 		case `onboarding`:
 			return <Onboarding startNewGame={handleNewGame} />
@@ -112,7 +123,13 @@ export const BusDriverGame: FC = () => {
 				/>
 			)
 		case `riding`:
-			return <Riding nextState={handleNextState} passengers={gameData.currentPassengers} />
+			return (
+				<Riding
+					nextState={handleNextState}
+					passengers={gameData.currentPassengers}
+					stopIndex={gameState.currentStopIndex}
+				/>
+			)
 
 		default:
 			return <Onboarding startNewGame={handleNewGame} />
