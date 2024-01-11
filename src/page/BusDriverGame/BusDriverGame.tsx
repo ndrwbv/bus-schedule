@@ -27,7 +27,8 @@ interface IGameData {
 	rejectedPassegers: IPassenger[]
 }
 
-const filterDisembarkPassengers = (data: IPassenger[]): IPassenger[] => data
+const filterDisembarkPassengers = (passengers: IPassenger[], currentStopIndex: number): IPassenger[] =>
+	passengers.filter(passenger => passenger.travel.toStopIndex !== currentStopIndex)
 
 export const BusDriverGame: FC = () => {
 	const [gameState, setGameState] = useState<IGameState>({
@@ -53,7 +54,7 @@ export const BusDriverGame: FC = () => {
 
 	const disembarkPassengers = useCallback((): void => {
 		setGameData(prev => {
-			const filtred = filterDisembarkPassengers(prev.currentPassengers)
+			const filtred = filterDisembarkPassengers(prev.currentPassengers, gameState.currentStopIndex)
 			const diff = prev.currentPassengers.length - filtred.length
 
 			return {
@@ -62,7 +63,7 @@ export const BusDriverGame: FC = () => {
 				currentPassengers: filtred,
 			}
 		})
-	}, [])
+	}, [gameState.currentStopIndex])
 
 	const handleNextState = (): void => {
 		setGameState(prev => {
@@ -119,7 +120,11 @@ export const BusDriverGame: FC = () => {
 				<Pickup
 					nextState={handleNextState}
 					updatePassengersData={updatePassengersData}
-					waitingPassengers={generatePassengers()}
+					waitingPassengers={generatePassengers({
+						min: 0,
+						max: 3,
+						stopIndex: gameState.currentStopIndex,
+					})}
 				/>
 			)
 		case `riding`:

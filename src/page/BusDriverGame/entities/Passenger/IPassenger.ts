@@ -4,4 +4,8 @@ export interface IPassenger {
 	secondName: string
 	zodiakSign: string
 	occupation: string
+	travel: {
+		fromStopIndex: number
+		toStopIndex: number
+	}
 }

@@ -13,7 +13,9 @@ interface IProps {
 export const Riding: FC<IProps> = ({ nextState, passengers, stopIndex }) => (
 	<RidingStyled>
 		<h1>Riding</h1>
-		<span>текущая остановка {STOPS[stopIndex].label}</span>
+		<span>
+			текущая остановка {STOPS[stopIndex].label}-{stopIndex}
+		</span>
 		<PassengerList list={passengers} />
 		<button type="button" onClick={nextState}>
 			Далее
