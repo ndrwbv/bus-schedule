@@ -1,9 +1,10 @@
-import { FC, useCallback, useEffect, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { STOPS } from 'shared/store/busStop/const/stops'
 
 import { FARE } from './const/FARE'
 import { MAX_COMPLAINS } from './const/MAX_COMPLAINS'
 import { EndGame } from './EndGame/EndGame'
+import { GameLayout, IGameScoreItem } from './entities/GameLayout/GameLayout'
 import { generatePassengers } from './entities/Passenger/helpers/generatePassengers'
 import { IPassenger } from './entities/Passenger/IPassenger'
 import { calculateComplains } from './features/GameComplain/calculateComplains'
@@ -113,33 +114,60 @@ export const BusDriverGame: FC = () => {
 		}))
 	}, [gameData.rejectedPassegers.length])
 
-	switch (gameState.state) {
-		case `onboarding`:
-			return <Onboarding startNewGame={handleNewGame} />
-		case `endgame`:
-			return <EndGame startNewGame={handleNewGame} complains={gameData.complains} balance={gameData.balance} />
-		case `pickup`:
-			return (
-				<Pickup
-					nextState={handleNextState}
-					updatePassengersData={updatePassengersData}
-					waitingPassengers={generatePassengers({
-						min: 0,
-						max: 3,
-						stopIndex: gameState.currentStopIndex,
-					})}
-				/>
-			)
-		case `riding`:
-			return (
-				<Riding
-					nextState={handleNextState}
-					passengers={gameData.currentPassengers}
-					stopIndex={gameState.currentStopIndex}
-				/>
-			)
+	const renderContent = (): JSX.Element => {
+		switch (gameState.state) {
+			case `onboarding`:
+				return <Onboarding startNewGame={handleNewGame} />
 
-		default:
-			return <Onboarding startNewGame={handleNewGame} />
+			case `endgame`:
+				return (
+					<EndGame startNewGame={handleNewGame} complains={gameData.complains} balance={gameData.balance} />
+				)
+
+			case `pickup`:
+				return (
+					<Pickup
+						nextState={handleNextState}
+						updatePassengersData={updatePassengersData}
+						waitingPassengers={generatePassengers({
+							min: 0,
+							max: 3,
+							stopIndex: gameState.currentStopIndex,
+						})}
+					/>
+				)
+
+			case `riding`:
+				return (
+					<Riding
+						nextState={handleNextState}
+						passengers={gameData.currentPassengers}
+						stopIndex={gameState.currentStopIndex}
+					/>
+				)
+
+			default:
+				return <Onboarding startNewGame={handleNewGame} />
+		}
 	}
+
+	const gameScore: IGameScoreItem[] = useMemo(
+		() => [
+			{
+				value: gameData.balance,
+				label: `баланс`,
+			},
+			{
+				value: gameData.currentPassengers.length,
+				label: `отвезено`,
+			},
+			{
+				value: gameData.complains.length,
+				label: `жалоб`,
+			},
+		],
+		[gameData.balance, gameData.complains.length, gameData.currentPassengers.length],
+	)
+
+	return <GameLayout items={gameScore}>{renderContent()}</GameLayout>
 }

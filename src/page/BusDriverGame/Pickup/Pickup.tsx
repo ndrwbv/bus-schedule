@@ -3,7 +3,13 @@ import { FC, useEffect, useState } from 'react'
 import { IPassenger } from '../entities/Passenger/IPassenger'
 import { PassengerDetails } from '../entities/Passenger/PassengerDetails/PassengerDetails'
 import { PassengerList } from '../entities/Passenger/PassengerList/PassengerList'
-import { PickupStyled } from './Pickup.styles'
+import { GameButton } from '../shared/ui/GameButton/GameButton'
+import {
+	ButtonContaintainerStyled,
+	PassengerAcceptenceStyled,
+	PickupContentStyled,
+	PickupStyled,
+} from './Pickup.styles'
 
 interface IProps {
 	nextState: () => void
@@ -17,15 +23,13 @@ const PassengerAcceptence: FC<{
 	onReject: (passenger: IPassenger) => void
 }> = ({ passenger, onAccept, onReject }) => {
 	return (
-		<div style={{ border: `1px solid red` }}>
+		<PassengerAcceptenceStyled>
 			<PassengerDetails {...passenger} />
-			<button type="button" onClick={() => onAccept(passenger)}>
-				Accept
-			</button>
-			<button type="button" onClick={() => onReject(passenger)}>
-				Reject
-			</button>
-		</div>
+			<ButtonContaintainerStyled>
+				<GameButton onClick={() => onAccept(passenger)}>Принять</GameButton>
+				<GameButton onClick={() => onReject(passenger)}>Отклонить</GameButton>
+			</ButtonContaintainerStyled>
+		</PassengerAcceptenceStyled>
 	)
 }
 export const Pickup: FC<IProps> = ({ nextState, updatePassengersData, waitingPassengers }) => {
@@ -52,8 +56,10 @@ export const Pickup: FC<IProps> = ({ nextState, updatePassengersData, waitingPas
 
 	return (
 		<PickupStyled>
-			Pickup{` `}
-			<PassengerList list={queue} />
+			<PickupContentStyled>
+				<PassengerList list={queue} />
+			</PickupContentStyled>
+
 			<PassengerAcceptence passenger={queue[0]} onAccept={handleAccept} onReject={handleReject} />
 		</PickupStyled>
 	)

@@ -1,14 +1,15 @@
 import { FC } from 'react'
 
 import { IPassenger } from '../IPassenger'
+import { PassengerDetailsStyled } from './PassengerDetails.styles'
 
 export const PassengerDetails: FC<IPassenger> = ({ name, secondName, zodiakSign, occupation }) => {
 	return (
-		<div>
+		<PassengerDetailsStyled>
 			<div>имя: {name}</div>
 			<div>фамилия: {secondName}</div>
-			<div>{zodiakSign}</div>
-			<div>{occupation}</div>
-		</div>
+			<div>знак: {zodiakSign}</div>
+			<div>род деятельности: {occupation}</div>
+		</PassengerDetailsStyled>
 	)
 }
