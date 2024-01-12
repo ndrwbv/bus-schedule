@@ -15,24 +15,29 @@ interface IProps {
 	nextState: () => void
 	updatePassengersData: (accepted: IPassenger[], rejected: IPassenger[]) => void
 	waitingPassengers: IPassenger[]
+	total: number
+	limit: number
 }
 
 const PassengerAcceptence: FC<{
 	passenger: IPassenger
 	onAccept: (passenger: IPassenger) => void
 	onReject: (passenger: IPassenger) => void
-}> = ({ passenger, onAccept, onReject }) => {
+	limitExceed: boolean
+}> = ({ passenger, onAccept, onReject, limitExceed }) => {
 	return (
 		<PassengerAcceptenceStyled>
 			<PassengerDetails {...passenger} />
 			<ButtonContaintainerStyled>
-				<GameButton onClick={() => onAccept(passenger)}>Принять</GameButton>
+				<GameButton onClick={() => onAccept(passenger)} disabled={limitExceed}>
+					Принять
+				</GameButton>
 				<GameButton onClick={() => onReject(passenger)}>Отклонить</GameButton>
 			</ButtonContaintainerStyled>
 		</PassengerAcceptenceStyled>
 	)
 }
-export const Pickup: FC<IProps> = ({ nextState, updatePassengersData, waitingPassengers }) => {
+export const Pickup: FC<IProps> = ({ nextState, updatePassengersData, waitingPassengers, limit, total }) => {
 	const [queue, setQueue] = useState<IPassenger[]>(waitingPassengers)
 	const [accepted, setAccepted] = useState<IPassenger[]>([])
 	const [rejected, setRejected] = useState<IPassenger[]>([])
@@ -48,11 +53,22 @@ export const Pickup: FC<IProps> = ({ nextState, updatePassengersData, waitingPas
 	}
 
 	useEffect(() => {
-		if (queue.length === 0) {
+		if (queue.length === 0 && waitingPassengers.length !== 0) {
 			updatePassengersData(accepted, rejected)
 			nextState()
 		}
-	}, [accepted, nextState, queue.length, rejected, updatePassengersData])
+	}, [accepted, nextState, queue.length, rejected, updatePassengersData, waitingPassengers.length])
+
+	if (waitingPassengers.length === 0) {
+		return (
+			<PickupStyled>
+				<h1>На этой остановке нет пассажиров</h1>
+				<GameButton onClick={nextState}>Едем дальше</GameButton>
+			</PickupStyled>
+		)
+	}
+
+	const limitExceed = accepted.length + total >= limit
 
 	return (
 		<PickupStyled>
@@ -60,7 +76,12 @@ export const Pickup: FC<IProps> = ({ nextState, updatePassengersData, waitingPas
 				<PassengerList list={queue} />
 			</PickupContentStyled>
 
-			<PassengerAcceptence passenger={queue[0]} onAccept={handleAccept} onReject={handleReject} />
+			<PassengerAcceptence
+				passenger={queue[0]}
+				onAccept={handleAccept}
+				onReject={handleReject}
+				limitExceed={limitExceed}
+			/>
 		</PickupStyled>
 	)
 }

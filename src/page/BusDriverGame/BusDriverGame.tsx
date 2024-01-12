@@ -44,6 +44,7 @@ export const BusDriverGame: FC = () => {
 		state: `onboarding`,
 		currentStopIndex: 0,
 	})
+	const [passengersLimit, setPassengersLimit] = useState(5)
 
 	const [gameData, setGameData] = useState<IGameData>(INITIAL_GAME_DATA)
 
@@ -64,6 +65,7 @@ export const BusDriverGame: FC = () => {
 				...prev,
 				balance: prev.balance + FARE * diff,
 				currentPassengers: filtred,
+				transportedPassengers: prev.transportedPassengers + diff,
 			}
 		})
 	}, [gameState.currentStopIndex])
@@ -114,6 +116,10 @@ export const BusDriverGame: FC = () => {
 		}))
 	}, [gameData.rejectedPassegers.length])
 
+	useEffect(() => {
+		setPassengersLimit(gameData.transportedPassengers + 5)
+	}, [gameData.transportedPassengers])
+
 	const renderContent = (): JSX.Element => {
 		switch (gameState.state) {
 			case `onboarding`:
@@ -134,6 +140,8 @@ export const BusDriverGame: FC = () => {
 							max: 3,
 							stopIndex: gameState.currentStopIndex,
 						})}
+						limit={passengersLimit}
+						total={gameData.currentPassengers.length}
 					/>
 				)
 
@@ -159,14 +167,18 @@ export const BusDriverGame: FC = () => {
 			},
 			{
 				value: gameData.currentPassengers.length,
-				label: `отвезено`,
+				label: `пассажиров`,
+			},
+			{
+				value: passengersLimit,
+				label: `лимит`,
 			},
 			{
 				value: gameData.complains.length,
 				label: `жалоб`,
 			},
 		],
-		[gameData.balance, gameData.complains.length, gameData.currentPassengers.length],
+		[gameData.balance, gameData.complains.length, gameData.currentPassengers.length, passengersLimit],
 	)
 
 	return <GameLayout items={gameScore}>{renderContent()}</GameLayout>

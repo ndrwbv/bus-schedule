@@ -5,4 +5,8 @@ export const GameButtonStyled = styled.button`
 	background-color: #7de49a;
 	padding: 20px;
 	border-radius: 10px;
+
+	&:disabled {
+		opacity: 0.5;
+	}
 `

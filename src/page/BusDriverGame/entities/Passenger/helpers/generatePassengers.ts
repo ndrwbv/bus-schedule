@@ -2,10 +2,7 @@ import { STOPS } from 'shared/store/busStop/const/stops'
 import { v4 as uuidv4 } from 'uuid'
 
 import { IPassenger } from '../IPassenger'
-
-const randomInt = (min: number, max: number): number => {
-	return Math.floor(Math.random() * (max - min + 1) + min)
-}
+import { randomInt } from './randomInt'
 
 const nameList = [`Андрей`, `Игорь`, `Женя`, `Настя`]
 const secondNameList = [`Иванов`, `Кедров`, `Бебуревшивили`]
