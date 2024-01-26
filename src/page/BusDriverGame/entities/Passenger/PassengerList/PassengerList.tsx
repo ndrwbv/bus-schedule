@@ -4,9 +4,9 @@ import { Character } from '../Character/Character'
 import { IPassenger } from '../IPassenger'
 import { PassengerListStyled } from './PassengerList.styles'
 
-export const PassengerList: FC<{ list: IPassenger[]; onClick: (passenger: IPassenger) => void }> = ({
+export const PassengerList: FC<{ list: IPassenger[]; onClick?: (passenger: IPassenger) => void }> = ({
 	list,
-	onClick,
+	onClick = () => {},
 }) => (
 	<PassengerListStyled>
 		{list.map(passenger => (
