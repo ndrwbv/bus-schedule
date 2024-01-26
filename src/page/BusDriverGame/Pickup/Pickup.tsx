@@ -14,7 +14,8 @@ import {
 
 interface IProps {
 	nextState: () => void
-	updatePassengersData: (accepted: IPassenger[], rejected: IPassenger[]) => void
+	acceptPassenger: (passenger: IPassenger) => void
+	rejectPassenger: (passenger: IPassenger) => void
 	waitingPassengers: IPassenger[]
 	total: number
 	limit: number
@@ -43,20 +44,25 @@ const PassengerAcceptence: FC<{
 		</>
 	)
 }
-export const Pickup: FC<IProps> = ({ nextState, updatePassengersData, waitingPassengers, limit, total }) => {
+export const Pickup: FC<IProps> = ({
+	nextState,
+	acceptPassenger,
+	rejectPassenger,
+	waitingPassengers,
+	limit,
+	total,
+}) => {
 	const [queue, setQueue] = useState<IPassenger[]>(waitingPassengers)
-	const [accepted, setAccepted] = useState<IPassenger[]>([])
-	const [rejected, setRejected] = useState<IPassenger[]>([])
 	const [currentPassenger, setCurrentPassenger] = useState<IPassenger | null>(null)
 
 	const handleAccept = (passenger: IPassenger): void => {
-		setAccepted(prev => [...prev, passenger])
+		acceptPassenger(passenger)
 		setQueue(prev => prev.filter(p => p.id !== passenger.id))
 		setCurrentPassenger(null)
 	}
 
 	const handleReject = (passenger: IPassenger): void => {
-		setRejected(prev => [...prev, passenger])
+		rejectPassenger(passenger)
 		setQueue(prev => prev.filter(p => p.id !== passenger.id))
 		setCurrentPassenger(null)
 	}
@@ -71,10 +77,9 @@ export const Pickup: FC<IProps> = ({ nextState, updatePassengersData, waitingPas
 
 	useEffect(() => {
 		if (queue.length === 0 && waitingPassengers.length !== 0) {
-			updatePassengersData(accepted, rejected)
 			nextState()
 		}
-	}, [accepted, nextState, queue.length, rejected, updatePassengersData, waitingPassengers.length])
+	}, [nextState, queue.length, waitingPassengers.length])
 
 	if (waitingPassengers.length === 0) {
 		return (
@@ -85,7 +90,7 @@ export const Pickup: FC<IProps> = ({ nextState, updatePassengersData, waitingPas
 		)
 	}
 
-	const limitExceed = accepted.length + total >= limit
+	const limitExceed = total >= limit
 
 	return (
 		<PickupStyled>

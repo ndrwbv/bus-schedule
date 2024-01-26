@@ -48,11 +48,17 @@ export const BusDriverGame: FC = () => {
 
 	const [gameData, setGameData] = useState<IGameData>(INITIAL_GAME_DATA)
 
-	const updatePassengersData = (accepted: IPassenger[], rejected: IPassenger[]): void => {
+	const addNewPassenger = (passenger: IPassenger): void => {
 		setGameData(prev => ({
 			...prev,
-			currentPassengers: [...prev.currentPassengers, ...accepted],
-			rejectedPassegers: [...prev.rejectedPassegers, ...rejected],
+			currentPassengers: [...prev.currentPassengers, passenger],
+		}))
+	}
+
+	const rejectPassenger = (passenger: IPassenger): void => {
+		setGameData(prev => ({
+			...prev,
+			rejectedPassegers: [...prev.rejectedPassegers, passenger],
 		}))
 	}
 
@@ -134,7 +140,8 @@ export const BusDriverGame: FC = () => {
 				return (
 					<Pickup
 						nextState={handleNextState}
-						updatePassengersData={updatePassengersData}
+						acceptPassenger={addNewPassenger}
+						rejectPassenger={rejectPassenger}
 						waitingPassengers={generatePassengers({
 							min: 0,
 							max: 3,
