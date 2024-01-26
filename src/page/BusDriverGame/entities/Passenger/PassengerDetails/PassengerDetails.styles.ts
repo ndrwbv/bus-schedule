@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 export const PassengerVisualContainerStyled = styled.div`
 	position: absolute;
-	top: -124px;
+	top: -138px;
 	left: 0;
 	right: 0;
 	display: flex;
@@ -29,6 +29,7 @@ export const MessageBlockStyled = styled.div`
 	border-radius: 20px;
 	background-color: #fff;
 	position: relative;
+	max-width: 175px;
 	box-shadow: -1px 2px 20.2px 0px rgba(0, 0, 0, 0.25);
 `
 

@@ -9,6 +9,7 @@ export interface IPassenger {
 		toStopIndex: number
 	}
 	character: ICharacter
+	message?: string
 }
 
 export interface ICharacter {

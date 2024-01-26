@@ -179,16 +179,12 @@ export const BusDriverGame: FC = () => {
 				label: `баланс`,
 			},
 			{
-				value: gameData.currentPassengers.length,
-				label: `пассажиров`,
-			},
-			{
-				value: passengersLimit,
-				label: `лимит`,
+				value: `${gameData.currentPassengers.length} / ${passengersLimit}`,
+				label: `пассажиры`,
 			},
 			{
 				value: gameData.complains.length,
-				label: `жалоб`,
+				label: `жалобы`,
 			},
 		],
 		[gameData.balance, gameData.complains.length, gameData.currentPassengers.length, passengersLimit],

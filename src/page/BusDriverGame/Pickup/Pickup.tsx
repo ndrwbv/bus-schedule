@@ -5,6 +5,7 @@ import { PassengerDetails } from '../entities/Passenger/PassengerDetails/Passeng
 import { PassengerList } from '../entities/Passenger/PassengerList/PassengerList'
 import { GameButton } from '../shared/ui/GameButton/GameButton'
 import {
+	BgOverlayStyled,
 	ButtonContaintainerStyled,
 	PassengerAcceptenceStyled,
 	PickupContentStyled,
@@ -23,34 +24,49 @@ const PassengerAcceptence: FC<{
 	passenger: IPassenger
 	onAccept: (passenger: IPassenger) => void
 	onReject: (passenger: IPassenger) => void
+	onCancel: () => void
 	limitExceed: boolean
-}> = ({ passenger, onAccept, onReject, limitExceed }) => {
+}> = ({ passenger, onAccept, onReject, limitExceed, onCancel }) => {
 	return (
-		<PassengerAcceptenceStyled>
-			<PassengerDetails {...passenger} />
+		<>
+			<BgOverlayStyled onClick={onCancel} />
+			<PassengerAcceptenceStyled>
+				<PassengerDetails {...passenger} />
 
-			<ButtonContaintainerStyled>
-				<GameButton onClick={() => onAccept(passenger)} disabled={limitExceed}>
-					Принять
-				</GameButton>
-				<GameButton onClick={() => onReject(passenger)}>Отклонить</GameButton>
-			</ButtonContaintainerStyled>
-		</PassengerAcceptenceStyled>
+				<ButtonContaintainerStyled>
+					<GameButton onClick={() => onAccept(passenger)} disabled={limitExceed}>
+						Принять
+					</GameButton>
+					<GameButton onClick={() => onReject(passenger)}>Отклонить</GameButton>
+				</ButtonContaintainerStyled>
+			</PassengerAcceptenceStyled>
+		</>
 	)
 }
 export const Pickup: FC<IProps> = ({ nextState, updatePassengersData, waitingPassengers, limit, total }) => {
 	const [queue, setQueue] = useState<IPassenger[]>(waitingPassengers)
 	const [accepted, setAccepted] = useState<IPassenger[]>([])
 	const [rejected, setRejected] = useState<IPassenger[]>([])
+	const [currentPassenger, setCurrentPassenger] = useState<IPassenger | null>(null)
 
 	const handleAccept = (passenger: IPassenger): void => {
 		setAccepted(prev => [...prev, passenger])
 		setQueue(prev => prev.filter(p => p.id !== passenger.id))
+		setCurrentPassenger(null)
 	}
 
 	const handleReject = (passenger: IPassenger): void => {
 		setRejected(prev => [...prev, passenger])
 		setQueue(prev => prev.filter(p => p.id !== passenger.id))
+		setCurrentPassenger(null)
+	}
+
+	const updateCurrentPassenger = (passenger: IPassenger | null): void => {
+		setCurrentPassenger(passenger)
+	}
+
+	const handleResetPassenger = (): void => {
+		setCurrentPassenger(null)
 	}
 
 	useEffect(() => {
@@ -74,15 +90,18 @@ export const Pickup: FC<IProps> = ({ nextState, updatePassengersData, waitingPas
 	return (
 		<PickupStyled>
 			<PickupContentStyled>
-				<PassengerList list={queue} />
+				<PassengerList list={queue} onClick={updateCurrentPassenger} />
 			</PickupContentStyled>
 
-			<PassengerAcceptence
-				passenger={queue[0]}
-				onAccept={handleAccept}
-				onReject={handleReject}
-				limitExceed={limitExceed}
-			/>
+			{currentPassenger ? (
+				<PassengerAcceptence
+					passenger={currentPassenger}
+					onAccept={handleAccept}
+					onReject={handleReject}
+					limitExceed={limitExceed}
+					onCancel={handleResetPassenger}
+				/>
+			) : null}
 		</PickupStyled>
 	)
 }

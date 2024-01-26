@@ -22,20 +22,32 @@ const DetailItem: FC<{ label: string; value: string }> = ({ label, value }) => {
 	)
 }
 
-export const PassengerDetails: FC<IPassenger> = ({ name, secondName, zodiakSign, occupation }) => {
+export const PassengerDetails: FC<IPassenger> = ({ name, secondName, zodiakSign, occupation, character, message }) => {
 	return (
 		<PassengerDetailsStyled>
 			<PassengerVisualContainerStyled>
-				<Character size="l" />
-				<MessageBlockStyled>
-					<ArrowContainerStyled>
-						<svg width="15" height="17" viewBox="0 0 15 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<path d="M0.16195 8.49943L14.5501 0.516307L14.2696 16.9684L0.16195 8.49943Z" fill="white" />
-						</svg>
-					</ArrowContainerStyled>
+				<Character size="l" data={character} />
 
-					<div>sadas</div>
-				</MessageBlockStyled>
+				{message ? (
+					<MessageBlockStyled>
+						<ArrowContainerStyled>
+							<svg
+								width="15"
+								height="17"
+								viewBox="0 0 15 17"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<path
+									d="M0.16195 8.49943L14.5501 0.516307L14.2696 16.9684L0.16195 8.49943Z"
+									fill="white"
+								/>
+							</svg>
+						</ArrowContainerStyled>
+
+						<div>{message}</div>
+					</MessageBlockStyled>
+				) : null}
 			</PassengerVisualContainerStyled>
 
 			<DetailItem label="имя" value={`${name} ${secondName}`} />

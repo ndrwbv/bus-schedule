@@ -19,6 +19,17 @@ export const generatePassenger = (stopIndex: number): IPassenger => ({
 		fromStopIndex: stopIndex,
 		toStopIndex: randomInt(stopIndex + 1, STOPS.length - 1),
 	},
+	character: {
+		nose: `rocket`,
+		eye: {
+			left: `default`,
+			right: `default`,
+		},
+		mouth: `default`,
+		skulp: `default`,
+		body: `default`,
+	},
+	message: `Привет, я еду на работу`,
 })
 
 export const generatePassengers = ({
