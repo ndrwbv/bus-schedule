@@ -20,4 +20,7 @@ export const PassengerAcceptenceStyled = styled.div`
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
+	background-color: #fff;
+	border-radius: 46px;
+	padding: 16px;
 `

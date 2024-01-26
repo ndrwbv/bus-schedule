@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components'
 
 export const GameScoreItemStyled = styled.div`
 	display: flex;
@@ -19,4 +19,10 @@ export const GameLayoutStyled = styled.div`
 	display: flex;
 	flex-direction: column;
 	gap: 14px;
+`
+
+export const GlobalGameStyles = createGlobalStyle`
+	body { 
+		background-color: #E4E5FF;
+	}
 `

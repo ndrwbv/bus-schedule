@@ -121,6 +121,19 @@ export const BusDriverGame: FC = () => {
 	}, [gameData.transportedPassengers])
 
 	const renderContent = (): JSX.Element => {
+		return (
+			<Pickup
+				nextState={handleNextState}
+				updatePassengersData={updatePassengersData}
+				waitingPassengers={generatePassengers({
+					min: 0,
+					max: 3,
+					stopIndex: gameState.currentStopIndex,
+				})}
+				limit={passengersLimit}
+				total={gameData.currentPassengers.length}
+			/>
+		)
 		switch (gameState.state) {
 			case `onboarding`:
 				return <Onboarding startNewGame={handleNewGame} />

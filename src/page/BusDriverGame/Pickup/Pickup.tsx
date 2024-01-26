@@ -28,6 +28,7 @@ const PassengerAcceptence: FC<{
 	return (
 		<PassengerAcceptenceStyled>
 			<PassengerDetails {...passenger} />
+
 			<ButtonContaintainerStyled>
 				<GameButton onClick={() => onAccept(passenger)} disabled={limitExceed}>
 					Принять

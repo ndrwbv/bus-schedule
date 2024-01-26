@@ -8,4 +8,16 @@ export interface IPassenger {
 		fromStopIndex: number
 		toStopIndex: number
 	}
+	character: ICharacter
+}
+
+export interface ICharacter {
+	nose: 'rocket'
+	eye: {
+		left: 'default'
+		right: 'default'
+	}
+	mouth: 'default'
+	skulp: 'default'
+	body: 'default'
 }

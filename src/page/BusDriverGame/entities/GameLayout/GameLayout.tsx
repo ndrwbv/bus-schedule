@@ -5,6 +5,7 @@ import {
 	GameLayoutStyled,
 	GameScoreItemStyled,
 	GameScoreListStyled,
+	GlobalGameStyles,
 } from './GameLayout.styles'
 
 export interface IGameScoreItem {
@@ -34,5 +35,6 @@ export const GameLayout: FC<PropsWithChildren<IProps>> = ({ items, children }) =
 		) : null}
 
 		<GameLayoutContentStyled>{children}</GameLayoutContentStyled>
+		<GlobalGameStyles />
 	</GameLayoutStyled>
 )
