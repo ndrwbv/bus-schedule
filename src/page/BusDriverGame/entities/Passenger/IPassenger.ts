@@ -21,4 +21,9 @@ export interface ICharacter {
 	mouth: 'default'
 	skulp: 'default'
 	body: 'default'
+	hat: 'no'
+	accessory: {
+		ear: 'no'
+		neck: 'no'
+	}
 }
