@@ -60,7 +60,7 @@ export const OtherTimeBusses: React.FC = () => {
 		)
 	}, [busStop, SCHEDULE, direction, busOption])
 
-	console.log(123123123, SCHEDULE);
+	console.log(123123123, SCHEDULE)
 
 	return (
 		<ContainerStyled>

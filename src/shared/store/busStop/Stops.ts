@@ -36,7 +36,6 @@ export type StopKeysInLB =
 	| 'Три элемента'
 	| 'Cеребряный бор'
 
-
 export type StopKeysOut =
 	| 'Левитана'
 	| 'Синее небо'
@@ -63,7 +62,7 @@ export type Directions = 'inSP' | 'out' | 'inLB'
 export enum DirectionsNew {
 	inSP = `inSP`,
 	out = `out`,
-	inLB = `inLB`
+	inLB = `inLB`,
 }
 export interface IOption<ValueType> {
 	value: ValueType

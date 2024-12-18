@@ -22,17 +22,17 @@ const SIZE = 43
 
 const directions = {
 	inSP: {
-		value: 'inSP',
-		text: `In north park`
+		value: `inSP`,
+		text: `In north park`,
 	},
 	inLB: {
-		value: 'inLB',
-		text: `In left bank`
+		value: `inLB`,
+		text: `In left bank`,
 	},
 	out: {
-		value: 'out',
-		text: `In tomsk`
-	}
+		value: `out`,
+		text: `In tomsk`,
+	},
 }
 
 export const DirectionChanger = (): JSX.Element => {
@@ -72,34 +72,34 @@ export const DirectionChanger = (): JSX.Element => {
 					<DirectionContainerStyled>
 						<DirectionPlaceholderStyled>Направление</DirectionPlaceholderStyled>
 						<DirectionTextStyled>
-                            {direction === DirectionsNew.inSP
-                                ? t(`In north park`)
-                                : direction === DirectionsNew.inLB
-                                ? t(`In left bank`)
-                                : t(`In city`)}
-                        </DirectionTextStyled>
+							{direction === DirectionsNew.inSP
+								? t(`In north park`)
+								: direction === DirectionsNew.inLB
+								? t(`In left bank`)
+								: t(`In city`)}
+						</DirectionTextStyled>
 					</DirectionContainerStyled>
 
 					<GoButtonStyled
-                        $active={direction === DirectionsNew.inSP}
-                        onClick={() => handleChangeDirection(DirectionsNew.inSP)}
-                    >
-                        {t(`In north park`)}
-                    </GoButtonStyled>
+						$active={direction === DirectionsNew.inSP}
+						onClick={() => handleChangeDirection(DirectionsNew.inSP)}
+					>
+						{t(`In north park`)}
+					</GoButtonStyled>
 
-                    <GoButtonStyled
-                        $active={direction === DirectionsNew.inLB}
-                        onClick={() => handleChangeDirection(DirectionsNew.inLB)}
-                    >
-                        {t(`In left bank`)}
-                    </GoButtonStyled>
+					<GoButtonStyled
+						$active={direction === DirectionsNew.inLB}
+						onClick={() => handleChangeDirection(DirectionsNew.inLB)}
+					>
+						{t(`In left bank`)}
+					</GoButtonStyled>
 
-                    <GoButtonStyled
-                        $active={direction === DirectionsNew.out}
-                        onClick={() => handleChangeDirection(DirectionsNew.out)}
-                    >
-                        {t(`In city`)}
-                    </GoButtonStyled>
+					<GoButtonStyled
+						$active={direction === DirectionsNew.out}
+						onClick={() => handleChangeDirection(DirectionsNew.out)}
+					>
+						{t(`In city`)}
+					</GoButtonStyled>
 				</GoButtonContainerStyled>
 			</CardStyled>
 		</ContainerStyled>
