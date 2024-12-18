@@ -5,6 +5,7 @@ import styled from 'styled-components'
 export const GoButtonContainerStyled = styled.div`
 	display: flex;
 	align-items: flex-start;
+	gap: 10px;
 	flex-direction: column;
 `
 
