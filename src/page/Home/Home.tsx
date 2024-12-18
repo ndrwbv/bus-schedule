@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { HeaderActionsStyled, HeaderContainerBetaStyled, HeaderInnerStyled, Logo } from 'entities/Logo'
 import { WriteMe } from 'entities/WriteMe'
 import { BottomSheetCustom } from 'features/BottomSheet/BottomSheet'
