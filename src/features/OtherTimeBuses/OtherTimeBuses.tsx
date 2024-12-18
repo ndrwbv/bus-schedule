@@ -59,9 +59,7 @@ export const OtherTimeBusses: React.FC = () => {
 			<SelectBusStopText />
 		)
 	}, [busStop, SCHEDULE, direction, busOption])
-
-	console.log(123123123, SCHEDULE)
-
+	
 	return (
 		<ContainerStyled>
 			<CardStyled>
