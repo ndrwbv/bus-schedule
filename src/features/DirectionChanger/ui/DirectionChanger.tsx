@@ -1,3 +1,4 @@
+// eslint-disable no-nested-ternary
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import SVG from 'react-inlinesvg'
@@ -20,21 +21,6 @@ import {
 
 const SIZE = 43
 
-const directions = {
-	inSP: {
-		value: `inSP`,
-		text: `In north park`,
-	},
-	inLB: {
-		value: `inLB`,
-		text: `In left bank`,
-	},
-	out: {
-		value: `out`,
-		text: `In tomsk`,
-	},
-}
-
 export const DirectionChanger = (): JSX.Element => {
 	const direction = useSelector(directionSelector)
 	const dispatch = useDispatch()
@@ -53,10 +39,6 @@ export const DirectionChanger = (): JSX.Element => {
 
 	const handleWebClick = (): void => {
 		setIsWebVisible(false)
-	}
-
-	const onDirectionClick = (): void => {
-		handleChangeDirection(direction === DirectionsNew.inSP ? DirectionsNew.out : DirectionsNew.inSP)
 	}
 
 	return (

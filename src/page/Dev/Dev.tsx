@@ -63,16 +63,16 @@ const addStopAfter = ({
 	exceptDays: number[]
 	keys: string[]
 }) => {
-	let newSchedule = { in: {}, out: {} }
+	let newSchedule = { inSP: {}, out: {}, inLB: {} }
 
 	;[...new Array(7)].forEach((_, index) => {
 		const useDefault = exceptDays.includes(index)
 
-		let newIn = SCHEDULE.in[index]
+		let newIn = SCHEDULE.inSP[index]
 		if (keys.includes(`in`)) {
-			const newInStopsKeys = SCHEDULE.in[index][afterStop]
+			const newInStopsKeys = SCHEDULE.inSP[index][afterStop]
 			newIn = {
-				...SCHEDULE.in[index],
+				...SCHEDULE.inSP[index],
 				[stopName]: useDefault ? newInStopsKeys : increeseTimeCodesArray(newInStopsKeys, on, lessThenTimeCode),
 			}
 		}
@@ -87,14 +87,15 @@ const addStopAfter = ({
 		}
 
 		newSchedule = {
-			in: {
-				...newSchedule.in,
+			inSP: {
+				...newSchedule.inSP,
 				[index]: newIn,
 			},
 			out: {
 				...newSchedule.out,
 				[index]: newOut,
 			},
+			inLB: {},
 		}
 	})
 

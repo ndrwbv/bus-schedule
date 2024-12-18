@@ -1,3 +1,4 @@
+// eslint-disable no-nested-ternary
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'shared/store/app/configureStore'
 
@@ -39,10 +40,7 @@ export const busStopInfoSlice = createSlice({
 		setBusStop: (state, action: PayloadAction<StopKeys | null>) => {
 			state.busStop = action.payload
 
-			console.log(STOPS)
-
 			const stop = STOPS.find(s => s.label === action.payload && s.direction === state.direction)
-
 			if (stop) {
 				state.busStopNew = stop
 			}
