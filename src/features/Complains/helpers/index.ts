@@ -12,7 +12,7 @@ export const getMinutesString = (amount: number, secondWord = `назад`): str
 }
 
 export const getDirectionString = (direction: Directions): string => {
-	return direction === `in` ? `в парк` : `из парка`
+	return direction === `inSP` ? `в парк` : `из парка`
 }
 
 export const getTypeString = (type: ComplainType): string => {

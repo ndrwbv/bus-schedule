@@ -72,16 +72,34 @@ export const DirectionChanger = (): JSX.Element => {
 					<DirectionContainerStyled>
 						<DirectionPlaceholderStyled>Направление</DirectionPlaceholderStyled>
 						<DirectionTextStyled>
-							{direction === `inSP` ? t(`In north park`) : direction === `inLB` ? t(`In left bank`) : t(`Out of north park`)}
-						</DirectionTextStyled>
+                            {direction === DirectionsNew.inSP
+                                ? t(`In north park`)
+                                : direction === DirectionsNew.inLB
+                                ? t(`In left bank`)
+                                : t(`In city`)}
+                        </DirectionTextStyled>
 					</DirectionContainerStyled>
 
-					<GoButtonStyled $active={direction === `inSP`} onClick={onDirectionClick}>
-						{direction === `inSP` ? t(`Out of north park`) : t(`In north park`)}
-					</GoButtonStyled>
-					<GoButtonStyled $active={direction === `inLB`} onClick={onDirectionClick}>
-						{direction === `inSP` ? t(`Out of north park`) : t(`In north park`)}
-					</GoButtonStyled>
+					<GoButtonStyled
+                        $active={direction === DirectionsNew.inSP}
+                        onClick={() => handleChangeDirection(DirectionsNew.inSP)}
+                    >
+                        {t(`In north park`)}
+                    </GoButtonStyled>
+
+                    <GoButtonStyled
+                        $active={direction === DirectionsNew.inLB}
+                        onClick={() => handleChangeDirection(DirectionsNew.inLB)}
+                    >
+                        {t(`In left bank`)}
+                    </GoButtonStyled>
+
+                    <GoButtonStyled
+                        $active={direction === DirectionsNew.out}
+                        onClick={() => handleChangeDirection(DirectionsNew.out)}
+                    >
+                        {t(`In city`)}
+                    </GoButtonStyled>
 				</GoButtonContainerStyled>
 			</CardStyled>
 		</ContainerStyled>

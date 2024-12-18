@@ -18,7 +18,7 @@ const useSchedule = (): void => {
 				}
 
 				if (res.fields.schedule) {
-					dispatch(setSchedule(res.fields.schedule))
+					// dispatch(setSchedule(res.fields.schedule))
 
 					return null
 				}

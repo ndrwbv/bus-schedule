@@ -1,6 +1,6 @@
 import { DirectionsNew, IOption, IStops, StopKeys } from '../Stops'
 
-export const STOPS_IN: IStops<DirectionsNew.inLB>[] = [
+export const STOPS_IN_LB: IStops<DirectionsNew.inLB>[] = [
     {
         id: `15`,
         label: `Интернационалистов`,
@@ -99,12 +99,12 @@ export const STOPS_IN: IStops<DirectionsNew.inLB>[] = [
     },
 ]
 
-export const StopsInOptions: IOption<StopKeys | null>[] = [
+export const StopsInLbOptions: IOption<StopKeys | null>[] = [
     {
         label: `Не выбрано`,
         value: null,
     },
-    ...STOPS_IN.map(stop => ({
+    ...STOPS_IN_LB.map(stop => ({
         label: stop.label,
         value: stop.label,
     })),

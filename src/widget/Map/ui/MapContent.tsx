@@ -25,7 +25,7 @@ import { GlobalStyle } from './GlobalStyle'
 
 interface IFeature {
 	type: 'Feature'
-	properties: IStops<DirectionsNew.in> | IStops<DirectionsNew.out>
+	properties: IStops<DirectionsNew.inSP> | IStops<DirectionsNew.out> | IStops<DirectionsNew.inLB>
 	geometry: {
 		type: `Point`
 		coordinates: [number, number]
@@ -45,7 +45,7 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 	const [mapLoaded, setMapLoaded] = useState(false)
 
 	const getCurrentTime = useCallback(
-		(stop: IStops<DirectionsNew.in> | IStops<DirectionsNew.out>): ITime => {
+		(stop: IStops<DirectionsNew.inSP> | IStops<DirectionsNew.out> | IStops<DirectionsNew.inLB>): ITime => {
 			const closestTime = findClosesTime(shedule[stop.direction][currentDayKey][stop.label])
 
 			if (!closestTime)
@@ -91,7 +91,7 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 	}, [userLocation, map, dispath])
 
 	const handleMarkerClick = useCallback(
-		(stop: IStops<DirectionsNew.in> | IStops<DirectionsNew.out>) => {
+		(stop: IStops<DirectionsNew.inSP> | IStops<DirectionsNew.out> | IStops<DirectionsNew.inLB>) => {
 			dispath(dispath(setBusStopNew(stop.id)))
 			dispath(setBottomSheetPosition(BottomSheetStates.MID))
 
@@ -139,7 +139,7 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 
 				if (props.cluster_id) return
 
-				const { id } = props as IStops<DirectionsNew.in> | IStops<DirectionsNew.out>
+				const { id } = props as IStops<DirectionsNew.inSP> | IStops<DirectionsNew.out> | IStops<DirectionsNew.inSP>
 
 				const stop = features[i].properties
 				stop.latLon = JSON.parse(stop.latLon)

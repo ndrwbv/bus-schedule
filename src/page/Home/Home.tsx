@@ -40,7 +40,7 @@ export const Home: React.FC = () => {
 					</HeaderInnerStyled>
 				</HeaderContainerBetaStyled>
 
-				<Map />
+				{/* <Map /> */}
 
 				<BottomSheetCustom header={<BottomSheetHeader />}>
 					<BottomSheetBgStyled>
