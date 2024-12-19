@@ -3,6 +3,8 @@ const translations = {
 		'No basses': `Автобусов нет`,
 		'In north park': `В северный парк`,
 		'Out of north park': `Из северного парка`,
+		'In city': `В город`,
+		'In left bank': `В левобережный`,
 		'Bus stop': `Остановка`,
 		'My stops': `Мои остановки`,
 		'Buses for today': `Ещё автобусы на сегодня`,

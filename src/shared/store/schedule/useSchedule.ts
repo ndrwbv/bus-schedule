@@ -18,6 +18,7 @@ const useSchedule = (): void => {
 				}
 
 				if (res.fields.schedule) {
+					// eslint-disable-next-line
 					dispatch(setSchedule(res.fields.schedule))
 
 					return null

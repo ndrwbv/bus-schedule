@@ -1,4 +1,4 @@
-export type StopKeysIn =
+export type StopKeysInSP =
 	| 'Интернационалистов'
 	| 'пл. Ленина'
 	| 'ТЮЗ'
@@ -18,7 +18,30 @@ export type StopKeysIn =
 	| 'Анны Ахматовой'
 	| 'Cеребряный бор'
 
+export type StopKeysInLB =
+	| 'Интернационалистов'
+	| 'пл. Ленина'
+	| 'ТЮЗ'
+	| 'Главпочтамт'
+	| 'Новособорная'
+	| 'ТГУ'
+	| 'Библиотека ТГУ'
+	| 'ТЭМЗ'
+	| 'Учебная'
+	| 'Лагерный Сад'
+	| 'Левитана'
+	| 'Синее небо'
+	| 'Этюд'
+	| 'Гармония'
+	| 'Три элемента'
+	| 'Cеребряный бор'
+
 export type StopKeysOut =
+	| 'Левитана'
+	| 'Синее небо'
+	| 'Этюд'
+	| 'Гармония'
+	| 'Три элемента'
 	| 'Cеребряный бор'
 	| 'Анны Ахматовой'
 	| 'Поликлиника (Алые Паруса)'
@@ -34,11 +57,12 @@ export type StopKeysOut =
 	| 'ЦУМ'
 	| 'Интернационалистов'
 
-export type StopKeys = StopKeysIn | StopKeysOut
-export type Directions = 'in' | 'out'
+export type StopKeys = StopKeysInSP | StopKeysOut | StopKeysInLB
+export type Directions = 'inSP' | 'out' | 'inLB'
 export enum DirectionsNew {
-	in = `in`,
+	inSP = `inSP`,
 	out = `out`,
+	inLB = `inLB`,
 }
 export interface IOption<ValueType> {
 	value: ValueType
@@ -55,6 +79,7 @@ export interface IStops<T extends DirectionsNew> {
 }
 
 type StopKeysMap = {
-	[DirectionsNew.in]: StopKeysIn
+	[DirectionsNew.inSP]: StopKeysInSP
+	[DirectionsNew.inLB]: StopKeysInLB
 	[DirectionsNew.out]: StopKeysOut
 }

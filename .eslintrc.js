@@ -13,6 +13,7 @@ module.exports = {
 		'sonarjs/prefer-single-boolean-return': `off`,
 		'import/no-default-export': `off`,
 		'no-param-reassign': `off`,
+		'no-nested-ternary': `off`,
 		'react/react-in-jsx-scope': `off`,
 		'import/prefer-default-export': [`off`],
 		'@typescript-eslint/no-unsafe-member-access': `off`,

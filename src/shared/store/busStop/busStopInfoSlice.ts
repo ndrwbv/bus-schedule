@@ -1,8 +1,10 @@
+// eslint-disable no-nested-ternary
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'shared/store/app/configureStore'
 
 import { STOPS } from './const/stops'
-import { StopsInOptions } from './const/stopsInOptions'
+import { StopsInLbOptions } from './const/stopsInLbOptions'
+import { StopsInSpOptions } from './const/stopsInSpOptions'
 import { StopsOutOptions } from './const/stopsOutOptions'
 import { DirectionsNew, IOption, IStops, StopKeys } from './Stops'
 
@@ -28,13 +30,17 @@ export const busStopInfoSlice = createSlice({
 	reducers: {
 		setDirection: (state, action: PayloadAction<DirectionsNew>) => {
 			state.direction = action.payload
-			state.stopsOptions = action.payload === DirectionsNew.in ? StopsInOptions : StopsOutOptions
+			state.stopsOptions =
+				action.payload === DirectionsNew.inSP
+					? StopsInSpOptions
+					: action.payload === DirectionsNew.inLB
+					? StopsInLbOptions
+					: StopsOutOptions
 		},
 		setBusStop: (state, action: PayloadAction<StopKeys | null>) => {
 			state.busStop = action.payload
 
 			const stop = STOPS.find(s => s.label === action.payload && s.direction === state.direction)
-
 			if (stop) {
 				state.busStopNew = stop
 			}
@@ -46,7 +52,12 @@ export const busStopInfoSlice = createSlice({
 
 			if (stop) {
 				state.direction = stop.direction
-				state.stopsOptions = stop.direction === DirectionsNew.in ? StopsInOptions : StopsOutOptions
+				state.stopsOptions =
+					stop.direction === DirectionsNew.inSP
+						? StopsInSpOptions
+						: stop.direction === DirectionsNew.inLB
+						? StopsInLbOptions
+						: StopsOutOptions
 				state.busStop = stop.label
 			}
 		},

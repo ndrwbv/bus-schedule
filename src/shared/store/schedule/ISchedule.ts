@@ -1,4 +1,5 @@
 export interface ISchedule {
-	in: Record<number, Record<string, string[]>>
+	inSP: Record<number, Record<string, string[]>>
 	out: Record<number, Record<string, string[]>>
+	inLB: Record<number, Record<string, string[]>>
 }
