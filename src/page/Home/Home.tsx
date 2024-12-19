@@ -12,7 +12,7 @@ import { LeaveFeedbackButton } from 'features/LeaveFeedbackButton'
 import { NearestStops } from 'features/NearestStops'
 import { OtherTimeBusses } from 'features/OtherTimeBuses'
 import { StripAd } from 'features/StripAd/StripAd'
-import useSchedule from 'shared/store/schedule/useSchedule'
+// import useSchedule from 'shared/store/schedule/useSchedule'
 import { ContainerStyled } from 'shared/ui/common'
 import { Footer } from 'shared/ui/Footer'
 import { BottomSheetBgStyled, MainLayoutBetaStyled } from 'shared/ui/MainLayout'
@@ -25,7 +25,7 @@ import { FAQ } from '../../features/FAQ'
 import { HomeContainerStyled } from './Home.styled'
 
 export const Home: React.FC = () => {
-	useSchedule()
+	// useSchedule()
 
 	return (
 		<ComplainsProvider>
