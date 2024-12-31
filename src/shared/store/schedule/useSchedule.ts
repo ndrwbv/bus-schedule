@@ -5,7 +5,7 @@ import { fetchSchedule } from 'shared/api/schedule'
 import { AndrewLytics } from 'shared/lib'
 import { setHolidays } from 'shared/store/holidays/holidaysSlice'
 
-import { setSchedule } from './scheduleSlice'
+// import { setSchedule } from './scheduleSlice'
 
 const useSchedule = (): void => {
 	const dispatch = useDispatch()
@@ -19,7 +19,7 @@ const useSchedule = (): void => {
 
 				if (res.fields.schedule) {
 					// eslint-disable-next-line
-					dispatch(setSchedule(res.fields.schedule))
+					// dispatch(setSchedule(res.fields.schedule))
 
 					return null
 				}
