@@ -168,41 +168,62 @@ Enum `DirectionsNew`: `inSP`, `inLB`, `out`
 ### Компоненты
 
 ```
-┌─────────────────────────────────────────────────┐
-│                    nginx                         │
-│  severbus.ru/* → фронтенд (static)              │
-│  severbus.ru/api/* → бэкенд (Express)            │
-│  severbus.ru/health → бэкенд (мониторинг)        │
-├─────────────────────────────────────────────────┤
-│                                                  │
-│  ┌──────────────┐    ┌────────────────────────┐  │
-│  │   Frontend    │    │       Backend          │  │
-│  │  (Vite SPA)   │    │   (Express + SQLite)   │  │
-│  │               │    │                        │  │
-│  │  GET /api/    │───▶│  /api/schedule         │  │
-│  │   schedule    │    │  /api/complains        │  │
-│  │  GET /api/    │───▶│  /api/live             │  │
-│  │   live        │    │  /api/health           │  │
-│  │  POST /api/   │───▶│                        │  │
-│  │   complains   │    │  Cron: парсинг         │  │
-│  │               │    │    расписания          │  │
-│  └──────────────┘    │  Прокси: live API       │  │
-│                       │    перевозчика          │  │
-│                       └────────────────────────┘  │
-│                                                   │
-│  ┌──────────────────────────────────────────────┐ │
-│  │             Внешние источники                 │ │
-│  │  - пассажир-онлайн (расписание Word + live)   │ │
-│  └──────────────────────────────────────────────┘ │
-└───────────────────────────────────────────────────┘
+VDS (один сервер, тот же что reservation-service / slotik.tech)
+│
+├── /opt/reverse-proxy/                ← отдельная репа (ndrwbv/reverse-proxy)
+│   ├── nginx (80/443)                 ← маршрутизация по домену
+│   │   ├── severbus.ru/* ──────────── → frontend static + SPA fallback
+│   │   ├── severbus.ru/api/* ──────── → severbus-backend:3000
+│   │   ├── slotik.tech/* ─────────── → reservation static + backend
+│   │   └── admin.slotik.tech/* ────── → admin static + backend
+│   └── certbot                        ← SSL для всех доменов
+│
+├── /opt/severbus/                     ← этот проект
+│   ├── severbus-backend (Express)
+│   │   ├── /api/schedule              ← расписание в формате ISchedule
+│   │   ├── /api/complains             ← жалобы
+│   │   ├── /api/live                  ← прокси live-позиции автобусов
+│   │   ├── /api/health                ← мониторинг
+│   │   └── Cron: парсинг расписания
+│   ├── frontend-dist/                 ← собранный Vite SPA (volume для nginx)
+│   └── data/                          ← SQLite
+│
+└── /opt/reservation-service/          ← slotik.tech (мигрирован, без своего nginx)
+    ├── reservation-backend (Express)
+    ├── frontend-dist/
+    ├── admin-dist/
+    ├── landing/dist/
+    └── data/
+
+Все бэкенды подключены к общей docker network "shared-proxy".
+Reverse-proxy nginx видит их по имени контейнера.
 ```
 
-### Деплой (по аналогии с reservation-service)
+```
+                Внешние источники
+┌──────────────────────────────────────┐
+│  пассажир-онлайн                     │
+│  - расписание (Word-файл)            │
+│  - live API (позиции автобусов)      │
+└───────────────┬──────────────────────┘
+                │
+                ▼
+┌──────────────────────────────────────┐
+│  severbus-backend (Express + SQLite) │
+│                                      │
+│  Cron → парсинг Word → /api/schedule │
+│  Прокси → live API → /api/live       │
+│  CRUD → /api/complains               │
+└──────────────────────────────────────┘
+```
 
-- Docker Compose: backend + nginx + certbot
-- nginx: фронтенд из static volume, `/api/*` проксируется на бэкенд
-- CI/CD: push to main → build → rsync → docker-compose up
-- SSL: Let's Encrypt через certbot
+### Деплой
+
+- **Reverse-proxy** (отдельная репа `ndrwbv/reverse-proxy`): nginx + certbot, общий для всех проектов на VDS
+- **severbus** (docker-compose): только backend, подключён к `shared-proxy` network. Фронтенд — статика в `frontend-dist/`, отдаётся nginx из reverse-proxy
+- **reservation-service**: мигрирован на ту же архитектуру (nginx/certbot убраны из его compose)
+- CI/CD: push to main → build frontend → rsync → docker-compose up
+- SSL: Let's Encrypt через certbot в reverse-proxy
 
 ### API бэкенда (планируемый)
 
@@ -229,5 +250,5 @@ Enum `DirectionsNew`: `inSP`, `inLB`, `out`
 | Расписание захардкожено в TS | Бэкенд парсит Word с пассажир-онлайн и отдаёт через API |
 | Live-отслеживание блокируется CORS | Бэкенд проксирует запросы |
 | Бэкенд для жалоб мёртв (popooga.ru) | Свой Express + SQLite |
-| Деплой через GitHub Pages | Docker Compose + nginx + certbot (как reservation-service) |
+| Деплой через GitHub Pages | Docker Compose (backend) + общий reverse-proxy (nginx + certbot) на том же VDS что reservation-service |
 | Расписание обновлялось руками | Cron-задача + ручной триггер + AI-парсинг Word |
