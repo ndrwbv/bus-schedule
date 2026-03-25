@@ -1,5 +1,3 @@
-
-   
 name: Deploy
 
 env:
@@ -15,34 +13,94 @@ env:
   MAPTILER_KEY_10: ${{secrets.MAPTILER_KEY_10}}
   MAPTILER_KEY_11: ${{secrets.MAPTILER_KEY_11}}
 
-
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
         with:
-          node-version: 16.14.0
+          node-version: 20
           cache: 'yarn'
+          cache-dependency-path: frontend/yarn.lock
 
-      - name: Install deps
-        run: yarn
+      - name: Install frontend deps
+        run: yarn install --frozen-lockfile
+        working-directory: frontend
 
-      - name: Build
+      - name: Build frontend
         run: yarn build
-      
-      - name: Add CNAME
-        run: echo 'severbus.ru' > ./build/CNAME
-        
-      - name: Deploy with gh-pages
+        working-directory: frontend
+
+      - name: Setup SSH
         run: |
-          git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-          npx gh-pages -d build -u "github-actions-bot <support+actions@github.com>"
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Sync project to server
+        run: |
+          rsync -avz --delete \
+            --exclude='node_modules' \
+            --exclude='.env' \
+            --exclude='data/' \
+            --exclude='frontend-dist/' \
+            --exclude='.git' \
+            --exclude='backend/data/' \
+            --exclude='backend/node_modules/' \
+            ./ \
+            ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}/
+
+      - name: Sync frontend build
+        run: |
+          rsync -avz --delete \
+            frontend/build/ \
+            ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}/frontend-dist/
+
+      - name: Generate backend .env
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ENV_CONTENT: |
+            PORT=3000
+            NODE_ENV=production
+        run: |
+          printf '%s' "$ENV_CONTENT" | ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} \
+            "cat > ${{ secrets.DEPLOY_PATH }}/backend/.env"
+
+      - name: Backup database before restart
+        run: |
+          ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} bash -s << 'BACKUP_SCRIPT'
+            DEPLOY_PATH="${{ secrets.DEPLOY_PATH }}"
+            DB_FILE="$DEPLOY_PATH/data/severbus.db"
+            BACKUP_DIR="$DEPLOY_PATH/data/backups"
+
+            if [ -f "$DB_FILE" ]; then
+              mkdir -p "$BACKUP_DIR"
+              TIMESTAMP=$(date +%Y%m%d%H%M%S)
+              cp "$DB_FILE" "$BACKUP_DIR/severbus-deploy-$TIMESTAMP.db"
+              echo "Backup created: severbus-deploy-$TIMESTAMP.db"
+
+              ls -1t "$BACKUP_DIR"/severbus-deploy-*.db 2>/dev/null | tail -n +11 | xargs -r rm -f
+              echo "Backup rotation done"
+            else
+              echo "No database file found, skipping backup"
+            fi
+          BACKUP_SCRIPT
+
+      - name: Restart containers
+        run: |
+          ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} \
+            "cd ${{ secrets.DEPLOY_PATH }} && docker-compose up -d --build"
+
+      - name: Health check
+        run: |
+          echo "Waiting for server to start..."
+          sleep 10
+          curl -sf https://severbus.ru/api/health || echo "Health check failed (may need DNS/SSL setup)"

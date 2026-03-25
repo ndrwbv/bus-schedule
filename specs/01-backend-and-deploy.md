@@ -2,7 +2,7 @@
 
 **Ветка:** `01-backend-and-deploy`
 **Создана:** 2026-03-25
-**Статус:** не начат
+**Статус:** в работе
 
 ## Контекст
 
@@ -437,18 +437,18 @@ VITE_API_URL=
 ## Задачи
 
 ### Реструктуризация (делается первым)
-- [ ] Перенести фронтенд в `frontend/` (src, public, package.json, vite.config.ts, tsconfig, index.html и т.д.)
-- [ ] Обновить пути в CI/CD (`cd frontend && npm run build`)
-- [ ] Проверить что `npm run dev` и `npm run build` работают из `frontend/`
-- [ ] Обновить GitHub Pages деплой для работы из `frontend/` (временно, до переключения)
+- [x] Перенести фронтенд в `frontend/` (src, public, package.json, vite.config.ts, tsconfig, index.html и т.д.)
+- [x] Обновить пути в CI/CD (`cd frontend && yarn build`)
+- [ ] Проверить что `yarn dev` и `yarn build` работают из `frontend/`
+- [x] Обновить GitHub Pages деплой для работы из `frontend/` (временно, до переключения)
 
 ### Backend
-- [ ] Инициализировать `backend/` — package.json, tsconfig, Express, SQLite
-- [ ] `backend/src/index.ts` — Express сервер на порту 3000
-- [ ] `backend/src/routes/health.ts` — GET `/api/health`
-- [ ] `backend/src/services/db.ts` — инициализация SQLite
-- [ ] `backend/Dockerfile` — multi-stage build (аналог reservation-service)
-- [ ] `backend/.env.example`
+- [x] Инициализировать `backend/` — package.json, tsconfig, Express, SQLite
+- [x] `backend/src/index.ts` — Express сервер на порту 3000
+- [x] `backend/src/routes/health.ts` — GET `/api/health`
+- [x] `backend/src/services/db.ts` — инициализация SQLite
+- [x] `backend/Dockerfile` — multi-stage build (аналог reservation-service)
+- [x] `backend/.env.example`
 
 ### Reverse-proxy (отдельная репа)
 - [ ] Создать репозиторий `reverse-proxy`
@@ -466,14 +466,14 @@ VITE_API_URL=
 - [ ] Протестировать что slotik.tech работает через reverse-proxy
 
 ### Инфраструктура severbus
-- [ ] `docker-compose.yml` — backend + shared-proxy network
-- [ ] `scripts/deploy.sh` — ручной деплой (build + rsync + compose up)
-- [ ] `.env.example` (корневой, для деплоя)
+- [x] `docker-compose.yml` — backend + shared-proxy network
+- [x] `scripts/deploy.sh` — ручной деплой (build + rsync + compose up)
+- [x] `.env.example` (корневой, для деплоя)
 
 ### CI/CD
-- [ ] `.github/workflows/deploy.yml` — push to main → build frontend → rsync → compose up → health check
-- [ ] Генерация `backend/.env` на сервере из GitHub Secrets (как в reservation-service)
-- [ ] Бэкап БД перед рестартом
+- [x] `.github/workflows/deploy.yml` — push to main → build frontend → rsync → compose up → health check
+- [x] Генерация `backend/.env` на сервере из GitHub Secrets (как в reservation-service)
+- [x] Бэкап БД перед рестартом
 - [ ] Настроить secrets в GitHub (можно переиспользовать `SSH_PRIVATE_KEY` и `DEPLOY_HOST` от reservation-service)
 
 ### DNS + SSL (выполняется вручную на сервере)

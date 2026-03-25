@@ -1,0 +1,19 @@
+networks:
+  shared-proxy:
+    external: true
+
+services:
+  backend:
+    build: ./backend
+    container_name: severbus-backend
+    restart: unless-stopped
+    expose:
+      - "3000"
+    env_file:
+      - ./backend/.env
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./data:/app/data
+    networks:
+      - shared-proxy

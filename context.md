@@ -37,18 +37,24 @@
 │   ├── tsconfig.json
 │   ├── index.html
 │   └── .env.example
-├── backend/               ← Express + SQLite (планируется)
+├── backend/               ← Express + SQLite
 │   ├── src/
+│   │   ├── index.ts       — точка входа
+│   │   ├── routes/        — роуты (health)
+│   │   └── services/      — сервисы (db)
 │   ├── package.json
+│   ├── tsconfig.json
 │   ├── Dockerfile
 │   └── .env.example
-├── docker-compose.yml
-├── nginx/
+├── docker-compose.yml     ← backend + shared-proxy network
 ├── scripts/
+│   └── deploy.sh          — ручной деплой
 ├── specs/
 ├── .github/workflows/
+│   ├── ci.yml             — lint + build на PR
+│   └── deploy.yml         — деплой на push в main
+├── .env.example           ← переменные для деплоя
 ├── context.md
-├── .env.example
 └── README.md
 ```
 
@@ -144,16 +150,20 @@ Enum `DirectionsNew`: `inSP`, `inLB`, `out`
 - Типы жалоб: `earlier` (раньше), `later` (позже), `not_arrive` (не приехал), `passed_by` (проехал мимо)
 - UI: список жалоб + шаблоны быстрых ответов (Fastreply)
 
-### Деплой (текущий)
+### Деплой
 
-- GitHub Pages: `yarn build` → `gh-pages -d build`
-- CI: `.github/workflows/deploy.yml` — push to `main` → build → deploy
-- SPA на GitHub Pages: `public/404.html` + redirect-скрипт в `index.html`
-- Домен: CNAME `severbus.ru`
+- **Production:** Docker Compose (backend) + общий reverse-proxy (nginx + certbot) на VDS
+- CI/CD: `.github/workflows/deploy.yml` — push to `main` → yarn build frontend → rsync → docker-compose up
+- Ручной деплой: `scripts/deploy.sh`
+- Фронтенд раздаётся nginx из reverse-proxy (volume `frontend-dist/`)
+- **Временно:** DNS ещё на GitHub Pages, переключение по чеклисту из спеки `01-backend-and-deploy`
 
 ### Бэкенд
 
-**Отсутствует.** Нет серверного кода. Всё статика + внешние API (Contentful, popooga.ru GraphQL — мёртв).
+- **Стек:** Express 4 + TypeScript, better-sqlite3
+- **Эндпоинт:** GET `/api/health` — статус, uptime, память, БД
+- **База:** SQLite (`data/severbus.db`), WAL mode
+- **Docker:** multi-stage build (node:20-alpine), порт 3000
 
 ## Будущая архитектура
 
