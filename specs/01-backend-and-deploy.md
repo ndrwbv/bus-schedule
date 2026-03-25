@@ -451,18 +451,18 @@ VITE_API_URL=
 - [x] `backend/.env.example`
 
 ### Reverse-proxy (отдельная репа)
-- [ ] Создать репозиторий `reverse-proxy`
-- [ ] `docker-compose.yml` — nginx + certbot + shared-proxy network
-- [ ] `nginx/conf.d/severbus.conf` — SPA static + API proxy + SSL
-- [ ] `nginx/conf.d/slotik.conf` — перенос конфига из reservation-service
-- [ ] `scripts/init-letsencrypt.sh` — первичная настройка SSL для нового домена
-- [ ] README с описанием как добавить новый проект
+- [x] Создать репозиторий `reverse-proxy`
+- [x] `docker-compose.yml` — nginx + certbot + shared-proxy network
+- [x] `nginx/conf.d/severbus.conf` — SPA static + API proxy + SSL
+- [x] `nginx/conf.d/slotik.conf` — перенос конфига из reservation-service
+- [x] `scripts/init-letsencrypt.sh` — первичная настройка SSL для нового домена
+- [x] README с описанием как добавить новый проект
 
 ### Миграция reservation-service
-- [ ] Убрать nginx и certbot из docker-compose.yml
-- [ ] Добавить shared-proxy network, переименовать контейнер
+- [x] Убрать nginx и certbot из docker-compose.yml
+- [x] Добавить shared-proxy network, переименовать контейнер
 - [ ] Перенести certbot/conf (сертификаты) в reverse-proxy
-- [ ] Обновить CI/CD workflow (убрать шаги nginx)
+- [x] Обновить CI/CD workflow (убрать шаги nginx)
 - [ ] Протестировать что slotik.tech работает через reverse-proxy
 
 ### Инфраструктура severbus
