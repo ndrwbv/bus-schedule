@@ -1,5 +1,3 @@
-
-   
 name: CI
 
 env:
@@ -24,17 +22,21 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 16.14.0
+          node-version: 20
           cache: 'yarn'
+          cache-dependency-path: frontend/yarn.lock
 
-      - name: Install deps
-        run: yarn
+      - name: Install frontend deps
+        run: yarn install --frozen-lockfile
+        working-directory: frontend
 
       - name: Lint check
         run: yarn lint
+        working-directory: frontend
 
-      - name: Build
+      - name: Build frontend
         run: yarn build
+        working-directory: frontend
