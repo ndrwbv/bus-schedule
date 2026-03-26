@@ -246,55 +246,69 @@ GET `/api/schedule` отдаёт расписание в формате `ISchedu
 2. **Дано** все этапы прошли успешно, **Когда** расписание обновилось, **Тогда** в Telegram отправляется сводка: что изменилось, метод парсинга
 3. **Дано** все этапы прошли успешно, **Когда** расписание не изменилось, **Тогда** алерт НЕ отправляется (только запись в лог)
 
----
-
-### US-9 — Улучшение навигации по остановкам (Приоритет: P3)
-
-Переработка UI для более удобной навигации. Реализуется ПОСЛЕ стабильной работы парсера.
-
-**Идеи (требуют отдельной проработки):**
-- Избранные остановки как главный экран (открыл → сразу видишь «через 12 мин»)
-- Визуальная маршрутная линия с точками-остановками (как в транспортных приложениях)
-- Свайп между соседними остановками
-- Модель «Откуда → Куда» вместо «Направление + Остановка»
-- Поиск остановки по названию
-
----
-
 ## Ключевые сущности
 
 - **CarrierSiteScraper**: скрейпинг `xn--80aasi5akda.online/documents` для поиска актуальной ссылки на Word-файл 112С
 - **CloudMailDownloader**: скачивание файла с Cloud Mail.ru (weblink_get → token → download)
-- **ScheduleParser**: гибридный парсер — детерминированный (XML из docx) + LLM-fallback (текст или изображение)
+- **ScheduleParser**: детерминированный парсер (XML из docx → ISchedule)
 - **ScheduleValidator**: санити-чеки результата перед сохранением
 - **StopNameMapper**: таблица маппинга названий остановок docx → приложение
 - **schedule (таблица БД)**: распаршенное расписание как JSON + метаданные (дата, хеш, метод парсинга)
 - **schedule_raw_files (хранилище)**: оригинальные скачанные файлы для отладки/перепарсинга
-- **ISchedule**: существующий интерфейс фронтенда
+- **schedule-seed.json**: начальное расписание для первого запуска (см. «Seed-файл»)
+- **ISchedule**: существующий интерфейс фронтенда (`frontend/src/shared/store/schedule/ISchedule.ts`)
 - **schedule_changelog (таблица БД)**: записи изменений
 - **TelegramAlerter**: отправка алертов и сводок в Telegram-канал мониторинга (Bot API)
 
 ## Архитектура парсера
 
-### Пайплайн
+### Пайплайн (Mermaid-диаграмма)
+
+```mermaid
+flowchart TD
+    A[Cron 06:30 Tomsk / POST /api/schedule/refresh] -->|trigger| B[CarrierSiteScraper]
+    B -->|URL на Cloud Mail.ru| C[CloudMailDownloader]
+    B -->|ошибка скрейпинга| ERR[Алерт админу, НЕ обновлять]
+    C -->|.docx файл| D[Сохранить оригинал в raw_files/]
+    C -->|ошибка скачивания, retry 3x| ERR
+    D --> E[SHA-256 хеш файла]
+    E -->|хеш совпадает с текущим| SKIP[Лог: расписание актуально]
+    E -->|хеш изменился| F[ScheduleParser: docx → unzip → XML]
+
+    F --> F1[Извлечь таблицы из word/document.xml]
+    F1 --> F2[StopNameMapper: названия docx → приложение]
+    F2 --> F3[Конвертация времени: 06-15 → 6:15]
+    F3 --> F4[Разделение направлений по пометке '1': inSP vs inLB]
+    F4 --> G[ScheduleValidator]
+
+    G -->|валидация OK| H[Сравнить с текущим расписанием]
+    G -->|валидация FAIL| ERR
+
+    H -->|есть изменения| I[Сохранить в БД + создать diff для ченжлога]
+    H -->|нет изменений| SKIP
+    I --> OK[Лог: расписание обновлено]
+
+    style ERR fill:#f44,color:#fff
+    style OK fill:#4a4,color:#fff
+    style SKIP fill:#888,color:#fff
+```
+
+### Пайплайн (текстовое описание)
 
 ```
-1. Скрейпить https://xn--80aasi5akda.online/documents → найти ссылку на Word-файл 112С
-2. Скачать файл с Cloud Mail.ru (API: dispatcher → token → download)
-3. Сохранить оригинал в schedule_raw_files/
-4. Определить тип (docx / pdf / image)
-5. Детерминированный парсер:
+1. Триггер: cron (ежедневно 06:30 Tomsk) или POST /api/schedule/refresh
+2. CarrierSiteScraper: GET https://xn--80aasi5akda.online/documents → найти ссылку на Word-файл 112С
+3. CloudMailDownloader: скачать файл с Cloud Mail.ru (3 HTTP-запроса: weblink_get → token → download)
+4. Сохранить оригинал в raw_files/ для отладки
+5. Вычислить SHA-256 хеш файла → если совпадает с текущим → «расписание актуально», СТОП
+6. ScheduleParser (детерминированный):
    - docx → unzip → word/document.xml → XML-парсинг таблиц
-   - Маппинг остановок через StopNameMapper
+   - StopNameMapper: маппинг названий остановок
    - Конвертация времени: "06-15" → "6:15"
    - Разделение на направления по пометке "1" (inSP vs inLB)
-6. Валидация результата (ScheduleValidator)
-7. Если валидация не прошла → LLM-парсинг:
-   - docx/pdf → извлечь текст → отправить в LLM с промптом + JSON-schema ISchedule
-   - image → отправить изображение в LLM с vision
-8. Повторная валидация
-9. Если ОК → сохранить в БД, создать diff для ченжлога
-10. Если не ОК → НЕ обновлять расписание, алерт админу
+7. ScheduleValidator: санити-чеки результата
+8. Если валидация OK → сохранить в БД, создать diff для ченжлога
+9. Если валидация FAIL → НЕ обновлять расписание, алерт админу
 ```
 
 ### Валидация (санити-чеки)
@@ -306,18 +320,18 @@ GET `/api/schedule` отдаёт расписание в формате `ISchedu
 - Времена идут по возрастанию внутри остановки?
 - При обновлении: если >50% рейсов изменилось — подозрительно, требует подтверждения
 
-### Поддерживаемые форматы входных данных
+### Поддерживаемые форматы входных данных (MVP)
 
 | Формат | Метод парсинга | Стоимость |
 |--------|---------------|-----------|
-| .docx | Детерминированный (XML) → LLM fallback | Бесплатно / ~$0.01-0.05 при fallback |
-| .pdf | pdf-parse → LLM fallback | Бесплатно / ~$0.01-0.05 |
-| Изображение (PNG/JPG) | LLM с vision (GPT-4o / Claude) | ~$0.01-0.05 за вызов |
+| .docx | Детерминированный (XML-парсинг) | Бесплатно |
+
+> **LLM-fallback** (парсинг через нейросеть при изменении формата файла, поддержка PDF/изображений) — **вынесен в отдельную фичу** (см. секцию «LLM-fallback»). В MVP работает только детерминированный парсер для .docx.
 
 ## Edge Cases
 
-- **Перевозчик сменил формат файла** → LLM-fallback автоматически подхватывает новый формат
-- **Перевозчик опубликовал скриншот вместо docx** → LLM с vision парсит изображение
+- **Перевозчик сменил формат файла** → алерт админу, ручное обновление через refresh endpoint (в будущем — LLM-fallback)
+- **Перевозчик опубликовал скриншот вместо docx** → алерт админу (в будущем — LLM vision)
 - **Word-файл битый или пустой** → не перезаписывать текущее расписание, залогировать ошибку
 - **Время в разных форматах** (`06-15`, `6:15`, `06:15`) → нормализовать при парсинге
 - **Появилась новая остановка** → добавить в данные, залогировать предупреждение, на фронте подхватится
@@ -368,27 +382,459 @@ GET https://xn--80aasi5akda.online/documents
 - `POST /api/schedule/refresh` принимает multipart upload (ручная загрузка файла)
 - `POST /api/schedule/refresh { url: "..." }` — передать URL напрямую (пропустить шаг 1)
 
+## Seed-файл (schedule-seed.json)
+
+Seed-файл — это JSON-экспорт текущего захардкоженного расписания из `frontend/src/shared/common/schedule.ts`. Располагается в `backend/src/data/schedule-seed.json`.
+
+**Зачем нужен:**
+
+1. **Первый запуск бэкенда** — таблица `schedule` пустая, API должен отдавать расписание. Seed вставляется в БД автоматически с `parse_method='seed'`
+2. **Тестовые данные** — используется как фикстура для тестов парсера (сравнение результата парсинга с эталоном)
+3. **Аварийный fallback** — если БД повреждена, можно пересоздать из seed'а
+
+**Как создать:** экспортировать объект `SCHEDULE` из фронтенда в JSON. Формат 1:1 совпадает с `ISchedule`:
+
+```json
+{
+  "inSP": {
+    "0": {
+      "Интернационалистов": ["8:15", "10:25", "11:55", ...],
+      "пл. Ленина": ["8:18", "10:28", ...],
+      ...
+    },
+    "1": { ... },
+    ...
+  },
+  "out": { ... },
+  "inLB": { ... }
+}
+```
+
+**Жизненный цикл:** создаётся один раз перед первым деплоем бэкенда. После этого seed не обновляется — актуальное расписание хранится в БД и обновляется парсером. Seed остаётся как страховка.
+
+---
+
+## Схема БД
+
+Инициализация таблиц добавляется в `backend/src/services/db.ts` → функция `initSchema(db)`, вызывается после `pragma`.
+
+```sql
+-- Текущее расписание (одна активная запись в любой момент)
+CREATE TABLE IF NOT EXISTS schedule (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  data TEXT NOT NULL,                          -- JSON формата ISchedule
+  file_hash TEXT NOT NULL,                     -- SHA-256 хеш оригинального файла (или 'seed' для начального)
+  source_url TEXT,                             -- URL, откуда скачан файл
+  parse_method TEXT NOT NULL DEFAULT 'deterministic', -- 'deterministic' | 'seed' | 'manual'
+  file_type TEXT NOT NULL DEFAULT 'docx',      -- 'docx' | 'manual'
+  stops_count INTEGER NOT NULL,                -- кол-во уникальных остановок
+  trips_count INTEGER NOT NULL,                -- кол-во рейсов
+  is_active INTEGER NOT NULL DEFAULT 1,        -- 0/1, только одна запись active=1
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_schedule_active ON schedule(is_active) WHERE is_active = 1;
+
+-- Лог изменений расписания
+CREATE TABLE IF NOT EXISTS schedule_changelog (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  schedule_id INTEGER NOT NULL REFERENCES schedule(id),
+  diff TEXT NOT NULL,                          -- JSON: { added, removed, changed }
+  summary TEXT NOT NULL,                       -- Человекочитаемое описание
+  parse_method TEXT NOT NULL,
+  previous_hash TEXT,
+  new_hash TEXT NOT NULL,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_changelog_created ON schedule_changelog(created_at DESC);
+
+-- Лог запусков пайплайна (отладка + защита от параллельных запусков)
+CREATE TABLE IF NOT EXISTS schedule_pipeline_runs (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  trigger TEXT NOT NULL DEFAULT 'cron',        -- 'cron' | 'manual' | 'api'
+  status TEXT NOT NULL,                        -- 'running' | 'success' | 'no_changes' | 'error'
+  error_message TEXT,
+  error_stage TEXT,                            -- 'scrape' | 'download' | 'parse' | 'validate' | 'save'
+  parse_method TEXT,
+  file_hash TEXT,
+  duration_ms INTEGER,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+```
+
+**Решения:**
+- `schedule.data` — JSON blob, потому что `ISchedule` глубоко вложенная структура, фронт всегда запрашивает целиком, нормализация не даёт преимуществ
+- `is_active` флаг — мгновенный rollback одним `UPDATE` (переключить флаг на предыдущую запись)
+- `schedule_pipeline_runs` — отдельная от `changelog` таблица, т.к. запуск может не привести к изменению (файл не менялся, или ошибка)
+
+**Формат `schedule_changelog.diff`:**
+```json
+{
+  "added": [
+    { "direction": "inSP", "day": "1", "stop": "Новая остановка", "times": ["8:15"] }
+  ],
+  "removed": [
+    { "direction": "out", "day": "6", "stop": "Старая остановка", "times": ["9:00"] }
+  ],
+  "changed": [
+    {
+      "direction": "inSP", "day": "1", "stop": "Интернационалистов",
+      "before": ["6:15", "7:15"],
+      "after": ["6:15", "7:30"]
+    }
+  ]
+}
+```
+
+---
+
+## API-контракты
+
+Файл: `backend/src/routes/schedule.ts` (по паттерну `backend/src/routes/health.ts`).
+
+### GET `/api/schedule`
+
+Без авторизации. Возвращает активное расписание.
+
+**Response 200:**
+```json
+{
+  "schedule": {
+    "inSP": { "0": { "Интернационалистов": ["8:15", "10:25"], ... }, ... },
+    "out": { ... },
+    "inLB": { ... }
+  },
+  "meta": {
+    "updatedAt": "2026-03-25T14:30:00.000Z",
+    "parseMethod": "deterministic",
+    "fileHash": "a1b2c3..."
+  }
+}
+```
+
+**Заголовки ответа:**
+- `Cache-Control: public, max-age=3600` (1 час — расписание меняется максимум раз в день)
+- `ETag: "a1b2c3..."` (file_hash для условных запросов)
+
+**Условный запрос:** `If-None-Match: "a1b2c3..."` → **304 Not Modified** (пустое тело).
+
+**Если БД пустая:** вернуть seed из `schedule-seed.json` (автоматически вставляется при первом запуске).
+
+**Response 500:**
+```json
+{ "error": "internal_error", "message": "Не удалось получить расписание" }
+```
+
+---
+
+### POST `/api/schedule/refresh`
+
+Авторизация: `Authorization: Bearer <ADMIN_TOKEN>`.
+
+**Request body (JSON, все поля опциональные):**
+```json
+{
+  "url": "https://cloud.mail.ru/public/XXXX/yyyyyyyy",
+  "force": false
+}
+```
+- `url` — прямая ссылка на Cloud Mail.ru (пропускает скрейпинг сайта перевозчика)
+- `force` — перепарсить даже если хеш файла совпадает
+
+**Request body (альтернатива — multipart upload):**
+```
+Content-Type: multipart/form-data
+file: <.docx файл>
+```
+
+**Response 200 (обновлено):**
+```json
+{
+  "status": "updated",
+  "parseMethod": "deterministic",
+  "fileHash": "d4e5f6...",
+  "stopsCount": 18,
+  "tripsCount": 28,
+  "changesSummary": "Изменено 3 рейса (будни, inSP)",
+  "durationMs": 1250
+}
+```
+
+**Response 200 (без изменений):**
+```json
+{ "status": "no_changes", "fileHash": "a1b2c3...", "message": "Расписание актуально" }
+```
+
+**Response 401:**
+```json
+{ "error": "unauthorized", "message": "Неверный или отсутствующий токен" }
+```
+
+**Response 422 (валидация не прошла):**
+```json
+{
+  "error": "validation_failed",
+  "message": "Парсинг не прошёл валидацию",
+  "details": "Отсутствует направление inLB"
+}
+```
+
+---
+
+### GET `/api/schedule/changelog` [P2]
+
+Без авторизации. Последние изменения расписания.
+
+**Query:** `?limit=10&offset=0` (max limit=50).
+
+**Response 200:**
+```json
+{
+  "items": [
+    {
+      "id": 5,
+      "createdAt": "2026-03-25T14:30:00.000Z",
+      "summary": "Изменены 3 рейса (будни, inSP)",
+      "parseMethod": "deterministic",
+      "diff": { "added": [], "removed": [], "changed": [...] }
+    }
+  ],
+  "total": 5,
+  "limit": 10,
+  "offset": 0
+}
+```
+
+---
+
+## Переменные окружения
+
+Обновить `backend/.env.example`:
+
+```env
+# === Существующие ===
+PORT=3000
+NODE_ENV=development
+
+# === Парсер расписания ===
+
+# Токен для POST /api/schedule/refresh (сгенерировать: openssl rand -hex 32)
+ADMIN_TOKEN=
+
+# Cron-расписание (формат node-cron: секунды минуты часы день_месяца месяц день_недели)
+CRON_SCHEDULE=0 30 6 * * *
+
+# Таймзона для cron (IANA)
+CRON_TIMEZONE=Asia/Tomsk
+
+# Путь для хранения оригинальных файлов
+RAW_FILES_PATH=./data/raw_files
+
+# Максимум retry при скачивании
+DOWNLOAD_MAX_RETRIES=3
+
+# Порог подозрительных изменений (доля изменённых рейсов, 0.0–1.0)
+VALIDATION_CHANGE_THRESHOLD=0.5
+
+# === P2: Telegram алерты ===
+# TELEGRAM_BOT_TOKEN=
+# TELEGRAM_CHAT_ID=
+
+# === Будущее: LLM-fallback (не в MVP) ===
+# LLM_PROVIDER=gigachat
+# GIGACHAT_API_KEY=
+# ANTHROPIC_API_KEY=
+# LLM_MODEL=GigaChat-Pro
+```
+
+---
+
+## Детали Cron
+
+**Библиотека:** `node-cron` (in-process, работает внутри Express, доступ к БД без отдельного entrypoint).
+
+**Расписание по умолчанию:** 06:30 Asia/Tomsk (UTC+7). Перевозчик в Томске, обновления в рабочее время — проверка в 6:30 ловит вчерашние изменения до утреннего часа пик.
+
+**Конфигурируемо** через `CRON_SCHEDULE` и `CRON_TIMEZONE`.
+
+**Инициализация:** вызывается из `backend/src/index.ts` после `initDb()` и регистрации роутов. Файл: `backend/src/services/schedule/cron.ts`.
+
+**Защита от параллельных запусков (mutex через SQLite):**
+- Перед запуском: проверить `schedule_pipeline_runs` на `status='running'` + `created_at > datetime('now', '-10 minutes')`
+- Если такая запись есть → пропустить (другой запуск в процессе)
+- Если нет → создать запись `status='running'`, по завершению обновить
+
+**Дополнительные триггеры запуска пайплайна:**
+- `POST /api/schedule/refresh` (ручной)
+- Первый запуск сервера при пустой таблице `schedule` (insert seed)
+
+---
+
+## Интеграция с фронтендом
+
+### RTK Query API
+
+Новый файл `frontend/src/shared/api/scheduleApi.ts` по паттерну `frontend/src/features/Info/model/info.ts` (`infoApi`):
+
+```typescript
+export const scheduleApi = createApi({
+  reducerPath: 'scheduleApi',
+  baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
+  endpoints: (builder) => ({
+    getSchedule: builder.query<ScheduleResponse, void>({
+      query: () => '/schedule',
+    }),
+  }),
+})
+
+export const { useGetScheduleQuery } = scheduleApi
+```
+
+Регистрация в `frontend/src/shared/store/app/configureStore.ts`: добавить `scheduleApi.reducer` и `scheduleApi.middleware`.
+
+### Изменения в scheduleSlice
+
+Файл: `frontend/src/shared/store/schedule/scheduleSlice.ts`. Добавить поля:
+
+```typescript
+export interface BusStopInfoState {
+  schedule: ISchedule
+  currentDayKey: number
+  nextDayKey: number
+  // новые поля:
+  scheduleSource: 'hardcoded' | 'api' | 'cache'
+  lastUpdatedAt: string | null
+  parseMethod: string | null
+}
+```
+
+Существующий экшн `setSchedule` переиспользуется. Loading/error обрабатываются RTK Query (`useGetScheduleQuery` возвращает `{ data, isLoading, error }`).
+
+### Цепочка fallback
+
+```
+1. localStorage (ключ 'severbus:schedule') → если есть и < 24ч → dispatch сразу
+2. RTK Query: GET /api/schedule → на успех → dispatch + записать в localStorage
+3. Если API недоступен → остаётся то, что загружено на шаге 1
+4. Если localStorage пуст → initialState = SCHEDULE (захардкоженная константа)
+```
+
+### PWA кэширование
+
+В `frontend/vite.config.ts` → workbox конфиг → добавить runtime caching для `/api/schedule` со стратегией `StaleWhileRevalidate` (показать кэш, обновить в фоне).
+
+---
+
+## LLM-fallback (отдельная фича, не MVP)
+
+> Вынесен из MVP в отдельную итерацию. В MVP при ошибке детерминированного парсера — алерт админу, ручное обновление.
+
+**Идея:** если перевозчик сменит формат файла (другая структура таблиц, PDF, скриншот) — отправить содержимое в LLM для парсинга в формат `ISchedule`.
+
+**Приоритетный провайдер: GigaChat (Сбер)**
+- Российский провайдер, серверы в РФ → минимальная латентность
+- Поддержка vision (GigaChat-Pro) для парсинга скриншотов
+- Альтернативы: Claude (Anthropic), GPT-4o (OpenAI)
+
+**Архитектура (когда будет реализован):**
+```
+1. Детерминированный парсер → FAIL
+2. Извлечь текст из docx/pdf (или изображение)
+3. Отправить в LLM с промптом + JSON-schema ISchedule
+4. Валидация результата LLM
+5. Если OK → сохранить, если FAIL → алерт, не обновлять
+```
+
+**Поддерживаемые форматы (после реализации):**
+
+| Формат | Метод | Стоимость |
+|--------|-------|-----------|
+| .docx | Текст → LLM | ~$0.01–0.05 |
+| .pdf | pdf-parse → LLM | ~$0.01–0.05 |
+| PNG/JPG | LLM vision | ~$0.01–0.05 |
+
+**Env vars (будущие):** `LLM_PROVIDER`, `GIGACHAT_API_KEY`, `LLM_MODEL`.
+
+---
+
+## План миграции
+
+### Этап 0: Подготовка
+
+1. Экспортировать `SCHEDULE` из `frontend/src/shared/common/schedule.ts` → `backend/src/data/schedule-seed.json`
+2. Seed используется как начальные данные для БД и эталон для тестов
+
+### Этап 1: Backend (парсер + API) — без изменений фронтенда
+
+1. Схема БД (CREATE TABLE в `initDb()`)
+2. При первом запуске: seed → БД с `parse_method='seed'`
+3. GET `/api/schedule` — читает из БД
+4. POST `/api/schedule/refresh` — ручной триггер
+5. Парсер: scraper → downloader → parser → validator → save
+6. Cron
+
+**Фронтенд не трогаем.** Backend деплоится и тестируется независимо. 100% backward compatible.
+
+### Этап 2: Frontend — подключение к API
+
+1. `scheduleApi` (RTK Query)
+2. `useSchedule` → вызов API, dispatch `setSchedule`
+3. `SCHEDULE` остаётся как `initialState` (мгновенный рендер, нет пустого экрана)
+4. Если API недоступен → пользователь видит захардкоженное расписание (как раньше)
+
+**100% backward compatible.** Фронт работает с бэкендом и без.
+
+### Этап 3: localStorage кэширование
+
+1. При успешном ответе API → записать в localStorage
+2. При загрузке → сначала читать localStorage → потом запрос к API
+3. Цепочка: localStorage → API → hardcoded
+
+### Этап 4: Удаление hardcoded (опционально)
+
+После 2–4 недель стабильной работы парсера. **Рекомендация: оставить навсегда** — ~15KB gzip, ничего не стоит, гарантированный fallback.
+
+### Откат (rollback)
+
+- `POST /api/schedule/refresh` с правильным файлом (multipart upload)
+- В БД: `UPDATE schedule SET is_active=0` на плохой записи + `is_active=1` на предыдущей
+- Автоматически: фронт fallback на hardcoded если API отдаёт ошибку
+
+---
+
 ## Критерии приёмки
 
+### MVP (P1)
+- [ ] Seed-файл создан из текущего `SCHEDULE`
+- [ ] Схема БД инициализируется при старте
+- [ ] При первом запуске seed вставляется в БД
 - [ ] Файл скачивается с Cloud Mail.ru
 - [ ] Детерминированный парсер извлекает расписание в формат `ISchedule`
 - [ ] Названия остановок корректно маппятся (docx → приложение)
 - [ ] Рейсы с пометкой «1» маппятся на направление `inLB`
 - [ ] Время конвертируется из `06-15` в `6:15`
 - [ ] Валидация результата проходит перед сохранением
-- [ ] LLM-fallback срабатывает при ошибке детерминированного парсера
-- [ ] LLM-fallback обрабатывает изображения (скриншоты расписания)
-- [ ] Cron проверяет обновления раз в день
-- [ ] Ручной триггер POST `/api/schedule/refresh` работает
-- [ ] GET `/api/schedule` отдаёт расписание
-- [ ] Фронтенд загружает расписание из API вместо константы
 - [ ] При ошибке парсинга текущее расписание не перезаписывается
 - [ ] Оригинальные файлы сохраняются для отладки
-- [ ] [P2] При обновлении расписания создаётся запись в ченжлоге с diff
-- [ ] [P2] На сайте видно дату последнего обновления и список изменений
-- [ ] [P2] Каждый этап пайплайна логируется
-- [ ] [P2] Ошибки на любом этапе отправляют алерт в Telegram-канал мониторинга
-- [ ] [P2] Успешное обновление расписания отправляет сводку в Telegram
+- [ ] Cron проверяет обновления раз в день
+- [ ] Ручной триггер POST `/api/schedule/refresh` работает
+- [ ] GET `/api/schedule` отдаёт расписание с метаданными
+- [ ] Фронтенд загружает расписание из API вместо константы
+- [ ] Fallback на hardcoded при недоступности API
+
+### P2
+- [ ] При обновлении расписания создаётся запись в ченжлоге с diff
+- [ ] На сайте видно дату последнего обновления и список изменений
+- [ ] Каждый этап пайплайна логируется
+- [ ] Ошибки на любом этапе отправляют алерт в Telegram-канал мониторинга
+- [ ] Успешное обновление расписания отправляет сводку в Telegram
+
+### Отдельная фича
+- [ ] LLM-fallback при ошибке детерминированного парсера (GigaChat)
+- [ ] LLM-парсинг изображений (vision)
+- [ ] Поддержка PDF
 
 ## Задачи
 
