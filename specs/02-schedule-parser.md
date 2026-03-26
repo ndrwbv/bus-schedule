@@ -296,7 +296,7 @@ flowchart TD
 ### Пайплайн (текстовое описание)
 
 ```
-1. Триггер: cron (ежедневно 06:30 Tomsk) или POST /api/schedule/refresh
+1. Триггер: cron (ежедневно 21:30 Tomsk) или POST /api/schedule/refresh
 2. CarrierSiteScraper: GET https://xn--80aasi5akda.online/documents → найти ссылку на Word-файл 112С
 3. CloudMailDownloader: скачать файл с Cloud Mail.ru (3 HTTP-запроса: weblink_get → token → download)
 4. Сохранить оригинал в raw_files/ для отладки
