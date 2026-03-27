@@ -135,11 +135,15 @@ Row N+1+: Остановки обратного направления
 
 ---
 
-### US-2 — Устойчивость к смене формата (Приоритет: P1)
+### US-2 — Устойчивость к смене формата (Приоритет: P2, отдельная фича)
+
+> **Вынесена из MVP.** В MVP при ошибке детерминированного парсера — алерт админу, ручное обновление. LLM-fallback реализуется отдельной фичей после стабилизации основного парсера.
 
 Парсер работает по гибридной схеме: детерминированный парсинг → валидация → LLM-fallback. Если перевозчик изменит структуру файла или начнёт публиковать скриншот — система продолжит работать.
 
-**Почему этот приоритет:** Если парсер сломается при первом же изменении формата — проект снова будет заброшен.
+**Приоритетный LLM-провайдер:** GigaChat (Сбер) — российский, серверы в РФ, поддержка vision. Альтернативы: Claude, GPT-4o.
+
+**Почему не в MVP:** LLM-fallback — страховка на случай смены формата. Перевозчик менял формат ~0 раз за последний год. Сначала стабилизируем основной пайплайн, потом добавим устойчивость.
 
 **Сценарии приёмки:**
 
@@ -266,7 +270,7 @@ GET `/api/schedule` отдаёт расписание в формате `ISchedu
 
 ```mermaid
 flowchart TD
-    A[Cron 06:30 Tomsk / POST /api/schedule/refresh] -->|trigger| B[CarrierSiteScraper]
+    A[Cron 21:30 Tomsk / POST /api/schedule/refresh] -->|trigger| B[CarrierSiteScraper]
     B -->|URL на Cloud Mail.ru| C[CloudMailDownloader]
     B -->|ошибка скрейпинга| ERR[Алерт админу, НЕ обновлять]
     C -->|.docx файл| D[Сохранить оригинал в raw_files/]
@@ -624,7 +628,7 @@ NODE_ENV=development
 ADMIN_TOKEN=
 
 # Cron-расписание (формат node-cron: секунды минуты часы день_месяца месяц день_недели)
-CRON_SCHEDULE=0 30 6 * * *
+CRON_SCHEDULE=0 30 21 * * *
 
 # Таймзона для cron (IANA)
 CRON_TIMEZONE=Asia/Tomsk
@@ -655,7 +659,7 @@ VALIDATION_CHANGE_THRESHOLD=0.5
 
 **Библиотека:** `node-cron` (in-process, работает внутри Express, доступ к БД без отдельного entrypoint).
 
-**Расписание по умолчанию:** 06:30 Asia/Tomsk (UTC+7). Перевозчик в Томске, обновления в рабочее время — проверка в 6:30 ловит вчерашние изменения до утреннего часа пик.
+**Расписание по умолчанию:** 21:30 Asia/Tomsk (UTC+7). Перевозчик в Томске, обновления в рабочее время — проверка вечером ловит дневные изменения.
 
 **Конфигурируемо** через `CRON_SCHEDULE` и `CRON_TIMEZONE`.
 
@@ -838,26 +842,40 @@ export interface BusStopInfoState {
 
 ## Задачи
 
-### Backend — парсер
+### Этап 0: Подготовка
+- [ ] Экспортировать `SCHEDULE` → `backend/src/data/schedule-seed.json`
+- [ ] Схема БД: `initSchema()` в `backend/src/services/db.ts` (таблицы `schedule`, `schedule_changelog`, `schedule_pipeline_runs`)
+- [ ] При первом запуске: seed → БД с `parse_method='seed'`
+- [ ] Обновить `backend/.env.example` новыми переменными
+
+### Backend — парсер (Этап 1)
 - [ ] `backend/src/services/schedule/carrierScraper.ts` — скрейпинг сайта перевозчика, поиск ссылки на Word-файл
 - [ ] `backend/src/services/schedule/cloudMailDownloader.ts` — скачивание файла с Cloud Mail.ru по публичной ссылке
 - [ ] `backend/src/services/schedule/parser.ts` — детерминированный парсинг (docx XML → таблицы → ISchedule)
 - [ ] `backend/src/services/schedule/stopMapper.ts` — таблица маппинга остановок docx → приложение
 - [ ] `backend/src/services/schedule/validator.ts` — санити-чеки результата
-- [ ] `backend/src/services/schedule/llmFallback.ts` — LLM-парсинг (текст + vision для изображений)
-- [ ] `backend/src/services/schedule/storage.ts` — сохранение оригинальных файлов
-- [ ] [P2] `backend/src/services/schedule/logger.ts` — структурированное логирование каждого этапа пайплайна
-- [ ] [P2] `backend/src/services/telegram/alerter.ts` — отправка алертов и сводок в Telegram (Bot API)
+- [ ] `backend/src/services/schedule/storage.ts` — сохранение оригинальных файлов в `RAW_FILES_PATH`
+- [ ] `backend/src/services/schedule/pipeline.ts` — оркестрация пайплайна (scrape → download → parse → validate → save)
 
-### Backend — API и cron
-- [ ] `backend/src/routes/schedule.ts` — GET `/api/schedule`, POST `/api/schedule/refresh`
-- [ ] Cron-задача — ежедневная проверка обновлений
-- [ ] Таблица `schedule` в SQLite (JSON blob + metadata + метод парсинга)
+### Backend — API и cron (Этап 1)
+- [ ] `backend/src/routes/schedule.ts` — GET `/api/schedule` (с ETag/304), POST `/api/schedule/refresh` (Bearer auth + multipart)
+- [ ] `backend/src/services/schedule/cron.ts` — `node-cron`, mutex через `schedule_pipeline_runs`
+- [ ] Регистрация cron в `backend/src/index.ts` после `initDb()`
 
-### Frontend
-- [ ] `src/shared/api/schedule.ts` — fetch `/api/schedule`
-- [ ] `src/shared/store/schedule/scheduleSlice.ts` — загрузка из API
-- [ ] Fallback: если API недоступен → кешированное расписание или `SCHEDULE` константа
-- [ ] [P2] Блок «Обновлено: [дата]» + ченжлог
-- [ ] [P2] GET `/api/schedule/changelog`
-- [ ] [P3] Улучшение навигации по остановкам (избранные, маршрутная линия, свайп, поиск)
+### Frontend (Этап 2)
+- [ ] `frontend/src/shared/api/scheduleApi.ts` — RTK Query API (по паттерну `infoApi`)
+- [ ] Регистрация `scheduleApi` в `configureStore.ts`
+- [ ] `frontend/src/shared/store/schedule/scheduleSlice.ts` — добавить `scheduleSource`, `lastUpdatedAt`, `parseMethod`
+- [ ] Хук загрузки: localStorage → API → hardcoded fallback
+- [ ] PWA: StaleWhileRevalidate для `/api/schedule` в workbox конфиге
+
+### P2
+- [ ] `backend/src/services/schedule/logger.ts` — структурированное логирование каждого этапа пайплайна
+- [ ] `backend/src/services/telegram/alerter.ts` — отправка алертов и сводок в Telegram (Bot API)
+- [ ] GET `/api/schedule/changelog` — эндпоинт ченжлога
+- [ ] Фронтенд: блок «Обновлено: [дата]» + ченжлог
+
+### Отдельная фича (не MVP)
+- [ ] `backend/src/services/schedule/llmFallback.ts` — LLM-парсинг через GigaChat (текст + vision)
+- [ ] Поддержка PDF (pdf-parse → LLM)
+- [ ] Поддержка изображений (LLM vision)
