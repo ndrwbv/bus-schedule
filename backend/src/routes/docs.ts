@@ -1,4 +1,4 @@
-import { Router, Request, Response, NextFunction } from 'express'
+import { Router } from 'express'
 import swaggerUi from 'swagger-ui-express'
 
 const spec = {
@@ -263,29 +263,7 @@ const spec = {
 
 export const docsRouter = Router()
 
-// На проде закрываем Swagger тем же ADMIN_TOKEN (если задан)
-function docsAuthMiddleware(req: Request, res: Response, next: NextFunction): void {
-  const adminToken = process.env.ADMIN_TOKEN
-  const swaggerProtected = process.env.SWAGGER_PROTECTED ?? (process.env.NODE_ENV === 'production' ? 'true' : 'false')
-
-  if (swaggerProtected !== 'true' || !adminToken) {
-    next()
-    return
-  }
-
-  const auth = req.headers.authorization ?? ''
-  const token = auth.startsWith('Bearer ') ? auth.slice(7) : ''
-
-  if (token === adminToken) {
-    next()
-    return
-  }
-
-  res.setHeader('WWW-Authenticate', 'Basic realm="SeverBus Docs"')
-  res.status(401).json({ error: 'unauthorized', message: 'Swagger закрыт на проде. Передай Authorization: Bearer <ADMIN_TOKEN>' })
-}
-
-docsRouter.use('/docs', docsAuthMiddleware, swaggerUi.serve)
-docsRouter.get('/docs', docsAuthMiddleware, swaggerUi.setup(spec, {
+docsRouter.use('/docs', swaggerUi.serve)
+docsRouter.get('/docs', swaggerUi.setup(spec, {
   customSiteTitle: 'SeverBus API Docs',
 }))
