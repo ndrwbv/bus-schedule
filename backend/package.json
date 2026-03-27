@@ -8,16 +8,24 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
+    "adm-zip": "^0.5.16",
     "better-sqlite3": "^11.7.0",
+    "cheerio": "^1.2.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "fast-xml-parser": "^5.5.9",
+    "multer": "^2.1.1",
+    "node-cron": "^4.2.1"
   },
   "devDependencies": {
+    "@types/adm-zip": "^0.5.8",
     "@types/better-sqlite3": "^7.6.13",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/multer": "^2.1.0",
     "@types/node": "^22.13.1",
+    "@types/node-cron": "^3.0.11",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3"
   }
