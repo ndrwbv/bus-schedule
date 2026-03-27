@@ -4,6 +4,7 @@ import cors from 'cors';
 import { initDb } from './services/db';
 import { healthRouter } from './routes/health';
 import { scheduleRouter } from './routes/schedule';
+import { docsRouter } from './routes/docs';
 import { startScheduleCron } from './services/schedule/cron';
 
 const app = express();
@@ -17,6 +18,7 @@ startScheduleCron();
 
 app.use('/api', healthRouter);
 app.use('/api', scheduleRouter);
+app.use('/api', docsRouter);
 
 app.use((_req, res) => {
   res.status(404).json({ error: 'Not found' });
