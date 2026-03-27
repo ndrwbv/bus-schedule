@@ -31,6 +31,16 @@ export default defineConfig(({ mode }) => {
 			},
 			workbox: {
 				globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+				runtimeCaching: [
+					{
+						urlPattern: /\/api\/schedule$/,
+						handler: 'StaleWhileRevalidate',
+						options: {
+							cacheName: 'schedule-api',
+							expiration: { maxEntries: 1, maxAgeSeconds: 86400 },
+						},
+					},
+				],
 			}
 		}),
 	]

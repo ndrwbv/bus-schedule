@@ -9,11 +9,18 @@ export interface BusStopInfoState {
 	schedule: ISchedule
 	currentDayKey: number
 	nextDayKey: number
+	scheduleSource: 'hardcoded' | 'api' | 'cache'
+	lastUpdatedAt: string | null
+	parseMethod: string | null
 }
+
 const initialState: BusStopInfoState = {
 	schedule: SCHEDULE,
 	currentDayKey: new Date().getDay(),
 	nextDayKey: getNextDay(new Date().getDay()),
+	scheduleSource: 'hardcoded',
+	lastUpdatedAt: null,
+	parseMethod: null,
 }
 
 export const busStopInfoSlice = createSlice({
@@ -23,6 +30,20 @@ export const busStopInfoSlice = createSlice({
 		setSchedule: (state, action: PayloadAction<ISchedule>) => {
 			state.schedule = action.payload
 		},
+		setScheduleFromApi: (
+			state,
+			action: PayloadAction<{
+				schedule: ISchedule
+				source: 'api' | 'cache'
+				updatedAt: string
+				parseMethod: string
+			}>,
+		) => {
+			state.schedule = action.payload.schedule
+			state.scheduleSource = action.payload.source
+			state.lastUpdatedAt = action.payload.updatedAt
+			state.parseMethod = action.payload.parseMethod
+		},
 		setCurrentDayKey: (state, action: PayloadAction<number>) => {
 			state.currentDayKey = action.payload
 			state.nextDayKey = getNextDay(action.payload)
@@ -30,11 +51,12 @@ export const busStopInfoSlice = createSlice({
 	},
 })
 
-// Action creators are generated for each case reducer function
-export const { setSchedule, setCurrentDayKey } = busStopInfoSlice.actions
+export const { setSchedule, setScheduleFromApi, setCurrentDayKey } = busStopInfoSlice.actions
 
 export const scheduleSelector = (state: RootState): ISchedule => state.scheduleSlice.schedule
 export const currentDaySelector = (state: RootState): number => state.scheduleSlice.currentDayKey
 export const nextDaySelector = (state: RootState): number => state.scheduleSlice.nextDayKey
+export const scheduleSourceSelector = (state: RootState) => state.scheduleSlice.scheduleSource
+export const lastUpdatedAtSelector = (state: RootState) => state.scheduleSlice.lastUpdatedAt
 
 export default busStopInfoSlice.reducer

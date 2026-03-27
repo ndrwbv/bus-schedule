@@ -3,6 +3,7 @@ import bottomSheetSlice from 'features/BottomSheet/model/bottomSheetSlice'
 import favoriteStops from 'features/FavoriteStops/model/favoriteStopsSlice'
 import { infoApi } from 'features/Info/model/info'
 import myLocationSlice from 'features/MyLocation/model/myLocationSlice'
+import { scheduleApi } from 'shared/api/scheduleApi'
 import busStopInfo from 'shared/store/busStop/busStopInfoSlice'
 import {
 	changeBusStopOnBusStopChange,
@@ -26,6 +27,7 @@ export const store = configureStore({
 		bottomSheetSlice,
 		myLocationSlice,
 		[infoApi.reducerPath]: infoApi.reducer,
+		[scheduleApi.reducerPath]: scheduleApi.reducer,
 	},
 	devTools: process.env.NODE_ENV !== `production`,
 	middleware: getDefaultMiddleware =>
@@ -34,6 +36,7 @@ export const store = configureStore({
 			changeBusStopOnBusStopChange.middleware,
 			holidaysSetter.middleware,
 			infoApi.middleware,
+			scheduleApi.middleware,
 		]),
 })
 
