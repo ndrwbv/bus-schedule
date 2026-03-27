@@ -1,6 +1,8 @@
 import { getDb } from '../db'
+import { telegramAlerter } from '../telegram/alerter'
 import { scrapeCarrierUrl } from './carrierScraper'
 import { downloadFromCloudMail } from './cloudMailDownloader'
+import { pipelineLogger } from './logger'
 import { parseDocx } from './parser'
 import { computeHash, saveRawFile } from './storage'
 import { ISchedule, PipelineTrigger, PipelineStage } from './types'
@@ -82,16 +84,22 @@ export async function runPipeline(opts: PipelineOptions = {}): Promise<PipelineR
       } else {
         try {
           cloudMailUrl = await scrapeCarrierUrl()
-          console.log(`Найдена ссылка: ${cloudMailUrl}`)
+          pipelineLogger.info('scrape', `Найдена ссылка: ${cloudMailUrl}`)
         } catch (err) {
+          const msg = err instanceof Error ? err.message : String(err)
+          pipelineLogger.error('scrape', msg)
+          await telegramAlerter.scrapeError(msg)
           return finish(pipelineError(err, 'scrape'))
         }
       }
 
       try {
         fileData = await downloadFromCloudMail(cloudMailUrl)
-        console.log(`Файл скачан, ${fileData.length} байт`)
+        pipelineLogger.info('download', `Файл скачан, ${fileData.length} байт`)
       } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err)
+        pipelineLogger.error('download', msg)
+        await telegramAlerter.downloadError(msg)
         return finish(pipelineError(err, 'download'))
       }
     }
@@ -106,7 +114,7 @@ export async function runPipeline(opts: PipelineOptions = {}): Promise<PipelineR
         .get() as { file_hash: string } | undefined
 
       if (current?.file_hash === hash) {
-        console.log('Расписание актуально, файл не изменился')
+        pipelineLogger.info('pipeline', 'Расписание актуально, файл не изменился')
         return finish({ status: 'no_changes', fileHash: hash })
       }
     }
@@ -115,8 +123,11 @@ export async function runPipeline(opts: PipelineOptions = {}): Promise<PipelineR
     let newSchedule: ISchedule
     try {
       newSchedule = parseDocx(fileData)
-      console.log(`Парсинг OK`)
+      pipelineLogger.info('parse', `Парсинг OK`)
     } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err)
+      pipelineLogger.error('parse', msg)
+      await telegramAlerter.parseError(msg)
       return finish(pipelineError(err, 'parse'))
     }
 
@@ -130,14 +141,17 @@ export async function runPipeline(opts: PipelineOptions = {}): Promise<PipelineR
     const validation = validateSchedule(newSchedule, currentSchedule, threshold)
 
     if (!validation.ok) {
-      console.error('Валидация не пройдена:', validation.errors.join('; '))
+      const details = validation.errors.join('; ')
+      pipelineLogger.error('validate', `Валидация не пройдена: ${details}. Расписание НЕ обновлено`)
+      await telegramAlerter.validationError(details)
       return finish({
         status: 'error',
-        error: validation.errors.join('; '),
+        error: details,
         errorStage: 'validate',
         fileHash: hash,
       })
     }
+    pipelineLogger.info('validate', 'Валидация пройдена')
 
     // ── Step 5: сохранение ────────────────────────────────────────────────
     const stopsCount = countStops(newSchedule)
@@ -173,7 +187,9 @@ export async function runPipeline(opts: PipelineOptions = {}): Promise<PipelineR
       }
     })()
 
-    console.log(`Расписание обновлено, ${summary}`)
+    pipelineLogger.info('save', `Расписание обновлено, diff: ${summary}`)
+    const duration = Date.now() - startMs
+    await telegramAlerter.scheduleUpdated(summary, 'deterministic', duration)
     return finish({
       status: 'updated',
       parseMethod: 'deterministic',

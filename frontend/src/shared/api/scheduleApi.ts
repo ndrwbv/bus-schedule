@@ -24,6 +24,25 @@ export interface CachedSchedule {
 	cachedAt: number
 }
 
+export interface ChangelogEntry {
+	id: number
+	createdAt: string
+	summary: string
+	parseMethod: string
+	diff: {
+		added: { direction: string; day: string; stop: string; times: string[] }[]
+		removed: { direction: string; day: string; stop: string; times: string[] }[]
+		changed: { direction: string; day: string; stop: string; before: string[]; after: string[] }[]
+	}
+}
+
+export interface ChangelogResponse {
+	items: ChangelogEntry[]
+	total: number
+	limit: number
+	offset: number
+}
+
 export const scheduleApi = createApi({
 	reducerPath: 'scheduleApi',
 	baseQuery: fetchBaseQuery({ baseUrl: API_BASE }),
@@ -31,10 +50,17 @@ export const scheduleApi = createApi({
 		getSchedule: builder.query<ScheduleApiResponse, void>({
 			query: () => '/schedule',
 		}),
+		getChangelog: builder.query<ChangelogResponse, { limit?: number; offset?: number } | void>({
+			query: (params) => {
+				const limit = params?.limit ?? 5
+				const offset = params?.offset ?? 0
+				return `/schedule/changelog?limit=${limit}&offset=${offset}`
+			},
+		}),
 	}),
 })
 
-export const { useGetScheduleQuery } = scheduleApi
+export const { useGetScheduleQuery, useGetChangelogQuery } = scheduleApi
 
 // ─── localStorage cache helpers ──────────────────────────────────────────────
 
