@@ -176,6 +176,17 @@ function splitTable(grid: CellData[][]): [HalfTable, HalfTable] {
 
 type DayStops = Record<string, string[]>
 
+function sortTimes(stops: DayStops): DayStops {
+  for (const stop of Object.keys(stops)) {
+    stops[stop].sort((a, b) => {
+      const [ah, am] = a.split(':').map(Number)
+      const [bh, bm] = b.split(':').map(Number)
+      return ah * 60 + am - (bh * 60 + bm)
+    })
+  }
+  return stops
+}
+
 /**
  * Build stop→times maps for inSP and inLB from the inbound half.
  */
@@ -209,7 +220,7 @@ function buildInbound(
     }
   }
 
-  return { inSP, inLB }
+  return { inSP: sortTimes(inSP), inLB: sortTimes(inLB) }
 }
 
 /**
@@ -237,7 +248,7 @@ function buildOutbound(half: HalfTable): DayStops {
     }
   }
 
-  return out
+  return sortTimes(out)
 }
 
 /**
