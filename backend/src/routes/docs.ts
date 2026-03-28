@@ -264,7 +264,6 @@ const spec = {
 
 export const docsRouter = Router()
 
-docsRouter.use('/docs', swaggerUi.serve)
-docsRouter.get('/docs', swaggerUi.setup(spec, {
+docsRouter.use('/docs', swaggerUi.serve, swaggerUi.setup(spec, {
   customSiteTitle: 'SeverBus API Docs',
 }))
