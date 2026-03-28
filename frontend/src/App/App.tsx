@@ -17,6 +17,7 @@ configureI18next()
 
 const ScheduleLoader: React.FC = () => {
 	useScheduleLoader()
+
 	return null
 }
 

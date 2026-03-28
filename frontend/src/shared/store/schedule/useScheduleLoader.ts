@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { getCachedSchedule, setCachedSchedule, useGetScheduleQuery } from 'shared/api/scheduleApi'
+
 import { setScheduleFromApi } from './scheduleSlice'
 
 /**
@@ -20,7 +21,7 @@ export function useScheduleLoader(): void {
 			dispatch(
 				setScheduleFromApi({
 					schedule: cached.schedule,
-					source: 'cache',
+					source: `cache`,
 					updatedAt: cached.meta.updatedAt,
 					parseMethod: cached.meta.parseMethod,
 				}),
@@ -37,7 +38,7 @@ export function useScheduleLoader(): void {
 		dispatch(
 			setScheduleFromApi({
 				schedule: data.schedule,
-				source: 'api',
+				source: `api`,
 				updatedAt: data.meta.updatedAt,
 				parseMethod: data.meta.parseMethod,
 			}),

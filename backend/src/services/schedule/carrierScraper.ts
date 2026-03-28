@@ -1,12 +1,17 @@
 import * as cheerio from 'cheerio'
+import * as fs from 'node:fs'
+import * as path from 'node:path'
 
 const CARRIER_URL = 'https://xn--80aasi5akda.online/documents'
 const ROUTE_MARKER = '112С'
-const WORD_LINK_TEXT = /расписание в файле.*word/i
 
 /**
  * Scrape the carrier's website to find the current Cloud Mail.ru link
  * for route 112С Word schedule file.
+ *
+ * Site structure: accordion sections per carrier, inside each —
+ * <strong>112С маршрут ...</strong><br><ul><li>...</li></ul>
+ * The Word link is in a <li> containing "Расписание в файле (Word)".
  */
 export async function scrapeCarrierUrl(): Promise<string> {
   const res = await fetchWithTimeout(CARRIER_URL, 10_000)
@@ -17,55 +22,63 @@ export async function scrapeCarrierUrl(): Promise<string> {
   const html = await res.text()
   const $ = cheerio.load(html)
 
-  // Find the Cloud Mail.ru link near the 112С section
   let cloudMailUrl: string | null = null
 
-  $('a').each((_i, el) => {
-    const href = $(el).attr('href') ?? ''
-    const text = $(el).text()
+  // Strategy 1: Find <strong> with "112С", then the <ul> after it,
+  // then <li> containing "Расписание в файле (Word)"
+  $('strong').each((_i, el) => {
+    if (!$(el).text().includes(ROUTE_MARKER)) return
 
-    if (
-      href.includes('cloud.mail.ru') &&
-      WORD_LINK_TEXT.test(text)
-    ) {
-      // Check if it's near a 112С section
-      const section = $(el).closest('section, div, article, li, p').text()
-      if (section.includes(ROUTE_MARKER) || checkNearbyContext($, el)) {
-        cloudMailUrl = href
-        return false // break
-      }
+    // The <ul> follows the <strong> (possibly with a <br> in between)
+    let sibling = $(el).next()
+    // Skip <br> tags between <strong> and <ul>
+    while (sibling.length && sibling.prop('tagName') === 'BR') {
+      sibling = sibling.next()
     }
+
+    if (sibling.prop('tagName') !== 'UL') return
+
+    sibling.find('li').each((_j, li) => {
+      const liText = $(li).text()
+      if (/расписание в файле.*word/i.test(liText)) {
+        const href = $(li).find('a[href*="cloud.mail.ru"]').attr('href')
+        if (href) {
+          cloudMailUrl = href
+          return false // break inner
+        }
+      }
+    })
+
+    if (cloudMailUrl) return false // break outer
   })
 
-  // Fallback: any cloud.mail.ru link that's near 112С text
+  // Strategy 2 (fallback): find any <li> with both "112С" context and "Word"
   if (!cloudMailUrl) {
-    $('a[href*="cloud.mail.ru"]').each((_i, el) => {
-      const nearText = getNearbyText($, el, 500)
-      if (nearText.includes(ROUTE_MARKER)) {
-        cloudMailUrl = $(el).attr('href') ?? null
-        return false
+    $('li').each((_i, el) => {
+      const text = $(el).text()
+      if (/расписание в файле.*word/i.test(text)) {
+        // Check if a nearby <strong> mentions 112С
+        const parentHtml = $(el).parent().prevAll('strong').first().text()
+        if (parentHtml.includes(ROUTE_MARKER)) {
+          const href = $(el).find('a[href*="cloud.mail.ru"]').attr('href')
+          if (href) {
+            cloudMailUrl = href
+            return false
+          }
+        }
       }
     })
   }
 
   if (!cloudMailUrl) {
+    const dumpPath = path.join(process.cwd(), 'data', 'last-scrape-fail.html')
+    fs.mkdirSync(path.dirname(dumpPath), { recursive: true })
+    fs.writeFileSync(dumpPath, html, 'utf-8')
+    console.error(`[scrape] Страница сохранена в ${dumpPath} (${html.length} символов)`)
     throw new Error('Не найдена ссылка на Word-файл 112С на сайте перевозчика')
   }
 
   return cloudMailUrl
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function checkNearbyContext($: ReturnType<typeof cheerio.load>, el: any): boolean {
-  const text = getNearbyText($, el, 300)
-  return text.includes(ROUTE_MARKER)
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function getNearbyText($: ReturnType<typeof cheerio.load>, el: any, chars: number): string {
-  const parent = $(el).parent()
-  const grandparent = parent.parent()
-  return (grandparent.text() || parent.text()).slice(0, chars)
 }
 
 async function fetchWithTimeout(url: string, timeoutMs: number): Promise<Response> {

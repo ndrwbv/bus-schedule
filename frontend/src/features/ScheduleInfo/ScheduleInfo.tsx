@@ -2,76 +2,8 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useGetChangelogQuery } from 'shared/api/scheduleApi'
 import { lastUpdatedAtSelector, scheduleSourceSelector } from 'shared/store/schedule/scheduleSlice'
-import { ContainerStyled, CardStyled, GrayTextStyled } from 'shared/ui/common'
-
-function formatDate(iso: string): string {
-	try {
-		return new Date(iso).toLocaleString('ru-RU', {
-			day: 'numeric',
-			month: 'long',
-			year: 'numeric',
-		})
-	} catch {
-		return iso
-	}
-}
-
-export const ScheduleInfo: React.FC = () => {
-	const source = useSelector(scheduleSourceSelector)
-	const lastUpdatedAt = useSelector(lastUpdatedAtSelector)
-	const [showChangelog, setShowChangelog] = useState(false)
-
-	const { data: changelog } = useGetChangelogQuery(
-		{ limit: 5 },
-		{ skip: !showChangelog },
-	)
-
-	// Не показываем блок если расписание захардкожено и нет даты обновления
-	if (source === 'hardcoded' && !lastUpdatedAt) return null
-
-	return (
-		<ContainerStyled>
-			<CardStyled>
-				<UpdatedRowStyled>
-					<UpdatedLabelStyled>
-						🕐 Расписание обновлено:{' '}
-						<UpdatedDateStyled>
-							{lastUpdatedAt ? formatDate(lastUpdatedAt) : '—'}
-						</UpdatedDateStyled>
-					</UpdatedLabelStyled>
-
-					{changelog !== undefined || showChangelog ? (
-						<ToggleButtonStyled onClick={() => setShowChangelog((v) => !v)}>
-							{showChangelog ? 'Скрыть' : 'Изменения'}
-						</ToggleButtonStyled>
-					) : (
-						<ToggleButtonStyled onClick={() => setShowChangelog(true)}>
-							Изменения
-						</ToggleButtonStyled>
-					)}
-				</UpdatedRowStyled>
-
-				{showChangelog && changelog && (
-					<ChangelogListStyled>
-						{changelog.items.length === 0 ? (
-							<GrayTextStyled>Изменений пока нет</GrayTextStyled>
-						) : (
-							changelog.items.map((entry) => (
-								<ChangelogItemStyled key={entry.id}>
-									<ChangelogDateStyled>{formatDate(entry.createdAt)}</ChangelogDateStyled>
-									<GrayTextStyled>{entry.summary}</GrayTextStyled>
-								</ChangelogItemStyled>
-							))
-						)}
-					</ChangelogListStyled>
-				)}
-			</CardStyled>
-		</ContainerStyled>
-	)
-}
-
+import { CardStyled, ContainerStyled, GrayTextStyled } from 'shared/ui/common'
 // ─── Styles ──────────────────────────────────────────────────────────────────
-
 import styled from 'styled-components'
 
 const UpdatedRowStyled = styled.div`
@@ -126,3 +58,62 @@ const ChangelogDateStyled = styled.p`
 	font-weight: 600;
 	color: #333;
 `
+
+function formatDate(iso: string): string {
+	try {
+		return new Date(iso).toLocaleString(`ru-RU`, {
+			day: `numeric`,
+			month: `long`,
+			year: `numeric`,
+		})
+	} catch {
+		return iso
+	}
+}
+
+export const ScheduleInfo: React.FC = () => {
+	const source = useSelector(scheduleSourceSelector)
+	const lastUpdatedAt = useSelector(lastUpdatedAtSelector)
+	const [showChangelog, setShowChangelog] = useState(false)
+
+	const { data: changelog } = useGetChangelogQuery({ limit: 5 }, { skip: !showChangelog })
+
+	// Не показываем блок если расписание захардкожено и нет даты обновления
+	if (source === `hardcoded` && !lastUpdatedAt) return null
+
+	return (
+		<ContainerStyled>
+			<CardStyled>
+				<UpdatedRowStyled>
+					<UpdatedLabelStyled>
+						🕐 Расписание обновлено:{` `}
+						<UpdatedDateStyled>{lastUpdatedAt ? formatDate(lastUpdatedAt) : `—`}</UpdatedDateStyled>
+					</UpdatedLabelStyled>
+
+					{changelog !== undefined || showChangelog ? (
+						<ToggleButtonStyled onClick={() => setShowChangelog(v => !v)}>
+							{showChangelog ? `Скрыть` : `Изменения`}
+						</ToggleButtonStyled>
+					) : (
+						<ToggleButtonStyled onClick={() => setShowChangelog(true)}>Изменения</ToggleButtonStyled>
+					)}
+				</UpdatedRowStyled>
+
+				{showChangelog && changelog && (
+					<ChangelogListStyled>
+						{changelog.items.length === 0 ? (
+							<GrayTextStyled>Изменений пока нет</GrayTextStyled>
+						) : (
+							changelog.items.map(entry => (
+								<ChangelogItemStyled key={entry.id}>
+									<ChangelogDateStyled>{formatDate(entry.createdAt)}</ChangelogDateStyled>
+									<GrayTextStyled>{entry.summary}</GrayTextStyled>
+								</ChangelogItemStyled>
+							))
+						)}
+					</ChangelogListStyled>
+				)}
+			</CardStyled>
+		</ContainerStyled>
+	)
+}

@@ -18,7 +18,7 @@ const initialState: BusStopInfoState = {
 	schedule: SCHEDULE,
 	currentDayKey: new Date().getDay(),
 	nextDayKey: getNextDay(new Date().getDay()),
-	scheduleSource: 'hardcoded',
+	scheduleSource: `hardcoded`,
 	lastUpdatedAt: null,
 	parseMethod: null,
 }
@@ -56,7 +56,8 @@ export const { setSchedule, setScheduleFromApi, setCurrentDayKey } = busStopInfo
 export const scheduleSelector = (state: RootState): ISchedule => state.scheduleSlice.schedule
 export const currentDaySelector = (state: RootState): number => state.scheduleSlice.currentDayKey
 export const nextDaySelector = (state: RootState): number => state.scheduleSlice.nextDayKey
-export const scheduleSourceSelector = (state: RootState) => state.scheduleSlice.scheduleSource
-export const lastUpdatedAtSelector = (state: RootState) => state.scheduleSlice.lastUpdatedAt
+export const scheduleSourceSelector = (state: RootState): 'cache' | 'api' | 'hardcoded' =>
+	state.scheduleSlice.scheduleSource
+export const lastUpdatedAtSelector = (state: RootState): string | null => state.scheduleSlice.lastUpdatedAt
 
 export default busStopInfoSlice.reducer
