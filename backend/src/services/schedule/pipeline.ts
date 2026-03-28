@@ -138,7 +138,8 @@ export async function runPipeline(opts: PipelineOptions = {}): Promise<PipelineR
 
     const currentSchedule = currentRow ? (JSON.parse(currentRow.data) as ISchedule) : undefined
     const threshold = parseFloat(process.env.VALIDATION_CHANGE_THRESHOLD ?? '0.5')
-    const validation = validateSchedule(newSchedule, currentSchedule, threshold)
+    // force → skip change-threshold check (still validate format/times)
+    const validation = validateSchedule(newSchedule, force ? undefined : currentSchedule, threshold)
 
     if (!validation.ok) {
       const details = validation.errors.join('; ')

@@ -56,23 +56,26 @@ scheduleRouter.post(
   async (req: Request, res: Response) => {
     // Auth
     const adminToken = process.env.ADMIN_TOKEN
-    if (adminToken) {
-      const auth = req.headers.authorization ?? ''
-      const token = auth.startsWith('Bearer ') ? auth.slice(7) : ''
-      if (token !== adminToken) {
-        res.status(401).json({ error: 'unauthorized', message: 'Неверный или отсутствующий токен' })
-        return
-      }
+    if (!adminToken) {
+      res.status(500).json({ error: 'config_error', message: 'ADMIN_TOKEN не настроен на сервере' })
+      return
+    }
+    const auth = req.headers.authorization ?? ''
+    const token = auth.startsWith('Bearer ') ? auth.slice(7) : ''
+    if (token !== adminToken) {
+      res.status(401).json({ error: 'unauthorized', message: 'Неверный или отсутствующий токен' })
+      return
     }
 
-    const { url, force } = req.body as { url?: string; force?: boolean }
+    const { url, force } = req.body as { url?: string; force?: string | boolean }
     const fileBuffer = req.file?.buffer
+    const isForce = force === true || force === 'true'
 
     try {
       const result = await runPipeline({
         trigger: 'api',
         url,
-        force: Boolean(force),
+        force: isForce,
         fileBuffer,
       })
 
