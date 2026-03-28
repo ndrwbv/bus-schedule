@@ -1,14 +1,50 @@
 const TELEGRAM_API = 'https://api.telegram.org'
 
-function isConfigured(): boolean {
-  return Boolean(process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID)
+let cachedChatId: string | null = null
+
+function getToken(): string | undefined {
+  return process.env.TELEGRAM_BOT_TOKEN
+}
+
+/**
+ * Resolve chat_id: use TELEGRAM_CHAT_ID env if set,
+ * otherwise call getUpdates to find the first chat that sent /start.
+ */
+async function resolveChatId(token: string): Promise<string | null> {
+  if (cachedChatId) return cachedChatId
+
+  const envChatId = process.env.TELEGRAM_CHAT_ID
+  if (envChatId) {
+    cachedChatId = envChatId
+    return cachedChatId
+  }
+
+  try {
+    const res = await fetch(`${TELEGRAM_API}/bot${token}/getUpdates`)
+    if (!res.ok) return null
+    const data = (await res.json()) as { result?: Array<{ message?: { chat?: { id: number } } }> }
+    const chatId = data.result?.find((u) => u.message?.chat)?.message?.chat?.id
+    if (chatId) {
+      cachedChatId = String(chatId)
+      console.log(`[telegram] Chat ID получен автоматически: ${cachedChatId}`)
+      return cachedChatId
+    }
+  } catch (err) {
+    console.error(`[telegram] Не удалось получить chat_id: ${err}`)
+  }
+
+  return null
 }
 
 async function sendMessage(text: string): Promise<void> {
-  if (!isConfigured()) return
+  const token = getToken()
+  if (!token) return
 
-  const token = process.env.TELEGRAM_BOT_TOKEN!
-  const chatId = process.env.TELEGRAM_CHAT_ID!
+  const chatId = await resolveChatId(token)
+  if (!chatId) {
+    console.warn('[telegram] Chat ID не найден. Отправьте /start боту, затем перезапустите сервер.')
+    return
+  }
 
   try {
     const res = await fetch(`${TELEGRAM_API}/bot${token}/sendMessage`, {

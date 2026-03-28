@@ -70,6 +70,13 @@ jobs:
           ENV_CONTENT: |
             PORT=3000
             NODE_ENV=production
+            ADMIN_TOKEN=${{ secrets.ADMIN_TOKEN }}
+            TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}
+            CRON_SCHEDULE=0 30 21 * * *
+            CRON_TIMEZONE=Asia/Tomsk
+            RAW_FILES_PATH=./data/raw_files
+            DOWNLOAD_MAX_RETRIES=3
+            VALIDATION_CHANGE_THRESHOLD=0.5
         run: |
           printf '%s' "$ENV_CONTENT" | ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} \
             "cat > ${{ secrets.DEPLOY_PATH }}/backend/.env"
