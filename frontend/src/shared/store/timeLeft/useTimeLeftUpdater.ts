@@ -30,7 +30,14 @@ export const useTimeLeftUpdater = (): void => {
 		if (!closestTime || new Date(closestTime).getTime() !== new Date(closestTimeToSet || ``).getTime()) {
 			const futureTimes = filterFutureTaggedTimes(allTimes)
 			dispatch(setClosestTimeArray(futureTimes))
-			dispatch(setClosestTime({ time: closestTimeToSet || ``, via: futureTimes[0]?.via ?? null }))
+			dispatch(
+				setClosestTime({
+					time: closestTimeToSet || ``,
+					via: futureTimes[0]?.via ?? null,
+					interpolated: futureTimes[0]?.interpolated,
+					interpolatedFrom: futureTimes[0]?.interpolatedFrom,
+				}),
+			)
 		}
 	}, [everySecondUpdate, closestTime, busStop, userDirection, shedule, currentDayKey, dispatch])
 

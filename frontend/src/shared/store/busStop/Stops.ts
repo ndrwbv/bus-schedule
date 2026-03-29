@@ -77,6 +77,8 @@ export interface TaggedTime {
 	time: string
 	via: 'park' | 'lb' | null
 	interpolated?: boolean
+	/** Human-readable label of the stops used for interpolation, e.g. "Набережная и В. Маяковского" */
+	interpolatedFrom?: string
 }
 
 export type ICoordites = [number, number]
