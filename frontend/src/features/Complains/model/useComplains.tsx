@@ -63,27 +63,30 @@ export const useComplains = (): IReturns => {
 		}
 	}, [fetchComplains])
 
-	const addComplain = useCallback((data: IComplains): void => {
-		AndrewLytics(`addComplainMethod`)
+	const addComplain = useCallback(
+		(data: IComplains): void => {
+			AndrewLytics(`addComplainMethod`)
 
-		fetch(`${API_BASE}/complains`, {
-			method: `POST`,
-			headers: { 'Content-Type': `application/json` },
-			body: JSON.stringify({
-				stop: data.stop,
-				direction: data.direction,
-				type: data.type,
-				user_id: getUserId(),
-			}),
-		})
-			.then(() => {
-				// Refresh list after submitting
-				fetchComplains()
-
-				return null
+			fetch(`${API_BASE}/complains`, {
+				method: `POST`,
+				headers: { 'Content-Type': `application/json` },
+				body: JSON.stringify({
+					stop: data.stop,
+					direction: data.direction,
+					type: data.type,
+					user_id: getUserId(),
+				}),
 			})
-			.catch(() => {})
-	}, [fetchComplains])
+				.then(() => {
+					// Refresh list after submitting
+					fetchComplains()
+
+					return null
+				})
+				.catch(() => {})
+		},
+		[fetchComplains],
+	)
 
 	return { complains, addComplain }
 }
