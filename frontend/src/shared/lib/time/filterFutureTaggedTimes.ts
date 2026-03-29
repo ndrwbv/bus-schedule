@@ -9,6 +9,7 @@ export const filterFutureTaggedTimes = (taggedTimes: TaggedTime[]): TaggedTime[]
 	return taggedTimes.filter(({ time }) => {
 		const splitted = time.split(`:`).map(item => parseInt(item, 10))
 		const possibleDate = new Date(convertedDate).setHours(splitted[0], splitted[1])
+
 		return possibleDate - now > 0
 	})
 }

@@ -68,7 +68,12 @@ export const OtherTimeBusses: React.FC = () => {
 		const tagged = getScheduleTimes(SCHEDULE, userDirection, busOption.value, busStop)
 		if (tagged.length === 0) return <SelectBusStopText />
 
-		return tagged.map((item, i) => <TaggedTimeStamp key={`${item.time}-${i}`} item={item} />)
+		return tagged.map(item => {
+			const via = item.via ?? `d`
+			const key = `${item.time}-${via}`
+
+			return <TaggedTimeStamp key={key} item={item} />
+		})
 	}, [busStop, SCHEDULE, userDirection, busOption])
 
 	return (

@@ -1,7 +1,7 @@
 import { AndrewLytics } from 'shared/lib'
 import { CardHeaderStyled, CardStyled } from 'shared/ui/common'
 
-import { SocialLinksStyled, SocialLinkStyled, SocialDescriptionStyled } from './styled'
+import { SocialDescriptionStyled, SocialLinksStyled, SocialLinkStyled } from './styled'
 
 const SOCIAL_LINKS = [
 	{

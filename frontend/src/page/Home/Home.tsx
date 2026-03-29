@@ -19,7 +19,7 @@ import { BusStop } from 'widget/BusStop'
 import { Map } from 'widget/Map'
 import { TodaysBuses } from 'widget/TodaysBuses'
 
-import { FAQ } from '../../features/FAQ'
+// import { FAQ } from '../../features/FAQ'
 import { HomeContainerStyled } from './Home.styled'
 
 export const Home: React.FC = () => {

@@ -1,10 +1,10 @@
 import { interpolateStopTimes } from 'shared/lib/time/interpolateStopTimes'
 
+import { ISchedule } from '../../schedule/ISchedule'
 import { DirectionsNew, IOption, IStops, StopKeys, TaggedTime, UserDirection } from '../Stops'
 import { STOPS_IN_LB } from './stopsInLbOptions'
 import { STOPS_IN_SP } from './stopsInSpOptions'
 import { STOPS_OUT } from './stopsOutOptions'
-import { ISchedule } from '../../schedule/ISchedule'
 
 /** Ordered stop labels per direction — used for interpolation */
 const STOP_ORDER_INSP = STOPS_IN_SP.map(s => s.label)
@@ -32,10 +32,10 @@ function getDirectionTimes(
 	}
 
 	// No times — try interpolation
-	const order = STOP_ORDER[directionKey]
-	if (!order) return { times: [], interpolated: false }
-
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	const order = STOP_ORDER[directionKey] ?? []
 	const interpolated = interpolateStopTimes(daySchedule, stopLabel, order)
+
 	return { times: interpolated, interpolated: interpolated.length > 0 }
 }
 
@@ -47,6 +47,7 @@ export const AllStopsOptions: IOption<StopKeys | null>[] = [
 	...STOPS.filter(s => {
 		if (seen.has(s.label)) return false
 		seen.add(s.label)
+
 		return true
 	}).map(s => ({ label: s.label, value: s.label as StopKeys })),
 ]
@@ -59,6 +60,7 @@ export const getUserDirectionsForLabel = (label: StopKeys): UserDirection[] => {
 	const hasToCity = STOPS.some(s => s.label === label && s.direction === DirectionsNew.out)
 	if (hasFromCity) dirs.push(UserDirection.fromCity)
 	if (hasToCity) dirs.push(UserDirection.toCity)
+
 	return dirs
 }
 
@@ -69,6 +71,7 @@ export const findStopForUserDirection = (
 	if (userDirection === UserDirection.toCity) {
 		return STOPS.find(s => s.label === label && s.direction === DirectionsNew.out)
 	}
+
 	// fromCity: prefer inSP, fall back to inLB
 	return (
 		STOPS.find(s => s.label === label && s.direction === DirectionsNew.inSP) ||
@@ -84,6 +87,7 @@ export const getScheduleTimes = (
 ): TaggedTime[] => {
 	if (userDirection === UserDirection.toCity) {
 		const { times, interpolated } = getDirectionTimes(schedule.out, dayKey, stopLabel, DirectionsNew.out)
+
 		return times.map(t => ({ time: t, via: null, interpolated: interpolated || undefined }))
 	}
 
@@ -109,6 +113,7 @@ export const getScheduleTimes = (
 	tagged.sort((a, b) => {
 		const [ah, am] = a.time.split(`:`).map(Number)
 		const [bh, bm] = b.time.split(`:`).map(Number)
+
 		return ah * 60 + am - (bh * 60 + bm)
 	})
 

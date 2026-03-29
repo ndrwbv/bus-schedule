@@ -46,7 +46,8 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 
 	const getCurrentTime = useCallback(
 		(stop: IStops<DirectionsNew.inSP> | IStops<DirectionsNew.out> | IStops<DirectionsNew.inLB>): ITime => {
-			const times = shedule[stop.direction]?.[currentDayKey]?.[stop.label]
+			const daySchedule = shedule[stop.direction][currentDayKey] as Record<string, string[] | undefined>
+			const times = daySchedule[stop.label]
 
 			if (!times || times.length === 0)
 				return {
@@ -137,7 +138,7 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 		}
 
 		const updateMarkers = (): void => {
-			const features: any[] = map.querySourceFeatures(STOPS_SOURCE_ID)
+			const features = map.querySourceFeatures(STOPS_SOURCE_ID) as any[] | undefined
 
 			if (!features || features.length === 0) return
 

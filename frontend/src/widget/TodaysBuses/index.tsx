@@ -40,7 +40,12 @@ export const TodaysBuses: React.FC = () => {
 
 		return closestTimeArray.length === 0
 			? t(`No basses`)
-			: closestTimeArray.map((d, i) => <TaggedTimeStamp key={`${d.time}-${i}`} item={d} />)
+			: closestTimeArray.map(d => {
+					const via = d.via ?? `d`
+					const key = `${d.time}-${via}`
+
+					return <TaggedTimeStamp key={key} item={d} />
+			  })
 	}
 
 	return (
