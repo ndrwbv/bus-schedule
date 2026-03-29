@@ -13,11 +13,13 @@ export interface TimeLeftState {
 	left: ITime
 	closestTimeArray: TaggedTime[]
 	closestTime: string // date string
+	closestTimeVia: 'park' | 'lb' | null
 }
 const initialState: TimeLeftState = {
 	left: DEFAULT_LEFT,
 	closestTimeArray: [],
 	closestTime: ``,
+	closestTimeVia: null,
 }
 
 export const timeLeftSlice = createSlice({
@@ -27,8 +29,9 @@ export const timeLeftSlice = createSlice({
 		setLeft: (state, action: PayloadAction<ITime>) => {
 			state.left = action.payload
 		},
-		setClosestTime: (state, action: PayloadAction<string>) => {
-			state.closestTime = action.payload
+		setClosestTime: (state, action: PayloadAction<{ time: string; via: 'park' | 'lb' | null }>) => {
+			state.closestTime = action.payload.time
+			state.closestTimeVia = action.payload.via
 		},
 		setClosestTimeArray: (state, action: PayloadAction<TaggedTime[]>) => {
 			state.closestTimeArray = action.payload
@@ -42,5 +45,6 @@ export const { setLeft, setClosestTime, setClosestTimeArray } = timeLeftSlice.ac
 export const leftSelector = (state: RootState): ITime => state.timeLeftSlice.left
 export const closestTimeArraySelector = (state: RootState): TaggedTime[] => state.timeLeftSlice.closestTimeArray
 export const closestTimeSelector = (state: RootState): string => state.timeLeftSlice.closestTime
+export const closestTimeViaSelector = (state: RootState): 'park' | 'lb' | null => state.timeLeftSlice.closestTimeVia
 
 export default timeLeftSlice.reducer

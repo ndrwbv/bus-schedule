@@ -2,8 +2,6 @@
 import { HeaderActionsStyled, HeaderContainerBetaStyled, HeaderInnerStyled, Logo } from 'entities/Logo'
 import { WriteMe } from 'entities/WriteMe'
 import { BottomSheetCustom } from 'features/BottomSheet/BottomSheet'
-import { Complains } from 'features/Complains'
-import { ComplainsProvider } from 'features/Complains/model/ComplainsContext'
 import { FavoriteStops } from 'features/FavoriteStops'
 import { HeaderScore } from 'features/HeaderScore'
 import { Info } from 'features/Info'
@@ -28,51 +26,47 @@ export const Home: React.FC = () => {
 	useSchedule()
 
 	return (
-		<ComplainsProvider>
-			<HomeContainerStyled>
-				<HeaderContainerBetaStyled>
-					<HeaderInnerStyled>
-						<Logo />
+		<HomeContainerStyled>
+			<HeaderContainerBetaStyled>
+				<HeaderInnerStyled>
+					<Logo />
 
-						<HeaderActionsStyled>
-							<HeaderScore />
-							<FAQ />
-						</HeaderActionsStyled>
-					</HeaderInnerStyled>
-				</HeaderContainerBetaStyled>
+					<HeaderActionsStyled>
+						<HeaderScore />
+						<FAQ />
+					</HeaderActionsStyled>
+				</HeaderInnerStyled>
+			</HeaderContainerBetaStyled>
 
-				<Map />
+			<Map />
 
-				<BottomSheetCustom header={<BottomSheetHeader />}>
-					<BottomSheetBgStyled>
-						<MainLayoutBetaStyled>
-							<Info />
-							<NearestStops />
-							<BusStop />
+			<BottomSheetCustom header={<BottomSheetHeader />}>
+				<BottomSheetBgStyled>
+					<MainLayoutBetaStyled>
+						<Info />
+						<NearestStops />
+						<BusStop />
 
-							<StripAd />
+						<StripAd />
 
-							<Complains />
+						<FavoriteStops />
 
-							<FavoriteStops />
+						<TodaysBuses />
 
-							<TodaysBuses />
+						<ScheduleInfo />
 
-							<ScheduleInfo />
+						<LeaveFeedbackButton />
 
-							<LeaveFeedbackButton />
+						<OtherTimeBusses />
 
-							<OtherTimeBusses />
+						<ContainerStyled>
+							<WriteMe />
+						</ContainerStyled>
+					</MainLayoutBetaStyled>
 
-							<ContainerStyled>
-								<WriteMe />
-							</ContainerStyled>
-						</MainLayoutBetaStyled>
-
-						<Footer />
-					</BottomSheetBgStyled>
-				</BottomSheetCustom>
-			</HomeContainerStyled>
-		</ComplainsProvider>
+					<Footer />
+				</BottomSheetBgStyled>
+			</BottomSheetCustom>
+		</HomeContainerStyled>
 	)
 }

@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import SVG from 'react-inlinesvg'
+import { useSelector } from 'react-redux'
 import { Holiday } from 'entities/Holiday'
 import { SelectBusStopText } from 'entities/SelectBusStopText'
-import { Fastreply } from 'features/Complains/ui/Fastreply'
 import { useTypedSelector } from 'shared/lib'
 import { isHalloween } from 'shared/store/app/selectors/isHalloween'
 import { StopKeys } from 'shared/store/busStop/Stops'
 import { IHoliday } from 'shared/store/holidays/IHolidays'
 import { ITime } from 'shared/store/timeLeft/ITime'
+import { closestTimeViaSelector } from 'shared/store/timeLeft/timeLeftSlice'
 
 import { ImageWrapperStyled } from '../../shared/ui/ImageWrapper'
 import {
@@ -25,8 +26,14 @@ import Pumpkin from './img/pumpkin.svg'
 
 const SIZE = 45
 
+const VIA_LABELS: Record<string, string> = {
+	park: `через парк`,
+	lb: `через ЛБ`,
+}
+
 export const LeftToString: React.FC<{ left: ITime; busStop: StopKeys | null }> = ({ busStop, left }) => {
 	const { t } = useTranslation()
+	const via = useSelector(closestTimeViaSelector)
 
 	if (!busStop) return <SelectBusStopText />
 
@@ -47,6 +54,7 @@ export const LeftToString: React.FC<{ left: ITime; busStop: StopKeys | null }> =
 				{left.hours === 0 ? `` : `${leftString}ч `}
 				{left.minutes}м
 			</HighLightedStyled>
+			{via && <span style={{ color: `#a5a5a5`, fontSize: 13, marginLeft: 4 }}>{VIA_LABELS[via]}</span>}
 		</TextWrapperStyled>
 	)
 }
@@ -104,8 +112,6 @@ export const HowMuchLeft: React.FC<ILeftProps> = ({ left, busStopLabel, holiday 
 					</BusEstimationStyled>
 				</NextBusContainerStyled>
 			</HowMuchLeftContainerStyled>
-
-			<Fastreply />
 
 			{holiday && <Holiday />}
 		</>
