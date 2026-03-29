@@ -2,7 +2,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'shared/store/app/configureStore'
 
-import { AllStopsOptions, findStopForUserDirection, getUserDirectionsForLabel, STOPS, userDirectionFromInternal } from './const/stops'
+import {
+	AllStopsOptions,
+	findStopForUserDirection,
+	getUserDirectionsForLabel,
+	STOPS,
+	userDirectionFromInternal,
+} from './const/stops'
 import { DirectionsNew, IOption, IStops, StopKeys, UserDirection } from './Stops'
 
 /*
@@ -53,9 +59,7 @@ export const busStopInfoSlice = createSlice({
 				state.availableUserDirections = userDirs
 
 				// Pick user direction: keep current if valid, else first available
-				const targetUserDir = userDirs.includes(state.userDirection)
-					? state.userDirection
-					: userDirs[0]
+				const targetUserDir = userDirs.includes(state.userDirection) ? state.userDirection : userDirs[0]
 				state.userDirection = targetUserDir
 
 				const stop = findStopForUserDirection(action.payload, targetUserDir)

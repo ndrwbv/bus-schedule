@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { userLocationSelector } from 'features/MyLocation/model/myLocationSlice'
 import L from 'leaflet'
 import { setBusStopNew } from 'shared/store/busStop/busStopInfoSlice'
-import { userDirectionFromInternal } from 'shared/store/busStop/const/stops'
+import { STOPS, userDirectionFromInternal } from 'shared/store/busStop/const/stops'
 import { DirectionsNew, IStops, UserDirection } from 'shared/store/busStop/Stops'
 import { CardStyled, ContainerStyled } from 'shared/ui'
 
@@ -13,9 +13,6 @@ import {
 	NearestStopsStyled,
 	NearestStopStyled,
 } from './NearestStops.styled'
-
-// Deduplicated STOPS for nearest: only show unique locations
-import { STOPS } from 'shared/store/busStop/const/stops'
 
 const MAX_DISTANCE = 300
 

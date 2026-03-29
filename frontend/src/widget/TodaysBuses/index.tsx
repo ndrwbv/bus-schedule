@@ -18,8 +18,12 @@ const VIA_LABELS: Record<string, string> = {
 
 const TaggedTimeStamp: React.FC<{ item: TaggedTime }> = ({ item }) => (
 	<TimeStampStyled>
+		{item.interpolated ? `~` : ``}
 		{item.time}
 		{item.via && <span style={{ color: `#a5a5a5`, fontSize: 13, marginLeft: 6 }}>{VIA_LABELS[item.via]}</span>}
+		{item.interpolated && item.interpolatedFrom && (
+			<span style={{ color: `#c4a02c`, fontSize: 11, marginLeft: 4 }}>(на основе: {item.interpolatedFrom})</span>
+		)}
 	</TimeStampStyled>
 )
 
@@ -34,7 +38,12 @@ export const TodaysBuses: React.FC = () => {
 
 		return closestTimeArray.length === 0
 			? t(`No basses`)
-			: closestTimeArray.map((d, i) => <TaggedTimeStamp key={`${d.time}-${i}`} item={d} />)
+			: closestTimeArray.map(d => {
+					const via = d.via ?? `d`
+					const key = `${d.time}-${via}`
+
+					return <TaggedTimeStamp key={key} item={d} />
+			  })
 	}
 
 	return (

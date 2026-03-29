@@ -23,8 +23,12 @@ const VIA_LABELS: Record<string, string> = {
 
 const TaggedTimeStamp: React.FC<{ item: TaggedTime }> = ({ item }) => (
 	<TimeStampStyled>
+		{item.interpolated ? `~` : ``}
 		{item.time}
 		{item.via && <span style={{ color: `#a5a5a5`, fontSize: 13, marginLeft: 6 }}>{VIA_LABELS[item.via]}</span>}
+		{item.interpolated && item.interpolatedFrom && (
+			<span style={{ color: `#c4a02c`, fontSize: 11, marginLeft: 4 }}>(на основе: {item.interpolatedFrom})</span>
+		)}
 	</TimeStampStyled>
 )
 
@@ -68,7 +72,12 @@ export const OtherTimeBusses: React.FC = () => {
 		const tagged = getScheduleTimes(SCHEDULE, userDirection, busOption.value, busStop)
 		if (tagged.length === 0) return <SelectBusStopText />
 
-		return tagged.map((item, i) => <TaggedTimeStamp key={`${item.time}-${i}`} item={item} />)
+		return tagged.map(item => {
+			const via = item.via ?? `d`
+			const key = `${item.time}-${via}`
+
+			return <TaggedTimeStamp key={key} item={item} />
+		})
 	}, [busStop, SCHEDULE, userDirection, busOption])
 
 	return (

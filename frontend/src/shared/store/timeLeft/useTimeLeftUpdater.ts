@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { calculateHowMuchIsLeft } from 'shared/lib/time/calculateHowMuchIsLeft'
-import { findClosesTime } from 'shared/lib/time/findClosesTime'
 import { filterFutureTaggedTimes } from 'shared/lib/time/filterFutureTaggedTimes'
+import { findClosesTime } from 'shared/lib/time/findClosesTime'
 import useSecondMinuteUpdater from 'shared/store/timeLeft/useEverySecondUpdater'
 
 import { busStopSelector, userDirectionSelector } from '../busStop/busStopInfoSlice'
@@ -30,7 +30,14 @@ export const useTimeLeftUpdater = (): void => {
 		if (!closestTime || new Date(closestTime).getTime() !== new Date(closestTimeToSet || ``).getTime()) {
 			const futureTimes = filterFutureTaggedTimes(allTimes)
 			dispatch(setClosestTimeArray(futureTimes))
-			dispatch(setClosestTime({ time: closestTimeToSet || ``, via: futureTimes[0]?.via ?? null }))
+			dispatch(
+				setClosestTime({
+					time: closestTimeToSet || ``,
+					via: futureTimes[0]?.via ?? null,
+					interpolated: futureTimes[0]?.interpolated,
+					interpolatedFrom: futureTimes[0]?.interpolatedFrom,
+				}),
+			)
 		}
 	}, [everySecondUpdate, closestTime, busStop, userDirection, shedule, currentDayKey, dispatch])
 
