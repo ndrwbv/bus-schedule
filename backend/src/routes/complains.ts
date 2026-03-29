@@ -30,14 +30,14 @@ complainsRouter.post('/complains', (req: Request, res: Response) => {
 
   const db = getDb();
 
-  // Rate limiting by user_id
+  // Rate limiting by user_id + stop (2 minutes per stop)
   if (user_id) {
     const recent = db.prepare(
-      `SELECT id FROM complains WHERE user_id = ? AND created_at > datetime('now', '-1 minute') LIMIT 1`
-    ).get(user_id) as { id: number } | undefined;
+      `SELECT id FROM complains WHERE user_id = ? AND stop = ? AND created_at > datetime('now', '-2 minutes') LIMIT 1`
+    ).get(user_id, stop) as { id: number } | undefined;
 
     if (recent) {
-      res.status(429).json({ error: 'Rate limit: 1 complaint per minute' });
+      res.status(429).json({ error: 'Rate limit: 1 complaint per 2 minutes per stop' });
       return;
     }
   }
