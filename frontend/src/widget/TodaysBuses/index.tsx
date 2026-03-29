@@ -21,10 +21,8 @@ const TaggedTimeStamp: React.FC<{ item: TaggedTime }> = ({ item }) => (
 		{item.interpolated ? `~` : ``}
 		{item.time}
 		{item.via && <span style={{ color: `#a5a5a5`, fontSize: 13, marginLeft: 6 }}>{VIA_LABELS[item.via]}</span>}
-		{item.interpolated && (
-			<span style={{ color: `#c4a02c`, fontSize: 11, marginLeft: 4 }} title="Примерное время">
-				прим.
-			</span>
+		{item.interpolated && item.interpolatedFrom && (
+			<span style={{ color: `#c4a02c`, fontSize: 11, marginLeft: 4 }}>(на основе: {item.interpolatedFrom})</span>
 		)}
 	</TimeStampStyled>
 )

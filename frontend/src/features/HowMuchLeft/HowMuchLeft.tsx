@@ -9,7 +9,11 @@ import { isHalloween } from 'shared/store/app/selectors/isHalloween'
 import { StopKeys } from 'shared/store/busStop/Stops'
 import { IHoliday } from 'shared/store/holidays/IHolidays'
 import { ITime } from 'shared/store/timeLeft/ITime'
-import { closestTimeViaSelector } from 'shared/store/timeLeft/timeLeftSlice'
+import {
+	closestTimeInterpolatedFromSelector,
+	closestTimeInterpolatedSelector,
+	closestTimeViaSelector,
+} from 'shared/store/timeLeft/timeLeftSlice'
 
 import { ImageWrapperStyled } from '../../shared/ui/ImageWrapper'
 import {
@@ -34,6 +38,8 @@ const VIA_LABELS: Record<string, string> = {
 export const LeftToString: React.FC<{ left: ITime; busStop: StopKeys | null }> = ({ busStop, left }) => {
 	const { t } = useTranslation()
 	const via = useSelector(closestTimeViaSelector)
+	const isInterpolated = useSelector(closestTimeInterpolatedSelector)
+	const interpolatedFrom = useSelector(closestTimeInterpolatedFromSelector)
 
 	if (!busStop) return <SelectBusStopText />
 
@@ -48,6 +54,7 @@ export const LeftToString: React.FC<{ left: ITime; busStop: StopKeys | null }> =
 
 	return (
 		<TextWrapperStyled>
+			{isInterpolated ? `~` : ``}
 			{t(`Next bus arriving in`)}
 			{` `}
 			<HighLightedStyled>
@@ -55,6 +62,9 @@ export const LeftToString: React.FC<{ left: ITime; busStop: StopKeys | null }> =
 				{left.minutes}м
 			</HighLightedStyled>
 			{via && <span style={{ color: `#a5a5a5`, fontSize: 13, marginLeft: 4 }}>{VIA_LABELS[via]}</span>}
+			{isInterpolated && interpolatedFrom && (
+				<span style={{ color: `#c4a02c`, fontSize: 11, marginLeft: 4 }}>(на основе: {interpolatedFrom})</span>
+			)}
 		</TextWrapperStyled>
 	)
 }

@@ -3,8 +3,6 @@
  *
  * When a stop has no times listed for a given day but the bus still passes through it,
  * we estimate arrival times based on neighboring stops in the route order.
- *
- * Returns an array of time strings (e.g. ["8:51", "11:01"]) or empty array if cannot interpolate.
  */
 
 const toMinutes = (time: string): number => {
@@ -25,7 +23,14 @@ const FALLBACK_GAP_MINUTES = 2
 
 interface StopWithTimes {
 	index: number
+	label: string
 	times: string[]
+}
+
+export interface InterpolationResult {
+	times: string[]
+	/** Human-readable description of the source stops, e.g. "Набережная и В. Маяковского" */
+	fromStops: string
 }
 
 function findPrevStop(
@@ -36,7 +41,7 @@ function findPrevStop(
 	for (let i = stopIndex - 1; i >= 0; i--) {
 		const times = daySchedule[stopOrder[i]]
 		if (times && times.length > 0) {
-			return { index: i, times }
+			return { index: i, label: stopOrder[i], times }
 		}
 	}
 
@@ -51,7 +56,7 @@ function findNextStop(
 	for (let i = stopIndex + 1; i < stopOrder.length; i++) {
 		const times = daySchedule[stopOrder[i]]
 		if (times && times.length > 0) {
-			return { index: i, times }
+			return { index: i, label: stopOrder[i], times }
 		}
 	}
 
@@ -90,24 +95,38 @@ function interpolateTrip(
 	return null
 }
 
+function buildFromStopsLabel(prevStop: StopWithTimes | null, nextStop: StopWithTimes | null): string {
+	if (prevStop && nextStop) {
+		return `${prevStop.label} и ${nextStop.label}`
+	}
+	if (prevStop) {
+		return prevStop.label
+	}
+	if (nextStop) {
+		return nextStop.label
+	}
+
+	return ``
+}
+
 /**
  * Given a direction's schedule for a specific day, the stop label, and the ordered list
- * of stop labels, returns interpolated time strings for the stop.
+ * of stop labels, returns interpolated time strings and the source stop names.
  */
 export const interpolateStopTimes = (
 	daySchedule: Record<string, string[] | undefined> | undefined,
 	stopLabel: string,
 	stopOrder: string[],
-): string[] => {
-	if (!daySchedule) return []
+): InterpolationResult | null => {
+	if (!daySchedule) return null
 
 	const stopIndex = stopOrder.indexOf(stopLabel)
-	if (stopIndex === -1) return []
+	if (stopIndex === -1) return null
 
 	const prevStop = findPrevStop(daySchedule, stopOrder, stopIndex)
 	const nextStop = findNextStop(daySchedule, stopOrder, stopIndex)
 
-	if (!prevStop && !nextStop) return []
+	if (!prevStop && !nextStop) return null
 
 	const tripCount = prevStop?.times.length ?? nextStop?.times.length ?? 0
 	const result: string[] = []
@@ -119,5 +138,10 @@ export const interpolateStopTimes = (
 		}
 	}
 
-	return result
+	if (result.length === 0) return null
+
+	return {
+		times: result,
+		fromStops: buildFromStopsLabel(prevStop, nextStop),
+	}
 }
