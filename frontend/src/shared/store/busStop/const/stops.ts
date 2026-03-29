@@ -1,8 +1,43 @@
+import { interpolateStopTimes } from 'shared/lib/time/interpolateStopTimes'
+
 import { DirectionsNew, IOption, IStops, StopKeys, TaggedTime, UserDirection } from '../Stops'
 import { STOPS_IN_LB } from './stopsInLbOptions'
 import { STOPS_IN_SP } from './stopsInSpOptions'
 import { STOPS_OUT } from './stopsOutOptions'
 import { ISchedule } from '../../schedule/ISchedule'
+
+/** Ordered stop labels per direction — used for interpolation */
+const STOP_ORDER_INSP = STOPS_IN_SP.map(s => s.label)
+const STOP_ORDER_OUT = STOPS_OUT.map(s => s.label)
+const STOP_ORDER_INLB = STOPS_IN_LB.map(s => s.label)
+
+const STOP_ORDER: Record<string, string[]> = {
+	[DirectionsNew.inSP]: STOP_ORDER_INSP,
+	[DirectionsNew.out]: STOP_ORDER_OUT,
+	[DirectionsNew.inLB]: STOP_ORDER_INLB,
+}
+
+/** Get times for a stop from a single direction, with interpolation fallback */
+function getDirectionTimes(
+	dirSchedule: Record<number, Record<string, string[]>> | undefined,
+	dayKey: number,
+	stopLabel: string,
+	directionKey: string,
+): { times: string[]; interpolated: boolean } {
+	const daySchedule = dirSchedule?.[dayKey] as Record<string, string[] | undefined> | undefined
+	const raw = daySchedule?.[stopLabel]
+
+	if (raw && raw.length > 0) {
+		return { times: raw, interpolated: false }
+	}
+
+	// No times — try interpolation
+	const order = STOP_ORDER[directionKey]
+	if (!order) return { times: [], interpolated: false }
+
+	const interpolated = interpolateStopTimes(daySchedule, stopLabel, order)
+	return { times: interpolated, interpolated: interpolated.length > 0 }
+}
 
 export const STOPS = [...STOPS_IN_SP, ...STOPS_IN_LB, ...STOPS_OUT]
 
@@ -48,22 +83,27 @@ export const getScheduleTimes = (
 	stopLabel: string,
 ): TaggedTime[] => {
 	if (userDirection === UserDirection.toCity) {
-		const times =
-			(schedule.out?.[dayKey] as Record<string, string[] | undefined> | undefined)?.[stopLabel] ?? []
-		return times.map(t => ({ time: t, via: null }))
+		const { times, interpolated } = getDirectionTimes(schedule.out, dayKey, stopLabel, DirectionsNew.out)
+		return times.map(t => ({ time: t, via: null, interpolated: interpolated || undefined }))
 	}
 
-	// fromCity: merge inSP + inLB
-	const inSpTimes =
-		(schedule.inSP?.[dayKey] as Record<string, string[] | undefined> | undefined)?.[stopLabel] ?? []
-	const inLbTimes =
-		(schedule.inLB?.[dayKey] as Record<string, string[] | undefined> | undefined)?.[stopLabel] ?? []
+	// fromCity: merge inSP + inLB (with interpolation fallback for each)
+	const inSpResult = getDirectionTimes(schedule.inSP, dayKey, stopLabel, DirectionsNew.inSP)
+	const inLbResult = getDirectionTimes(schedule.inLB, dayKey, stopLabel, DirectionsNew.inLB)
 
-	const needsTag = inSpTimes.length > 0 && inLbTimes.length > 0
+	const needsTag = inSpResult.times.length > 0 && inLbResult.times.length > 0
 
 	const tagged: TaggedTime[] = [
-		...inSpTimes.map(t => ({ time: t, via: needsTag ? (`park` as const) : null })),
-		...inLbTimes.map(t => ({ time: t, via: needsTag ? (`lb` as const) : null })),
+		...inSpResult.times.map(t => ({
+			time: t,
+			via: needsTag ? (`park` as const) : null,
+			interpolated: inSpResult.interpolated || undefined,
+		})),
+		...inLbResult.times.map(t => ({
+			time: t,
+			via: needsTag ? (`lb` as const) : null,
+			interpolated: inLbResult.interpolated || undefined,
+		})),
 	]
 
 	tagged.sort((a, b) => {
