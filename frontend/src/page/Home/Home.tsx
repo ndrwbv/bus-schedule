@@ -5,7 +5,7 @@ import { BottomSheetCustom } from 'features/BottomSheet/BottomSheet'
 import { FavoriteStops } from 'features/FavoriteStops'
 import { HeaderScore } from 'features/HeaderScore'
 import { Info } from 'features/Info'
-import { LeaveFeedbackButton } from 'features/LeaveFeedbackButton'
+// import { LeaveFeedbackButton } from 'features/LeaveFeedbackButton'
 import { NearestStops } from 'features/NearestStops'
 import { OtherTimeBusses } from 'features/OtherTimeBuses'
 import { ScheduleInfo } from 'features/ScheduleInfo'
@@ -33,7 +33,7 @@ export const Home: React.FC = () => {
 
 					<HeaderActionsStyled>
 						<HeaderScore />
-						<FAQ />
+						{/* <FAQ /> */}
 					</HeaderActionsStyled>
 				</HeaderInnerStyled>
 			</HeaderContainerBetaStyled>
@@ -55,7 +55,7 @@ export const Home: React.FC = () => {
 
 						<ScheduleInfo />
 
-						<LeaveFeedbackButton />
+						{/* <LeaveFeedbackButton /> */}
 
 						<OtherTimeBusses />
 
