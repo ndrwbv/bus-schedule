@@ -7,6 +7,7 @@ import { scheduleRouter } from './routes/schedule';
 import { complainsRouter } from './routes/complains';
 import { docsRouter } from './routes/docs';
 import { startScheduleCron } from './services/schedule/cron';
+import { initTelegramSubscribers, pollSubscribers } from './services/telegram/alerter';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -15,6 +16,8 @@ app.use(cors());
 app.use(express.json());
 
 initDb();
+initTelegramSubscribers();
+pollSubscribers().catch((err) => console.error('[telegram] Ошибка первичного опроса:', err));
 startScheduleCron();
 
 app.use('/api', healthRouter);
