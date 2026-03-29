@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import Select, { SingleValue } from 'react-select'
+import { Fastreply } from 'features/Complains'
 import { HowMuchLeft } from 'features/HowMuchLeft/HowMuchLeft'
 import { AndrewLytics } from 'shared/lib'
 import { IOption, StopKeys, UserDirection } from 'shared/store/busStop/Stops'
@@ -109,6 +110,8 @@ export const BusStop: React.FC = () => {
 				)}
 
 				<HowMuchLeft holiday={todaysHoliday} busStopLabel={busStopNew?.label || null} left={left} />
+
+				<Fastreply />
 			</CardStyled>
 		</ContainerStyled>
 	)

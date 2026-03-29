@@ -13,12 +13,8 @@ import { useFastReplay } from '../model/useFastReplay'
 const COMPLAIN_DISAPPEAR_MS = 200000
 const ComplainsOptions = [
 	{
-		value: ComplainType.earlier,
-		label: `Приехал раньше`,
-	},
-	{
-		value: ComplainType.later,
-		label: `Приехал позже`,
+		value: ComplainType.arrived,
+		label: `Приехал`,
 	},
 	{
 		value: ComplainType.not_arrive,
@@ -55,7 +51,6 @@ export const Fastreply: React.FC = () => {
 			direction,
 			date,
 			type,
-			on: 0,
 		})
 
 		AndrewLytics(`fastReply`)

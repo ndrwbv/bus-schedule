@@ -24,7 +24,6 @@ export interface IComplains {
 	direction: Directions
 	date: string
 	type: ComplainType
-	on: number
 }
 
 export interface IComplainsResponse {
