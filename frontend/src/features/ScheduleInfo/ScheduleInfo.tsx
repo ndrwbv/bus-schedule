@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useGetChangelogQuery } from 'shared/api/scheduleApi'
-import { lastUpdatedAtSelector, scheduleSourceSelector } from 'shared/store/schedule/scheduleSlice'
+import { lastUpdatedAtSelector, lastCheckedAtSelector, scheduleSourceSelector } from 'shared/store/schedule/scheduleSlice'
 import { CardStyled, ContainerStyled, GrayTextStyled } from 'shared/ui/common'
 // ─── Styles ──────────────────────────────────────────────────────────────────
 import styled from 'styled-components'
@@ -20,6 +20,10 @@ const UpdatedLabelStyled = styled.span`
 
 const UpdatedDateStyled = styled.b`
 	color: #1191fb;
+`
+
+const CheckedDateStyled = styled.b`
+	color: #2e7d32;
 `
 
 const ToggleButtonStyled = styled.button`
@@ -74,6 +78,7 @@ function formatDate(iso: string): string {
 export const ScheduleInfo: React.FC = () => {
 	const source = useSelector(scheduleSourceSelector)
 	const lastUpdatedAt = useSelector(lastUpdatedAtSelector)
+	const lastCheckedAt = useSelector(lastCheckedAtSelector)
 	const [showChangelog, setShowChangelog] = useState(false)
 
 	const { data: changelog } = useGetChangelogQuery({ limit: 5 }, { skip: !showChangelog })
@@ -81,13 +86,28 @@ export const ScheduleInfo: React.FC = () => {
 	// Не показываем блок если расписание захардкожено и нет даты обновления
 	if (source === `hardcoded` && !lastUpdatedAt) return null
 
+	// Показываем «проверено» если дата проверки отличается от даты обновления
+	const showCheckedAt = lastCheckedAt && lastCheckedAt !== lastUpdatedAt
+
 	return (
 		<ContainerStyled>
 			<CardStyled>
 				<UpdatedRowStyled>
 					<UpdatedLabelStyled>
-						🕐 Расписание обновлено:{` `}
-						<UpdatedDateStyled>{lastUpdatedAt ? formatDate(lastUpdatedAt) : `—`}</UpdatedDateStyled>
+						{showCheckedAt ? (
+							<>
+								✅ Проверено:{` `}
+								<CheckedDateStyled>{formatDate(lastCheckedAt)}</CheckedDateStyled>
+								<br />
+								🔄 Обновлено:{` `}
+								<UpdatedDateStyled>{lastUpdatedAt ? formatDate(lastUpdatedAt) : `—`}</UpdatedDateStyled>
+							</>
+						) : (
+							<>
+								✅ Обновлено:{` `}
+								<UpdatedDateStyled>{lastUpdatedAt ? formatDate(lastUpdatedAt) : `—`}</UpdatedDateStyled>
+							</>
+						)}
 					</UpdatedLabelStyled>
 
 					{changelog !== undefined || showChangelog ? (

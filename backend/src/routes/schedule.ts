@@ -21,6 +21,15 @@ scheduleRouter.get('/schedule', (_req: Request, res: Response) => {
       return
     }
 
+    // Последняя успешная проверка (cron или api)
+    const lastRun = db
+      .prepare(
+        `SELECT created_at FROM schedule_pipeline_runs
+         WHERE status IN ('success', 'no_changes')
+         ORDER BY created_at DESC LIMIT 1`,
+      )
+      .get() as { created_at: string } | undefined
+
     const etag = `"${row.file_hash}"`
 
     // Conditional request support
@@ -38,6 +47,7 @@ scheduleRouter.get('/schedule', (_req: Request, res: Response) => {
       schedule: JSON.parse(row.data),
       meta: {
         updatedAt: row.updated_at,
+        lastCheckedAt: lastRun?.created_at ?? row.updated_at,
         parseMethod: row.parse_method,
         fileHash: row.file_hash,
       },

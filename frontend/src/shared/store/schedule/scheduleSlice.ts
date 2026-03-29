@@ -11,6 +11,7 @@ export interface BusStopInfoState {
 	nextDayKey: number
 	scheduleSource: 'hardcoded' | 'api' | 'cache'
 	lastUpdatedAt: string | null
+	lastCheckedAt: string | null
 	parseMethod: string | null
 }
 
@@ -20,6 +21,7 @@ const initialState: BusStopInfoState = {
 	nextDayKey: getNextDay(new Date().getDay()),
 	scheduleSource: `hardcoded`,
 	lastUpdatedAt: null,
+	lastCheckedAt: null,
 	parseMethod: null,
 }
 
@@ -36,12 +38,14 @@ export const busStopInfoSlice = createSlice({
 				schedule: ISchedule
 				source: 'api' | 'cache'
 				updatedAt: string
+				lastCheckedAt: string
 				parseMethod: string
 			}>,
 		) => {
 			state.schedule = action.payload.schedule
 			state.scheduleSource = action.payload.source
 			state.lastUpdatedAt = action.payload.updatedAt
+			state.lastCheckedAt = action.payload.lastCheckedAt
 			state.parseMethod = action.payload.parseMethod
 		},
 		setCurrentDayKey: (state, action: PayloadAction<number>) => {
@@ -59,5 +63,6 @@ export const nextDaySelector = (state: RootState): number => state.scheduleSlice
 export const scheduleSourceSelector = (state: RootState): 'cache' | 'api' | 'hardcoded' =>
 	state.scheduleSlice.scheduleSource
 export const lastUpdatedAtSelector = (state: RootState): string | null => state.scheduleSlice.lastUpdatedAt
+export const lastCheckedAtSelector = (state: RootState): string | null => state.scheduleSlice.lastCheckedAt
 
 export default busStopInfoSlice.reducer
