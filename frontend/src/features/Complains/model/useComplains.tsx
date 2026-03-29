@@ -1,8 +1,23 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { AndrewLytics } from 'shared/lib'
 import { Directions, StopKeys } from 'shared/store/busStop/Stops'
 
 import { ComplainType } from './Complains'
+
+const API_BASE = (import.meta as { env?: { VITE_API_URL?: string } }).env?.VITE_API_URL || `/api`
+const POLL_INTERVAL_MS = 30_000
+
+const USER_ID_KEY = `severbus:user_id`
+
+function getUserId(): string {
+	let id = localStorage.getItem(USER_ID_KEY)
+	if (!id) {
+		id = crypto.randomUUID()
+		localStorage.setItem(USER_ID_KEY, id)
+	}
+
+	return id
+}
 
 export interface IComplains {
 	stop: StopKeys
@@ -12,9 +27,14 @@ export interface IComplains {
 	on: number
 }
 
-export interface IComplainsResponse extends IComplains {
+export interface IComplainsResponse {
 	id: number
+	stop: string
+	direction: string
+	type: string
+	date: string
 }
+
 interface IReturns {
 	complains: IComplainsResponse[]
 	addComplain: (data: IComplains) => void
@@ -23,78 +43,47 @@ interface IReturns {
 export const useComplains = (): IReturns => {
 	const [complains, setComplains] = useState<IComplainsResponse[]>([])
 
-	const fetchComplains = (): void => {
-		fetch(`https://popooga.ru/graphql`, {
-			headers: {
-				accept: `*/*`,
-				'accept-language': `ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7`,
-				'content-type': `application/json`,
-				'sec-fetch-dest': `empty`,
-				'sec-fetch-mode': `cors`,
-				'sec-fetch-site': `same-origin`,
-			},
-			referrer: `https://popooga.ru/graphql`,
-			referrerPolicy: `strict-origin-when-cross-origin`,
-			body: `{"operationName":"C","variables":{},"query":"query C {\\n  findComplains {\\n    id\\n    stop\\n    direction\\n    date\\n    type\\n    on\\n  }\\n}\\n"}`,
-			method: `POST`,
-			mode: `cors`,
-			credentials: `omit`,
-		})
+	const fetchComplains = useCallback((): void => {
+		fetch(`${API_BASE}/complains`)
 			.then(res => res.json())
-			.then(res => {
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-				if (res?.data?.findComplains) {
-					// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-					setComplains(res.data.findComplains)
-				}
+			.then((data: IComplainsResponse[]) => {
+				setComplains(data)
 
 				return null
 			})
 			.catch(() => {})
-	}
+	}, [])
 
 	useEffect(() => {
 		fetchComplains()
-		const interval = setInterval(() => {
-			fetchComplains()
-		}, 5000)
+		const interval = setInterval(fetchComplains, POLL_INTERVAL_MS)
 
 		return () => {
 			clearInterval(interval)
 		}
-	}, [])
+	}, [fetchComplains])
 
-	const addComplain = (data: IComplains): void => {
+	const addComplain = useCallback((data: IComplains): void => {
 		AndrewLytics(`addComplainMethod`)
-		const body = {
-			operationName: null,
-			variables: {
-				data,
-			},
-			query: `mutation Complain($data: ComplainsInputDTO!) {createComplain(data: $data) {id}
-			}`,
-		}
 
-		fetch(`https://popooga.ru/graphql`, {
-			headers: {
-				accept: `*/*`,
-				'accept-language': `ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7`,
-				'content-type': `application/json`,
-				'sec-ch-ua': `" Not A;Brand";v="99", "Chromium";v="101", "Google Chrome";v="101"`,
-				'sec-ch-ua-mobile': `?0`,
-				'sec-ch-ua-platform': `"macOS"`,
-				'sec-fetch-dest': `empty`,
-				'sec-fetch-mode': `cors`,
-				'sec-fetch-site': `same-origin`,
-			},
-			referrer: `https://popooga.ru/graphql`,
-			referrerPolicy: `strict-origin-when-cross-origin`,
-			body: JSON.stringify(body),
+		fetch(`${API_BASE}/complains`, {
 			method: `POST`,
-			mode: `cors`,
-			credentials: `omit`,
-		}).catch(() => {})
-	}
+			headers: { 'Content-Type': `application/json` },
+			body: JSON.stringify({
+				stop: data.stop,
+				direction: data.direction,
+				type: data.type,
+				user_id: getUserId(),
+			}),
+		})
+			.then(() => {
+				// Refresh list after submitting
+				fetchComplains()
+
+				return null
+			})
+			.catch(() => {})
+	}, [fetchComplains])
 
 	return { complains, addComplain }
 }

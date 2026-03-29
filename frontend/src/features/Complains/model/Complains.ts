@@ -3,4 +3,5 @@ export enum ComplainType {
 	'later' = `later`,
 	not_arrive = `not_arrive`,
 	passed_by = `passed_by`,
+	arrived = `arrived`,
 }
