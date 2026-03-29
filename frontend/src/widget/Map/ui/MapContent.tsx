@@ -153,7 +153,7 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 				const { id } = props as
 					| IStops<DirectionsNew.inSP>
 					| IStops<DirectionsNew.out>
-					| IStops<DirectionsNew.inSP>
+					| IStops<DirectionsNew.inLB>
 
 				const stop = features[i].properties
 				stop.latLon = JSON.parse(stop.latLon)

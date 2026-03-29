@@ -1,5 +1,4 @@
 import { calculateHowMuchIsLeft } from 'shared/lib/time/calculateHowMuchIsLeft'
-import { Directions } from 'shared/store/busStop/Stops'
 
 import { ComplainType } from '../model/Complains'
 
@@ -11,8 +10,11 @@ export const getMinutesString = (amount: number, secondWord = `назад`): str
 	return ` минут ${secondWord}`
 }
 
-export const getDirectionString = (direction: Directions): string => {
-	return direction === `inSP` ? `в парк` : `из парка`
+export const getDirectionString = (direction: string): string => {
+	if (direction === `inSP`) return `в парк`
+	if (direction === `inLB`) return `на Левый берег`
+
+	return `из парка`
 }
 
 export const getTypeString = (type: ComplainType): string => {
