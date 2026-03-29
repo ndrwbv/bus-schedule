@@ -76,6 +76,7 @@ export interface IOption<ValueType> {
 export interface TaggedTime {
 	time: string
 	via: 'park' | 'lb' | null
+	interpolated?: boolean
 }
 
 export type ICoordites = [number, number]

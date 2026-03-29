@@ -25,13 +25,6 @@ export const Footer: React.FC = () => {
 							Играть
 						</Link>
 					</GrayTextStyled>
-					<GrayTextStyled>
-						{t(`Schedule taken from website`)}
-						{` `}
-						<a href={AVTOTRANS_LINK} target="_blank" rel="noreferrer">
-							{AVTOTRANS}
-						</a>
-					</GrayTextStyled>
 					<GrayTextStyled>{COPYRIGHT}</GrayTextStyled>
 				</div>
 			</ContainerStyled>
