@@ -21,7 +21,9 @@ import {
 export const Complains: React.FC = () => {
 	const [isOpen, setIsOpen] = useState(false)
 
-	const { complains } = useComplainsContext()
+	const { complains: allComplains } = useComplainsContext()
+
+	const complains = useMemo(() => allComplains.filter(c => c.type !== `arrived`), [allComplains])
 
 	const latestTime = useMemo(() => {
 		if (complains.length === 0) return `сегодня ни одной жалобы`

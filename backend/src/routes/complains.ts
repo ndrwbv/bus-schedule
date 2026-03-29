@@ -56,7 +56,7 @@ complainsRouter.get('/complains', (_req: Request, res: Response) => {
   const db = getDb();
 
   const rows = db.prepare(
-    `SELECT id, stop, direction, type, created_at as date
+    `SELECT id, stop, direction, type, created_at || 'Z' as date
      FROM complains
      WHERE created_at > datetime('now', '-1 day')
      ORDER BY created_at DESC

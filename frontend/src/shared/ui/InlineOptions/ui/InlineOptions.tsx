@@ -9,6 +9,7 @@ interface IProps<T = ValueType> {
 	activeId: T
 	onClick: (value: T) => void
 	defaultColor?: string
+	disabled?: boolean
 }
 
 export const InlineOptions = <T,>({
@@ -16,6 +17,7 @@ export const InlineOptions = <T,>({
 	activeId,
 	onClick,
 	defaultColor = undefined,
+	disabled = false,
 }: React.PropsWithChildren<IProps<T | null>>): JSX.Element => {
 	return (
 		<OverLayContainerStyled>
@@ -24,8 +26,9 @@ export const InlineOptions = <T,>({
 					<InlineOptionsItemStyled
 						$active={option.value === activeId}
 						$defaultColor={defaultColor}
+						$disabled={disabled}
 						key={option.value as string}
-						onClick={() => onClick(option.value)}
+						onClick={() => !disabled && onClick(option.value)}
 					>
 						{option.label}
 					</InlineOptionsItemStyled>
