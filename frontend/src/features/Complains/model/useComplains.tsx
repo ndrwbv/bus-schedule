@@ -4,7 +4,7 @@ import { Directions, StopKeys } from 'shared/store/busStop/Stops'
 
 import { ComplainType } from './Complains'
 
-const API_BASE = (import.meta as { env?: { VITE_API_URL?: string } }).env?.VITE_API_URL || `/api`
+const API_BASE = import.meta.env.VITE_API_URL || `/api`
 const POLL_INTERVAL_MS = 30_000
 
 const USER_ID_KEY = `severbus:user_id`
@@ -50,7 +50,9 @@ export const useComplains = (): IReturns => {
 
 				return null
 			})
-			.catch(() => {})
+			.catch((err: unknown) => {
+				console.error(`[complains] fetch error:`, err)
+			})
 	}, [])
 
 	useEffect(() => {
@@ -66,6 +68,16 @@ export const useComplains = (): IReturns => {
 		(data: IComplains): void => {
 			AndrewLytics(`addComplainMethod`)
 
+			// Optimistic update
+			const optimistic: IComplainsResponse = {
+				id: Date.now(),
+				stop: data.stop,
+				direction: data.direction,
+				type: data.type,
+				date: data.date,
+			}
+			setComplains(prev => [optimistic, ...prev])
+
 			fetch(`${API_BASE}/complains`, {
 				method: `POST`,
 				headers: { 'Content-Type': `application/json` },
@@ -77,12 +89,13 @@ export const useComplains = (): IReturns => {
 				}),
 			})
 				.then(() => {
-					// Refresh list after submitting
 					fetchComplains()
 
 					return null
 				})
-				.catch(() => {})
+				.catch((err: unknown) => {
+					console.error(`[complains] post error:`, err)
+				})
 		},
 		[fetchComplains],
 	)

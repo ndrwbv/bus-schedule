@@ -1,16 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { AndrewLytics } from 'shared/lib'
 import { busStopNewSelector, directionSelector } from 'shared/store/busStop/busStopInfoSlice'
-import { leftSelector } from 'shared/store/timeLeft/timeLeftSlice'
 import { InlineOptions } from 'shared/ui/InlineOptions'
 import styled from 'styled-components'
 
 import { ComplainType } from '../model/Complains'
 import { useComplainsContext } from '../model/ComplainsContext'
-import { useFastReplay } from '../model/useFastReplay'
 
-const COMPLAIN_DISAPPEAR_MS = 200000
 const ComplainsOptions = [
 	{
 		value: ComplainType.arrived,
@@ -31,49 +28,33 @@ export const ComplainOptionContainerStyled = styled.div`
 `
 
 export const Fastreply: React.FC = () => {
-	const [isComplainClicked, setIsComplainClicked] = useState(false)
 	const [activeComplain, setActiveComplain] = useState<ComplainType | null>(null)
-	const { shouldShowFastReply } = useFastReplay()
 
 	const busStopNew = useSelector(busStopNewSelector)
 	const direction = useSelector(directionSelector)
-	const left = useSelector(leftSelector)
 
 	const { addComplain } = useComplainsContext()
 
-	const handleComplain = (type: ComplainType): void => {
-		if (!busStopNew || left.minutes === null) return
+	const handleFastReplyClick = (key: ComplainType | null): void => {
+		if (!key || !busStopNew) return
 
-		const date = new Date().toISOString()
+		setActiveComplain(key)
 
 		addComplain({
 			stop: busStopNew.label,
 			direction,
-			date,
-			type,
+			date: new Date().toISOString(),
+			type: key,
 		})
 
 		AndrewLytics(`fastReply`)
+
+		setTimeout(() => {
+			setActiveComplain(null)
+		}, 3000)
 	}
 
-	useEffect(() => {
-		if (isComplainClicked) {
-			setTimeout(() => {
-				setIsComplainClicked(false)
-				setActiveComplain(null)
-			}, COMPLAIN_DISAPPEAR_MS)
-		}
-	}, [isComplainClicked])
-
-	const handleFastReplyClick = (key: ComplainType | null): void => {
-		if (isComplainClicked || !key) return
-
-		setActiveComplain(key)
-		handleComplain(key)
-		setIsComplainClicked(true)
-	}
-
-	if (!shouldShowFastReply) return null
+	if (!busStopNew) return null
 
 	return (
 		<ComplainOptionContainerStyled>

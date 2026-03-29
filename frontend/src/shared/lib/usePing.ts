@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-const API_BASE = (import.meta as { env?: { VITE_API_URL?: string } }).env?.VITE_API_URL || `/api`
+const API_BASE = import.meta.env.VITE_API_URL || `/api`
 const USER_ID_KEY = `severbus:user_id`
 
 function getUserId(): string {
