@@ -2,16 +2,17 @@ import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { calculateHowMuchIsLeft } from 'shared/lib/time/calculateHowMuchIsLeft'
 import { findClosesTime } from 'shared/lib/time/findClosesTime'
-import { findClosesTimeArray } from 'shared/lib/time/findClosesTimeArray'
+import { filterFutureTaggedTimes } from 'shared/lib/time/filterFutureTaggedTimes'
 import useSecondMinuteUpdater from 'shared/store/timeLeft/useEverySecondUpdater'
 
-import { busStopSelector, directionSelector } from '../busStop/busStopInfoSlice'
+import { busStopSelector, userDirectionSelector } from '../busStop/busStopInfoSlice'
+import { getScheduleTimes } from '../busStop/const/stops'
 import { currentDaySelector, scheduleSelector } from '../schedule/scheduleSlice'
 import { closestTimeSelector, setClosestTime, setClosestTimeArray, setLeft } from './timeLeftSlice'
 
 export const useTimeLeftUpdater = (): void => {
 	const busStop = useSelector(busStopSelector)
-	const direction = useSelector(directionSelector)
+	const userDirection = useSelector(userDirectionSelector)
 	const currentDayKey = useSelector(currentDaySelector)
 	const closestTime = useSelector(closestTimeSelector)
 	const shedule = useSelector(scheduleSelector)
@@ -22,13 +23,15 @@ export const useTimeLeftUpdater = (): void => {
 	useEffect(() => {
 		if (!busStop) return
 
-		const closestTimeToSet = findClosesTime(shedule[direction][currentDayKey][busStop])
+		const allTimes = getScheduleTimes(shedule, userDirection, currentDayKey, busStop)
+		const plainTimes = allTimes.map(t => t.time)
+		const closestTimeToSet = findClosesTime(plainTimes)
 
 		if (!closestTime || new Date(closestTime).getTime() !== new Date(closestTimeToSet || ``).getTime()) {
-			dispatch(setClosestTimeArray(findClosesTimeArray(shedule[direction][currentDayKey][busStop])))
+			dispatch(setClosestTimeArray(filterFutureTaggedTimes(allTimes)))
 			dispatch(setClosestTime(closestTimeToSet || ``))
 		}
-	}, [everySecondUpdate, closestTime, busStop, direction, shedule, currentDayKey, dispatch])
+	}, [everySecondUpdate, closestTime, busStop, userDirection, shedule, currentDayKey, dispatch])
 
 	// calculation how much left
 	useEffect(() => {

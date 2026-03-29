@@ -64,9 +64,18 @@ export enum DirectionsNew {
 	out = `out`,
 	inLB = `inLB`,
 }
+export enum UserDirection {
+	fromCity = `fromCity`,
+	toCity = `toCity`,
+}
 export interface IOption<ValueType> {
 	value: ValueType
 	label: string
+}
+
+export interface TaggedTime {
+	time: string
+	via: 'park' | 'lb' | null
 }
 
 export type ICoordites = [number, number]

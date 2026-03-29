@@ -1,6 +1,6 @@
 import AdmZip from 'adm-zip'
 import { XMLParser } from 'fast-xml-parser'
-import { mapStopName, isExcludedStop } from './stopMapper'
+import { mapStopNames, isExcludedStop } from './stopMapper'
 import { ISchedule } from './types'
 
 // ─── XML types ────────────────────────────────────────────────────────────────
@@ -202,7 +202,7 @@ function buildInbound(
     if (!rawStop || rawStop.toLowerCase().includes('остановочный')) continue
     if (isExcludedStop(rawStop)) continue
 
-    const stopName = mapStopName(rawStop)
+    const stopNames = mapStopNames(rawStop)
 
     for (let col = 1; col < row.length; col++) {
       const cell = row[col]
@@ -210,12 +210,14 @@ function buildInbound(
       const time = convertTime(cell.text)
       if (!time || time === '-') continue
 
-      if (half.inLBCols.has(col)) {
-        if (!inLB[stopName]) inLB[stopName] = []
-        inLB[stopName].push(time)
-      } else {
-        if (!inSP[stopName]) inSP[stopName] = []
-        inSP[stopName].push(time)
+      for (const stopName of stopNames) {
+        if (half.inLBCols.has(col)) {
+          if (!inLB[stopName]) inLB[stopName] = []
+          inLB[stopName].push(time)
+        } else {
+          if (!inSP[stopName]) inSP[stopName] = []
+          inSP[stopName].push(time)
+        }
       }
     }
   }
@@ -235,7 +237,7 @@ function buildOutbound(half: HalfTable): DayStops {
     if (!rawStop || rawStop.toLowerCase().includes('остановочный')) continue
     if (isExcludedStop(rawStop)) continue
 
-    const stopName = mapStopName(rawStop)
+    const stopNames = mapStopNames(rawStop)
 
     for (let col = 1; col < row.length; col++) {
       const cell = row[col]
@@ -243,8 +245,10 @@ function buildOutbound(half: HalfTable): DayStops {
       const time = convertTime(cell.text)
       if (!time) continue
 
-      if (!out[stopName]) out[stopName] = []
-      out[stopName].push(time)
+      for (const stopName of stopNames) {
+        if (!out[stopName]) out[stopName] = []
+        out[stopName].push(time)
+      }
     }
   }
 

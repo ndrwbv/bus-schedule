@@ -5,10 +5,6 @@ import { infoApi } from 'features/Info/model/info'
 import myLocationSlice from 'features/MyLocation/model/myLocationSlice'
 import { scheduleApi } from 'shared/api/scheduleApi'
 import busStopInfo from 'shared/store/busStop/busStopInfoSlice'
-import {
-	changeBusStopOnBusStopChange,
-	changeBusStopOnDirection,
-} from 'shared/store/busStop/changeBusStopIfNotInDirectionMiddleware'
 import { holidaysSetter } from 'shared/store/holidays/holidaysMiddleware'
 import holidaysSlice from 'shared/store/holidays/holidaysSlice'
 import scheduleSlice from 'shared/store/schedule/scheduleSlice'
@@ -31,13 +27,7 @@ export const store = configureStore({
 	},
 	devTools: process.env.NODE_ENV !== `production`,
 	middleware: getDefaultMiddleware =>
-		getDefaultMiddleware().prepend([
-			changeBusStopOnDirection.middleware,
-			changeBusStopOnBusStopChange.middleware,
-			holidaysSetter.middleware,
-			infoApi.middleware,
-			scheduleApi.middleware,
-		]),
+		getDefaultMiddleware().prepend([holidaysSetter.middleware, infoApi.middleware, scheduleApi.middleware]),
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

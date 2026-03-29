@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getDirectionString } from 'features/Complains/helpers'
 import { userLocationSelector } from 'features/MyLocation/model/myLocationSlice'
 import L from 'leaflet'
 import { setBusStopNew } from 'shared/store/busStop/busStopInfoSlice'
-import { STOPS } from 'shared/store/busStop/const/stops'
-import { DirectionsNew, IStops } from 'shared/store/busStop/Stops'
+import { userDirectionFromInternal } from 'shared/store/busStop/const/stops'
+import { DirectionsNew, IStops, UserDirection } from 'shared/store/busStop/Stops'
 import { CardStyled, ContainerStyled } from 'shared/ui'
 
 import {
@@ -15,7 +14,15 @@ import {
 	NearestStopStyled,
 } from './NearestStops.styled'
 
+// Deduplicated STOPS for nearest: only show unique locations
+import { STOPS } from 'shared/store/busStop/const/stops'
+
 const MAX_DISTANCE = 300
+
+const USER_DIR_LABELS: Record<UserDirection, string> = {
+	[UserDirection.fromCity]: `из города`,
+	[UserDirection.toCity]: `в город`,
+}
 
 interface INearestStopProps extends IStops<DirectionsNew> {
 	onClick: (id: string) => void
@@ -23,11 +30,12 @@ interface INearestStopProps extends IStops<DirectionsNew> {
 
 const NearestStop: React.FC<INearestStopProps> = ({ direction, label, id, onClick }) => {
 	const handleClick = (): void => onClick(id)
+	const userDir = userDirectionFromInternal(direction)
 
 	return (
 		<NearestStopStyled onClick={handleClick}>
 			<NearestStopsLabelStyled>{label}</NearestStopsLabelStyled>
-			<NearestStopsDirectionStyled>{getDirectionString(direction)}</NearestStopsDirectionStyled>
+			<NearestStopsDirectionStyled>{USER_DIR_LABELS[userDir]}</NearestStopsDirectionStyled>
 		</NearestStopStyled>
 	)
 }

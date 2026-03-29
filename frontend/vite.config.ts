@@ -58,6 +58,7 @@ export default defineConfig(({ mode }) => {
 			'process.env': process.env,
 		},
 		root: appRootPath,
+		envDir: root,
 		plugins,
 		build: {
 			emptyOutDir: true,

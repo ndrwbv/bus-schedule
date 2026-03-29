@@ -4,8 +4,9 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import Select from 'react-select'
 import { AndrewLytics } from 'shared/lib'
-import { busStopSelector, directionSelector } from 'shared/store/busStop/busStopInfoSlice'
-import { IOption } from 'shared/store/busStop/Stops'
+import { busStopSelector, userDirectionSelector } from 'shared/store/busStop/busStopInfoSlice'
+import { getScheduleTimes } from 'shared/store/busStop/const/stops'
+import { IOption, TaggedTime } from 'shared/store/busStop/Stops'
 import { nextDaySelector, scheduleSelector } from 'shared/store/schedule/scheduleSlice'
 import { CardStyled, ContainerStyled } from 'shared/ui'
 import { Header } from 'shared/ui/Header/Header'
@@ -15,11 +16,23 @@ import { TimeStampStyled } from 'shared/ui/TimeStamp'
 
 import { SelectBusStopText } from '../../entities/SelectBusStopText'
 
+const VIA_LABELS: Record<string, string> = {
+	park: `через парк`,
+	lb: `через ЛБ`,
+}
+
+const TaggedTimeStamp: React.FC<{ item: TaggedTime }> = ({ item }) => (
+	<TimeStampStyled>
+		{item.time}
+		{item.via && <span style={{ color: `#a5a5a5`, fontSize: 13, marginLeft: 6 }}>{VIA_LABELS[item.via]}</span>}
+	</TimeStampStyled>
+)
+
 export const OtherTimeBusses: React.FC = () => {
 	const busStop = useSelector(busStopSelector)
 	const nextDay = useSelector(nextDaySelector)
 	const SCHEDULE = useSelector(scheduleSelector)
-	const direction = useSelector(directionSelector)
+	const userDirection = useSelector(userDirectionSelector)
 
 	const { t } = useTranslation()
 
@@ -51,14 +64,12 @@ export const OtherTimeBusses: React.FC = () => {
 	}
 
 	const renderOtherTimeContent = useMemo(() => {
-		return busStop ? (
-			SCHEDULE[direction][busOption.value][busStop].map(timeKeys => (
-				<TimeStampStyled key={`${timeKeys}`}>{timeKeys}</TimeStampStyled>
-			))
-		) : (
-			<SelectBusStopText />
-		)
-	}, [busStop, SCHEDULE, direction, busOption])
+		if (!busStop) return <SelectBusStopText />
+		const tagged = getScheduleTimes(SCHEDULE, userDirection, busOption.value, busStop)
+		if (tagged.length === 0) return <SelectBusStopText />
+
+		return tagged.map((item, i) => <TaggedTimeStamp key={`${item.time}-${i}`} item={item} />)
+	}, [busStop, SCHEDULE, userDirection, busOption])
 
 	return (
 		<ContainerStyled>

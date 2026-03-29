@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'shared/store/app/configureStore'
+import { TaggedTime } from 'shared/store/busStop/Stops'
 
 import { ITime } from './ITime'
 
@@ -10,7 +11,7 @@ export const DEFAULT_LEFT = {
 
 export interface TimeLeftState {
 	left: ITime
-	closestTimeArray: string[]
+	closestTimeArray: TaggedTime[]
 	closestTime: string // date string
 }
 const initialState: TimeLeftState = {
@@ -29,7 +30,7 @@ export const timeLeftSlice = createSlice({
 		setClosestTime: (state, action: PayloadAction<string>) => {
 			state.closestTime = action.payload
 		},
-		setClosestTimeArray: (state, action: PayloadAction<string[]>) => {
+		setClosestTimeArray: (state, action: PayloadAction<TaggedTime[]>) => {
 			state.closestTimeArray = action.payload
 		},
 	},
@@ -39,7 +40,7 @@ export const timeLeftSlice = createSlice({
 export const { setLeft, setClosestTime, setClosestTimeArray } = timeLeftSlice.actions
 
 export const leftSelector = (state: RootState): ITime => state.timeLeftSlice.left
-export const closestTimeArraySelector = (state: RootState): string[] => state.timeLeftSlice.closestTimeArray
+export const closestTimeArraySelector = (state: RootState): TaggedTime[] => state.timeLeftSlice.closestTimeArray
 export const closestTimeSelector = (state: RootState): string => state.timeLeftSlice.closestTime
 
 export default timeLeftSlice.reducer

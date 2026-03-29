@@ -4,11 +4,24 @@ import { SelectBusStopText } from 'entities/SelectBusStopText'
 import { FavoriteButton } from 'features/FavoriteStops'
 import { DefaultTFuncReturn } from 'i18next'
 import { busStopSelector } from 'shared/store/busStop/busStopInfoSlice'
+import { TaggedTime } from 'shared/store/busStop/Stops'
 import { closestTimeArraySelector } from 'shared/store/timeLeft/timeLeftSlice'
 import { CardStyled, ContainerStyled } from 'shared/ui'
 import { Header } from 'shared/ui/Header'
 import { OtherTimeStyled } from 'shared/ui/OtherTime'
 import { TimeStampStyled } from 'shared/ui/TimeStamp'
+
+const VIA_LABELS: Record<string, string> = {
+	park: `через парк`,
+	lb: `через ЛБ`,
+}
+
+const TaggedTimeStamp: React.FC<{ item: TaggedTime }> = ({ item }) => (
+	<TimeStampStyled>
+		{item.time}
+		{item.via && <span style={{ color: `#a5a5a5`, fontSize: 13, marginLeft: 6 }}>{VIA_LABELS[item.via]}</span>}
+	</TimeStampStyled>
+)
 
 export const TodaysBuses: React.FC = () => {
 	const closestTimeArray = useSelector(closestTimeArraySelector)
@@ -21,7 +34,7 @@ export const TodaysBuses: React.FC = () => {
 
 		return closestTimeArray.length === 0
 			? t(`No basses`)
-			: closestTimeArray.map(d => <TimeStampStyled key={d}>{d}</TimeStampStyled>)
+			: closestTimeArray.map((d, i) => <TaggedTimeStamp key={`${d.time}-${i}`} item={d} />)
 	}
 
 	return (
