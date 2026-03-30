@@ -10,7 +10,7 @@ import { Info } from 'features/Info'
 // import { LeaveFeedbackButton } from 'features/LeaveFeedbackButton'
 import { NearestStops } from 'features/NearestStops'
 import { OtherTimeBusses } from 'features/OtherTimeBuses'
-import { ScheduleInfo } from 'features/ScheduleInfo'
+// import { ScheduleInfo } from 'features/ScheduleInfo'
 import { StripAd } from 'features/StripAd/StripAd'
 import { YandexAd } from 'features/YandexAd'
 import useSchedule from 'shared/store/schedule/useSchedule'
@@ -60,7 +60,7 @@ export const Home: React.FC = () => {
 
 							<TodaysBuses />
 
-							<ScheduleInfo />
+							{/* <ScheduleInfo /> */}
 
 							{/* <LeaveFeedbackButton /> */}
 
