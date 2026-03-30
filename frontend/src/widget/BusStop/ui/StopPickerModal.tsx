@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { BottomSheet } from 'react-spring-bottom-sheet'
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { IOption, StopKeys } from 'shared/store/busStop/Stops'
 import { MAIN_BLUE } from 'shared/theme'
 import styled from 'styled-components'
@@ -25,7 +25,54 @@ const TriggerButtonStyled = styled.button`
 	}
 `
 
+const OverlayStyled = styled.div`
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.4);
+	z-index: 9999;
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+`
+
+const ModalStyled = styled.div`
+	background: #fff;
+	border-radius: 20px 20px 0 0;
+	width: 100%;
+	max-width: 768px;
+	max-height: 70vh;
+	display: flex;
+	flex-direction: column;
+`
+
+const ModalHeaderStyled = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 16px 20px;
+	border-bottom: 1px solid #f2f4f4;
+	flex-shrink: 0;
+`
+
+const ModalTitleStyled = styled.h3`
+	margin: 0;
+	font-size: 18px;
+	font-weight: 600;
+`
+
+const CloseButtonStyled = styled.button`
+	background: none;
+	border: none;
+	font-size: 24px;
+	cursor: pointer;
+	padding: 0 4px;
+	line-height: 1;
+	color: #999;
+`
+
 const ListStyled = styled.div`
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
 	padding: 8px 0 24px;
 `
 
@@ -78,6 +125,18 @@ export const StopPickerModal: React.FC<StopPickerModalProps> = ({
 		setIsOpen(false)
 	}
 
+	useEffect(() => {
+		if (isOpen) {
+			document.body.style.overflow = `hidden`
+		} else {
+			document.body.style.overflow = ``
+		}
+
+		return (): void => {
+			document.body.style.overflow = ``
+		}
+	}, [isOpen])
+
 	const stopsOnly = options.filter(o => o.value !== null)
 
 	return (
@@ -86,25 +145,32 @@ export const StopPickerModal: React.FC<StopPickerModalProps> = ({
 				{displayLabel ?? placeholder}
 			</TriggerButtonStyled>
 
-			<BottomSheet
-				open={isOpen}
-				onDismiss={(): void => setIsOpen(false)}
-				defaultSnap={({ maxHeight }): number => maxHeight * 0.6}
-				snapPoints={({ maxHeight }): number[] => [maxHeight - maxHeight / 10, maxHeight * 0.6]}
-			>
-				<ListStyled>
-					{stopsOnly.map(option => (
-						<ItemStyled
-							key={option.value as string}
-							$active={option.value === value}
-							type="button"
-							onClick={(): void => handleSelect(option.value)}
-						>
-							{option.label}
-						</ItemStyled>
-					))}
-				</ListStyled>
-			</BottomSheet>
+			{isOpen &&
+				createPortal(
+					<OverlayStyled onClick={(): void => setIsOpen(false)}>
+						<ModalStyled onClick={(e): void => e.stopPropagation()}>
+							<ModalHeaderStyled>
+								<ModalTitleStyled>Остановка</ModalTitleStyled>
+								<CloseButtonStyled type="button" onClick={(): void => setIsOpen(false)}>
+									&times;
+								</CloseButtonStyled>
+							</ModalHeaderStyled>
+							<ListStyled>
+								{stopsOnly.map(option => (
+									<ItemStyled
+										key={option.value as string}
+										$active={option.value === value}
+										type="button"
+										onClick={(): void => handleSelect(option.value)}
+									>
+										{option.label}
+									</ItemStyled>
+								))}
+							</ListStyled>
+						</ModalStyled>
+					</OverlayStyled>,
+					document.body,
+				)}
 		</>
 	)
 }
