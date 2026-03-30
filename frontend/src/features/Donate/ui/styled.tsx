@@ -101,26 +101,6 @@ export const DonatePopupFooterStyled = styled.p`
 	margin-top: 16px;
 `
 
-export const DonateLinkStyled = styled.a`
-	display: block;
-	width: 100%;
-	border: none;
-	border-radius: 13px;
-	background-color: #1191fb;
-	color: white;
-	padding: 14px;
-	font-weight: 600;
-	font-size: 16px;
-	text-align: center;
-	text-decoration: none;
-	cursor: pointer;
-
-	@media (hover: hover) {
-		&:hover {
-			opacity: 0.8;
-		}
-	}
-`
 
 export const BannerStyled = styled.div`
 	position: fixed;

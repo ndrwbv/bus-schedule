@@ -3,7 +3,6 @@ import { BottomSheet } from 'react-spring-bottom-sheet'
 import { AndrewLytics } from 'shared/lib'
 import { BottomSheetBgStyled } from 'shared/ui/MainLayout'
 
-import { markDonated } from '../lib/visitCounter'
 import {
 	CopiedTooltipStyled,
 	CopyButtonStyled,
@@ -11,7 +10,6 @@ import {
 	DonatePopupFooterStyled,
 	DonatePopupTextStyled,
 	DonatePopupTitleStyled,
-	DonateLinkStyled,
 	DonatePhoneNameStyled,
 	DonatePhoneRowStyled,
 	DonatePhoneStyled,
@@ -19,7 +17,6 @@ import {
 
 const PHONE = `+79969386490`
 const PHONE_DISPLAY = `+7 996 938-64-90`
-const TBANK_LINK = `https://www.tbank.ru/cf/4ICeLzR2WH5`
 
 interface DonatePopupProps {
 	isOpen: boolean
@@ -39,11 +36,6 @@ export const DonatePopup: React.FC<DonatePopupProps> = ({ isOpen, onClose }) => 
 			// fallback: do nothing
 		}
 	}, [])
-
-	const handleTransferClick = (): void => {
-		AndrewLytics(`donate.transferClick`)
-		markDonated()
-	}
 
 	return (
 		<BottomSheet
@@ -74,10 +66,6 @@ export const DonatePopup: React.FC<DonatePopupProps> = ({ isOpen, onClose }) => 
 							{copied ? <CopiedTooltipStyled>Скопировано!</CopiedTooltipStyled> : `📋`}
 						</CopyButtonStyled>
 					</DonatePhoneRowStyled>
-
-					<DonateLinkStyled href={TBANK_LINK} target="_blank" rel="noopener" onClick={handleTransferClick}>
-						Перевести →
-					</DonateLinkStyled>
 
 					<DonatePopupFooterStyled>Спасибо! ❤️</DonatePopupFooterStyled>
 				</DonatePopupContentStyled>
