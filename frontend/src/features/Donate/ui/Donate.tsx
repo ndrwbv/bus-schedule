@@ -25,6 +25,8 @@ const PHONE_DISPLAY = `+7 996 938-64-90`
 
 const DonateContext = createContext<{ open: () => void }>({ open: () => {} })
 
+export const useDonate = (): { open: () => void } => useContext(DonateContext)
+
 export const DonateCard: React.FC = () => {
 	const { open } = useContext(DonateContext)
 

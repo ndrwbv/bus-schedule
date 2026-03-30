@@ -9,3 +9,14 @@ export const FooterStyled = styled.footer`
 
 	width: 100%;
 `
+
+export const FooterLinkStyled = styled.span`
+	cursor: pointer;
+	color: inherit;
+
+	@media (hover: hover) {
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+`

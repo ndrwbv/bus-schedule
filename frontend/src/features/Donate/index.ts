@@ -1,1 +1,1 @@
-export { DonateCard, DonateProvider } from './ui/Donate'
+export { DonateCard, DonateProvider, useDonate } from './ui/Donate'
