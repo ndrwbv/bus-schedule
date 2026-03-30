@@ -1,7 +1,11 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useGetChangelogQuery } from 'shared/api/scheduleApi'
-import { lastUpdatedAtSelector, lastCheckedAtSelector, scheduleSourceSelector } from 'shared/store/schedule/scheduleSlice'
+import {
+	lastCheckedAtSelector,
+	lastUpdatedAtSelector,
+	scheduleSourceSelector,
+} from 'shared/store/schedule/scheduleSlice'
 import { CardStyled, ContainerStyled, GrayTextStyled } from 'shared/ui/common'
 // ─── Styles ──────────────────────────────────────────────────────────────────
 import styled from 'styled-components'
