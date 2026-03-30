@@ -1,13 +1,9 @@
 import React, { createContext, useCallback, useContext, useMemo, useState } from 'react'
-import { BottomSheet } from 'react-spring-bottom-sheet'
 import { AndrewLytics } from 'shared/lib'
 import { ContainerStyled, MiniButtonStyled } from 'shared/ui/common'
-import { BottomSheetBgStyled } from 'shared/ui/MainLayout'
 
 import { DonateBanner } from './DonateBanner'
 import {
-	AboutTextStyled,
-	AboutTitleStyled,
 	CopiedTooltipStyled,
 	CopyButtonStyled,
 	DonateCardStyled,
@@ -15,8 +11,13 @@ import {
 	DonatePhoneNameStyled,
 	DonatePhoneRowStyled,
 	DonatePhoneStyled,
-	DonatePopupFooterStyled,
 	DonateTitleStyled,
+	ModalCloseStyled,
+	ModalContentStyled,
+	ModalFooterStyled,
+	ModalOverlayStyled,
+	ModalTextStyled,
+	ModalTitleStyled,
 } from './styled'
 
 const PHONE = `+79969386490`
@@ -48,6 +49,17 @@ export const DonateProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 		AndrewLytics(`donate.openAbout`)
 	}, [])
 
+	const handleClose = useCallback((): void => {
+		setIsOpen(false)
+	}, [])
+
+	const handleOverlayClick = useCallback(
+		(e: React.MouseEvent) => {
+			if (e.target === e.currentTarget) handleClose()
+		},
+		[handleClose],
+	)
+
 	const handleCopy = useCallback(async () => {
 		try {
 			await navigator.clipboard.writeText(PHONE)
@@ -67,25 +79,22 @@ export const DonateProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
 			<DonateBanner onDonate={handleOpen} />
 
-			<BottomSheet
-				open={isOpen}
-				onDismiss={() => setIsOpen(false)}
-				defaultSnap={({ maxHeight }) => maxHeight * 0.7}
-				snapPoints={({ maxHeight }) => [maxHeight - maxHeight / 10, maxHeight * 0.7]}
-			>
-				<BottomSheetBgStyled $bg="#fff">
-					<div style={{ padding: `20px 16px` }}>
-						<AboutTitleStyled>О проекте</AboutTitleStyled>
+			{isOpen && (
+				<ModalOverlayStyled onClick={handleOverlayClick}>
+					<ModalContentStyled>
+						<ModalCloseStyled onClick={handleClose} aria-label="Закрыть">
+							✕
+						</ModalCloseStyled>
 
-						<AboutTextStyled>
-							Привет! Меня зовут Андрей, я сделал этот сайт потому что сам жду 112С на остановке и устал
-							смотреть расписание в таблицах.
-						</AboutTextStyled>
+						<ModalTitleStyled>О проекте</ModalTitleStyled>
 
-						<AboutTextStyled>
-							Проект поддерживается одним человеком в свободное время. Если сервис полезен — скинь на
-							напиток с пеной, будет мотивация делать дальше 🍺
-						</AboutTextStyled>
+						<ModalTextStyled>
+							Привет! Меня зовут Андрей. Этот сайт я сделал для жителей района, чтобы было проще
+							ориентироваться в расписании 112С.
+							<br />
+							<br />
+							Если сервис полезен — скинь на напиток с пеной, будет мотивация делать дальше 🍺
+						</ModalTextStyled>
 
 						<DonatePhoneRowStyled>
 							<div>
@@ -98,10 +107,10 @@ export const DonateProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 							</CopyButtonStyled>
 						</DonatePhoneRowStyled>
 
-						<DonatePopupFooterStyled>Спасибо! ❤️</DonatePopupFooterStyled>
-					</div>
-				</BottomSheetBgStyled>
-			</BottomSheet>
+						<ModalFooterStyled>Спасибо! ❤️</ModalFooterStyled>
+					</ModalContentStyled>
+				</ModalOverlayStyled>
+			)}
 		</DonateContext.Provider>
 	)
 }

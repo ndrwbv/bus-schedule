@@ -19,16 +19,69 @@ export const DonateTitleStyled = styled.p`
 	padding-left: 6px;
 `
 
+// Modal
+
+export const ModalOverlayStyled = styled.div`
+	position: fixed;
+	inset: 0;
+	z-index: 1100;
+	background: rgba(0, 0, 0, 0.4);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 16px;
+`
+
+export const ModalContentStyled = styled.div`
+	position: relative;
+	background: #fff;
+	border-radius: 20px;
+	padding: 28px 20px 24px;
+	max-width: 400px;
+	width: 100%;
+	text-align: center;
+`
+
+export const ModalCloseStyled = styled.button`
+	position: absolute;
+	top: 12px;
+	right: 12px;
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-size: 20px;
+	color: #a5a5a5;
+	line-height: 1;
+	padding: 4px;
+
+	@media (hover: hover) {
+		&:hover {
+			color: #555;
+		}
+	}
+`
+
+export const ModalTitleStyled = styled.h2`
+	font-size: 18px;
+	font-weight: 600;
+	margin-bottom: 12px;
+`
+
+export const ModalTextStyled = styled.p`
+	font-size: 14px;
+	line-height: 21px;
+	color: #555;
+	margin-bottom: 20px;
+`
 
 export const DonatePhoneRowStyled = styled.div`
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	gap: 8px;
+	gap: 10px;
 	background: #f2f4f4;
 	border-radius: 14px;
 	padding: 14px 16px;
-	margin-bottom: 12px;
 `
 
 export const DonatePhoneStyled = styled.span`
@@ -38,7 +91,7 @@ export const DonatePhoneStyled = styled.span`
 `
 
 export const DonatePhoneNameStyled = styled.span`
-	font-size: 14px;
+	font-size: 13px;
 	color: #a5a5a5;
 `
 
@@ -71,10 +124,12 @@ export const CopiedTooltipStyled = styled.span`
 	font-weight: 500;
 `
 
-export const DonatePopupFooterStyled = styled.p`
-	font-size: 20px;
+export const ModalFooterStyled = styled.p`
+	font-size: 18px;
 	margin-top: 16px;
 `
+
+// Banner
 
 export const BannerStyled = styled.div`
 	position: fixed;
@@ -123,23 +178,4 @@ export const BannerCloseStyled = styled.button`
 	color: #a5a5a5;
 	padding: 4px;
 	line-height: 1;
-`
-
-export const AboutTextStyled = styled.p`
-	font-size: 14px;
-	line-height: 22px;
-	color: #555;
-	margin-bottom: 16px;
-	padding: 0 6px;
-
-	&:last-of-type {
-		margin-bottom: 20px;
-	}
-`
-
-export const AboutTitleStyled = styled.h2`
-	font-size: 20px;
-	font-weight: 600;
-	margin-bottom: 16px;
-	padding: 0 6px;
 `
