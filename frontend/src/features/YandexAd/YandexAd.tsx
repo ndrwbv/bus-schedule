@@ -29,6 +29,7 @@ export const YandexAd: FC = () => {
 		scriptLoadedRef.current = true
 
 		if (!YANDEX_AD_BLOCK_ID) {
+			console.error('[YandexAd] YANDEX_AD_BLOCK_ID не задан — реклама не будет показана')
 			setHasError(true)
 
 			return undefined
@@ -63,6 +64,7 @@ export const YandexAd: FC = () => {
 		}
 
 		script.onerror = (): void => {
+			console.error('[YandexAd] Не удалось загрузить скрипт Яндекс.Рекламы (возможно, блокировщик рекламы)')
 			setHasError(true)
 		}
 
@@ -72,6 +74,7 @@ export const YandexAd: FC = () => {
 		const timer = setTimeout(() => {
 			const adContainer = document.getElementById(YANDEX_AD_RENDER_ID)
 			if (adContainer && adContainer.children.length === 0) {
+				console.error('[YandexAd] Контейнер рекламы пуст после 5с — возможно, блокировщик рекламы или неверный blockId')
 				setHasError(true)
 			}
 		}, 5000)
