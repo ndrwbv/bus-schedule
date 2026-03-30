@@ -61,9 +61,9 @@ async function doDownload(shareUrl: string): Promise<Buffer> {
     const page = await browser.newPage()
 
     // Anti-detection
-    await page.evaluateOnNewDocument(() => {
-      Object.defineProperty(navigator, 'webdriver', { get: () => false })
-    })
+    await page.evaluateOnNewDocument(
+      `Object.defineProperty(navigator, 'webdriver', { get: () => false })`,
+    )
 
     await page.setUserAgent(
       'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
@@ -155,22 +155,22 @@ function findEditorFrame(page: Page): Frame | undefined {
 async function tryClickDownloadInFrame(frame: Frame): Promise<boolean> {
   // Method 1: click the SVG with use[href="#btn-download"] via dispatchEvent
   try {
-    const clicked = await frame.evaluate(() => {
-      const use = document.querySelector('use[href="#btn-download"]')
+    const clicked = await frame.evaluate(`(function() {
+      var use = document.querySelector('use[href="#btn-download"]');
       if (use) {
-        const svg = use.closest('svg')
+        var svg = use.closest('svg');
         if (svg) {
-          svg.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
-          return 'svg-use'
+          svg.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+          return 'svg-use';
         }
       }
-      const svg = document.querySelector('svg.btn-download')
-      if (svg) {
-        svg.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
-        return 'svg-class'
+      var svg2 = document.querySelector('svg.btn-download');
+      if (svg2) {
+        svg2.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+        return 'svg-class';
       }
-      return false
-    })
+      return false;
+    })()`)
     if (clicked) {
       console.log(`[cloud-mail] Нажата кнопка в iframe: ${clicked}`)
       return true
@@ -179,23 +179,22 @@ async function tryClickDownloadInFrame(frame: Frame): Promise<boolean> {
 
   // Method 2: click the parent button of the SVG
   try {
-    const clicked = await frame.evaluate(() => {
-      const use = document.querySelector('use[href="#btn-download"]')
-      if (!use) return false
-      const svg = use.closest('svg')
-      if (!svg) return false
-      // Walk up to find the parent button
-      let el: Element | null = svg
-      for (let i = 0; i < 5; i++) {
-        el = el.parentElement
-        if (!el) return false
+    const clicked = await frame.evaluate(`(function() {
+      var use = document.querySelector('use[href="#btn-download"]');
+      if (!use) return false;
+      var svg = use.closest('svg');
+      if (!svg) return false;
+      var el = svg;
+      for (var i = 0; i < 5; i++) {
+        el = el.parentElement;
+        if (!el) return false;
         if (el.tagName === 'BUTTON' || el.tagName === 'A') {
-          (el as HTMLElement).click()
-          return `parent-${el.tagName}`
+          el.click();
+          return 'parent-' + el.tagName;
         }
       }
-      return false
-    })
+      return false;
+    })()`)
     if (clicked) {
       console.log(`[cloud-mail] Нажата кнопка (родитель SVG): ${clicked}`)
       return true
@@ -204,15 +203,15 @@ async function tryClickDownloadInFrame(frame: Frame): Promise<boolean> {
 
   // Method 3: find slot-hbtn-download and click its child button
   try {
-    const clicked = await frame.evaluate(() => {
-      const slot = document.querySelector('#slot-hbtn-download')
+    const clicked = await frame.evaluate(`(function() {
+      var slot = document.querySelector('#slot-hbtn-download');
       if (slot) {
-        const btn = slot.querySelector('button') || slot
-        ;(btn as HTMLElement).click()
-        return 'slot-hbtn-download'
+        var btn = slot.querySelector('button') || slot;
+        btn.click();
+        return 'slot-hbtn-download';
       }
-      return false
-    })
+      return false;
+    })()`)
     if (clicked) {
       console.log(`[cloud-mail] Нажата кнопка: ${clicked}`)
       return true
