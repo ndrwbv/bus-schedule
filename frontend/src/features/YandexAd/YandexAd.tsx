@@ -43,7 +43,6 @@ export const YandexAd: FC = () => {
 				window.Ya?.Context.AdvManager.render({
 					blockId: YANDEX_AD_BLOCK_ID,
 					renderTo: YANDEX_AD_RENDER_ID,
-					type: `feed`,
 				})
 				setIsLoaded(true)
 			})
