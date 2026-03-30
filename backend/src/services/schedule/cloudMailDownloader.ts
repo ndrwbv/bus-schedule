@@ -2,12 +2,15 @@
  * Download a file from a public Cloud Mail.ru share link using Puppeteer.
  *
  * Cloud Mail.ru opens .docx files in an online editor, so simple HTTP
- * requests no longer work (token API returns 403). Instead we launch
- * a real browser, open the share page, click "Download" and intercept
- * the resulting file.
+ * requests no longer work. Instead we launch a headless browser,
+ * open the share page, click "Download" and capture the file via CDP
+ * download to a temp directory.
  */
 
-import puppeteer, { Page } from 'puppeteer-core'
+import fs from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
+import puppeteer, { Page, CDPSession } from 'puppeteer-core'
 
 const MAX_RETRIES = () => parseInt(process.env.DOWNLOAD_MAX_RETRIES ?? '3', 10)
 const DOWNLOAD_TIMEOUT = 60_000
@@ -23,7 +26,7 @@ export async function downloadFromCloudMail(shareUrl: string): Promise<Buffer> {
       lastError = err instanceof Error ? err : new Error(String(err))
       if (attempt < maxRetries) {
         const delay = Math.pow(2, attempt) * 1000
-        console.warn(`Попытка ${attempt}/${maxRetries} не удалась: ${lastError.message}. Повтор через ${delay}ms`)
+        console.warn(`[cloud-mail] Попытка ${attempt}/${maxRetries} не удалась: ${lastError.message}. Повтор через ${delay}ms`)
         await sleep(delay)
       }
     }
@@ -45,6 +48,10 @@ async function doDownload(shareUrl: string): Promise<Buffer> {
     ],
   })
 
+  // Create temp dir for downloads
+  const downloadDir = fs.mkdtempSync(path.join(os.tmpdir(), 'cloud-mail-'))
+  console.log(`[cloud-mail] Папка загрузки: ${downloadDir}`)
+
   try {
     const page = await browser.newPage()
 
@@ -52,80 +59,80 @@ async function doDownload(shareUrl: string): Promise<Buffer> {
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
     )
 
-    // Listen for download responses — Cloud Mail.ru may serve the file
-    // via a CDN response or via the docs editor download endpoint
-    let fileBuffer: Buffer | null = null
-
-    const cdp = await browser.target().createCDPSession()
-    await cdp.send('Browser.setDownloadBehavior', {
-      behavior: 'deny',
-    })
-
-    // Intercept responses that look like a .docx file
-    page.on('response', async (response) => {
-      if (fileBuffer) return
-      const contentType = response.headers()['content-type'] ?? ''
-      const contentDisposition = response.headers()['content-disposition'] ?? ''
-      const isDocx =
-        contentType.includes('officedocument') ||
-        contentType.includes('octet-stream') ||
-        contentDisposition.includes('attachment')
-
-      if (isDocx && response.status() === 200) {
-        try {
-          const buffer = await response.buffer()
-          // Validate it's actually a ZIP/DOCX (starts with PK magic bytes)
-          if (buffer.length > 1000 && buffer[0] === 0x50 && buffer[1] === 0x4B) {
-            console.log(`[cloud-mail] Перехвачен файл: ${response.url().slice(0, 100)}, ${buffer.length} байт, Content-Type: ${contentType}`)
-            fileBuffer = buffer
-          }
-        } catch {
-          // response may have been consumed already
-        }
-      }
+    // Set up CDP to allow downloads to our temp dir
+    const cdp = await page.createCDPSession()
+    await cdp.send('Page.setDownloadBehavior', {
+      behavior: 'allow',
+      downloadPath: downloadDir,
     })
 
     // Open the share page
+    console.log(`[cloud-mail] Открываем: ${shareUrl}`)
     await page.goto(shareUrl, { waitUntil: 'networkidle2', timeout: DOWNLOAD_TIMEOUT })
 
     // Wait for the page to fully render
     await sleep(3000)
 
     // Try to find and click the download button
-    const downloaded = await tryClickDownload(page)
+    const clicked = await tryClickDownload(page)
 
-    if (downloaded) {
-      // Wait for the download response to be intercepted
-      const deadline = Date.now() + 30_000
-      while (!fileBuffer && Date.now() < deadline) {
-        await sleep(500)
+    if (clicked) {
+      // Wait for file to appear in download dir
+      const filePath = await waitForDownload(downloadDir, 45_000)
+      if (filePath) {
+        console.log(`[cloud-mail] Файл скачан: ${filePath}`)
+        const buffer = fs.readFileSync(filePath)
+        return buffer
       }
     }
 
-    // If response interception didn't catch it, try to get the file
-    // via the weblink_get CDN approach as a fallback
-    if (!fileBuffer) {
-      fileBuffer = await tryDirectDownload(page, shareUrl)
+    // Fallback: try CDP fetch approach — get cookies from browser and download via fetch
+    console.log('[cloud-mail] Кнопка не сработала, пробуем CDP fetch...')
+    const fallbackBuffer = await tryCdpFetch(page, cdp, shareUrl)
+    if (fallbackBuffer) {
+      return fallbackBuffer
     }
 
-    if (!fileBuffer) {
-      // Save screenshot and page content for debugging
-      const screenshotPath = process.cwd() + '/data/cloud-mail-debug.png'
-      const htmlPath = process.cwd() + '/data/cloud-mail-debug.html'
-      await page.screenshot({ path: screenshotPath, fullPage: true }).catch(() => {})
-      const html = await page.content().catch(() => '')
-      if (html) {
-        const fs = await import('node:fs')
-        fs.writeFileSync(htmlPath, html, 'utf-8')
-      }
-      console.error(`[cloud-mail] Дебаг сохранён в ${screenshotPath} и ${htmlPath}`)
-      throw new Error('Не удалось скачать файл: кнопка скачивания не найдена или файл не получен')
-    }
-
-    return fileBuffer
+    // Save debug info
+    const debugDir = process.cwd() + '/data'
+    await page.screenshot({ path: `${debugDir}/cloud-mail-debug.png`, fullPage: true }).catch(() => {})
+    const html = await page.content().catch(() => '')
+    if (html) fs.writeFileSync(`${debugDir}/cloud-mail-debug.html`, html, 'utf-8')
+    console.error(`[cloud-mail] Дебаг сохранён в ${debugDir}/cloud-mail-debug.*`)
+    throw new Error('Не удалось скачать файл: кнопка скачивания не найдена или файл не получен')
   } finally {
     await browser.close()
+    // Cleanup temp dir
+    fs.rmSync(downloadDir, { recursive: true, force: true })
   }
+}
+
+/**
+ * Wait for a file to appear in the download directory.
+ * Ignores .crdownload (Chrome partial download) files.
+ */
+async function waitForDownload(dir: string, timeoutMs: number): Promise<string | null> {
+  const deadline = Date.now() + timeoutMs
+
+  while (Date.now() < deadline) {
+    const files = fs.readdirSync(dir)
+    const ready = files.filter(f => !f.endsWith('.crdownload') && !f.startsWith('.'))
+
+    if (ready.length > 0) {
+      const filePath = path.join(dir, ready[0])
+      // Wait a bit more to ensure file is fully written
+      await sleep(500)
+      const stat = fs.statSync(filePath)
+      if (stat.size > 100) {
+        return filePath
+      }
+    }
+
+    await sleep(1000)
+  }
+
+  console.warn('[cloud-mail] Таймаут ожидания файла в папке загрузки')
+  return null
 }
 
 /**
@@ -133,20 +140,15 @@ async function doDownload(shareUrl: string): Promise<Buffer> {
  */
 async function tryClickDownload(page: Page): Promise<boolean> {
   const selectors = [
-    // Cloud Mail.ru known download button
+    // Cloud Mail.ru share page download button
     'a[href="#btn-download"]',
     '[href="#btn-download"]',
-    // Common Cloud Mail.ru download button selectors
     'button[data-qa="download"]',
     'a[data-qa="download"]',
     '[data-testid="download"]',
     'button[title="Скачать"]',
     'a[title="Скачать"]',
-    // Generic: button/link containing "Скачать" text
-    'xpath/.//button[contains(., "Скачать")]',
-    'xpath/.//a[contains(., "Скачать")]',
-    'xpath/.//span[contains(., "Скачать")]/ancestor::button',
-    // Toolbar buttons
+    // Editor toolbar buttons
     '.b-toolbar__btn[data-name="download"]',
     '.file-actions__download',
   ]
@@ -156,29 +158,29 @@ async function tryClickDownload(page: Page): Promise<boolean> {
       const el = await page.$(selector)
       if (el) {
         await el.click()
-        console.log(`[cloud-mail] Нажата кнопка скачивания: ${selector}`)
+        console.log(`[cloud-mail] Нажата кнопка: ${selector}`)
         return true
       }
     } catch {
-      // selector not found, try next
+      // try next
     }
   }
 
-  // Fallback: try clicking any element with download-related text
+  // Fallback: click any element with download-related text
   try {
     const clicked = await page.evaluate(`(function() {
-      var elements = document.querySelectorAll('button, a, [role="button"]');
+      var elements = document.querySelectorAll('button, a, [role="button"], span');
       for (var i = 0; i < elements.length; i++) {
         var text = elements[i].innerText ? elements[i].innerText.trim() : '';
-        if (/скачать|download/i.test(text)) {
+        if (/^скачать$|^download$/i.test(text)) {
           elements[i].click();
-          return true;
+          return text;
         }
       }
       return false;
     })()`)
     if (clicked) {
-      console.log('[cloud-mail] Нажата кнопка скачивания (через evaluate)')
+      console.log(`[cloud-mail] Нажата кнопка (evaluate): "${clicked}"`)
       return true
     }
   } catch {
@@ -190,36 +192,49 @@ async function tryClickDownload(page: Page): Promise<boolean> {
 }
 
 /**
- * Fallback: try to extract CDN URL from page and download directly.
+ * Fallback: extract weblink_get CDN host and download via CDP Fetch.
+ * Uses the browser's cookies so the request looks identical to a browser request.
  */
-async function tryDirectDownload(page: Page, shareUrl: string): Promise<Buffer | null> {
+async function tryCdpFetch(page: Page, cdp: CDPSession, shareUrl: string): Promise<Buffer | null> {
   try {
-    // Try to extract weblink_get CDN host from page
-    const result = await page.evaluate(`(function() {
+    const cdnHost = await page.evaluate(`(function() {
       var html = document.documentElement.outerHTML;
       var match = html.match(/"weblink_get"\\s*:\\s*\\[\\s*"([^"]+)"/);
       return match ? match[1] : null;
     })()`) as string | null
 
-    if (result) {
-      const cdnHost = result.replace(/\/$/, '')
-      const pathMatch = shareUrl.match(/\/public\/(.+)$/)
-      if (pathMatch) {
-        const filePath = pathMatch[1]
-        const downloadUrl = `${cdnHost}/${filePath}`
-        console.log(`[cloud-mail] Пробуем прямое скачивание: ${downloadUrl}`)
+    if (!cdnHost) {
+      console.warn('[cloud-mail] weblink_get не найден на странице')
+      return null
+    }
 
-        const response = await page.goto(downloadUrl, { timeout: 30_000 })
-        if (response && response.status() === 200) {
-          const buffer = await response.buffer()
-          if (buffer.length > 1000) {
-            return buffer
-          }
-        }
+    const host = cdnHost.replace(/\/$/, '')
+    const pathMatch = shareUrl.match(/\/public\/(.+)$/)
+    if (!pathMatch) return null
+
+    const filePath = pathMatch[1]
+    const downloadUrl = `${host}/${filePath}`
+    console.log(`[cloud-mail] CDP Fetch: ${downloadUrl}`)
+
+    // Use CDP Fetch to download with browser cookies
+    await cdp.send('Fetch.enable', { patterns: [{ urlPattern: '*' }] })
+
+    // Navigate to the download URL — this triggers the download
+    const response = await page.goto(downloadUrl, { timeout: 30_000, waitUntil: 'networkidle2' })
+
+    if (response && response.status() === 200) {
+      const buffer = await response.buffer()
+      // Verify it's a valid ZIP/DOCX
+      if (buffer.length > 1000 && buffer[0] === 0x50 && buffer[1] === 0x4B) {
+        console.log(`[cloud-mail] CDP Fetch успешен: ${buffer.length} байт`)
+        return buffer
       }
+      console.warn(`[cloud-mail] CDP Fetch: ответ не DOCX (${buffer.length} байт, первые 2: ${buffer[0]},${buffer[1]})`)
+    } else {
+      console.warn(`[cloud-mail] CDP Fetch: HTTP ${response?.status()}`)
     }
   } catch (err) {
-    console.warn(`[cloud-mail] Прямое скачивание не удалось: ${err}`)
+    console.warn(`[cloud-mail] CDP Fetch не удался: ${err}`)
   }
 
   return null
