@@ -1,5 +1,4 @@
 import { calculateHowMuchIsLeft } from 'shared/lib/time/calculateHowMuchIsLeft'
-import { Directions } from 'shared/store/busStop/Stops'
 
 import { ComplainType } from '../model/Complains'
 
@@ -11,8 +10,11 @@ export const getMinutesString = (amount: number, secondWord = `назад`): str
 	return ` минут ${secondWord}`
 }
 
-export const getDirectionString = (direction: Directions): string => {
-	return direction === `inSP` ? `в парк` : `из парка`
+export const getDirectionString = (direction: string): string => {
+	if (direction === `inSP`) return `в парк`
+	if (direction === `inLB`) return `на Левый берег`
+
+	return `из парка`
 }
 
 export const getTypeString = (type: ComplainType): string => {
@@ -42,7 +44,7 @@ export const getOnString = (on: number, type: ComplainType): string => {
 export const getHumanDate = (date: string): string => {
 	const time = calculateHowMuchIsLeft(date)
 	const d = new Date(date)
-	const min = d.getMinutes() < 9 ? `0${d.getMinutes()}` : d.getMinutes()
+	const min = d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes()
 	if (time.hours === null || time.hours >= 1) return `в ${d.getHours()}:${min}`
 
 	if (time.minutes === null) return ``

@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { Dev } from 'page/Dev/Dev'
 import { Home } from 'page/Home'
 import { configureI18next, initGA, YM } from 'shared/lib'
+import { usePing } from 'shared/lib/usePing'
 import { useScheduleLoader } from 'shared/store/schedule/useScheduleLoader'
 
 import 'react-spring-bottom-sheet/dist/style.css'
@@ -17,6 +18,7 @@ configureI18next()
 
 const ScheduleLoader: React.FC = () => {
 	useScheduleLoader()
+	usePing()
 
 	return null
 }

@@ -4,13 +4,15 @@ import styled from 'styled-components'
 export const InlineOptionsItemStyled = styled.div<{
 	$active: boolean
 	$defaultColor?: string | undefined
+	$disabled?: boolean
 }>`
-	cursor: pointer;
+	cursor: ${props => (props.$disabled ? `default` : `pointer`)};
 	padding: 17px 17px;
 
 	border-radius: 16px;
 	background-color: ${props => (props.$active ? MAIN_BLUE : props.$defaultColor ?? MAIN_GREY)};
 	color: ${props => (props.$active ? `white` : `black`)};
+	opacity: ${props => (props.$disabled ? 0.4 : 1)};
 
 	font-weight: 600;
 	white-space: nowrap;

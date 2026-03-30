@@ -4,6 +4,7 @@ import cors from 'cors';
 import { initDb } from './services/db';
 import { healthRouter } from './routes/health';
 import { scheduleRouter } from './routes/schedule';
+import { complainsRouter } from './routes/complains';
 import { docsRouter } from './routes/docs';
 import { startScheduleCron } from './services/schedule/cron';
 
@@ -18,6 +19,7 @@ startScheduleCron();
 
 app.use('/api', healthRouter);
 app.use('/api', scheduleRouter);
+app.use('/api', complainsRouter);
 app.use('/api', docsRouter);
 
 app.use((_req, res) => {

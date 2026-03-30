@@ -1,24 +1,19 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { AndrewLytics } from 'shared/lib'
 import { busStopNewSelector, directionSelector } from 'shared/store/busStop/busStopInfoSlice'
-import { leftSelector } from 'shared/store/timeLeft/timeLeftSlice'
 import { InlineOptions } from 'shared/ui/InlineOptions'
 import styled from 'styled-components'
 
 import { ComplainType } from '../model/Complains'
 import { useComplainsContext } from '../model/ComplainsContext'
-import { useFastReplay } from '../model/useFastReplay'
 
-const COMPLAIN_DISAPPEAR_MS = 200000
+const COOLDOWN_MS = 2 * 60 * 1000 // 2 minutes
+
 const ComplainsOptions = [
 	{
-		value: ComplainType.earlier,
-		label: `Приехал раньше`,
-	},
-	{
-		value: ComplainType.later,
-		label: `Приехал позже`,
+		value: ComplainType.arrived,
+		label: `Приехал`,
 	},
 	{
 		value: ComplainType.not_arrive,
@@ -35,50 +30,56 @@ export const ComplainOptionContainerStyled = styled.div`
 `
 
 export const Fastreply: React.FC = () => {
-	const [isComplainClicked, setIsComplainClicked] = useState(false)
 	const [activeComplain, setActiveComplain] = useState<ComplainType | null>(null)
-	const { shouldShowFastReply } = useFastReplay()
+	const cooldownsRef = useRef<Record<string, number>>({})
+	const [, forceUpdate] = useState(0)
 
 	const busStopNew = useSelector(busStopNewSelector)
 	const direction = useSelector(directionSelector)
-	const left = useSelector(leftSelector)
 
 	const { addComplain } = useComplainsContext()
 
-	const handleComplain = (type: ComplainType): void => {
-		if (!busStopNew || left.minutes === null) return
+	const isOnCooldown = useCallback(
+		(stopLabel: string): boolean => {
+			const until = cooldownsRef.current[stopLabel]
+			if (!until) return false
+			if (Date.now() >= until) {
+				delete cooldownsRef.current[stopLabel]
+				return false
+			}
+			return true
+		},
+		[],
+	)
 
-		const date = new Date().toISOString()
+	const handleFastReplyClick = (key: ComplainType | null): void => {
+		if (!key || !busStopNew) return
+		if (isOnCooldown(busStopNew.label)) return
+
+		setActiveComplain(key)
+
+		cooldownsRef.current[busStopNew.label] = Date.now() + COOLDOWN_MS
+		setTimeout(() => {
+			forceUpdate(n => n + 1)
+		}, COOLDOWN_MS)
 
 		addComplain({
 			stop: busStopNew.label,
 			direction,
-			date,
-			type,
-			on: 0,
+			date: new Date().toISOString(),
+			type: key,
 		})
 
 		AndrewLytics(`fastReply`)
+
+		setTimeout(() => {
+			setActiveComplain(null)
+		}, 3000)
 	}
 
-	useEffect(() => {
-		if (isComplainClicked) {
-			setTimeout(() => {
-				setIsComplainClicked(false)
-				setActiveComplain(null)
-			}, COMPLAIN_DISAPPEAR_MS)
-		}
-	}, [isComplainClicked])
+	if (!busStopNew) return null
 
-	const handleFastReplyClick = (key: ComplainType | null): void => {
-		if (isComplainClicked || !key) return
-
-		setActiveComplain(key)
-		handleComplain(key)
-		setIsComplainClicked(true)
-	}
-
-	if (!shouldShowFastReply) return null
+	const onCooldown = isOnCooldown(busStopNew.label)
 
 	return (
 		<ComplainOptionContainerStyled>
@@ -86,6 +87,7 @@ export const Fastreply: React.FC = () => {
 				list={ComplainsOptions}
 				onClick={handleFastReplyClick}
 				activeId={activeComplain}
+				disabled={onCooldown}
 			/>
 		</ComplainOptionContainerStyled>
 	)

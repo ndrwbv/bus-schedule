@@ -1,6 +1,7 @@
 import React from 'react'
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
+import { ComplainsProvider } from 'features/Complains'
 import { store } from 'shared/store/app/configureStore'
 
 import { Root } from './App'
@@ -11,6 +12,8 @@ const root = createRoot(container!)
 
 root.render(
 	<Provider store={store}>
-		<Root />
+		<ComplainsProvider>
+			<Root />
+		</ComplainsProvider>
 	</Provider>,
 )

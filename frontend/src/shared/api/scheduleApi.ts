@@ -1,8 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { ISchedule } from 'shared/store/schedule/ISchedule'
 
-// В Vite env-переменные доступны через import.meta.env, но vite.config.ts также экспортирует process.env
-const API_BASE = (import.meta as { env?: { VITE_API_URL?: string } }).env?.VITE_API_URL || `/api`
+const API_BASE = import.meta.env.VITE_API_URL || `/api`
 
 const CACHE_KEY = `severbus:schedule`
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000 // 24 hours

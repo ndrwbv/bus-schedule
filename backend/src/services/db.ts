@@ -53,6 +53,27 @@ function initSchema(db: Database.Database): void {
 
     CREATE INDEX IF NOT EXISTS idx_changelog_created ON schedule_changelog(created_at DESC);
 
+    CREATE TABLE IF NOT EXISTS complains (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      stop TEXT NOT NULL,
+      direction TEXT NOT NULL,
+      type TEXT NOT NULL CHECK(type IN ('earlier', 'later', 'not_arrive', 'passed_by', 'arrived')),
+      message TEXT,
+      user_id TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_complains_created ON complains(created_at DESC);
+
+    CREATE TABLE IF NOT EXISTS visits (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id TEXT NOT NULL,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_visits_user ON visits(user_id);
+    CREATE INDEX IF NOT EXISTS idx_visits_created ON visits(created_at DESC);
+
     CREATE TABLE IF NOT EXISTS schedule_pipeline_runs (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       trigger TEXT NOT NULL DEFAULT 'cron',

@@ -150,7 +150,10 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 
 				if (props.cluster_id) return
 
-				const { id } = props as IStops<DirectionsNew.inSP> | IStops<DirectionsNew.out>
+				const { id } = props as
+					| IStops<DirectionsNew.inSP>
+					| IStops<DirectionsNew.out>
+					| IStops<DirectionsNew.inLB>
 
 				const stop = features[i].properties
 				stop.latLon = JSON.parse(stop.latLon)

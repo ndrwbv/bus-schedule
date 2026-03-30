@@ -2,6 +2,7 @@
 import { HeaderActionsStyled, HeaderContainerBetaStyled, HeaderInnerStyled, Logo } from 'entities/Logo'
 import { WriteMe } from 'entities/WriteMe'
 import { BottomSheetCustom } from 'features/BottomSheet/BottomSheet'
+import { Complains } from 'features/Complains'
 import { FavoriteStops } from 'features/FavoriteStops'
 import { HeaderScore } from 'features/HeaderScore'
 import { Info } from 'features/Info'
@@ -47,6 +48,8 @@ export const Home: React.FC = () => {
 						<Info />
 						<NearestStops />
 						<BusStop />
+
+						<Complains />
 
 						<StripAd />
 						<YandexAd />

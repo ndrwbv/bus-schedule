@@ -264,6 +264,9 @@ const spec = {
 
 export const docsRouter = Router()
 
-docsRouter.use('/docs', swaggerUi.serve, swaggerUi.setup(spec, {
+docsRouter.use('/docs', (_req, res, next) => {
+  res.setHeader('X-Robots-Tag', 'noindex, nofollow');
+  next();
+}, swaggerUi.serve, swaggerUi.setup(spec, {
   customSiteTitle: 'SeverBus API Docs',
 }))
