@@ -2,6 +2,7 @@ import React from 'react'
 import { createPortal } from 'react-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useGetFeaturesQuery } from 'shared/api/scheduleApi'
+import { AndrewLytics } from 'shared/lib'
 import { liveTrackingEnabledSelector } from 'shared/store/app/selectors/liveTracking'
 import styled from 'styled-components'
 
@@ -111,7 +112,9 @@ export const SettingsModal: React.FC<Props> = ({ onClose }) => {
 
 	const handleToggle = (): void => {
 		if (!liveTrackingEnabled) return
-		dispatch(setShowLiveBus(!showLiveBus))
+		const newValue = !showLiveBus
+		dispatch(setShowLiveBus(newValue))
+		AndrewLytics(newValue ? `set_live_bus_on` : `set_live_bus_off`)
 	}
 
 	return createPortal(

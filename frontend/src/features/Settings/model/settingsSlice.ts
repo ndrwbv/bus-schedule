@@ -13,14 +13,14 @@ function loadFromStorage(): SettingsState {
 			const parsed = JSON.parse(raw) as Partial<SettingsState>
 
 			return {
-				showLiveBus: parsed.showLiveBus ?? true,
+				showLiveBus: parsed.showLiveBus ?? false,
 			}
 		}
 	} catch {
 		// ignore
 	}
 
-	return { showLiveBus: true }
+	return { showLiveBus: false }
 }
 
 function saveToStorage(state: SettingsState): void {
