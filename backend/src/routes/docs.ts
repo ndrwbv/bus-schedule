@@ -90,6 +90,12 @@ const spec = {
           message: { type: 'string' },
         },
       },
+      FeatureFlags: {
+        type: 'object',
+        properties: {
+          liveTracking: { type: 'boolean', default: true, description: 'Показывать live-позицию автобуса на карте' },
+        },
+      },
     },
   },
   paths: {
@@ -303,42 +309,31 @@ const spec = {
             description: 'Объект с флагами',
             content: {
               'application/json': {
-                schema: {
-                  type: 'object',
-                  example: { liveTracking: true },
-                  additionalProperties: { type: 'boolean' },
-                },
+                schema: { $ref: '#/components/schemas/FeatureFlags' },
               },
             },
           },
         },
       },
-    },
-    '/features/{flag}': {
       put: {
         tags: ['System'],
-        summary: 'Включить/выключить feature flag',
+        summary: 'Обновить feature flags',
+        description: 'Принимает объект с флагами. Можно передать один или несколько. Возвращает полное состояние после обновления.',
         security: [{ bearerAuth: [] }],
-        parameters: [
-          { in: 'path', name: 'flag', required: true, schema: { type: 'string', example: 'liveTracking' } },
-        ],
         requestBody: {
           required: true,
           content: {
             'application/json': {
-              schema: {
-                type: 'object',
-                properties: { enabled: { type: 'boolean' } },
-                required: ['enabled'],
-              },
+              schema: { $ref: '#/components/schemas/FeatureFlags' },
             },
           },
         },
         responses: {
           '200': {
-            description: 'Флаг обновлён',
-            content: { 'application/json': { schema: { type: 'object', example: { liveTracking: false } } } },
+            description: 'Полное состояние флагов после обновления',
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/FeatureFlags' } } },
           },
+          '400': { description: 'Неизвестный флаг или невалидное значение' },
           '401': { description: 'Неверный токен' },
         },
       },
