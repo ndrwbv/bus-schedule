@@ -113,6 +113,7 @@ async function getCdnHostAndCookies(shareUrl: string): Promise<{ cdnHost: string
 
 async function getDownloadToken(referer: string, cookies: string): Promise<string> {
   const res = await fetch(TOKEN_URL, {
+    method: 'POST',
     headers: {
       ...BROWSER_HEADERS,
       Referer: referer,
