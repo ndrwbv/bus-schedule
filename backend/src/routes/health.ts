@@ -29,6 +29,7 @@ function basicAuth(req: Request, res: Response, next: () => void): void {
 
 /** GET /api/health — monitoring dashboard (password protected) */
 healthRouter.get('/health', basicAuth, (_req: Request, res: Response) => {
+  res.setHeader('X-Robots-Tag', 'noindex, nofollow');
   const uptime = process.uptime();
   const memoryUsage = process.memoryUsage();
   const db = getDb();
