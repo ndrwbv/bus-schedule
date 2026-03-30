@@ -64,17 +64,19 @@ async function doDownload(shareUrl: string): Promise<Buffer> {
     // Intercept responses that look like a .docx file
     page.on('response', async (response) => {
       if (fileBuffer) return
-      const url = response.url()
       const contentType = response.headers()['content-type'] ?? ''
+      const contentDisposition = response.headers()['content-disposition'] ?? ''
       const isDocx =
         contentType.includes('officedocument') ||
         contentType.includes('octet-stream') ||
-        url.includes('downloadas')
+        contentDisposition.includes('attachment')
 
       if (isDocx && response.status() === 200) {
         try {
           const buffer = await response.buffer()
-          if (buffer.length > 1000) {
+          // Validate it's actually a ZIP/DOCX (starts with PK magic bytes)
+          if (buffer.length > 1000 && buffer[0] === 0x50 && buffer[1] === 0x4B) {
+            console.log(`[cloud-mail] Перехвачен файл: ${response.url().slice(0, 100)}, ${buffer.length} байт, Content-Type: ${contentType}`)
             fileBuffer = buffer
           }
         } catch {
@@ -107,10 +109,16 @@ async function doDownload(shareUrl: string): Promise<Buffer> {
     }
 
     if (!fileBuffer) {
-      // Save screenshot for debugging
+      // Save screenshot and page content for debugging
       const screenshotPath = process.cwd() + '/data/cloud-mail-debug.png'
+      const htmlPath = process.cwd() + '/data/cloud-mail-debug.html'
       await page.screenshot({ path: screenshotPath, fullPage: true }).catch(() => {})
-      console.error(`[cloud-mail] Скриншот сохранён в ${screenshotPath}`)
+      const html = await page.content().catch(() => '')
+      if (html) {
+        const fs = await import('node:fs')
+        fs.writeFileSync(htmlPath, html, 'utf-8')
+      }
+      console.error(`[cloud-mail] Дебаг сохранён в ${screenshotPath} и ${htmlPath}`)
       throw new Error('Не удалось скачать файл: кнопка скачивания не найдена или файл не получен')
     }
 
