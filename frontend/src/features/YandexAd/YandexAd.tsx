@@ -73,7 +73,9 @@ export const YandexAd: FC = () => {
 		const timer = setTimeout(() => {
 			const adContainer = document.getElementById(YANDEX_AD_RENDER_ID)
 			if (adContainer && adContainer.children.length === 0) {
-				console.error(`[YandexAd] Контейнер рекламы пуст после 5с — возможно, блокировщик рекламы или неверный blockId`)
+				console.error(
+					`[YandexAd] Контейнер рекламы пуст после 5с — возможно, блокировщик рекламы или неверный blockId`,
+				)
 				setHasError(true)
 			}
 		}, 5000)
