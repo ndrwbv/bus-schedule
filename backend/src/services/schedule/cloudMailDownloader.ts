@@ -191,7 +191,7 @@ async function tryDirectDownload(page: Page, shareUrl: string): Promise<Buffer |
       var html = document.documentElement.outerHTML;
       var match = html.match(/"weblink_get"\\s*:\\s*\\[\\s*"([^"]+)"/);
       return match ? match[1] : null;
-    })()`)
+    })()`) as string | null
 
     if (result) {
       const cdnHost = result.replace(/\/$/, '')
