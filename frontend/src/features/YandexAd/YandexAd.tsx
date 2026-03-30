@@ -1,4 +1,5 @@
 import { FC, useEffect, useRef, useState } from 'react'
+import { featureToggles } from 'shared/configs/featureToggles'
 import { ContainerStyled } from 'shared/ui'
 
 import { YANDEX_AD_BLOCK_ID, YANDEX_AD_RENDER_ID } from './const'
@@ -9,12 +10,7 @@ declare global {
 		Ya?: {
 			Context: {
 				AdvManager: {
-					render: (params: {
-						blockId: string
-						renderTo: string
-						type?: string
-						platform?: string
-					}) => void
+					render: (params: { blockId: string; renderTo: string; type?: string; platform?: string }) => void
 				}
 			}
 		}
@@ -29,17 +25,16 @@ export const YandexAd: FC = () => {
 	const scriptLoadedRef = useRef(false)
 
 	useEffect(() => {
-		if (scriptLoadedRef.current) return
+		if (scriptLoadedRef.current) return undefined
 		scriptLoadedRef.current = true
 
 		if (!YANDEX_AD_BLOCK_ID) {
 			setHasError(true)
-			return
+
+			return undefined
 		}
 
-		const existingScript = document.querySelector(
-			'script[src*="context.js"]'
-		)
+		const existingScript = document.querySelector(`script[src*="context.js"]`)
 
 		const initAd = (): void => {
 			window.yaContextCb = window.yaContextCb || []
@@ -55,7 +50,8 @@ export const YandexAd: FC = () => {
 
 		if (existingScript) {
 			initAd()
-			return
+
+			return undefined
 		}
 
 		const script = document.createElement(`script`)
@@ -85,7 +81,7 @@ export const YandexAd: FC = () => {
 		}
 	}, [])
 
-	if (hasError || !YANDEX_AD_BLOCK_ID) return null
+	if (!featureToggles.ad || hasError || !YANDEX_AD_BLOCK_ID) return null
 
 	return (
 		<ContainerStyled>
