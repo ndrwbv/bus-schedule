@@ -53,4 +53,3 @@ export const dismissBanner = (): void => {
 		// localStorage unavailable
 	}
 }
-
