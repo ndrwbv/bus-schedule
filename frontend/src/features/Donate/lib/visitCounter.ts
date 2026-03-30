@@ -54,10 +54,3 @@ export const dismissBanner = (): void => {
 	}
 }
 
-export const markDonated = (): void => {
-	try {
-		localStorage.setItem(BANNER_DONATED_KEY, `true`)
-	} catch {
-		// localStorage unavailable
-	}
-}

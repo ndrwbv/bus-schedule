@@ -3,7 +3,7 @@ import { HeaderActionsStyled, HeaderContainerBetaStyled, HeaderInnerStyled, Logo
 import { WriteMe } from 'entities/WriteMe'
 import { BottomSheetCustom } from 'features/BottomSheet/BottomSheet'
 import { Complains } from 'features/Complains'
-import { AboutProject, Donate } from 'features/Donate'
+import { DonateCard, DonateProvider } from 'features/Donate'
 import { FavoriteStops } from 'features/FavoriteStops'
 import { HeaderScore } from 'features/HeaderScore'
 import { Info } from 'features/Info'
@@ -29,54 +29,54 @@ export const Home: React.FC = () => {
 	useSchedule()
 
 	return (
-		<HomeContainerStyled>
-			<HeaderContainerBetaStyled>
-				<HeaderInnerStyled>
-					<Logo />
+		<DonateProvider>
+			<HomeContainerStyled>
+				<HeaderContainerBetaStyled>
+					<HeaderInnerStyled>
+						<Logo />
 
-					<HeaderActionsStyled>
-						<HeaderScore />
-						{/* <FAQ /> */}
-					</HeaderActionsStyled>
-				</HeaderInnerStyled>
-			</HeaderContainerBetaStyled>
+						<HeaderActionsStyled>
+							<HeaderScore />
+							{/* <FAQ /> */}
+						</HeaderActionsStyled>
+					</HeaderInnerStyled>
+				</HeaderContainerBetaStyled>
 
-			<Map />
+				<Map />
 
-			<BottomSheetCustom header={<BottomSheetHeader />}>
-				<BottomSheetBgStyled>
-					<MainLayoutBetaStyled>
-						<Info />
-						<NearestStops />
-						<BusStop />
+				<BottomSheetCustom header={<BottomSheetHeader />}>
+					<BottomSheetBgStyled>
+						<MainLayoutBetaStyled>
+							<Info />
+							<NearestStops />
+							<BusStop />
 
-						<Complains />
+							<Complains />
 
-						<StripAd />
-						<YandexAd />
+							<StripAd />
+							<YandexAd />
 
-						<FavoriteStops />
+							<FavoriteStops />
 
-						<TodaysBuses />
+							<TodaysBuses />
 
-						<ScheduleInfo />
+							<ScheduleInfo />
 
-						{/* <LeaveFeedbackButton /> */}
+							{/* <LeaveFeedbackButton /> */}
 
-						<OtherTimeBusses />
+							<OtherTimeBusses />
 
-						<AboutProject />
+							<DonateCard />
 
-						<ContainerStyled>
-							<WriteMe />
-						</ContainerStyled>
-					</MainLayoutBetaStyled>
+							<ContainerStyled>
+								<WriteMe />
+							</ContainerStyled>
+						</MainLayoutBetaStyled>
 
-					<Footer />
-				</BottomSheetBgStyled>
-			</BottomSheetCustom>
-
-			<Donate />
-		</HomeContainerStyled>
+						<Footer />
+					</BottomSheetBgStyled>
+				</BottomSheetCustom>
+			</HomeContainerStyled>
+		</DonateProvider>
 	)
 }

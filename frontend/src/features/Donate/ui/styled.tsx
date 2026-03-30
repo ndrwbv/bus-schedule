@@ -19,31 +19,6 @@ export const DonateTitleStyled = styled.p`
 	padding-left: 6px;
 `
 
-export const DonateTextStyled = styled.p`
-	font-size: 14px;
-	line-height: 20px;
-	color: #555;
-	margin-top: 12px;
-	padding: 0 6px;
-`
-
-export const DonatePopupContentStyled = styled.div`
-	padding: 20px 16px;
-	text-align: center;
-`
-
-export const DonatePopupTitleStyled = styled.h2`
-	font-size: 20px;
-	font-weight: 600;
-	margin-bottom: 12px;
-`
-
-export const DonatePopupTextStyled = styled.p`
-	font-size: 14px;
-	line-height: 22px;
-	color: #555;
-	margin-bottom: 20px;
-`
 
 export const DonatePhoneRowStyled = styled.div`
 	display: flex;
