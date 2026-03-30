@@ -1,8 +1,16 @@
 import React, { createContext, useCallback, useContext, useMemo, useState } from 'react'
 import { AndrewLytics } from 'shared/lib'
+import { ContainerStyled } from 'shared/ui/common'
 
 import { DonateBanner } from './DonateBanner'
 import {
+	AboutBlockArrowStyled,
+	AboutBlockEmojiStyled,
+	AboutBlockLeftStyled,
+	AboutBlockStyled,
+	AboutBlockSubStyled,
+	AboutBlockTextStyled,
+	AboutBlockTitleStyled,
 	CopiedTooltipStyled,
 	CopyButtonStyled,
 	DonatePhoneNameStyled,
@@ -22,6 +30,25 @@ const PHONE_DISPLAY = `+7 996 938-64-90`
 const DonateContext = createContext<{ open: () => void }>({ open: () => {} })
 
 export const useDonate = (): { open: () => void } => useContext(DonateContext)
+
+export const DonateCard: React.FC = () => {
+	const { open } = useContext(DonateContext)
+
+	return (
+		<ContainerStyled>
+			<AboutBlockStyled onClick={open}>
+				<AboutBlockLeftStyled>
+					<AboutBlockEmojiStyled>☕</AboutBlockEmojiStyled>
+					<AboutBlockTextStyled>
+						<AboutBlockTitleStyled>О проекте</AboutBlockTitleStyled>
+						<AboutBlockSubStyled>Поддержать разработчика</AboutBlockSubStyled>
+					</AboutBlockTextStyled>
+				</AboutBlockLeftStyled>
+				<AboutBlockArrowStyled>›</AboutBlockArrowStyled>
+			</AboutBlockStyled>
+		</ContainerStyled>
+	)
+}
 
 export const DonateProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 	const [isOpen, setIsOpen] = useState(false)

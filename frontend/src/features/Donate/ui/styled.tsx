@@ -1,5 +1,60 @@
 import styled from 'styled-components'
 
+// About block
+
+export const AboutBlockStyled = styled.button`
+	width: 100%;
+	background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+	border: 1px solid #e0e0e0;
+	border-radius: 16px;
+	padding: 14px 18px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	cursor: pointer;
+	transition: transform 0.15s, box-shadow 0.15s;
+
+	&:active {
+		transform: scale(0.98);
+	}
+
+	@media (hover: hover) {
+		&:hover {
+			box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+		}
+	}
+`
+
+export const AboutBlockLeftStyled = styled.div`
+	display: flex;
+	align-items: center;
+	gap: 10px;
+`
+
+export const AboutBlockEmojiStyled = styled.span`
+	font-size: 22px;
+`
+
+export const AboutBlockTextStyled = styled.div`
+	text-align: left;
+`
+
+export const AboutBlockTitleStyled = styled.span`
+	font-size: 14px;
+	font-weight: 600;
+	color: #333;
+	display: block;
+`
+
+export const AboutBlockSubStyled = styled.span`
+	font-size: 12px;
+	color: #888;
+`
+
+export const AboutBlockArrowStyled = styled.span`
+	font-size: 16px;
+	color: #bbb;
+`
 
 // Modal
 

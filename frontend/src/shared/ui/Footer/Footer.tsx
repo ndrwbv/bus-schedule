@@ -3,9 +3,9 @@ import { COPYRIGHT } from 'shared/common'
 import { AndrewLytics } from 'shared/lib'
 
 import { ContainerStyled, GrayTextStyled } from '../common'
-import { FooterLinkStyled, FooterStyled } from './styled'
+import { FooterStyled } from './styled'
 
-export const Footer: React.FC<{ onAbout?: () => void }> = ({ onAbout }) => {
+export const Footer: React.FC = () => {
 	const [searchParams] = useSearchParams()
 
 	return (
@@ -17,11 +17,6 @@ export const Footer: React.FC<{ onAbout?: () => void }> = ({ onAbout }) => {
 							Играть
 						</Link>
 					</GrayTextStyled>
-					{onAbout && (
-						<GrayTextStyled>
-							<FooterLinkStyled onClick={onAbout}>О проекте</FooterLinkStyled>
-						</GrayTextStyled>
-					)}
 					<GrayTextStyled>{COPYRIGHT}</GrayTextStyled>
 				</div>
 			</ContainerStyled>

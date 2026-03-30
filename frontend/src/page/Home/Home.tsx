@@ -3,7 +3,7 @@ import { HeaderActionsStyled, HeaderContainerBetaStyled, HeaderInnerStyled, Logo
 import { WriteMe } from 'entities/WriteMe'
 import { BottomSheetCustom } from 'features/BottomSheet/BottomSheet'
 import { Complains } from 'features/Complains'
-import { DonateProvider, useDonate } from 'features/Donate'
+import { DonateCard, DonateProvider } from 'features/Donate'
 import { FavoriteStops } from 'features/FavoriteStops'
 import { HeaderScore } from 'features/HeaderScore'
 import { Info } from 'features/Info'
@@ -24,11 +24,6 @@ import { TodaysBuses } from 'widget/TodaysBuses'
 
 // import { FAQ } from '../../features/FAQ'
 import { HomeContainerStyled } from './Home.styled'
-
-const DonateFooter: React.FC = () => {
-	const { open } = useDonate()
-	return <Footer onAbout={open} />
-}
 
 export const Home: React.FC = () => {
 	useSchedule()
@@ -71,12 +66,14 @@ export const Home: React.FC = () => {
 
 							<OtherTimeBusses />
 
+							<DonateCard />
+
 							<ContainerStyled>
 								<WriteMe />
 							</ContainerStyled>
 						</MainLayoutBetaStyled>
 
-						<DonateFooter />
+						<Footer />
 					</BottomSheetBgStyled>
 				</BottomSheetCustom>
 			</HomeContainerStyled>
