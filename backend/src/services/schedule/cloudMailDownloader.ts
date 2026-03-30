@@ -158,17 +158,18 @@ async function tryClickDownload(page: Page): Promise<boolean> {
 
   // Fallback: try clicking any element with download-related text
   try {
-    const clicked = await page.evaluate(() => {
-      const elements = document.querySelectorAll('button, a, [role="button"]')
-      for (const el of elements) {
-        const text = (el as HTMLElement).innerText?.trim() ?? ''
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    const clicked = await page.evaluate((() => {
+      const elements = (document as any).querySelectorAll('button, a, [role="button"]')
+      for (const el of elements as any) {
+        const text = el.innerText?.trim() ?? ''
         if (/скачать|download/i.test(text)) {
-          ;(el as HTMLElement).click()
+          el.click()
           return true
         }
       }
       return false
-    })
+    }) as any)
     if (clicked) {
       console.log('[cloud-mail] Нажата кнопка скачивания (через evaluate)')
       return true
@@ -187,11 +188,11 @@ async function tryClickDownload(page: Page): Promise<boolean> {
 async function tryDirectDownload(page: Page, shareUrl: string): Promise<Buffer | null> {
   try {
     // Try to extract weblink_get CDN host from page
-    const result = await page.evaluate(() => {
-      const html = document.documentElement.outerHTML
+    const result = await page.evaluate((() => {
+      const html = (document as any).documentElement.outerHTML
       const match = html.match(/"weblink_get"\s*:\s*\[\s*"([^"]+)"/)
       return match ? match[1] : null
-    })
+    }) as any)
 
     if (result) {
       const cdnHost = result.replace(/\/$/, '')
