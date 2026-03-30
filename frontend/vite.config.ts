@@ -31,6 +31,10 @@ export default defineConfig(({ mode }) => {
 			},
 			workbox: {
 				globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+				cleanupOutdatedCaches: true,
+				skipWaiting: true,
+				clientsClaim: true,
+				navigateFallback: 'index.html',
 				runtimeCaching: [
 					{
 						urlPattern: /\/api\/schedule$/,
