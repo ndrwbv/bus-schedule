@@ -1,30 +1,16 @@
 /**
- * Download a file from a public Cloud Mail.ru share link.
+ * Download a file from a public Cloud Mail.ru share link using Puppeteer.
  *
- * Protocol (3 HTTP requests, no auth required):
- *   1. GET {shareUrl}  → parse HTML, extract weblink_get CDN host
- *   2. GET https://cloud.mail.ru/api/v2/tokens/download  → get temporary token
- *   3. GET {cdnHost}/{filePath}?key={token}  → download file
- *
- * Where filePath = part of URL after /public/ (e.g. "YJGH/vLzFF48pJ")
+ * Cloud Mail.ru opens .docx files in an online editor, so simple HTTP
+ * requests no longer work (token API returns 403). Instead we launch
+ * a real browser, open the share page, click "Download" and intercept
+ * the resulting file.
  */
 
-const TOKEN_URL = 'https://cloud.mail.ru/api/v2/tokens/download'
-const MAX_RETRIES = () => parseInt(process.env.DOWNLOAD_MAX_RETRIES ?? '3', 10)
+import puppeteer, { Page } from 'puppeteer-core'
 
-/** Realistic browser headers to avoid 403 blocks */
-const BROWSER_HEADERS: Record<string, string> = {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-  'Accept-Language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
-  'Accept-Encoding': 'gzip, deflate, br',
-  'Connection': 'keep-alive',
-  'Sec-Fetch-Dest': 'document',
-  'Sec-Fetch-Mode': 'navigate',
-  'Sec-Fetch-Site': 'none',
-  'Sec-Fetch-User': '?1',
-  'Upgrade-Insecure-Requests': '1',
-}
+const MAX_RETRIES = () => parseInt(process.env.DOWNLOAD_MAX_RETRIES ?? '3', 10)
+const DOWNLOAD_TIMEOUT = 60_000
 
 export async function downloadFromCloudMail(shareUrl: string): Promise<Buffer> {
   let lastError: Error | null = null
@@ -47,103 +33,188 @@ export async function downloadFromCloudMail(shareUrl: string): Promise<Buffer> {
 }
 
 async function doDownload(shareUrl: string): Promise<Buffer> {
-  // Step 1: get CDN host from share page
-  const { cdnHost, cookies } = await getCdnHostAndCookies(shareUrl)
-
-  // Step 2: get download token (pass cookies from step 1)
-  const token = await getDownloadToken(shareUrl, cookies)
-
-  // Step 3: build file path from shareUrl and download
-  const filePath = getFilePath(shareUrl)
-  const downloadUrl = `${cdnHost}/${filePath}?key=${encodeURIComponent(token)}`
-
-  const res = await fetch(downloadUrl, {
-    headers: {
-      ...BROWSER_HEADERS,
-      Referer: shareUrl,
-      ...(cookies ? { Cookie: cookies } : {}),
-    },
+  const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium-browser'
+  const browser = await puppeteer.launch({
+    headless: true,
+    executablePath,
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-gpu',
+    ],
   })
 
-  if (!res.ok) {
-    throw new Error(`Ошибка скачивания файла: HTTP ${res.status}`)
+  try {
+    const page = await browser.newPage()
+
+    await page.setUserAgent(
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+    )
+
+    // Listen for download responses — Cloud Mail.ru may serve the file
+    // via a CDN response or via the docs editor download endpoint
+    let fileBuffer: Buffer | null = null
+
+    const cdp = await browser.target().createCDPSession()
+    await cdp.send('Browser.setDownloadBehavior', {
+      behavior: 'deny',
+    })
+
+    // Intercept responses that look like a .docx file
+    page.on('response', async (response) => {
+      if (fileBuffer) return
+      const url = response.url()
+      const contentType = response.headers()['content-type'] ?? ''
+      const isDocx =
+        contentType.includes('officedocument') ||
+        contentType.includes('octet-stream') ||
+        url.includes('downloadas')
+
+      if (isDocx && response.status() === 200) {
+        try {
+          const buffer = await response.buffer()
+          if (buffer.length > 1000) {
+            fileBuffer = buffer
+          }
+        } catch {
+          // response may have been consumed already
+        }
+      }
+    })
+
+    // Open the share page
+    await page.goto(shareUrl, { waitUntil: 'networkidle2', timeout: DOWNLOAD_TIMEOUT })
+
+    // Wait for the page to fully render
+    await sleep(3000)
+
+    // Try to find and click the download button
+    const downloaded = await tryClickDownload(page)
+
+    if (downloaded) {
+      // Wait for the download response to be intercepted
+      const deadline = Date.now() + 30_000
+      while (!fileBuffer && Date.now() < deadline) {
+        await sleep(500)
+      }
+    }
+
+    // If response interception didn't catch it, try to get the file
+    // via the weblink_get CDN approach as a fallback
+    if (!fileBuffer) {
+      fileBuffer = await tryDirectDownload(page, shareUrl)
+    }
+
+    if (!fileBuffer) {
+      // Save screenshot for debugging
+      const screenshotPath = process.cwd() + '/data/cloud-mail-debug.png'
+      await page.screenshot({ path: screenshotPath, fullPage: true }).catch(() => {})
+      console.error(`[cloud-mail] Скриншот сохранён в ${screenshotPath}`)
+      throw new Error('Не удалось скачать файл: кнопка скачивания не найдена или файл не получен')
+    }
+
+    return fileBuffer
+  } finally {
+    await browser.close()
+  }
+}
+
+/**
+ * Try various selectors to find and click the download button.
+ */
+async function tryClickDownload(page: Page): Promise<boolean> {
+  const selectors = [
+    // Cloud Mail.ru known download button
+    'a[href="#btn-download"]',
+    '[href="#btn-download"]',
+    // Common Cloud Mail.ru download button selectors
+    'button[data-qa="download"]',
+    'a[data-qa="download"]',
+    '[data-testid="download"]',
+    'button[title="Скачать"]',
+    'a[title="Скачать"]',
+    // Generic: button/link containing "Скачать" text
+    'xpath/.//button[contains(., "Скачать")]',
+    'xpath/.//a[contains(., "Скачать")]',
+    'xpath/.//span[contains(., "Скачать")]/ancestor::button',
+    // Toolbar buttons
+    '.b-toolbar__btn[data-name="download"]',
+    '.file-actions__download',
+  ]
+
+  for (const selector of selectors) {
+    try {
+      const el = await page.$(selector)
+      if (el) {
+        await el.click()
+        console.log(`[cloud-mail] Нажата кнопка скачивания: ${selector}`)
+        return true
+      }
+    } catch {
+      // selector not found, try next
+    }
   }
 
-  const contentType = res.headers.get('content-type') ?? ''
-  if (!contentType.includes('officedocument') && !contentType.includes('octet-stream') && !contentType.includes('zip')) {
-    const text = await res.text()
-    throw new Error(`Неожиданный Content-Type: ${contentType}. Ответ: ${text.slice(0, 200)}`)
+  // Fallback: try clicking any element with download-related text
+  try {
+    const clicked = await page.evaluate(() => {
+      const elements = document.querySelectorAll('button, a, [role="button"]')
+      for (const el of elements) {
+        const text = (el as HTMLElement).innerText?.trim() ?? ''
+        if (/скачать|download/i.test(text)) {
+          ;(el as HTMLElement).click()
+          return true
+        }
+      }
+      return false
+    })
+    if (clicked) {
+      console.log('[cloud-mail] Нажата кнопка скачивания (через evaluate)')
+      return true
+    }
+  } catch {
+    // ignore
   }
 
-  const arrayBuffer = await res.arrayBuffer()
-  return Buffer.from(arrayBuffer)
+  console.warn('[cloud-mail] Кнопка скачивания не найдена')
+  return false
 }
 
-/** Extract cookies from Set-Cookie headers */
-function extractCookies(res: Response): string {
-  const setCookies = res.headers.getSetCookie?.() ?? []
-  return setCookies
-    .map(c => c.split(';')[0])
-    .filter(Boolean)
-    .join('; ')
-}
+/**
+ * Fallback: try to extract CDN URL from page and download directly.
+ */
+async function tryDirectDownload(page: Page, shareUrl: string): Promise<Buffer | null> {
+  try {
+    // Try to extract weblink_get CDN host from page
+    const result = await page.evaluate(() => {
+      const html = document.documentElement.outerHTML
+      const match = html.match(/"weblink_get"\s*:\s*\[\s*"([^"]+)"/)
+      return match ? match[1] : null
+    })
 
-async function getCdnHostAndCookies(shareUrl: string): Promise<{ cdnHost: string; cookies: string }> {
-  const res = await fetch(shareUrl, {
-    headers: BROWSER_HEADERS,
-    redirect: 'follow',
-  })
+    if (result) {
+      const cdnHost = result.replace(/\/$/, '')
+      const pathMatch = shareUrl.match(/\/public\/(.+)$/)
+      if (pathMatch) {
+        const filePath = pathMatch[1]
+        const downloadUrl = `${cdnHost}/${filePath}`
+        console.log(`[cloud-mail] Пробуем прямое скачивание: ${downloadUrl}`)
 
-  if (!res.ok) throw new Error(`Страница Cloud Mail.ru вернула ${res.status}`)
+        const response = await page.goto(downloadUrl, { timeout: 30_000 })
+        if (response && response.status() === 200) {
+          const buffer = await response.buffer()
+          if (buffer.length > 1000) {
+            return buffer
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.warn(`[cloud-mail] Прямое скачивание не удалось: ${err}`)
+  }
 
-  const cookies = extractCookies(res)
-  const html = await res.text()
-
-  // Look for weblink_get in page HTML (usually in a JSON config)
-  const match = html.match(/"weblink_get"\s*:\s*\[\s*"([^"]+)"/)
-  if (match) return { cdnHost: match[1].replace(/\/$/, ''), cookies }
-
-  // Alternative pattern
-  const match2 = html.match(/weblink_get[^[]*\[\s*"([^"]+)"/)
-  if (match2) return { cdnHost: match2[1].replace(/\/$/, ''), cookies }
-
-  // Fallback CDN host
-  return { cdnHost: 'https://cloclo.cloud.mail.ru/weblink/view', cookies }
-}
-
-async function getDownloadToken(referer: string, cookies: string): Promise<string> {
-  const res = await fetch(TOKEN_URL, {
-    method: 'POST',
-    headers: {
-      'User-Agent': BROWSER_HEADERS['User-Agent'],
-      'Accept': 'application/json, text/plain, */*',
-      'Accept-Language': BROWSER_HEADERS['Accept-Language'],
-      'Accept-Encoding': BROWSER_HEADERS['Accept-Encoding'],
-      'Connection': 'keep-alive',
-      'Origin': 'https://cloud.mail.ru',
-      'Referer': referer,
-      'X-Requested-With': 'XMLHttpRequest',
-      'Sec-Fetch-Dest': 'empty',
-      'Sec-Fetch-Mode': 'cors',
-      'Sec-Fetch-Site': 'same-origin',
-      ...(cookies ? { Cookie: cookies } : {}),
-    },
-  })
-
-  if (!res.ok) throw new Error(`Ошибка получения токена: HTTP ${res.status}`)
-
-  const json = await res.json() as { body?: { token?: string }; token?: string }
-  const token = json?.body?.token ?? json?.token
-
-  if (!token) throw new Error(`Токен не найден в ответе: ${JSON.stringify(json)}`)
-  return token
-}
-
-function getFilePath(shareUrl: string): string {
-  // https://cloud.mail.ru/public/YJGH/vLzFF48pJ → YJGH/vLzFF48pJ
-  const match = shareUrl.match(/\/public\/(.+)$/)
-  if (!match) throw new Error(`Не удалось извлечь путь файла из URL: ${shareUrl}`)
-  return match[1]
+  return null
 }
 
 function sleep(ms: number): Promise<void> {

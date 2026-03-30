@@ -11,6 +11,11 @@ RUN npx tsc
 
 FROM node:20-alpine
 
+# Chromium for Puppeteer
+RUN apk add --no-cache chromium
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+
 RUN apk add --no-cache python3 make g++
 
 WORKDIR /app
