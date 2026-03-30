@@ -1,2 +1,9 @@
 User-agent: *
 Allow: /
+
+Disallow: /dev
+Disallow: /game
+Disallow: /api/docs
+Disallow: /api/health
+
+Sitemap: https://severbus.ru/sitemap.xml
