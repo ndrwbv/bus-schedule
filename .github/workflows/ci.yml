@@ -12,6 +12,7 @@ env:
   MAPTILER_KEY_9: ${{secrets.MAPTILER_KEY_9}}
   MAPTILER_KEY_10: ${{secrets.MAPTILER_KEY_10}}
   MAPTILER_KEY_11: ${{secrets.MAPTILER_KEY_11}}
+  YANDEX_AD_BLOCK_ID: ${{secrets.YANDEX_AD_BLOCK_ID}}
 
 on:
   pull_request:

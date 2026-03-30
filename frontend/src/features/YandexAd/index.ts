@@ -1,0 +1,1 @@
+export { YandexAd } from './YandexAd'
