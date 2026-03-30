@@ -4,15 +4,16 @@ import styled from 'styled-components'
 
 export const AboutBlockStyled = styled.button`
 	width: 100%;
-	background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-	border: 1px solid #e0e0e0;
-	border-radius: 16px;
+	background: #ffffff;
+	box-shadow: 2px 2px 25px rgba(210, 210, 210, 0.25);
+	border: none;
+	border-radius: 25px;
 	padding: 14px 18px;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	cursor: pointer;
-	transition: transform 0.15s, box-shadow 0.15s;
+	transition: transform 0.15s;
 
 	&:active {
 		transform: scale(0.98);
@@ -20,7 +21,7 @@ export const AboutBlockStyled = styled.button`
 
 	@media (hover: hover) {
 		&:hover {
-			box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+			opacity: 0.85;
 		}
 	}
 `
