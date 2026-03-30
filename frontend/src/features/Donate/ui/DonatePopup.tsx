@@ -6,13 +6,13 @@ import { BottomSheetBgStyled } from 'shared/ui/MainLayout'
 import {
 	CopiedTooltipStyled,
 	CopyButtonStyled,
+	DonatePhoneNameStyled,
+	DonatePhoneRowStyled,
+	DonatePhoneStyled,
 	DonatePopupContentStyled,
 	DonatePopupFooterStyled,
 	DonatePopupTextStyled,
 	DonatePopupTitleStyled,
-	DonatePhoneNameStyled,
-	DonatePhoneRowStyled,
-	DonatePhoneStyled,
 } from './styled'
 
 const PHONE = `+79969386490`

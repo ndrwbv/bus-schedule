@@ -1,9 +1,9 @@
 import React from 'react'
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
-import { registerSW } from 'virtual:pwa-register'
 import { ComplainsProvider } from 'features/Complains'
 import { store } from 'shared/store/app/configureStore'
+import { registerSW } from 'virtual:pwa-register'
 
 import { Root } from './App'
 

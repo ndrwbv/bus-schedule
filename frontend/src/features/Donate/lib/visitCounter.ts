@@ -24,6 +24,7 @@ export const getVisitDaysCount = (): number => {
 	try {
 		const stored = localStorage.getItem(VISIT_DAYS_KEY)
 		if (!stored) return 0
+
 		return (JSON.parse(stored) as string[]).length
 	} catch {
 		return 0
@@ -38,6 +39,7 @@ export const isBannerDismissed = (): boolean => {
 		if (!dismissed) return false
 
 		const dismissedAt = Number(dismissed)
+
 		return Date.now() - dismissedAt < DISMISS_DURATION_MS
 	} catch {
 		return false

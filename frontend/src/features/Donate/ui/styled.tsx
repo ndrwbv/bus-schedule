@@ -101,7 +101,6 @@ export const DonatePopupFooterStyled = styled.p`
 	margin-top: 16px;
 `
 
-
 export const BannerStyled = styled.div`
 	position: fixed;
 	bottom: 0;
