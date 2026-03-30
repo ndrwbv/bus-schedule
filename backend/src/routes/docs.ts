@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import { Router, Request, Response, NextFunction } from 'express'
 import swaggerUi from 'swagger-ui-express'
 
 const spec = {
@@ -264,7 +264,7 @@ const spec = {
 
 export const docsRouter = Router()
 
-docsRouter.use('/docs', (_req, res, next) => {
+docsRouter.use('/docs', (_req: Request, res: Response, next: NextFunction) => {
   res.setHeader('X-Robots-Tag', 'noindex, nofollow');
   next();
 }, swaggerUi.serve, swaggerUi.setup(spec, {
