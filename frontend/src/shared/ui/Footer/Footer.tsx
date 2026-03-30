@@ -1,5 +1,5 @@
 import { Link, useSearchParams } from 'react-router-dom'
-import { ABOUT_LINK, COPYRIGHT } from 'shared/common'
+import { COPYRIGHT } from 'shared/common'
 import { AndrewLytics } from 'shared/lib'
 
 import { ContainerStyled, GrayTextStyled } from '../common'
@@ -17,11 +17,7 @@ export const Footer: React.FC = () => {
 							Играть
 						</Link>
 					</GrayTextStyled>
-					<GrayTextStyled>
-						<a href={ABOUT_LINK} target="_blank" rel="noopener noreferrer">
-							{COPYRIGHT}
-						</a>
-					</GrayTextStyled>
+					<GrayTextStyled>{COPYRIGHT}</GrayTextStyled>
 				</div>
 			</ContainerStyled>
 		</FooterStyled>
