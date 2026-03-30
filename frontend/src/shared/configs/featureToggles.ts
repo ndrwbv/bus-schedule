@@ -1,3 +1,3 @@
 export const featureToggles = {
-	ad: false,
+	ad: true,
 }
