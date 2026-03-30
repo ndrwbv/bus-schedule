@@ -3,6 +3,7 @@ import { HeaderActionsStyled, HeaderContainerBetaStyled, HeaderInnerStyled, Logo
 import { WriteMe } from 'entities/WriteMe'
 import { BottomSheetCustom } from 'features/BottomSheet/BottomSheet'
 import { Complains } from 'features/Complains'
+import { AboutProject, Donate } from 'features/Donate'
 import { FavoriteStops } from 'features/FavoriteStops'
 import { HeaderScore } from 'features/HeaderScore'
 import { Info } from 'features/Info'
@@ -64,6 +65,8 @@ export const Home: React.FC = () => {
 
 						<OtherTimeBusses />
 
+						<AboutProject />
+
 						<ContainerStyled>
 							<WriteMe />
 						</ContainerStyled>
@@ -72,6 +75,8 @@ export const Home: React.FC = () => {
 					<Footer />
 				</BottomSheetBgStyled>
 			</BottomSheetCustom>
+
+			<Donate />
 		</HomeContainerStyled>
 	)
 }
