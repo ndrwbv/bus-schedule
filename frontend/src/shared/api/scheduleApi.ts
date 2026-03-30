@@ -43,6 +43,19 @@ export interface ChangelogResponse {
 	offset: number
 }
 
+export interface LiveBusPosition {
+	lat: number
+	lng: number
+	description: string
+}
+
+export interface LiveResponse {
+	buses: LiveBusPosition[]
+	cachedAt: number
+}
+
+export type FeaturesResponse = Record<string, boolean>
+
 export const scheduleApi = createApi({
 	reducerPath: `scheduleApi`,
 	baseQuery: fetchBaseQuery({ baseUrl: API_BASE }),
@@ -58,10 +71,16 @@ export const scheduleApi = createApi({
 				return `/schedule/changelog?limit=${limit}&offset=${offset}`
 			},
 		}),
+		getLive: builder.query<LiveResponse, void>({
+			query: () => `/live`,
+		}),
+		getFeatures: builder.query<FeaturesResponse, void>({
+			query: () => `/features`,
+		}),
 	}),
 })
 
-export const { useGetScheduleQuery, useGetChangelogQuery } = scheduleApi
+export const { useGetScheduleQuery, useGetChangelogQuery, useGetLiveQuery, useGetFeaturesQuery } = scheduleApi
 
 // ─── localStorage cache helpers ──────────────────────────────────────────────
 

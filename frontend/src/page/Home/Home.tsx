@@ -10,6 +10,7 @@ import { Info } from 'features/Info'
 // import { LeaveFeedbackButton } from 'features/LeaveFeedbackButton'
 import { NearestStops } from 'features/NearestStops'
 import { OtherTimeBusses } from 'features/OtherTimeBuses'
+import { SettingsButton } from 'features/Settings'
 // import { ScheduleInfo } from 'features/ScheduleInfo'
 import { StripAd } from 'features/StripAd/StripAd'
 import { YandexAd } from 'features/YandexAd'
@@ -37,6 +38,7 @@ export const Home: React.FC = () => {
 
 						<HeaderActionsStyled>
 							<HeaderScore />
+							<SettingsButton />
 							{/* <FAQ /> */}
 						</HeaderActionsStyled>
 					</HeaderInnerStyled>

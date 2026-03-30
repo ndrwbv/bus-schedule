@@ -85,7 +85,16 @@ function initSchema(db: Database.Database): void {
       duration_ms INTEGER,
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
+
+    CREATE TABLE IF NOT EXISTS feature_flags (
+      key TEXT PRIMARY KEY,
+      enabled INTEGER NOT NULL DEFAULT 0,
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
   `);
+
+  // Seed default feature flags
+  db.prepare(`INSERT OR IGNORE INTO feature_flags (key, enabled) VALUES ('liveTracking', 1)`).run();
 }
 
 function seedIfEmpty(db: Database.Database): void {

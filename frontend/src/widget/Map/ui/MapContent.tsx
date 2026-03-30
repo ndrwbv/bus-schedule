@@ -22,6 +22,7 @@ import useEverySecondUpdater from 'shared/store/timeLeft/useEverySecondUpdater'
 import { TMap } from '../TMap'
 import { getPinContent } from './getPinContent'
 import { GlobalStyle } from './GlobalStyle'
+import { LiveBusLayer } from './LiveBusLayer'
 
 interface IFeature {
 	type: 'Feature'
@@ -309,5 +310,10 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 		})
 	}, [dispath, map])
 
-	return <GlobalStyle />
+	return (
+		<>
+			<GlobalStyle />
+			<LiveBusLayer map={map} />
+		</>
+	)
 }

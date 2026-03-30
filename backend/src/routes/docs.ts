@@ -259,6 +259,90 @@ const spec = {
         },
       },
     },
+    '/live': {
+      get: {
+        tags: ['Live Tracking'],
+        summary: 'Позиции автобусов в реальном времени',
+        description: 'Проксирует данные от перевозчика. Кеширует ответ на 10 секунд. Возвращает 404 если feature flag `liveTracking` выключен.',
+        responses: {
+          '200': {
+            description: 'Позиции автобусов',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    buses: {
+                      type: 'array',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          lat: { type: 'number', example: 56.474916 },
+                          lng: { type: 'number', example: 84.950243 },
+                          description: { type: 'string', example: '112Д (Томск - Дзержинское)' },
+                        },
+                      },
+                    },
+                    cachedAt: { type: 'integer', example: 1711800000000 },
+                  },
+                },
+              },
+            },
+          },
+          '404': { description: 'Feature disabled' },
+          '503': { description: 'Данные временно недоступны' },
+        },
+      },
+    },
+    '/features': {
+      get: {
+        tags: ['System'],
+        summary: 'Получить feature flags',
+        responses: {
+          '200': {
+            description: 'Объект с флагами',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  example: { liveTracking: true },
+                  additionalProperties: { type: 'boolean' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    '/features/{flag}': {
+      put: {
+        tags: ['System'],
+        summary: 'Включить/выключить feature flag',
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          { in: 'path', name: 'flag', required: true, schema: { type: 'string', example: 'liveTracking' } },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: { enabled: { type: 'boolean' } },
+                required: ['enabled'],
+              },
+            },
+          },
+        },
+        responses: {
+          '200': {
+            description: 'Флаг обновлён',
+            content: { 'application/json': { schema: { type: 'object', example: { liveTracking: false } } } },
+          },
+          '401': { description: 'Неверный токен' },
+        },
+      },
+    },
   },
 }
 

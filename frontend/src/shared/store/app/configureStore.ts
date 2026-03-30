@@ -3,6 +3,7 @@ import bottomSheetSlice from 'features/BottomSheet/model/bottomSheetSlice'
 import favoriteStops from 'features/FavoriteStops/model/favoriteStopsSlice'
 import { infoApi } from 'features/Info/model/info'
 import myLocationSlice from 'features/MyLocation/model/myLocationSlice'
+import settings from 'features/Settings/model/settingsSlice'
 import { scheduleApi } from 'shared/api/scheduleApi'
 import busStopInfo from 'shared/store/busStop/busStopInfoSlice'
 import { holidaysSetter } from 'shared/store/holidays/holidaysMiddleware'
@@ -15,6 +16,7 @@ import featureToggle from './featureToggleSlice'
 export const store = configureStore({
 	reducer: {
 		featureToggle,
+		settings,
 		busStopInfo,
 		scheduleSlice,
 		favoriteStops,
