@@ -108,7 +108,7 @@ export const Dev: FC = () => {
 	const handleAddStop = (): void => {
 		const schedule = addStopAfter({
 			stopName: `Маяк`,
-			afterStop: `Марины Цветаевой (Торта)`,
+			afterStop: `ул. М. Цветаевой`,
 			on: 1,
 			lessThenTimeCode: `12:38`,
 			exceptDays: [0, 6],
