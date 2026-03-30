@@ -39,18 +39,17 @@ export const Fastreply: React.FC = () => {
 
 	const { addComplain } = useComplainsContext()
 
-	const isOnCooldown = useCallback(
-		(stopLabel: string): boolean => {
-			const until = cooldownsRef.current[stopLabel]
-			if (!until) return false
-			if (Date.now() >= until) {
-				delete cooldownsRef.current[stopLabel]
-				return false
-			}
-			return true
-		},
-		[],
-	)
+	const isOnCooldown = useCallback((stopLabel: string): boolean => {
+		const until = cooldownsRef.current[stopLabel]
+		if (!until) return false
+		if (Date.now() >= until) {
+			delete cooldownsRef.current[stopLabel]
+
+			return false
+		}
+
+		return true
+	}, [])
 
 	const handleFastReplyClick = (key: ComplainType | null): void => {
 		if (!key || !busStopNew) return
