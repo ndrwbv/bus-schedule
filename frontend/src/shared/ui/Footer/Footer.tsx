@@ -17,13 +17,12 @@ export const Footer: React.FC<{ onAbout?: () => void }> = ({ onAbout }) => {
 							Играть
 						</Link>
 					</GrayTextStyled>
-					<GrayTextStyled>
-						{onAbout ? (
-							<FooterLinkStyled onClick={onAbout}>{COPYRIGHT}</FooterLinkStyled>
-						) : (
-							COPYRIGHT
-						)}
-					</GrayTextStyled>
+					{onAbout && (
+						<GrayTextStyled>
+							<FooterLinkStyled onClick={onAbout}>О проекте</FooterLinkStyled>
+						</GrayTextStyled>
+					)}
+					<GrayTextStyled>{COPYRIGHT}</GrayTextStyled>
 				</div>
 			</ContainerStyled>
 		</FooterStyled>

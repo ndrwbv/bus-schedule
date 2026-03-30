@@ -1,23 +1,5 @@
 import styled from 'styled-components'
 
-export const DonateCardStyled = styled.div`
-	background: #ffffff;
-	box-shadow: 2px 2px 25px rgba(210, 210, 210, 0.25);
-	border-radius: 25px;
-	padding: 18px 14px 14px 14px;
-`
-
-export const DonateHeaderStyled = styled.div`
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-`
-
-export const DonateTitleStyled = styled.p`
-	font-size: 20px;
-	font-weight: 600;
-	padding-left: 6px;
-`
 
 // Modal
 
