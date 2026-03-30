@@ -77,52 +77,89 @@ scheduleRouter.post(
       return
     }
 
-    const { url, force } = req.body as { url?: string; force?: string | boolean }
+    const { url, force, sync } = req.body as { url?: string; force?: string | boolean; sync?: string | boolean }
     const fileBuffer = req.file?.buffer
     const isForce = force === true || force === 'true'
+    const isSync = sync === true || sync === 'true'
 
-    try {
-      const result = await runPipeline({
-        trigger: 'api',
-        url,
-        force: isForce,
-        fileBuffer,
-      })
+    const pipelineOpts = { trigger: 'api' as const, url, force: isForce, fileBuffer }
 
-      if (result.status === 'error') {
-        res.status(422).json({
-          error: 'validation_failed',
-          message: 'Парсинг не прошёл валидацию',
-          details: result.error,
-          errorStage: result.errorStage,
-        })
-        return
-      }
+    // File uploads run synchronously (fast, no browser needed)
+    // URL/scrape requests run in background by default (Puppeteer is slow)
+    if (fileBuffer || isSync) {
+      try {
+        const result = await runPipeline(pipelineOpts)
 
-      if (result.status === 'no_changes') {
+        if (result.status === 'error') {
+          res.status(422).json({
+            error: 'validation_failed',
+            message: 'Парсинг не прошёл валидацию',
+            details: result.error,
+            errorStage: result.errorStage,
+          })
+          return
+        }
+
+        if (result.status === 'no_changes') {
+          res.json({
+            status: 'no_changes',
+            fileHash: result.fileHash,
+            message: 'Расписание актуально',
+          })
+          return
+        }
+
         res.json({
-          status: 'no_changes',
+          status: 'updated',
+          parseMethod: result.parseMethod,
           fileHash: result.fileHash,
-          message: 'Расписание актуально',
+          stopsCount: result.stopsCount,
+          tripsCount: result.tripsCount,
+          changesSummary: result.changesSummary,
+          durationMs: result.durationMs,
         })
-        return
+      } catch (err) {
+        console.error('POST /schedule/refresh error:', err)
+        res.status(500).json({ error: 'internal_error', message: String(err) })
       }
-
-      res.json({
-        status: 'updated',
-        parseMethod: result.parseMethod,
-        fileHash: result.fileHash,
-        stopsCount: result.stopsCount,
-        tripsCount: result.tripsCount,
-        changesSummary: result.changesSummary,
-        durationMs: result.durationMs,
+    } else {
+      // Run pipeline in background to avoid nginx 504 timeout
+      res.json({ status: 'accepted', message: 'Обновление запущено в фоне. Результат в /api/schedule/refresh/status' })
+      runPipeline(pipelineOpts).then((result) => {
+        console.log(`[pipeline] Фоновый запуск завершён: ${result.status}`, result.error ?? '')
+      }).catch((err) => {
+        console.error('[pipeline] Фоновый запуск упал:', err)
       })
-    } catch (err) {
-      console.error('POST /schedule/refresh error:', err)
-      res.status(500).json({ error: 'internal_error', message: String(err) })
     }
   },
 )
+
+// ─── GET /api/schedule/refresh/status ─────────────────────────────────────────
+
+scheduleRouter.get('/schedule/refresh/status', (req: Request, res: Response) => {
+  const adminToken = process.env.ADMIN_TOKEN
+  const auth = req.headers.authorization ?? ''
+  const token = auth.startsWith('Bearer ') ? auth.slice(7) : ''
+  if (!adminToken || token !== adminToken) {
+    res.status(401).json({ error: 'unauthorized' })
+    return
+  }
+
+  const db = getDb()
+  const lastRun = db
+    .prepare(
+      `SELECT id, trigger, status, error_message, error_stage, parse_method, file_hash, duration_ms, created_at
+       FROM schedule_pipeline_runs ORDER BY id DESC LIMIT 1`,
+    )
+    .get()
+
+  if (!lastRun) {
+    res.json({ status: 'no_runs', message: 'Пайплайн ещё не запускался' })
+    return
+  }
+
+  res.json(lastRun)
+})
 
 // ─── GET /api/schedule/changelog ──────────────────────────────────────────────
 
