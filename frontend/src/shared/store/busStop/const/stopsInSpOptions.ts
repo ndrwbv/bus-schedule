@@ -81,7 +81,7 @@ export const STOPS_IN_SP: IStops<DirectionsNew.inSP>[] = [
 	},
 	{
 		id: `28`,
-		label: `Марины Цветаевой (Торта)`,
+		label: `ул. М. Цветаевой`,
 		direction: DirectionsNew.inSP,
 		latLon: [56.471773, 84.900123],
 	},
@@ -90,12 +90,6 @@ export const STOPS_IN_SP: IStops<DirectionsNew.inSP>[] = [
 		label: `Маяк`,
 		direction: DirectionsNew.inSP,
 		latLon: [56.473628, 84.89927],
-	},
-	{
-		id: `29`,
-		label: `Марины Цветаевой`,
-		direction: DirectionsNew.inSP,
-		latLon: [56.470749, 84.900316],
 	},
 	{
 		id: `30`,
