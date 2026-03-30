@@ -1,18 +1,16 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
-import Select, { SingleValue } from 'react-select'
 import { Fastreply } from 'features/Complains'
 import { HowMuchLeft } from 'features/HowMuchLeft/HowMuchLeft'
 import { AndrewLytics } from 'shared/lib'
-import { IOption, StopKeys, UserDirection } from 'shared/store/busStop/Stops'
+import { StopKeys, UserDirection } from 'shared/store/busStop/Stops'
 import { todayHolidaySelector } from 'shared/store/holidays/holidaysSlice'
 import { leftSelector } from 'shared/store/timeLeft/timeLeftSlice'
 import { useTimeLeftUpdater } from 'shared/store/timeLeft/useTimeLeftUpdater'
 import { CardStyled, ContainerStyled } from 'shared/ui'
 import { Header } from 'shared/ui/Header'
 import { InlineOptions } from 'shared/ui/InlineOptions'
-import { selectStyles } from 'shared/ui/SelectStyles'
 
 import {
 	availableUserDirectionsSelector,
@@ -23,6 +21,7 @@ import {
 	userDirectionSelector,
 } from '../../shared/store/busStop/busStopInfoSlice'
 import { useUrlBusStop } from './model/useUrlBusStop'
+import { StopPickerModal } from './ui/StopPickerModal'
 
 const USER_DIRECTION_LABELS: Record<UserDirection, string> = {
 	[UserDirection.fromCity]: `Из города`,
@@ -43,13 +42,8 @@ export const BusStop: React.FC = () => {
 	const availableUserDirections = useSelector(availableUserDirectionsSelector)
 
 	const handleChangeBusStop = useCallback(
-		(e: SingleValue<IOption<string | null>>) => {
-			if (!e?.value) return
-
-			const busStopToChange = e.value as StopKeys
-
+		(busStopToChange: StopKeys) => {
 			dispatch(setBusStop(busStopToChange))
-
 			AndrewLytics(`selectBusStop`)
 		},
 		[dispatch],
@@ -69,11 +63,6 @@ export const BusStop: React.FC = () => {
 		setQueryParams(busStopNew)
 	}, [busStopNew, setQueryParams])
 
-	const currentBusStop = useMemo(
-		() => stopsOptions.find(stop => stop.value === busStopNew?.label),
-		[stopsOptions, busStopNew],
-	) // TODO remove find
-
 	const directionOptions = useMemo(
 		() =>
 			availableUserDirections.map(d => ({
@@ -89,13 +78,10 @@ export const BusStop: React.FC = () => {
 		<ContainerStyled>
 			<CardStyled>
 				<Header text={headerText}>
-					<Select
-						isSearchable={false}
-						styles={selectStyles}
+					<StopPickerModal
 						options={stopsOptions}
+						value={busStopNew?.label ?? null}
 						onChange={handleChangeBusStop}
-						value={currentBusStop}
-						defaultValue={stopsOptions[0]}
 					/>
 				</Header>
 
