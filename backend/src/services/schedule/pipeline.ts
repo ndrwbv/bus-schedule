@@ -1,5 +1,5 @@
 import { getDb } from '../db'
-import { telegramAlerter } from '../telegram/alerter'
+import { telegramAlerter, pollSubscribers } from '../telegram/alerter'
 import { scrapeCarrierUrl } from './carrierScraper'
 import { downloadFromCloudMail } from './cloudMailDownloader'
 import { pipelineLogger } from './logger'
@@ -70,6 +70,9 @@ export async function runPipeline(opts: PipelineOptions = {}): Promise<PipelineR
     )
     return { ...result, durationMs: duration }
   }
+
+  // Обновляем список подписчиков перед отправкой алертов
+  await pollSubscribers()
 
   try {
     // ── Step 1: получить файл ──────────────────────────────────────────────
@@ -200,6 +203,9 @@ export async function runPipeline(opts: PipelineOptions = {}): Promise<PipelineR
       changesSummary: summary,
     })
   } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    pipelineLogger.error('save', msg)
+    await telegramAlerter.saveError(msg)
     return finish(pipelineError(err, 'save'))
   }
 }

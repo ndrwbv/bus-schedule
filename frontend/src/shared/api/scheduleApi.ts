@@ -8,6 +8,7 @@ const CACHE_TTL_MS = 24 * 60 * 60 * 1000 // 24 hours
 
 export interface ScheduleMeta {
 	updatedAt: string
+	lastCheckedAt: string
 	parseMethod: string
 	fileHash: string
 }

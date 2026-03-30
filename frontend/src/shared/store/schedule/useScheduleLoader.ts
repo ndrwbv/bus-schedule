@@ -23,6 +23,7 @@ export function useScheduleLoader(): void {
 					schedule: cached.schedule,
 					source: `cache`,
 					updatedAt: cached.meta.updatedAt,
+					lastCheckedAt: cached.meta.lastCheckedAt,
 					parseMethod: cached.meta.parseMethod,
 				}),
 			)
@@ -40,6 +41,7 @@ export function useScheduleLoader(): void {
 				schedule: data.schedule,
 				source: `api`,
 				updatedAt: data.meta.updatedAt,
+				lastCheckedAt: data.meta.lastCheckedAt,
 				parseMethod: data.meta.parseMethod,
 			}),
 		)
