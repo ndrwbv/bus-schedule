@@ -148,6 +148,18 @@ async function broadcastMessage(text: string): Promise<void> {
 }
 
 export const telegramAlerter = {
+  /** Пайплайн запущен */
+  pipelineStarted: (trigger: string, hasUrl: boolean, hasFile: boolean) => {
+    const source = hasFile ? 'загрузка файла' : hasUrl ? 'прямая ссылка' : 'скрейпинг + скачивание'
+    return broadcastMessage(
+      `🔄 <b>SeverBus: обновление запущено</b>\n\nИсточник: ${source}\nТриггер: ${trigger}`,
+    )
+  },
+
+  /** Прогресс пайплайна */
+  pipelineProgress: (stage: string) =>
+    broadcastMessage(`⏳ <b>SeverBus</b>: ${stage}`),
+
   /** Ошибка скрейпинга сайта перевозчика */
   scrapeError: (reason: string) =>
     broadcastMessage(

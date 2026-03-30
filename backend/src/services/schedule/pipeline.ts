@@ -74,6 +74,9 @@ export async function runPipeline(opts: PipelineOptions = {}): Promise<PipelineR
   // Обновляем список подписчиков перед отправкой алертов
   await pollSubscribers()
 
+  // Уведомляем о старте
+  await telegramAlerter.pipelineStarted(trigger, !!url, !!fileBuffer)
+
   try {
     // ── Step 1: получить файл ──────────────────────────────────────────────
     let fileData: Buffer
@@ -86,6 +89,7 @@ export async function runPipeline(opts: PipelineOptions = {}): Promise<PipelineR
         cloudMailUrl = url
       } else {
         try {
+          await telegramAlerter.pipelineProgress('Скрейпинг сайта перевозчика...')
           cloudMailUrl = await scrapeCarrierUrl()
           pipelineLogger.info('scrape', `Найдена ссылка: ${cloudMailUrl}`)
         } catch (err) {
@@ -97,6 +101,7 @@ export async function runPipeline(opts: PipelineOptions = {}): Promise<PipelineR
       }
 
       try {
+        await telegramAlerter.pipelineProgress('Скачивание с Cloud Mail.ru (~60 сек)...')
         fileData = await downloadFromCloudMail(cloudMailUrl)
         pipelineLogger.info('download', `Файл скачан, ${fileData.length} байт`)
       } catch (err) {
@@ -123,6 +128,7 @@ export async function runPipeline(opts: PipelineOptions = {}): Promise<PipelineR
     }
 
     // ── Step 3: парсинг ───────────────────────────────────────────────────
+    await telegramAlerter.pipelineProgress('Парсинг файла...')
     let newSchedule: ISchedule
     try {
       newSchedule = parseDocx(fileData)
@@ -135,6 +141,7 @@ export async function runPipeline(opts: PipelineOptions = {}): Promise<PipelineR
     }
 
     // ── Step 4: валидация ─────────────────────────────────────────────────
+    await telegramAlerter.pipelineProgress('Валидация расписания...')
     const currentRow = db
       .prepare(`SELECT data FROM schedule WHERE is_active = 1 LIMIT 1`)
       .get() as { data: string } | undefined
