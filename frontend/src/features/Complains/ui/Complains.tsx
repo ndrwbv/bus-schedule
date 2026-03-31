@@ -1,14 +1,13 @@
 import React, { useMemo, useState } from 'react'
+import { BottomSheet } from 'react-spring-bottom-sheet'
 import { AndrewLytics } from 'shared/lib'
 import { CardStyled, ContainerStyled, MiniButtonStyled } from 'shared/ui/common'
 import { HeaderTextStyled } from 'shared/ui/Header/styled'
 import { BottomSheetBgStyled } from 'shared/ui/MainLayout'
-import { Drawer } from 'vaul'
 
 import { PopupContentStyled } from '../../../shared/ui/Popup/PopupContent'
 import { getHumanDate } from '../helpers'
 import { useComplainsContext } from '../model/ComplainsContext'
-import styles from './complains.module.css'
 import { ComplainsMessage } from './ComplainsMessage'
 import {
 	ComplainCountStyled,
@@ -43,30 +42,24 @@ export const Complains: React.FC = () => {
 	return (
 		<ContainerStyled>
 			<CardStyled>
-				<Drawer.Root open={isOpen} onOpenChange={setIsOpen}>
-					<Drawer.Portal>
-						<Drawer.Overlay className={styles.overlay} />
-						<Drawer.Content className={styles.content}>
-							<div className={styles.handleArea}>
-								<div className={styles.handle} />
-							</div>
-							<div className={styles.scrollArea} data-vaul-no-drag>
-								<BottomSheetBgStyled $bg="#fff">
-									<PopupContentStyled>
-										<InfoTextStyled>
-											Жалобы попадают автоматически после выбора опции «Приехал раньше» или
-											«Приехал позже». Кнопки появляются в секции «Остановка» при выбранной
-											остановке.
-										</InfoTextStyled>
-										{complains.map(c => (
-											<ComplainsMessage {...c} key={c.id} />
-										))}
-									</PopupContentStyled>
-								</BottomSheetBgStyled>
-							</div>
-						</Drawer.Content>
-					</Drawer.Portal>
-				</Drawer.Root>
+				<BottomSheet
+					open={isOpen}
+					onDismiss={() => setIsOpen(false)}
+					defaultSnap={({ maxHeight }) => maxHeight / 2}
+					snapPoints={({ maxHeight }) => [maxHeight - maxHeight / 10, maxHeight / 4, maxHeight * 0.6]}
+				>
+					<BottomSheetBgStyled $bg="#fff">
+						<PopupContentStyled>
+							<InfoTextStyled>
+								Жалобы попадают автоматически после выбора опции «Приехал раньше» или «Приехал позже».
+								Кнопки появляются в секции «Остановка» при выбранной остановке.
+							</InfoTextStyled>
+							{complains.map(c => (
+								<ComplainsMessage {...c} key={c.id} />
+							))}
+						</PopupContentStyled>
+					</BottomSheetBgStyled>
+				</BottomSheet>
 
 				<ComplainsContainerStyled>
 					<div>
