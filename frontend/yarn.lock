@@ -3964,13 +3964,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/stats.js@npm:*":
-  version: 0.17.0
-  resolution: "@types/stats.js@npm:0.17.0"
-  checksum: ac8dc5e622fa3b7cc37b9e21663193a2f171a4f5896285e4dfc04f2874acbb75edc958f077bffbd85b0ae358daa5bf4ecbc71210386a4300bff05d09435e35f9
-  languageName: node
-  linkType: hard
-
 "@types/styled-components@npm:^5.1.26":
   version: 5.1.26
   resolution: "@types/styled-components@npm:5.1.26"
@@ -3986,18 +3979,6 @@ __metadata:
   version: 4.2.0
   resolution: "@types/stylis@npm:4.2.0"
   checksum: 02a47584acd2fcb664f7d8270a69686c83752bdfb855f804015d33116a2b09c0b2ac535213a4a7b6d3a78b2915b22b4024cce067ae979beee0e4f8f5fdbc26a9
-  languageName: node
-  linkType: hard
-
-"@types/three@npm:^0.150.1":
-  version: 0.150.1
-  resolution: "@types/three@npm:0.150.1"
-  dependencies:
-    "@types/stats.js": "*"
-    "@types/webxr": "*"
-    fflate: ~0.6.9
-    lil-gui: ~0.17.0
-  checksum: 6cb4656461643db49bb676849e8957d537adf574bd00effed7be06e22a012d084b8f7272d577ce810c3015a183fe203b7c4a4d7f2485f348ebf056fbeb46c15a
   languageName: node
   linkType: hard
 
@@ -4019,13 +4000,6 @@ __metadata:
   version: 3.0.0
   resolution: "@types/warning@npm:3.0.0"
   checksum: 120dcf90600d583c68a60872200061eab9318ae15ea898581f8e9a6dc71b7941095dd81d8324e36d2a6006e5e12b6fc1cf8eda00cc514ee12bb39a912cc4e040
-  languageName: node
-  linkType: hard
-
-"@types/webxr@npm:*":
-  version: 0.5.1
-  resolution: "@types/webxr@npm:0.5.1"
-  checksum: a77c6be72623679341526dbec18971db0824d5697626d56decc8bb5b73491582b64d094c168ae8d00861549122ca066d7dc45d9cbb5c608626be7f48a6cd7c43
   languageName: node
   linkType: hard
 
@@ -4773,7 +4747,6 @@ __metadata:
     "@types/react": ^18.0.27
     "@types/react-dom": ^18.0.10
     "@types/styled-components": ^5.1.26
-    "@types/three": ^0.150.1
     "@typescript-eslint/eslint-plugin": ^6.0.0
     "@typescript-eslint/parser": ^6.0.0
     "@vitejs/plugin-react": ^3.0.1
@@ -4813,7 +4786,6 @@ __metadata:
     react-yandex-metrika: ^2.6.0
     rollup-plugin-visualizer: ^5.9.0
     styled-components: ^6.0.4
-    three: ^0.151.3
     typescript: ^5.1.6
     vite: ^4.4.4
     vite-plugin-checker: ^0.5.4
@@ -6079,13 +6051,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fflate@npm:~0.6.9":
-  version: 0.6.10
-  resolution: "fflate@npm:0.6.10"
-  checksum: 96384bc4090987fe565c0de8204e3830f538144ec950576fea50aee1b42adbe9fc3ed5e7905dfa7979faaa20979def330dbebce548f3dcafc3e118cc9838526d
-  languageName: node
-  linkType: hard
-
 "file-entry-cache@npm:^6.0.1":
   version: 6.0.1
   resolution: "file-entry-cache@npm:6.0.1"
@@ -7325,13 +7290,6 @@ __metadata:
     prelude-ls: ^1.2.1
     type-check: ~0.4.0
   checksum: 12c5021c859bd0f5248561bf139121f0358285ec545ebf48bb3d346820d5c61a4309535c7f387ed7d84361cf821e124ce346c6b7cef8ee09a67c1473b46d0fc4
-  languageName: node
-  linkType: hard
-
-"lil-gui@npm:~0.17.0":
-  version: 0.17.0
-  resolution: "lil-gui@npm:0.17.0"
-  checksum: a6f33e90748ea98477f1f7af6d6cbdc4a1b38ce9da86d674d73f7b0bbdc7f3e947d81edee04c32f33fb28c69a108ba04c24270a8398064ffcc56ffeabc0a916e
   languageName: node
   linkType: hard
 
@@ -9430,13 +9388,6 @@ __metadata:
   version: 0.2.0
   resolution: "text-table@npm:0.2.0"
   checksum: b6937a38c80c7f84d9c11dd75e49d5c44f71d95e810a3250bd1f1797fc7117c57698204adf676b71497acc205d769d65c16ae8fa10afad832ae1322630aef10a
-  languageName: node
-  linkType: hard
-
-"three@npm:^0.151.3":
-  version: 0.151.3
-  resolution: "three@npm:0.151.3"
-  checksum: cb6f10e4e409bbc4677d2128470c4e0bdb29f7879a77bc800180e30bda3527816c45b47ac10228f346cfc7501234457f63a87c1bdd5c3b6e2841d523e5d6eb79
   languageName: node
   linkType: hard
 
