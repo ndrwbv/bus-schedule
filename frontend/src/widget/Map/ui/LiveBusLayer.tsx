@@ -11,18 +11,28 @@ import { TMap } from '../TMap'
 
 const SOURCE_ID = `livebus-source`
 const LAYER_PULSE = `livebus-pulse`
-const LAYER_DOT = `livebus-dot`
+const LAYER_ICON = `livebus-icon`
+const PULSE_PERIOD = 2000 // ms per cycle
+const LERP_SPEED = 2.5 // exponential lerp speed (units/sec)
 
 const EMPTY_GEOJSON: GeoJSON.FeatureCollection = { type: `FeatureCollection`, features: [] }
 
-function buildGeoJSON(buses: { lat: number; lng: number; description: string }[]): GeoJSON.FeatureCollection {
+interface BusState {
+	curLng: number
+	curLat: number
+	tgtLng: number
+	tgtLat: number
+	description: string
+}
+
+function buildGeoJSON(states: BusState[]): GeoJSON.FeatureCollection {
 	return {
 		type: `FeatureCollection`,
-		features: buses.map((bus, i) => ({
+		features: states.map((s, i) => ({
 			type: `Feature`,
 			id: i,
-			properties: { description: bus.description },
-			geometry: { type: `Point`, coordinates: [bus.lng, bus.lat] },
+			properties: { description: s.description },
+			geometry: { type: `Point`, coordinates: [s.curLng, s.curLat] },
 		})),
 	}
 }
@@ -40,18 +50,26 @@ function addLayers(map: maptilersdk.Map): void {
 		map.addSource(SOURCE_ID, { type: `geojson`, data: EMPTY_GEOJSON })
 	}
 
+	// Pulse circle — starts outside the icon edge (~22px) and grows outward
 	if (!hasLayer(map, LAYER_PULSE)) {
 		map.addLayer({
 			id: LAYER_PULSE,
 			type: `circle`,
 			source: SOURCE_ID,
-			paint: { 'circle-radius': 18, 'circle-color': `#FF6B35`, 'circle-opacity': 0.3, 'circle-stroke-width': 0 },
+			paint: {
+				'circle-radius': 22,
+				'circle-color': `#FF6B35`,
+				'circle-opacity': 0.4,
+				'circle-stroke-width': 0,
+				'circle-pitch-alignment': `map`,
+			},
 		})
 	}
 
-	if (!hasLayer(map, LAYER_DOT)) {
+	// Bus icon symbol layer
+	if (!hasLayer(map, LAYER_ICON)) {
 		map.addLayer({
-			id: LAYER_DOT,
+			id: LAYER_ICON,
 			type: `symbol`,
 			source: SOURCE_ID,
 			layout: {
@@ -66,27 +84,12 @@ function addLayers(map: maptilersdk.Map): void {
 
 function removeLayers(map: maptilersdk.Map): void {
 	try {
+		if (hasLayer(map, LAYER_ICON)) map.removeLayer(LAYER_ICON)
 		if (hasLayer(map, LAYER_PULSE)) map.removeLayer(LAYER_PULSE)
-		if (hasLayer(map, LAYER_DOT)) map.removeLayer(LAYER_DOT)
 		if (hasSource(map, SOURCE_ID)) map.removeSource(SOURCE_ID)
 	} catch {
 		// map already destroyed
 	}
-}
-
-function startPulse(map: maptilersdk.Map): number {
-	let t = 0
-
-	const tick = (): void => {
-		t += 0.03
-		if (hasLayer(map, LAYER_PULSE)) {
-			map.setPaintProperty(LAYER_PULSE, `circle-radius`, 12 + Math.sin(t) * 6)
-			map.setPaintProperty(LAYER_PULSE, `circle-opacity`, 0.15 + Math.abs(Math.sin(t)) * 0.25)
-		}
-		requestAnimationFrame(tick)
-	}
-
-	return requestAnimationFrame(tick)
 }
 
 export const LiveBusLayer: React.FC<{ map: TMap }> = ({ map }) => {
@@ -95,8 +98,10 @@ export const LiveBusLayer: React.FC<{ map: TMap }> = ({ map }) => {
 	const showLiveBus = useSelector(showLiveBusSelector)
 	const shouldPoll = liveTrackingEnabled && showLiveBus
 
-	const pulseAnimRef = useRef<number | null>(null)
+	const animFrameRef = useRef<number | null>(null)
 	const layersAddedRef = useRef(false)
+	const busStatesRef = useRef<BusState[]>([])
+	const lastFrameTimeRef = useRef<number>(0)
 
 	const { data: features } = useGetFeaturesQuery(undefined, { pollingInterval: 60_000 })
 
@@ -109,14 +114,54 @@ export const LiveBusLayer: React.FC<{ map: TMap }> = ({ map }) => {
 		skip: !shouldPoll,
 	})
 
-	// Add source + layers once map is ready
+	// Main animation loop: lerp positions + pulse
+	const startAnimLoop = (animMap: maptilersdk.Map): number => {
+		const tick = (now: number): void => {
+			const dt = lastFrameTimeRef.current ? Math.min((now - lastFrameTimeRef.current) / 1000, 0.1) : 0
+			lastFrameTimeRef.current = now
+
+			// Lerp bus positions
+			const states = busStatesRef.current
+			let dirty = false
+
+			for (const s of states) {
+				const alpha = 1 - Math.exp(-LERP_SPEED * dt)
+				const newLng = s.curLng + (s.tgtLng - s.curLng) * alpha
+				const newLat = s.curLat + (s.tgtLat - s.curLat) * alpha
+
+				if (Math.abs(newLng - s.curLng) > 1e-8 || Math.abs(newLat - s.curLat) > 1e-8) {
+					s.curLng = newLng
+					s.curLat = newLat
+					dirty = true
+				}
+			}
+
+			if (dirty && hasSource(animMap, SOURCE_ID)) {
+				const src = animMap.getSource(SOURCE_ID) as maptilersdk.GeoJSONSource | undefined
+				src?.setData(buildGeoJSON(states))
+			}
+
+			// Pulse: grow from icon edge outward and fade
+			if (hasLayer(animMap, LAYER_PULSE) && states.length > 0) {
+				const t = (now % PULSE_PERIOD) / PULSE_PERIOD
+				animMap.setPaintProperty(LAYER_PULSE, `circle-radius`, 22 + t * 18) // 22 → 40
+				animMap.setPaintProperty(LAYER_PULSE, `circle-opacity`, 0.45 * (1 - t))
+			}
+
+			animFrameRef.current = requestAnimationFrame(tick)
+		}
+
+		return requestAnimationFrame(tick)
+	}
+
+	// Setup layers once map is ready
 	useEffect(() => {
 		if (!map || layersAddedRef.current) return
 
 		const activate = (): void => {
 			addLayers(map)
 			layersAddedRef.current = true
-			pulseAnimRef.current = startPulse(map)
+			animFrameRef.current = startAnimLoop(map)
 		}
 
 		const setup = (): void => {
@@ -128,33 +173,45 @@ export const LiveBusLayer: React.FC<{ map: TMap }> = ({ map }) => {
 		} else {
 			void map.once(`load`, setup)
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [map])
 
-	// Update source data when live data changes
+	// Sync incoming bus data into busStatesRef
 	useEffect(() => {
-		if (!map || !layersAddedRef.current) return
+		const incoming = shouldPoll ? liveData?.buses ?? [] : []
 
-		const source = map.getSource(SOURCE_ID) as maptilersdk.GeoJSONSource | undefined
-		if (!source) return
+		const prev = busStatesRef.current
 
-		const buses = shouldPoll ? liveData?.buses ?? [] : []
-		source.setData(buildGeoJSON(buses))
+		busStatesRef.current = incoming.map((bus, i) => {
+			const existing = i < prev.length ? prev[i] : undefined
+
+			if (existing !== undefined) {
+				// Update target, keep current animated position for smooth lerp
+				existing.tgtLng = bus.lng
+				existing.tgtLat = bus.lat
+				existing.description = bus.description
+
+				return existing
+			}
+
+			// New bus: start at target position (no lerp on first appearance)
+			return { curLng: bus.lng, curLat: bus.lat, tgtLng: bus.lng, tgtLat: bus.lat, description: bus.description }
+		})
+
+		// If no buses, clear source immediately
+		if (incoming.length === 0 && map && layersAddedRef.current) {
+			const src = map.getSource(SOURCE_ID) as maptilersdk.GeoJSONSource | undefined
+			src?.setData(EMPTY_GEOJSON)
+		}
 	}, [liveData, shouldPoll, map])
-
-	// Clear data when disabled
-	useEffect(() => {
-		if (shouldPoll || !map || !layersAddedRef.current) return
-
-		const source = map.getSource(SOURCE_ID) as maptilersdk.GeoJSONSource | undefined
-		source?.setData(EMPTY_GEOJSON)
-	}, [shouldPoll, map])
 
 	// Cleanup on unmount
 	useEffect(() => {
 		return () => {
-			if (pulseAnimRef.current) cancelAnimationFrame(pulseAnimRef.current)
+			if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current)
 			if (map) removeLayers(map)
 			layersAddedRef.current = false
+			busStatesRef.current = []
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
