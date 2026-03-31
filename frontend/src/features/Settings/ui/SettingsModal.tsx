@@ -4,18 +4,25 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useGetFeaturesQuery } from 'shared/api/scheduleApi'
 import { AndrewLytics } from 'shared/lib'
 import { liveTrackingEnabledSelector } from 'shared/store/app/selectors/liveTracking'
+import { MapProvider } from 'widget/Map/mapProvider'
 
-import { setShowLiveBus, showLiveBusSelector } from '../model/settingsSlice'
+import { mapProviderSelector, setMapProvider, setShowLiveBus, showLiveBusSelector } from '../model/settingsSlice'
 import styles from './settingsModal.module.css'
 
 interface Props {
 	onClose: () => void
 }
 
+const PROVIDER_OPTIONS: { value: MapProvider; label: string; subtitle: string }[] = [
+	{ value: `openfreemap`, label: `OpenFreeMap`, subtitle: `Бесплатно, без лимитов` },
+	{ value: `maptiler`, label: `MapTiler`, subtitle: `Лимит запросов, нужен API-ключ` },
+]
+
 export const SettingsModal: React.FC<Props> = ({ onClose }) => {
 	const dispatch = useDispatch()
 	const showLiveBus = useSelector(showLiveBusSelector)
 	const liveTrackingEnabled = useSelector(liveTrackingEnabledSelector)
+	const mapProvider = useSelector(mapProviderSelector)
 
 	// Keep polling features to stay in sync
 	useGetFeaturesQuery(undefined, { pollingInterval: 60_000 })
@@ -25,6 +32,12 @@ export const SettingsModal: React.FC<Props> = ({ onClose }) => {
 		const newValue = !showLiveBus
 		dispatch(setShowLiveBus(newValue))
 		AndrewLytics(newValue ? `set_live_bus_on` : `set_live_bus_off`)
+	}
+
+	const handleProviderChange = (provider: MapProvider): void => {
+		if (provider === mapProvider) return
+		dispatch(setMapProvider(provider))
+		AndrewLytics(`set_map_provider_${provider}`)
 	}
 
 	const isChecked = liveTrackingEnabled && showLiveBus
@@ -80,6 +93,26 @@ export const SettingsModal: React.FC<Props> = ({ onClose }) => {
 							.join(` `)}
 					/>
 				</label>
+
+				<div className={styles.sectionTitle}>Провайдер карт</div>
+				<div className={styles.providerOptions}>
+					{PROVIDER_OPTIONS.map(option => (
+						<button
+							key={option.value}
+							type="button"
+							className={[
+								styles.providerOption,
+								mapProvider === option.value ? styles.providerOptionActive : ``,
+							]
+								.filter(Boolean)
+								.join(` `)}
+							onClick={() => handleProviderChange(option.value)}
+						>
+							<span className={styles.providerName}>{option.label}</span>
+							<span className={styles.providerSubtitle}>{option.subtitle}</span>
+						</button>
+					))}
+				</div>
 			</div>
 		</div>,
 		document.body,

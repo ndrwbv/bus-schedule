@@ -1,9 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { MapProvider } from 'widget/Map/mapProvider'
 
 const STORAGE_KEY = `severbus:settings`
 
 interface SettingsState {
 	showLiveBus: boolean
+	mapProvider: MapProvider
 }
 
 function loadFromStorage(): SettingsState {
@@ -14,13 +16,14 @@ function loadFromStorage(): SettingsState {
 
 			return {
 				showLiveBus: parsed.showLiveBus ?? false,
+				mapProvider: parsed.mapProvider ?? `openfreemap`,
 			}
 		}
 	} catch {
 		// ignore
 	}
 
-	return { showLiveBus: false }
+	return { showLiveBus: false, mapProvider: `openfreemap` }
 }
 
 function saveToStorage(state: SettingsState): void {
@@ -41,12 +44,19 @@ export const settingsSlice = createSlice({
 			state.showLiveBus = action.payload
 			saveToStorage(state)
 		},
+		setMapProvider: (state, action: PayloadAction<MapProvider>) => {
+			state.mapProvider = action.payload
+			saveToStorage(state)
+		},
 	},
 })
 
-export const { setShowLiveBus } = settingsSlice.actions
+export const { setShowLiveBus, setMapProvider } = settingsSlice.actions
 
-export const showLiveBusSelector = (state: { settings: { showLiveBus: boolean } }): boolean =>
+export const showLiveBusSelector = (state: { settings: SettingsState }): boolean =>
 	state.settings.showLiveBus
+
+export const mapProviderSelector = (state: { settings: SettingsState }): MapProvider =>
+	state.settings.mapProvider
 
 export default settingsSlice.reducer
