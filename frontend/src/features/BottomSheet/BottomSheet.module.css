@@ -1,0 +1,35 @@
+.content {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 100;
+	display: flex;
+	flex-direction: column;
+	outline: none;
+	overflow: visible;
+}
+
+.handleArea {
+	position: relative;
+	flex-shrink: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding-top: 8px;
+}
+
+.handle {
+	width: 32px;
+	height: 4px;
+	background: rgba(0, 0, 0, 0.2);
+	border-radius: 2px;
+	margin-bottom: 4px;
+}
+
+.scrollArea {
+	overflow-y: auto;
+	overflow-x: hidden;
+	-webkit-overflow-scrolling: touch;
+	flex: 1;
+}

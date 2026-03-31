@@ -6,7 +6,6 @@ import { configureI18next, initGA, YM } from 'shared/lib'
 import { usePing } from 'shared/lib/usePing'
 import { useScheduleLoader } from 'shared/store/schedule/useScheduleLoader'
 
-import 'react-spring-bottom-sheet/dist/style.css'
 import 'shared/theme/styles/index.css'
 
 initGA()

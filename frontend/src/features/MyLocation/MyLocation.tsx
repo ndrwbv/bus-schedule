@@ -26,8 +26,10 @@ export const MyLocation: React.FC = () => {
 					latitude: position.coords.latitude,
 					longitude: position.coords.longitude,
 					speed: position.coords.speed,
+					toJSON: () => ({}),
 				},
 				timestamp: position.timestamp,
+				toJSON: () => ({}),
 			}),
 		)
 	}

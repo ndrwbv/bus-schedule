@@ -1,9 +1,10 @@
 import { FC } from 'react'
-import { BottomSheet } from 'react-spring-bottom-sheet'
 import { AndrewLytics } from 'shared/lib'
+import { Drawer } from 'vaul'
 
 import { INST_LINK, TG_LINK } from '../../const'
 import { StripHeader } from '../StripHeader/StripHeader'
+import drawerStyles from './StripAdBottomSheet.module.css'
 import {
 	StripActionButtonStyled,
 	StripActionsStyled,
@@ -54,79 +55,90 @@ interface IStripAdBottomSheetProps {
 	open: boolean
 	onClose: () => void
 }
+
 export const StripAdBottomSheet: FC<IStripAdBottomSheetProps> = ({ open, onClose }) => {
 	return (
-		<BottomSheet
-			open={open}
-			onDismiss={onClose}
-			defaultSnap={({ maxHeight }) => maxHeight * 0.7}
-			snapPoints={({ maxHeight }) => [maxHeight * 0.7]}
-			expandOnContentDrag
-		>
-			<StripBottomSheetContainerStyled>
-				<StripBottomSheetHeaderContainerStyled>
-					<StripVideoHeaderStyled>
-						<StripHeader headerClassName={stripAdBottomSheetStyles.videoHeaderStripHeader} />
-					</StripVideoHeaderStyled>
-
-					<StripActionsStyled>
-						<StripActionButtonStyled href={TG_LINK} target="_blank" rel="noreferrer" onClick={tgClick}>
-							Записаться
-						</StripActionButtonStyled>
-
-						<InstagramIcon />
-					</StripActionsStyled>
-				</StripBottomSheetHeaderContainerStyled>
-
-				<StripTextContainerStyled>
-					<p>
-						Скидка 500₽ на курс по FRAME UP STRIP с нуля из 8 занятий. Курс рассчитан на тех, кто раньше
-						никогда не танцевал. Неважно, сколько вам лет, какой у вас вес и т.д., присоединиться может
-						любая. Курс ведёт Анастасия Боева
-					</p>
-
-					<div>
-						<p>
-							<b>Расписание </b>
-						</p>
-						<p>вт, чт в 19:30</p>
+		<Drawer.Root open={open} onOpenChange={isOpen => !isOpen && onClose()}>
+			<Drawer.Portal>
+				<Drawer.Overlay className={drawerStyles.overlay} />
+				<Drawer.Content className={drawerStyles.drawerContent}>
+					<div className={drawerStyles.handleArea}>
+						<div className={drawerStyles.handle} />
 					</div>
+					<div className={drawerStyles.scrollArea}>
+						<StripBottomSheetContainerStyled>
+							<StripBottomSheetHeaderContainerStyled>
+								<StripVideoHeaderStyled>
+									<StripHeader headerClassName={stripAdBottomSheetStyles.videoHeaderStripHeader} />
+								</StripVideoHeaderStyled>
 
-					<div>
-						<p>
-							<b>Адрес</b>
-						</p>
-						<p>ул. Розы Люксембург 16</p>
+								<StripActionsStyled>
+									<StripActionButtonStyled
+										href={TG_LINK}
+										target="_blank"
+										rel="noreferrer"
+										onClick={tgClick}
+									>
+										Записаться
+									</StripActionButtonStyled>
+
+									<InstagramIcon />
+								</StripActionsStyled>
+							</StripBottomSheetHeaderContainerStyled>
+
+							<StripTextContainerStyled>
+								<p>
+									Скидка 500₽ на курс по FRAME UP STRIP с нуля из 8 занятий. Курс рассчитан на тех,
+									кто раньше никогда не танцевал. Неважно, сколько вам лет, какой у вас вес и т.д.,
+									присоединиться может любая. Курс ведёт Анастасия Боева
+								</p>
+
+								<div>
+									<p>
+										<b>Расписание </b>
+									</p>
+									<p>вт, чт в 19:30</p>
+								</div>
+
+								<div>
+									<p>
+										<b>Адрес</b>
+									</p>
+									<p>ул. Розы Люксембург 16</p>
+								</div>
+
+								<div>
+									<p>
+										<b>Условия</b>
+									</p>
+									<p>
+										При записи на курс напишите, что вы с сервербаса. Акция действительна до 30
+										ноября 2023 года
+									</p>
+								</div>
+
+								<div>
+									<p>
+										<b>Контакты</b>
+									</p>
+
+									<p>
+										Записаться можно через запрещенную соц. сеть{` `}
+										<a href={INST_LINK} target="_blank" rel="noreferrer" onClick={instClick}>
+											@anastyabv
+										</a>
+										{` `}
+										или через телеграм{` `}
+										<a href={TG_LINK} target="_blank" rel="noreferrer" onClick={tgClick}>
+											@anastyabv
+										</a>
+									</p>
+								</div>
+							</StripTextContainerStyled>
+						</StripBottomSheetContainerStyled>
 					</div>
-
-					<div>
-						<p>
-							<b>Условия</b>
-						</p>
-						<p>
-							При записи на курс напишите, что вы с сервербаса. Акция действительна до 30 ноября 2023 года
-						</p>
-					</div>
-
-					<div>
-						<p>
-							<b>Контакты</b>
-						</p>
-
-						<p>
-							Записаться можно через запрещенную соц. сеть{` `}
-							<a href={INST_LINK} target="_blank" rel="noreferrer" onClick={instClick}>
-								@anastyabv
-							</a>
-							{` `}
-							или через телеграм{` `}
-							<a href={TG_LINK} target="_blank" rel="noreferrer" onClick={tgClick}>
-								@anastyabv
-							</a>
-						</p>
-					</div>
-				</StripTextContainerStyled>
-			</StripBottomSheetContainerStyled>
-		</BottomSheet>
+				</Drawer.Content>
+			</Drawer.Portal>
+		</Drawer.Root>
 	)
 }
