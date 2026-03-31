@@ -56,7 +56,7 @@ complainsRouter.get('/complains', (_req: Request, res: Response) => {
   const db = getDb();
 
   const rows = db.prepare(
-    `SELECT id, stop, direction, type, created_at || 'Z' as date
+    `SELECT id, stop, direction, type, datetime(created_at, '+7 hours') as date
      FROM complains
      WHERE created_at > datetime('now', '-1 day')
      ORDER BY created_at DESC
@@ -88,10 +88,8 @@ complainsRouter.get('/complains/stats', (_req: Request, res: Response) => {
  */
 export function cleanupOldComplains(): void {
   const db = getDb();
-  const result = db.prepare(
-    `DELETE FROM complains WHERE created_at < datetime('now', '-1 day')`
-  ).run();
+  const result = db.prepare(`DELETE FROM complains`).run();
   if (result.changes > 0) {
-    console.log(`[complains] Cleaned up ${result.changes} old complaints`);
+    console.log(`[complains] Очистка: удалено ${result.changes} жалоб`);
   }
 }
