@@ -9,6 +9,7 @@ import { docsRouter } from './routes/docs';
 import { featuresRouter } from './routes/features';
 import { liveRouter } from './routes/live';
 import { startScheduleCron } from './services/schedule/cron';
+import { startComplainsCron } from './services/complains/cron';
 import { initTelegramSubscribers, pollSubscribers } from './services/telegram/alerter';
 
 const app = express();
@@ -21,6 +22,7 @@ initDb();
 initTelegramSubscribers();
 pollSubscribers().catch((err) => console.error('[telegram] Ошибка первичного опроса:', err));
 startScheduleCron();
+startComplainsCron();
 
 app.use('/api', healthRouter);
 app.use('/api', scheduleRouter);

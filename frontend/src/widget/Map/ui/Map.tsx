@@ -47,13 +47,9 @@ export const Map: React.FC = () => {
 			maptilerLogo: false,
 			logoPosition: undefined,
 		}).on(`error`, () => {
-			if (mapApiKeyIndex === MAX_KEY_AMOUNT) {
-				console.log(`MAX_KEY_AMOUNT exceeded`)
-
-				return
+			if (mapApiKeyIndex < MAX_KEY_AMOUNT) {
+				setMapApiKeyIndex(prev => prev + 1)
 			}
-
-			setMapApiKeyIndex(prev => prev + 1)
 		})
 
 		setMapExt(map)
