@@ -59,9 +59,9 @@ function addLayers(map: maptilersdk.Map): void {
 			paint: {
 				'circle-radius': 22,
 				'circle-color': `#FF6B35`,
-				'circle-opacity': 0.4,
+				'circle-opacity': 0,
 				'circle-stroke-width': 0,
-				'circle-pitch-alignment': `map`,
+				'circle-pitch-alignment': `viewport`,
 			},
 		})
 	}
@@ -80,6 +80,11 @@ function addLayers(map: maptilersdk.Map): void {
 			},
 		})
 	}
+}
+
+/** Pulse opacity: fade-in for first 15% of cycle, then fade out — no visible restart */
+function pulseOpacity(t: number): number {
+	return t < 0.15 ? (t / 0.15) * 0.45 : (0.45 * (1 - t)) / 0.85
 }
 
 function removeLayers(map: maptilersdk.Map): void {
@@ -142,10 +147,11 @@ export const LiveBusLayer: React.FC<{ map: TMap }> = ({ map }) => {
 			}
 
 			// Pulse: grow from icon edge outward and fade
+			// Fade-in first 15% of cycle so restart is invisible (opacity 0→0 at boundaries)
 			if (hasLayer(animMap, LAYER_PULSE) && states.length > 0) {
 				const t = (now % PULSE_PERIOD) / PULSE_PERIOD
 				animMap.setPaintProperty(LAYER_PULSE, `circle-radius`, 22 + t * 18) // 22 → 40
-				animMap.setPaintProperty(LAYER_PULSE, `circle-opacity`, 0.45 * (1 - t))
+				animMap.setPaintProperty(LAYER_PULSE, `circle-opacity`, pulseOpacity(t))
 			}
 
 			animFrameRef.current = requestAnimationFrame(tick)
