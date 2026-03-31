@@ -2,36 +2,6 @@ import { DirectionsNew, IOption, IStops, StopKeys } from '../Stops'
 
 export const STOPS_OUT: IStops<DirectionsNew.out>[] = [
 	{
-		id: `1`,
-		label: `Левитана`,
-		direction: DirectionsNew.out,
-		latLon: [56.446951, 84.921565],
-	},
-	{
-		id: `2`,
-		label: `Синее небо`,
-		direction: DirectionsNew.out,
-		latLon: [56.445827, 84.917034],
-	},
-	{
-		id: `3`,
-		label: `Этюд`,
-		direction: DirectionsNew.out,
-		latLon: [56.441423, 84.916935],
-	},
-	{
-		id: `4`,
-		label: `Гармония`,
-		direction: DirectionsNew.out,
-		latLon: [56.441418, 84.919334],
-	},
-	{
-		id: `5`,
-		label: `Три элемента`,
-		direction: DirectionsNew.out,
-		latLon: [56.444195, 84.919244],
-	},
-	{
 		id: `6`,
 		label: `Cеребряный бор`,
 		direction: DirectionsNew.out,
