@@ -3,11 +3,16 @@
 	bottom: 0;
 	left: 0;
 	right: 0;
+	width: 100%;
 	z-index: 100;
+	/* vaul uses translateY to show only the active snap portion.
+	   The element must be full-viewport-height for the math to work. */
+	height: 100vh;
+	height: calc(100dvh - env(safe-area-inset-top, 0px));
 	display: flex;
 	flex-direction: column;
 	outline: none;
-	overflow: visible;
+	overflow: hidden;
 }
 
 .handleArea {
@@ -27,9 +32,11 @@
 	margin-bottom: 4px;
 }
 
+/* min-height: 0 is required for flex children to shrink and enable overflow scroll */
 .scrollArea {
 	overflow-y: auto;
 	overflow-x: hidden;
 	-webkit-overflow-scrolling: touch;
 	flex: 1;
+	min-height: 0;
 }

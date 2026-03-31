@@ -50,7 +50,7 @@ export const Complains: React.FC = () => {
 							<div className={styles.handleArea}>
 								<div className={styles.handle} />
 							</div>
-							<div className={styles.scrollArea}>
+							<div className={styles.scrollArea} data-vaul-no-drag>
 								<BottomSheetBgStyled $bg="#fff">
 									<PopupContentStyled>
 										<InfoTextStyled>

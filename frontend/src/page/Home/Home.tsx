@@ -9,7 +9,6 @@ import { Info } from 'features/Info'
 import { NearestStops } from 'features/NearestStops'
 import { OtherTimeBusses } from 'features/OtherTimeBuses'
 import { SettingsButton } from 'features/Settings'
-import { StripAd } from 'features/StripAd/StripAd'
 import { YandexAd } from 'features/YandexAd'
 import useSchedule from 'shared/store/schedule/useSchedule'
 import { ContainerStyled } from 'shared/ui/common'
@@ -49,7 +48,6 @@ export const Home: React.FC = () => {
 
 							<Complains />
 
-							<StripAd />
 							<YandexAd />
 
 							<FavoriteStops />

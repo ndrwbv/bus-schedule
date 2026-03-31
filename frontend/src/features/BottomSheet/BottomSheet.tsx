@@ -49,7 +49,7 @@ export const BottomSheetCustom: React.FC<IProps> = ({ children, header }) => {
 						{header}
 						<div className={styles.handle} />
 					</div>
-					<div className={styles.scrollArea}>{children}</div>
+					<div className={styles.scrollArea} data-vaul-no-drag>{children}</div>
 				</Drawer.Content>
 			</Drawer.Portal>
 		</Drawer.Root>
