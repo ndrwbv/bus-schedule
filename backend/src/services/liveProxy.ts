@@ -1,5 +1,5 @@
 const LIVE_API_URL = 'https://service-tiv.ru/wialon/ajax.php';
-const LIVE_ROUTE_IDS = (process.env.LIVE_ROUTE_IDS || '793').split(',').map(s => s.trim());
+const LIVE_ROUTE_IDS = (process.env.LIVE_ROUTE_IDS || '794').split(',').map(s => s.trim());
 const CACHE_TTL_MS = 10_000; // 10 seconds
 
 export interface BusPosition {
