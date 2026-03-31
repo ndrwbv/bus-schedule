@@ -112,7 +112,7 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 	)
 
 	useEffect(() => {
-		if (!map) return
+		if (!map) return undefined
 
 		const onLoad = (): void => {
 			setMapLoaded(true)
@@ -132,8 +132,8 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
-		if (!map) return
-		if (!mapLoaded) return
+		if (!map) return undefined
+		if (!mapLoaded) return undefined
 
 		const newMarkers: Record<string, maptilersdk.Marker> = {}
 
@@ -227,8 +227,9 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 		}
 	}, [getCurrentTime, handleMarkerClick, map, mapLoaded])
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
-		if (!map || !mapLoaded || !map.isStyleLoaded()) return
+		if (!map || !mapLoaded || !map.isStyleLoaded()) return undefined
 
 		if (map.getSource(STOPS_SOURCE_ID)) {
 			try {
@@ -312,9 +313,9 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 			map.off(`mouseleave`, `clusters`, onMouseLeave)
 
 			try {
-				if (map.getLayer(`clusters`)) map.removeLayer(`clusters`)
-				if (map.getLayer(`cluster-count`)) map.removeLayer(`cluster-count`)
-				if (map.getSource(STOPS_SOURCE_ID)) map.removeSource(STOPS_SOURCE_ID)
+				map.removeLayer(`clusters`)
+				map.removeLayer(`cluster-count`)
+				map.removeSource(STOPS_SOURCE_ID)
 			} catch {
 				// map may already be destroyed
 			}
@@ -336,7 +337,7 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 	}, [map])
 
 	useEffect(() => {
-		if (!map) return
+		if (!map) return undefined
 
 		const onDragStart = (): void => {
 			dispath(setBottomSheetPosition(BottomSheetStates.BOTTOM))
