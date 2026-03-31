@@ -1,57 +1,83 @@
+import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Drawer } from 'vaul'
+import { BottomSheet, BottomSheetRef } from 'react-spring-bottom-sheet'
 
-import styles from './BottomSheet.module.css'
-import { bottomSheetPositionSelector, BottomSheetStates, setBottomSheetPosition } from './model/bottomSheetSlice'
-
-const SNAP_POINTS = [0.2, 0.5, 0.8]
-
-const positionToSnap = (pos: BottomSheetStates): number => {
-	if (pos === BottomSheetStates.BOTTOM) return 0.2
-	if (pos === BottomSheetStates.TOP) return 0.8
-
-	return 0.5
-}
-
-const snapToPosition = (snap: number | string | null): BottomSheetStates => {
-	if (snap === 0.8) return BottomSheetStates.TOP
-	if (snap === 0.2) return BottomSheetStates.BOTTOM
-
-	return BottomSheetStates.MID
-}
+import { getSnapPoints, getSnapValue, snapBottom, snapMid, snapTop } from './helpers/getSnapPoints'
+import {
+	bottomSheetPositionSelector,
+	BottomSheetStates,
+	maxHeightSelector,
+	setBottomSheetPosition,
+	setMaxHeight,
+} from './model/bottomSheetSlice'
 
 interface IProps {
-	children: React.ReactNode
-	header?: React.ReactNode
+	children: JSX.Element
+	header?: JSX.Element
 }
-
 export const BottomSheetCustom: React.FC<IProps> = ({ children, header }) => {
+	const sheetRef = useRef<BottomSheetRef>(null)
+	const [expandOnContentDrag] = useState<boolean>(true)
+	const focusRef = useRef<HTMLButtonElement>(null)
 	const dispatch = useDispatch()
-	const position = useSelector(bottomSheetPositionSelector)
-	const activeSnap = positionToSnap(position)
+	const bottomSheetMaxHeight = useSelector(maxHeightSelector)
 
-	const handleSnapChange = (snap: number | string | null): void => {
-		dispatch(setBottomSheetPosition(snapToPosition(snap)))
+	const bottomSheetPostion = useSelector(bottomSheetPositionSelector)
+
+	useEffect(() => {
+		if (sheetRef.current) {
+			sheetRef.current.snapTo(({ maxHeight }) => getSnapValue(bottomSheetPostion, maxHeight))
+		}
+	}, [bottomSheetPostion])
+
+	const getDefaultSnap = ({ maxHeight }: { maxHeight: number }): number => {
+		if (maxHeight !== bottomSheetMaxHeight) {
+			dispatch(setMaxHeight(maxHeight))
+		}
+
+		return snapMid(maxHeight)
+	}
+
+	const handleSpringEnd = (): void => {
+		const currentMaxHeight = sheetRef.current?.height
+
+		if (bottomSheetMaxHeight === undefined || !currentMaxHeight) return
+
+		if (
+			currentMaxHeight >= Math.floor(snapBottom(bottomSheetMaxHeight)) &&
+			currentMaxHeight < Math.floor(snapMid(bottomSheetMaxHeight))
+		) {
+			dispatch(setBottomSheetPosition(BottomSheetStates.BOTTOM))
+
+			return
+		}
+
+		if (
+			currentMaxHeight >= Math.floor(snapMid(bottomSheetMaxHeight)) &&
+			currentMaxHeight < Math.floor(snapTop(bottomSheetMaxHeight))
+		) {
+			dispatch(setBottomSheetPosition(BottomSheetStates.MID))
+
+			return
+		}
+
+		dispatch(setBottomSheetPosition(BottomSheetStates.TOP))
 	}
 
 	return (
-		<Drawer.Root
+		<BottomSheet
 			open
-			modal={false}
-			snapPoints={SNAP_POINTS}
-			activeSnapPoint={activeSnap}
-			setActiveSnapPoint={handleSnapChange}
-			dismissible={false}
+			skipInitialTransition
+			ref={sheetRef}
+			initialFocusRef={focusRef}
+			defaultSnap={getDefaultSnap}
+			snapPoints={getSnapPoints}
+			expandOnContentDrag={expandOnContentDrag}
+			blocking={false}
+			onSpringEnd={handleSpringEnd}
+			header={header}
 		>
-			<Drawer.Portal>
-				<Drawer.Content className={styles.content}>
-					<div className={styles.handleArea}>
-						{header}
-						<div className={styles.handle} />
-					</div>
-					<div className={styles.scrollArea}>{children}</div>
-				</Drawer.Content>
-			</Drawer.Portal>
-		</Drawer.Root>
+			{children}
+		</BottomSheet>
 	)
 }

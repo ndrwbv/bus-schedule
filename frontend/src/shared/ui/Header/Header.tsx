@@ -3,7 +3,7 @@ import { DefaultTFuncReturn } from 'i18next'
 import { HeaderContainerStyled, HeaderItemStyled, HeaderTextStyled } from './styled'
 
 interface IHeaderProps {
-	text: string | React.ReactElement | DefaultTFuncReturn
+	text: string | JSX.Element | DefaultTFuncReturn
 	children?: React.ReactNode
 }
 

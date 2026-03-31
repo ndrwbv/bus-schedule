@@ -33,7 +33,7 @@ export const TodaysBuses: React.FC = () => {
 
 	const { t } = useTranslation()
 
-	const renderTodaysBusContent = (): DefaultTFuncReturn | React.ReactNode => {
+	const renderTodaysBusContent = (): DefaultTFuncReturn | JSX.Element | JSX.Element[] => {
 		if (!busStop) return <SelectBusStopText />
 
 		return closestTimeArray.length === 0

@@ -3,6 +3,8 @@ import path from 'path'
 // import visualizer from 'rollup-plugin-visualizer'
 import { defineConfig } from 'vite'
 import checker from 'vite-plugin-checker'
+import tsconfigPaths from 'vite-tsconfig-paths'
+import { splitVendorChunkPlugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import mkcert from 'vite-plugin-mkcert'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -17,6 +19,10 @@ const app = path.join(root, `./src/App/index.html`)
 export default defineConfig(({ mode }) => {
 	let plugins = [
 		react(),
+		tsconfigPaths({
+			root,
+		}),
+		splitVendorChunkPlugin(),
 		VitePWA({
 			includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
 			registerType: 'autoUpdate',
@@ -39,7 +45,7 @@ export default defineConfig(({ mode }) => {
 						},
 					},
 				],
-			},
+			}
 		}),
 	]
 
@@ -53,13 +59,10 @@ export default defineConfig(({ mode }) => {
 
 	return {
 		define: {
-			'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV ?? mode),
+			'process.env': process.env,
 		},
 		root: appRootPath,
 		envDir: root,
-		resolve: {
-			tsconfigPaths: true,
-		},
 		plugins,
 		build: {
 			emptyOutDir: true,

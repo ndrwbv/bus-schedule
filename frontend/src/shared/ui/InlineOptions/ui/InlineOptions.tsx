@@ -16,7 +16,7 @@ export const InlineOptions = <T,>({
 	activeId,
 	onClick,
 	disabled = false,
-}: React.PropsWithChildren<IProps<T | null>>): React.ReactElement => {
+}: React.PropsWithChildren<IProps<T | null>>): JSX.Element => {
 	return (
 		<OverLayContainerStyled>
 			<InlineOptionsContainerStyled>

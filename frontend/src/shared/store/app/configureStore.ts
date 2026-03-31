@@ -29,7 +29,7 @@ export const store = configureStore({
 	},
 	devTools: process.env.NODE_ENV !== `production`,
 	middleware: getDefaultMiddleware =>
-		getDefaultMiddleware().prepend(holidaysSetter.middleware, infoApi.middleware, scheduleApi.middleware),
+		getDefaultMiddleware().prepend([holidaysSetter.middleware, infoApi.middleware, scheduleApi.middleware]),
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

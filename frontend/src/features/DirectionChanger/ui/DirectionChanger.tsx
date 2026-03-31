@@ -21,7 +21,7 @@ import {
 
 const SIZE = 43
 
-export const DirectionChanger = (): React.ReactElement => {
+export const DirectionChanger = (): JSX.Element => {
 	const direction = useSelector(directionSelector)
 	const dispatch = useDispatch()
 	const isHalloweenMode = useTypedSelector(isHalloween)

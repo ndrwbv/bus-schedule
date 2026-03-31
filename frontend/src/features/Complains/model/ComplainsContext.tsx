@@ -17,7 +17,7 @@ interface ContextProps {
 interface IProviderProps {
 	children: React.ReactElement
 }
-export const ComplainsProvider = ({ children }: IProviderProps): React.ReactElement => {
+export const ComplainsProvider = ({ children }: IProviderProps): JSX.Element => {
 	const { complains, addComplain } = useComplains()
 
 	const values = useMemo(() => ({ complains, addComplain }), [addComplain, complains])
