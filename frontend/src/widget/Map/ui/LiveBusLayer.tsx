@@ -204,10 +204,10 @@ export const LiveBusLayer: React.FC<{ map: TMap }> = ({ map }) => {
 			return { curLng: bus.lng, curLat: bus.lat, tgtLng: bus.lng, tgtLat: bus.lat, description: bus.description }
 		})
 
-		// If no buses, clear source immediately
-		if (incoming.length === 0 && map && layersAddedRef.current) {
+		// Immediately update GeoJSON so new buses appear without waiting for lerp
+		if (map && layersAddedRef.current) {
 			const src = map.getSource(SOURCE_ID) as maptilersdk.GeoJSONSource | undefined
-			src?.setData(EMPTY_GEOJSON)
+			src?.setData(incoming.length > 0 ? buildGeoJSON(busStatesRef.current) : EMPTY_GEOJSON)
 		}
 	}, [liveData, shouldPoll, map])
 
