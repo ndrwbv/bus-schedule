@@ -33,7 +33,7 @@ complainsRouter.post('/complains', (req: Request, res: Response) => {
   // Rate limiting by user_id + stop (2 minutes per stop)
   if (user_id) {
     const recent = db.prepare(
-      `SELECT id FROM complains WHERE user_id = ? AND stop = ? AND created_at > datetime('now', '+7 hours', '-2 minutes') LIMIT 1`
+      `SELECT id FROM complains WHERE user_id = ? AND stop = ? AND created_at > datetime('now', '-2 minutes') LIMIT 1`
     ).get(user_id, stop) as { id: number } | undefined;
 
     if (recent) {
@@ -43,7 +43,7 @@ complainsRouter.post('/complains', (req: Request, res: Response) => {
   }
 
   const result = db.prepare(
-    `INSERT INTO complains (stop, direction, type, user_id, created_at) VALUES (?, ?, ?, ?, datetime('now', '+7 hours'))`
+    `INSERT INTO complains (stop, direction, type, user_id) VALUES (?, ?, ?, ?)`
   ).run(stop, direction, type, user_id ?? null);
 
   res.status(201).json({ id: result.lastInsertRowid });
@@ -56,9 +56,9 @@ complainsRouter.get('/complains', (_req: Request, res: Response) => {
   const db = getDb();
 
   const rows = db.prepare(
-    `SELECT id, stop, direction, type, created_at as date
+    `SELECT id, stop, direction, type, datetime(created_at, '+7 hours') as date
      FROM complains
-     WHERE created_at > datetime('now', '+7 hours', '-1 day')
+     WHERE created_at > datetime('now', '-1 day')
      ORDER BY created_at DESC
      LIMIT 100`
   ).all();
@@ -75,7 +75,7 @@ complainsRouter.get('/complains/stats', (_req: Request, res: Response) => {
   const rows = db.prepare(
     `SELECT stop, direction, type, COUNT(*) as count
      FROM complains
-     WHERE created_at > datetime('now', '+7 hours', '-1 day')
+     WHERE created_at > datetime('now', '-1 day')
      GROUP BY stop, direction, type
      ORDER BY count DESC`
   ).all();
