@@ -1,0 +1,86 @@
+.bottomSheetHeaderContainer {
+	height: 50vh;
+	position: relative;
+	overflow: hidden;
+	background-image: url('/stripad/strip-thumbnail.png');
+	background-size: cover;
+	background-position-y: 50%;
+}
+
+.videoContainer {
+	width: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 0;
+	border-radius: 0;
+}
+
+.videoContainerRounded {
+	border-radius: 25px 25px 0 0;
+}
+
+.videoContainer video {
+	width: 100%;
+}
+
+.actions {
+	position: absolute;
+	bottom: 40px;
+	z-index: 6;
+	left: 50%;
+	transform: translate(-50%, 0);
+	display: flex;
+	gap: 40px;
+	align-items: center;
+}
+
+.bottomSheetContainer {
+	background-color: #000;
+	color: #fff;
+	border-radius: 25px 25px 0 0;
+	overflow: hidden;
+}
+
+@media all and (min-width: 766px) {
+	.bottomSheetContainer {
+		border-radius: 34px 34px 0 0;
+	}
+}
+
+.videoHeader {
+	position: absolute;
+	top: 28px;
+	left: 50%;
+	transform: translate(-50%, 0);
+	z-index: 2;
+	text-align: center;
+}
+
+.videoHeaderStripHeader {
+	white-space: nowrap;
+	margin-top: 9px;
+}
+
+.actionButton {
+	border: 1px solid #fff;
+	border-radius: 23px;
+	color: #fff;
+	padding: 6px 14px;
+}
+
+.textContainer {
+	display: flex;
+	flex-direction: column;
+	padding: 35px;
+}
+
+.textContainer div {
+	margin-top: 26px;
+}
+
+.textContainer a {
+	color: #fff;
+	text-decoration: underline;
+}

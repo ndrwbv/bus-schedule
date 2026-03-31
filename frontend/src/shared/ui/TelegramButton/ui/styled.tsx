@@ -1,17 +1,13 @@
-import styled from 'styled-components'
+import React from 'react'
 
-export const TelegramContainerStyled = styled.button`
-	display: flex;
-	align-items: center;
-	padding: 10px 16px 10px 10px;
-	color: #ffffff;
-	border: 1px solid #26a4e3;
-	background-color: #26a4e3;
-	border-radius: 13px;
-	cursor: pointer;
-`
-export const TelegramTextStyled = styled.p`
-	color: #ffffff;
-	margin: 0 0 0 10px;
-	font-weight: 600;
-`
+import styles from './styled.module.css'
+
+export const TelegramContainerStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<button type="button" className={styles.telegramContainer}>
+		{children}
+	</button>
+)
+
+export const TelegramTextStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<p className={styles.telegramText}>{children}</p>
+)

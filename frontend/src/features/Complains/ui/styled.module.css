@@ -1,0 +1,74 @@
+.complainsContainer {
+	font-weight: bold;
+	display: flex;
+	justify-content: space-between;
+}
+
+.messageContainer {
+	background: #e7edec;
+	border-radius: 14px;
+	padding: 11px 16px;
+	text-align: left;
+	display: grid;
+	grid-template-columns: 2fr 1fr;
+	grid-template-rows: 20px 20px;
+	grid-row-gap: 5px;
+}
+
+.messageContainer + .messageContainer {
+	margin-top: 12px;
+}
+
+.messageDate {
+	color: #737776;
+	font-weight: 400;
+	font-size: 12px;
+	text-align: right;
+	white-space: nowrap;
+	display: flex;
+	align-items: flex-end;
+	justify-content: flex-end;
+}
+
+.complainsStop {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	color: black;
+}
+
+.complainsStopCurrent {
+	color: #1191FB;
+}
+
+.complainsDirection {
+	text-align: right;
+}
+
+.complainsLabel {
+	font-weight: 400;
+	font-size: 12px;
+	color: #a5a5a5;
+}
+
+.complainsBlockContainer {
+	padding-left: 6px;
+}
+
+.complainsBlockText {
+	font-size: 20px;
+	font-weight: 600;
+}
+
+.complainCount {
+	color: #717171;
+}
+
+.infoText {
+	text-align: left;
+	font-size: 12px;
+	line-height: 20px;
+	color: #808080;
+	margin-bottom: 12px;
+	padding: 0 3px;
+}

@@ -1,61 +1,51 @@
-import styled from 'styled-components'
+import React from 'react'
 
-export const HowMuchLeftContainerStyled = styled.div<{ $isFancy: boolean; $defaultColor: string }>`
-	display: flex;
-	align-items: center;
-	flex-direction: column;
+import styles from './HowMuchLeft.module.css'
 
-	padding: 18px 17px;
-	background: ${props =>
-		props.$isFancy
-			? `linear-gradient(93.72deg, #5020CA 9.83%, #5020CA 9.84%, #8365E0 96.15%);`
-			: props.$defaultColor};
-	color: ${props => (props.$isFancy ? `white` : `black`)};
-	border-radius: 13px;
-`
+export type TimeColor = 'default' | 'soon' | 'imminent'
 
-export const NextBusContainerStyled = styled.div`
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-`
+const TIME_COLOR_MAP: Record<TimeColor, string> = {
+	default: styles.colorDefault,
+	soon: styles.colorSoon,
+	imminent: styles.colorImminent,
+}
 
-export const FastReplyContainerStyled = styled.div`
-	margin-top: 18px;
-	width: 100%;
-`
+export const HowMuchLeftContainerStyled: React.FC<{
+	$isFancy: boolean
+	$timeColor?: TimeColor
+	children?: React.ReactNode
+}> = ({ $isFancy, $timeColor = `default`, children }) => (
+	<div
+		className={`${styles.howMuchLeftContainer} ${
+			$isFancy ? styles.fancy : `${styles.notFancy} ${TIME_COLOR_MAP[$timeColor]}`
+		}`}
+	>
+		{children}
+	</div>
+)
 
-export const FastReplyButtonStyled = styled.button`
-	background: #e4f5d6;
-	border-radius: 13px;
-	color: black;
-	padding: 15px;
-	width: 100%;
-`
-export const TextWrapperStyled = styled.div``
+export const NextBusContainerStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<div className={styles.nextBusContainer}>{children}</div>
+)
 
-export const HighLightedStyled = styled.span`
-	font-weight: bold;
-	/* animation-duration: 2s;
-	animation-name: flashing;
-	animation-iteration-count: infinite;
+export const FastReplyContainerStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<div className={styles.fastReplyContainer}>{children}</div>
+)
 
-	@keyframes flashing {
-		0% {
-			opacity: 1;
-		}
+export const FastReplyButtonStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<button type="button" className={styles.fastReplyButton}>
+		{children}
+	</button>
+)
 
-		50% {
-			opacity: 0.7;
-		}
+export const TextWrapperStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<div className={styles.textWrapper}>{children}</div>
+)
 
-		100% {
-			opacity: 1;
-		}
-	} */
-`
+export const HighLightedStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<span className={styles.highlighted}>{children}</span>
+)
 
-export const BusEstimationStyled = styled.div`
-	font-size: 18px;
-	margin-left: 19px;
-`
+export const BusEstimationStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<div className={styles.busEstimation}>{children}</div>
+)

@@ -1,41 +1,19 @@
-import styled from 'styled-components'
+import React from 'react'
 
-export const HeaderInnerStyled = styled.div`
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
+import styles from './styled.module.css'
 
-	padding: 11px 15px;
-	max-width: 768px;
-	width: 100%;
-`
+export const HeaderInnerStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<div className={styles.headerInner}>{children}</div>
+)
 
-export const HeaderContainerStyled = styled.nav`
-	z-index: 2;
+export const HeaderContainerStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<nav className={styles.headerContainer}>{children}</nav>
+)
 
-	display: flex;
-	align-items: center;
-	justify-content: center;
+export const HeaderContainerBetaStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<nav className={styles.headerContainerBeta}>{children}</nav>
+)
 
-	width: 100%;
-`
-
-export const HeaderContainerBetaStyled = styled.nav`
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 2;
-
-	display: flex;
-	align-items: center;
-	justify-content: center;
-
-	width: 100%;
-`
-
-export const HeaderActionsStyled = styled.div`
-	position: relative;
-	display: flex;
-	align-items: center;
-	gap: 4px;
-`
+export const HeaderActionsStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<div className={styles.headerActions}>{children}</div>
+)

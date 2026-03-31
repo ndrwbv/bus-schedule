@@ -1,59 +1,45 @@
-import styled from 'styled-components'
+import React from 'react'
 
-export const ShareContainerStyled = styled.div`
-	display: flex;
-	flex-direction: column;
-	align-items: center;
+import styles from './styled.module.css'
 
-	border-radius: 7px;
-	padding: 6px;
-`
+export const ShareContainerStyled: React.FC<{ onClick?: () => void; children?: React.ReactNode }> = ({
+	onClick,
+	children,
+}) => (
+	<div
+		className={styles.shareContainer}
+		onClick={onClick}
+		role="button"
+		tabIndex={0}
+		onKeyDown={e => {
+			if (e.key === `Enter` || e.key === ` `) onClick?.()
+		}}
+	>
+		{children}
+	</div>
+)
 
-export const ShareTitleStyled = styled.h3`
-	margin-top: 24px;
-`
+export const ShareTitleStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<h3 className={styles.shareTitle}>{children}</h3>
+)
 
-export const CopyFieldStyled = styled.div<{ $clicked: boolean }>`
-	padding: 13px 18px;
-	color: ${props => (props.$clicked ? `green` : `#336cff`)};
-	font-weight: 500;
-	border-radius: 15px;
-	background: #f2f4f4;
-	text-align: left;
+export const CopyFieldStyled: React.FC<{ $clicked: boolean; children?: React.ReactNode }> = ({
+	$clicked,
+	children,
+}) => (
+	<div className={[styles.copyField, $clicked ? styles.copyFieldClicked : ``].filter(Boolean).join(` `)}>
+		{children}
+	</div>
+)
 
-	display: flex;
-	justify-content: space-between;
-`
+export const QABlockStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<article className={styles.qaBlock}>{children}</article>
+)
 
-export const QABlockStyled = styled.article`
-	h2 {
-		font-size: 19px;
-		font-weight: 600;
-		line-height: 30px;
-	}
+export const ShareItemContainerStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<div className={styles.shareItemContainer}>{children}</div>
+)
 
-	p {
-		margin-top: 4px;
-		line-height: 26px;
-	}
-
-	a {
-		color: #336cff;
-
-		&:visited {
-			color: #2859d5;
-		}
-	}
-
-	& + & {
-		margin-top: 24px;
-	}
-`
-export const ShareItemContainerStyled = styled.div`
-	display: flex;
-	justify-content: center;
-`
-
-export const ShareContentContainerStyled = styled.div`
-	margin-top: 56px;
-`
+export const ShareContentContainerStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<div className={styles.shareContentContainer}>{children}</div>
+)

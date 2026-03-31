@@ -22,6 +22,7 @@ import {
 	HowMuchLeftContainerStyled,
 	NextBusContainerStyled,
 	TextWrapperStyled,
+	TimeColor,
 } from './HowMuchLeft.styled'
 import Dead from './img/dead.svg'
 import EvilFace from './img/evil-face.svg'
@@ -81,13 +82,13 @@ export const HowMuchLeft: React.FC<ILeftProps> = ({ left, busStopLabel, holiday 
 	const [currentIcon, setIcon] = useState(isHalloweenMode ? Pumpkin : NextBus)
 	const [iconClickCounter, setIconClickCounter] = useState(0)
 
-	const getColorByLeftTime = (): string => {
-		if (left.hours === null || left.minutes === null || left.hours >= 1) return `#e7edec`
+	const getTimeColor = (): TimeColor => {
+		if (left.hours === null || left.minutes === null || left.hours >= 1) return `default`
 
-		if (left.minutes > 15 && left.minutes < 35) return `#E4F5D6`
-		if (left.minutes <= 15) return `#FBDCDC`
+		if (left.minutes > 15 && left.minutes < 35) return `soon`
+		if (left.minutes <= 15) return `imminent`
 
-		return `#e7edec`
+		return `default`
 	}
 
 	const handleIconClick = (): void => {
@@ -111,7 +112,7 @@ export const HowMuchLeft: React.FC<ILeftProps> = ({ left, busStopLabel, holiday 
 
 	return (
 		<>
-			<HowMuchLeftContainerStyled $isFancy={isFancy} $defaultColor={getColorByLeftTime()}>
+			<HowMuchLeftContainerStyled $isFancy={isFancy} $timeColor={getTimeColor()}>
 				<NextBusContainerStyled>
 					<ImageWrapperStyled $w={SIZE} $h={SIZE}>
 						<SVG src={currentIcon} width={SIZE} height={SIZE} uniquifyIDs onClick={handleIconClick} />

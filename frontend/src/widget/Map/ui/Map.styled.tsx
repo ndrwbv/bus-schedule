@@ -1,6 +1,7 @@
-import styled from 'styled-components'
+import styles from './map.module.css'
 
-export const MapContainerStyled = styled.div`
-	height: 100vh;
-	width: 100vw;
-`
+export const MapContainerStyled: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ children, ...props }) => (
+	<div className={styles.mapContainer} {...props}>
+		{children}
+	</div>
+)

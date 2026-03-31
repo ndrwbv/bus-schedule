@@ -1,0 +1,7 @@
+.otherTime {
+	padding: 22px 26px;
+	background-color: #f2f4f4;
+	border-radius: 13px;
+	max-height: 200px;
+	overflow-y: scroll;
+}

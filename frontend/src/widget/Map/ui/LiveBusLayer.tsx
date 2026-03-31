@@ -128,6 +128,7 @@ export const LiveBusLayer: React.FC<{ map: TMap }> = ({ map }) => {
 			if (states.length === 0) {
 				lastFrameTimeRef.current = 0
 				animFrameRef.current = requestAnimationFrame(tick)
+
 				return
 			}
 

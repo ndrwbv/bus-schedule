@@ -1,14 +1,11 @@
-import { styled } from 'styled-components'
+import React from 'react'
 
-export const StripDiscountStyled = styled.p`
-	span {
-		background-color: #f51313;
-		padding: 3px 9px;
-		border-radius: 14px;
-	}
-`
+import styles from './StripHeader.module.css'
 
-export const StripHeaderStyled = styled.p`
-	font-size: 24px;
-	font-weight: bold;
-`
+export const StripDiscountStyled: React.FC<React.HTMLAttributes<HTMLParagraphElement>> = ({ className, ...props }) => (
+	<p className={[styles.stripDiscount, className].filter(Boolean).join(` `)} {...props} />
+)
+
+export const StripHeaderStyled: React.FC<React.HTMLAttributes<HTMLParagraphElement>> = ({ className, ...props }) => (
+	<p className={[styles.stripHeader, className].filter(Boolean).join(` `)} {...props} />
+)

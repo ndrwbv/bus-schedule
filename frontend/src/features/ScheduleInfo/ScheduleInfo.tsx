@@ -7,65 +7,8 @@ import {
 	scheduleSourceSelector,
 } from 'shared/store/schedule/scheduleSlice'
 import { CardStyled, ContainerStyled, GrayTextStyled } from 'shared/ui/common'
-// ─── Styles ──────────────────────────────────────────────────────────────────
-import styled from 'styled-components'
 
-const UpdatedRowStyled = styled.div`
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 8px;
-`
-
-const UpdatedLabelStyled = styled.span`
-	font-size: 14px;
-	color: #555;
-`
-
-const UpdatedDateStyled = styled.b`
-	color: #1191fb;
-`
-
-const CheckedDateStyled = styled.b`
-	color: #2e7d32;
-`
-
-const ToggleButtonStyled = styled.button`
-	flex-shrink: 0;
-	background: none;
-	border: 1px solid #e0e0e0;
-	border-radius: 10px;
-	padding: 4px 10px;
-	font-size: 13px;
-	color: #888;
-	cursor: pointer;
-
-	@media (hover: hover) {
-		&:hover {
-			border-color: #1191fb;
-			color: #1191fb;
-		}
-	}
-`
-
-const ChangelogListStyled = styled.div`
-	margin-top: 12px;
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-`
-
-const ChangelogItemStyled = styled.div`
-	padding: 8px 0;
-	border-top: 1px solid #f0f0f0;
-`
-
-const ChangelogDateStyled = styled.p`
-	margin: 0 0 2px 0;
-	font-size: 13px;
-	font-weight: 600;
-	color: #333;
-`
+import styles from './ScheduleInfo.module.css'
 
 function formatDate(iso: string): string {
 	try {
@@ -96,46 +39,48 @@ export const ScheduleInfo: React.FC = () => {
 	return (
 		<ContainerStyled>
 			<CardStyled>
-				<UpdatedRowStyled>
-					<UpdatedLabelStyled>
+				<div className={styles.updatedRow}>
+					<span className={styles.updatedLabel}>
 						{showCheckedAt ? (
 							<>
 								✅ Проверено:{` `}
-								<CheckedDateStyled>{formatDate(lastCheckedAt)}</CheckedDateStyled>
+								<b className={styles.checkedDate}>{formatDate(lastCheckedAt)}</b>
 								<br />
 								🔄 Обновлено:{` `}
-								<UpdatedDateStyled>{lastUpdatedAt ? formatDate(lastUpdatedAt) : `—`}</UpdatedDateStyled>
+								<b className={styles.updatedDate}>{lastUpdatedAt ? formatDate(lastUpdatedAt) : `—`}</b>
 							</>
 						) : (
 							<>
 								✅ Обновлено:{` `}
-								<UpdatedDateStyled>{lastUpdatedAt ? formatDate(lastUpdatedAt) : `—`}</UpdatedDateStyled>
+								<b className={styles.updatedDate}>{lastUpdatedAt ? formatDate(lastUpdatedAt) : `—`}</b>
 							</>
 						)}
-					</UpdatedLabelStyled>
+					</span>
 
 					{changelog !== undefined || showChangelog ? (
-						<ToggleButtonStyled onClick={() => setShowChangelog(v => !v)}>
+						<button type="button" className={styles.toggleButton} onClick={() => setShowChangelog(v => !v)}>
 							{showChangelog ? `Скрыть` : `Изменения`}
-						</ToggleButtonStyled>
+						</button>
 					) : (
-						<ToggleButtonStyled onClick={() => setShowChangelog(true)}>Изменения</ToggleButtonStyled>
+						<button type="button" className={styles.toggleButton} onClick={() => setShowChangelog(true)}>
+							Изменения
+						</button>
 					)}
-				</UpdatedRowStyled>
+				</div>
 
 				{showChangelog && changelog && (
-					<ChangelogListStyled>
+					<div className={styles.changelogList}>
 						{changelog.items.length === 0 ? (
 							<GrayTextStyled>Изменений пока нет</GrayTextStyled>
 						) : (
 							changelog.items.map(entry => (
-								<ChangelogItemStyled key={entry.id}>
-									<ChangelogDateStyled>{formatDate(entry.createdAt)}</ChangelogDateStyled>
+								<div className={styles.changelogItem} key={entry.id}>
+									<p className={styles.changelogDate}>{formatDate(entry.createdAt)}</p>
 									<GrayTextStyled>{entry.summary}</GrayTextStyled>
-								</ChangelogItemStyled>
+								</div>
 							))
 						)}
-					</ChangelogListStyled>
+					</div>
 				)}
 			</CardStyled>
 		</ContainerStyled>

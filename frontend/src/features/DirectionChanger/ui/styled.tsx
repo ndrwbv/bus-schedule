@@ -1,45 +1,53 @@
-import { MAIN_GREY } from 'shared/theme'
-import { ImageWrapperStyled } from 'shared/ui'
-import styled from 'styled-components'
+import React from 'react'
 
-export const GoButtonContainerStyled = styled.div`
-	display: flex;
-	align-items: flex-start;
-	gap: 10px;
-	flex-direction: column;
-`
+import styles from './styled.module.css'
 
-export const DirectionTextStyled = styled.p`
-	font-size: 24px;
-	font-weight: 600;
-	margin-bottom: 12px;
-`
+export const GoButtonContainerStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<div className={styles.goButtonContainer}>{children}</div>
+)
 
-export const DirectionContainerStyled = styled.div`
-	padding-left: 6px;
-`
-export const DirectionPlaceholderStyled = styled.span`
-	font-size: 16px;
-	margin-bottom: 2px;
-`
-export const GoButtonStyled = styled.button<{ $active?: boolean }>`
-	width: 100%;
-	border-radius: 13px;
-	background-color: ${MAIN_GREY};
-	color: #000000;
-	padding: 17px 17px;
-	text-align: left;
-	cursor: pointer;
+export const DirectionTextStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<p className={styles.directionText}>{children}</p>
+)
 
-	@media (hover: hover) {
-		&:hover {
-			opacity: 0.8;
-		}
-	}
-`
+export const DirectionContainerStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<div className={styles.directionContainer}>{children}</div>
+)
 
-export const WebWrapper = styled(ImageWrapperStyled)`
-	position: absolute;
-	right: 10px;
-	top: -10px;
-`
+export const DirectionPlaceholderStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<span className={styles.directionPlaceholder}>{children}</span>
+)
+
+export const GoButtonStyled: React.FC<{
+	$active?: boolean
+	onClick?: () => void
+	children?: React.ReactNode
+}> = ({ $active, onClick, children }) => (
+	<button
+		type="button"
+		className={[styles.goButton, $active ? styles.goButtonActive : ``].filter(Boolean).join(` `)}
+		onClick={onClick}
+	>
+		{children}
+	</button>
+)
+
+export const WebWrapper: React.FC<{
+	$w: number
+	$h: number
+	children?: React.ReactNode
+	onClick?: () => void
+}> = ({ $w, $h, children, onClick }) => (
+	<div
+		className={styles.webWrapper}
+		style={{ width: `${$w}px`, height: `${$h}px` }}
+		onClick={onClick}
+		role="button"
+		tabIndex={0}
+		onKeyDown={e => {
+			if (e.key === `Enter` || e.key === ` `) onClick?.()
+		}}
+	>
+		{children}
+	</div>
+)

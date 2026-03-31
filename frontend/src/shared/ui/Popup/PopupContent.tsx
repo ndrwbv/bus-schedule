@@ -1,6 +1,7 @@
-import styled from 'styled-components'
+import React from 'react'
 
-export const PopupContentStyled = styled.div`
-	padding: 20px 12px;
-	overflow-y: auto;
-`
+import styles from './popup.module.css'
+
+export const PopupContentStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<div className={styles.popupContent}>{children}</div>
+)

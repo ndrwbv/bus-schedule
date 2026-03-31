@@ -1,72 +1,48 @@
-import styled from 'styled-components'
+import React from 'react'
 
-export const ComplainsContainerStyled = styled.div`
-	font-weight: bold;
-	display: flex;
-	justify-content: space-between;
-`
+import styles from './styled.module.css'
 
-export const MessageContainerStyled = styled.article`
-	background: #e7edec;
-	border-radius: 14px;
-	padding: 11px 16px;
-	text-align: left;
-	display: grid;
-	grid-template-columns: 2fr 1fr;
-	grid-template-rows: 20px 20px;
-	grid-row-gap: 5px;
+export const ComplainsContainerStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<div className={styles.complainsContainer}>{children}</div>
+)
 
-	& + & {
-		margin-top: 12px;
-	}
-`
+export const MessageContainerStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<article className={styles.messageContainer}>{children}</article>
+)
 
-export const MessageDateStyled = styled.span`
-	color: #737776;
-	font-weight: 400;
-	font-size: 12px;
-	text-align: right;
-	white-space: nowrap;
-	display: flex;
-	align-items: flex-end;
-	justify-content: flex-end;
-`
+export const MessageDateStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<span className={styles.messageDate}>{children}</span>
+)
 
-export const ComplainsStopStyled = styled.p<{ $isCurrentStop?: boolean }>`
-	color: ${props => (props.$isCurrentStop ? `#1191FB` : `black`)};
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	overflow: hidden;
-`
+export const ComplainsStopStyled: React.FC<{ $isCurrentStop?: boolean; children?: React.ReactNode }> = ({
+	$isCurrentStop,
+	children,
+}) => (
+	<p className={[styles.complainsStop, $isCurrentStop ? styles.complainsStopCurrent : ``].filter(Boolean).join(` `)}>
+		{children}
+	</p>
+)
 
-export const ComplainsDirectionStyled = styled.p`
-	text-align: right;
-`
+export const ComplainsDirectionStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<p className={styles.complainsDirection}>{children}</p>
+)
 
-export const ComplainsLabelStyled = styled.span`
-	font-weight: 400;
-	font-size: 12px;
-	color: #a5a5a5;
-`
+export const ComplainsLabelStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<span className={styles.complainsLabel}>{children}</span>
+)
 
-export const ComplainsBlockContainerStyled = styled.div`
-	padding-left: 6px;
-`
+export const ComplainsBlockContainerStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<div className={styles.complainsBlockContainer}>{children}</div>
+)
 
-export const ComplainsBlockTextStyled = styled.p`
-	font-size: 20px;
-	font-weight: 600;
-`
+export const ComplainsBlockTextStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<p className={styles.complainsBlockText}>{children}</p>
+)
 
-export const ComplainCountStyled = styled.span`
-	color: #717171;
-`
+export const ComplainCountStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<span className={styles.complainCount}>{children}</span>
+)
 
-export const InfoTextStyled = styled.p`
-	text-align: left;
-	font-size: 12px;
-	line-height: 20px;
-	color: #808080;
-	margin-bottom: 12px;
-	padding: 0 3px;
-`
+export const InfoTextStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<p className={styles.infoText}>{children}</p>
+)

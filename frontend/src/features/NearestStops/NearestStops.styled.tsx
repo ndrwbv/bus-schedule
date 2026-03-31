@@ -1,36 +1,20 @@
-import styled from 'styled-components'
+import React from 'react'
 
-export const NearestStopStyled = styled.article`
-	cursor: pointer;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
+import styles from './NearestStops.module.css'
 
-	padding: 9px;
-	background-color: #fff;
-	border-radius: 19px;
-	background: radial-gradient(50% 50% at 50% 50%, #fff 0%, rgba(255, 255, 255, 0) 100%), #f2f4f4;
+export const NearestStopStyled: React.FC<React.HTMLAttributes<HTMLElement>> = ({ className, ...props }) => (
+	<article className={[styles.nearestStop, className].filter(Boolean).join(` `)} {...props} />
+)
 
-	& + & {
-		margin-left: 9px;
-	}
-`
+export const NearestStopsStyled: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className, ...props }) => (
+	<div className={[styles.nearestStops, className].filter(Boolean).join(` `)} {...props} />
+)
 
-export const NearestStopsStyled = styled.div`
-	display: flex;
-	overflow-x: auto;
-	background-color: #fff;
-`
+export const NearestStopsLabelStyled: React.FC<React.HTMLAttributes<HTMLSpanElement>> = ({ className, ...props }) => (
+	<span className={[styles.nearestStopsLabel, className].filter(Boolean).join(` `)} {...props} />
+)
 
-export const NearestStopsLabelStyled = styled.span`
-	display: -webkit-box;
-	max-width: 115px;
-	-webkit-line-clamp: 3;
-	-webkit-box-orient: vertical;
-	overflow: hidden;
-	margin-bottom: 9px;
-`
-
-export const NearestStopsDirectionStyled = styled.span`
-	opacity: 0.66;
-`
+export const NearestStopsDirectionStyled: React.FC<React.HTMLAttributes<HTMLSpanElement>> = ({
+	className,
+	...props
+}) => <span className={[styles.nearestStopsDirection, className].filter(Boolean).join(` `)} {...props} />

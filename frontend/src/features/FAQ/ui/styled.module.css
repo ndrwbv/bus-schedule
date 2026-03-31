@@ -1,0 +1,58 @@
+.shareContainer {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	border-radius: 7px;
+	padding: 6px;
+}
+
+.shareTitle {
+	margin-top: 24px;
+}
+
+.copyField {
+	padding: 13px 18px;
+	font-weight: 500;
+	border-radius: 15px;
+	background: #f2f4f4;
+	text-align: left;
+	display: flex;
+	justify-content: space-between;
+	color: #336cff;
+}
+
+.copyFieldClicked {
+	color: green;
+}
+
+.qaBlock h2 {
+	font-size: 19px;
+	font-weight: 600;
+	line-height: 30px;
+}
+
+.qaBlock p {
+	margin-top: 4px;
+	line-height: 26px;
+}
+
+.qaBlock a {
+	color: #336cff;
+}
+
+.qaBlock a:visited {
+	color: #2859d5;
+}
+
+.qaBlock + .qaBlock {
+	margin-top: 24px;
+}
+
+.shareItemContainer {
+	display: flex;
+	justify-content: center;
+}
+
+.shareContentContainer {
+	margin-top: 56px;
+}

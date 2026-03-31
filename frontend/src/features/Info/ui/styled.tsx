@@ -1,56 +1,20 @@
-import styled from 'styled-components'
+import React from 'react'
 
-export const InfoWrapperStyled = styled.div`
-	width: 100%;
-	padding: 15px 30px 15px 15px;
+import styles from './styled.module.css'
 
-	background: linear-gradient(100.09deg, #0374f9 -39.57%, #35e0ff 124.36%);
-	box-shadow: 0px 1px 22px -4px rgba(14, 139, 251, 0.46);
-	border-radius: 18px;
+export const InfoWrapperStyled: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className, ...props }) => (
+	<div className={[styles.infoWrapper, className].filter(Boolean).join(` `)} {...props} />
+)
 
-	position: relative;
-`
+export const InfoTextStyled: React.FC<React.HTMLAttributes<HTMLParagraphElement>> = ({ className, ...props }) => (
+	<p className={[styles.infoText, className].filter(Boolean).join(` `)} {...props} />
+)
 
-export const InfoTextStyled = styled.p`
-	font-style: normal;
-	font-weight: normal;
-	font-size: 16px;
-	line-height: 19px;
+export const InfoLinkStyled: React.FC<React.AnchorHTMLAttributes<HTMLAnchorElement>> = ({ className, ...props }) => (
+	// eslint-disable-next-line jsx-a11y/anchor-has-content
+	<a className={[styles.infoLink, className].filter(Boolean).join(` `)} {...props} />
+)
 
-	color: #ffffff;
-`
-
-export const InfoLinkStyled = styled.a`
-	font-style: normal;
-	font-weight: normal;
-	font-size: 16px;
-	line-height: 19px;
-
-	text-decoration: underline;
-	color: #ffffff;
-
-	cursor: pointer;
-
-	&:hover {
-		opacity: 0.8;
-	}
-`
-
-export const InfoCloseButtonStyled = styled.div`
-	position: absolute;
-	top: 9px;
-	right: 9px;
-
-	height: 22px;
-	width: 22px;
-
-	background: rgba(255, 255, 255, 0.92);
-	border-radius: 50%;
-	cursor: pointer;
-
-	.closebutton {
-		position: absolute;
-		top: 5px;
-		left: 5px;
-	}
-`
+export const InfoCloseButtonStyled: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className, ...props }) => (
+	<div className={[styles.infoCloseButton, className].filter(Boolean).join(` `)} {...props} />
+)

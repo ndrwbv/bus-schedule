@@ -1,0 +1,14 @@
+.container {
+	min-height: 0;
+	overflow: hidden;
+	border-radius: 25px;
+	transition: min-height 0.3s ease;
+}
+
+.containerLoaded {
+	min-height: 100px;
+}
+
+.container > div {
+	width: 100%;
+}

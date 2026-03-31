@@ -1,0 +1,75 @@
+.inlineOptionsItem {
+	padding: 17px 17px;
+	border-radius: 16px;
+	font-weight: 600;
+	white-space: nowrap;
+	cursor: pointer;
+}
+
+.inlineOptionsItem + .inlineOptionsItem {
+	margin-left: 12px;
+}
+
+.inlineOptionsItemActive {
+	background-color: #336cff;
+	color: white;
+}
+
+.inlineOptionsItemInactive {
+	color: black;
+	background-color: #f2f4f4;
+}
+
+.inlineOptionsItemDisabled {
+	cursor: default;
+	opacity: 0.4;
+}
+
+@media (hover: hover) {
+	.inlineOptionsItem:hover {
+		opacity: 0.8;
+	}
+}
+
+.inlineOptionsContainer {
+	display: flex;
+	align-items: center;
+	overflow: auto;
+	padding: 0 40px 0 13px;
+}
+
+.inlineOptionsContainer::-webkit-scrollbar {
+	@media all and (max-width: 766px) {
+		width: 0;
+		background: transparent;
+	}
+}
+
+.inlineOptionsContainer::-webkit-scrollbar-thumb {
+	background-color: transparent;
+}
+
+.overlayContainer {
+	position: relative;
+	margin: 0 -12px;
+}
+
+.overlayContainer::before {
+	content: '';
+	position: absolute;
+	right: 0;
+	top: 0;
+	background: linear-gradient(270deg, #ffffff -11%, rgba(255, 255, 255, 0) 100%);
+	width: 16px;
+	height: 53px;
+}
+
+.overlayContainer::after {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0;
+	background: linear-gradient(90deg, #ffffff -11%, rgba(255, 255, 255, 0) 100%);
+	width: 16px;
+	height: 53px;
+}

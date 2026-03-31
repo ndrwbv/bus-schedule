@@ -1,0 +1,27 @@
+.stripAd {
+	position: relative;
+	color: white;
+}
+
+.stripAdVideoBlock {
+	border-radius: 25px;
+	overflow: hidden;
+	background-image: url('/stripad/strip-thumbnail.png');
+	background-size: cover;
+	min-height: 92px;
+	background-position-y: 160%;
+	background-position-x: 50px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	padding: 20px;
+}
+
+.stripTextBlock {
+	position: absolute;
+	z-index: 3;
+}
+
+.stripTextBlock p + p {
+	margin-top: 4px;
+}

@@ -1,25 +1,16 @@
+import React from 'react'
 import SVG from 'react-inlinesvg'
 import { useDispatch } from 'react-redux'
-import styled from 'styled-components'
 
 import { getLocation } from './helpers/getLocation'
 import LocationSVG from './img/location.svg'
 import { setLocation, setLocationError, setNoGeolocation } from './model/myLocationSlice'
+import styles from './MyLocation.module.css'
 
-export const GeoLocationStyled = styled.div`
-	width: 50px;
-	height: 50px;
-	background-color: #fff;
-	border-radius: 50%;
+export const GeoLocationStyled: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className, ...props }) => (
+	<div className={[styles.geoLocation, className].filter(Boolean).join(` `)} {...props} />
+)
 
-	display: flex;
-	align-items: center;
-	justify-content: center;
-
-	z-index: 3;
-
-	box-shadow: 0px 1px 13px rgba(0, 0, 0, 0.08);
-`
 const SIZE = 16
 export const MyLocation: React.FC = () => {
 	const dispatch = useDispatch()

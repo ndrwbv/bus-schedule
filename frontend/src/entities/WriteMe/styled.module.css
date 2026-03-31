@@ -1,0 +1,39 @@
+.handWrapper {
+	position: absolute;
+	right: -10px;
+	bottom: 0;
+}
+
+.socialLinks {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.socialLink {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 12px 16px;
+	background: #f5f5f5;
+	border-radius: 14px;
+	text-decoration: none;
+	color: #333;
+	font-weight: 500;
+	font-size: 16px;
+	transition: background 0.2s;
+}
+
+.socialLink:hover {
+	background: #ebebeb;
+}
+
+.socialLink span {
+	font-size: 20px;
+}
+
+.socialDescription {
+	margin: -12px 0 16px;
+	color: #a5a5a5;
+	font-size: 14px;
+}

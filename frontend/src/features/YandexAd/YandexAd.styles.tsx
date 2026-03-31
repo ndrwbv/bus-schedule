@@ -1,12 +1,16 @@
-import styled from 'styled-components'
+import React from 'react'
 
-export const YandexAdContainerStyled = styled.div<{ $isLoaded: boolean }>`
-	min-height: ${props => (props.$isLoaded ? `100px` : `0`)};
-	overflow: hidden;
-	border-radius: 25px;
-	transition: min-height 0.3s ease;
+import styles from './YandexAd.module.css'
 
-	& > div {
-		width: 100%;
-	}
-`
+export const YandexAdContainerStyled = React.forwardRef<
+	HTMLDivElement,
+	React.HTMLAttributes<HTMLDivElement> & { $isLoaded: boolean }
+>(({ $isLoaded, className, ...props }, ref) => (
+	<div
+		ref={ref}
+		className={[styles.container, $isLoaded ? styles.containerLoaded : ``, className].filter(Boolean).join(` `)}
+		{...props}
+	/>
+))
+
+YandexAdContainerStyled.displayName = `YandexAdContainerStyled`

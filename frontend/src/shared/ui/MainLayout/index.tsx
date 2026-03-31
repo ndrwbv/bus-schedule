@@ -1,28 +1,17 @@
-import styled from 'styled-components'
+import React from 'react'
 
-export const MainLayoutStyled = styled.main`
-	padding: 22px 8px 15px 8px;
-	max-width: 768px;
-	width: 100%;
-	flex-grow: 1;
-`
+import styles from './mainLayout.module.css'
 
-export const MainLayoutBetaStyled = styled.main`
-	max-width: 768px;
-	width: 100%;
-	flex-grow: 1;
+export const MainLayoutStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<main className={styles.mainLayout}>{children}</main>
+)
 
-	@media all and (min-width: 766px) {
-		padding: 18px 18px;
-	}
-`
+export const MainLayoutBetaStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<main className={styles.mainLayoutBeta}>{children}</main>
+)
 
-export const BottomSheetBgStyled = styled.div<{ $bg?: string }>`
-	background: ${props => (props.$bg ? props.$bg : `#f4f4f2`)};
-	border-radius: 25px 25px 0 0;
-	min-height: 60vh;
-
-	@media all and (min-width: 766px) {
-		border-radius: 34px 34px 0 0;
-	}
-`
+export const BottomSheetBgStyled: React.FC<{ $bg?: string; children?: React.ReactNode }> = ({ $bg, children }) => (
+	<div className={[styles.bottomSheetBg, $bg === `#fff` ? styles.bottomSheetBgWhite : ``].filter(Boolean).join(` `)}>
+		{children}
+	</div>
+)

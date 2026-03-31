@@ -1,11 +1,7 @@
-import styled from 'styled-components'
+import React from 'react'
 
-export const FooterStyled = styled.footer`
-	display: flex;
-	flex-direction: column;
+import styles from './styled.module.css'
 
-	padding: 64px 15px 22px 15px;
-	max-width: 768px;
-
-	width: 100%;
-`
+export const FooterStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<footer className={styles.footer}>{children}</footer>
+)

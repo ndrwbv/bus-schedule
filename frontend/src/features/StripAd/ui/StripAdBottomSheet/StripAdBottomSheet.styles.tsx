@@ -1,88 +1,46 @@
-import { styled } from 'styled-components'
+import React from 'react'
 
-import { StripHeaderStyled } from '../StripHeader/StripHeader.styles'
+import styles from './StripAdBottomSheet.module.css'
 
-export const StripBottomSheetHeaderContainerStyled = styled.div`
-	height: 50vh;
+export const StripBottomSheetHeaderContainerStyled: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
+	className,
+	...props
+}) => <div className={[styles.bottomSheetHeaderContainer, className].filter(Boolean).join(` `)} {...props} />
 
-	position: relative;
-	overflow: hidden;
+export const StripVideoContainerStyled: React.FC<React.HTMLAttributes<HTMLDivElement> & { $rounded?: boolean }> = ({
+	className,
+	$rounded,
+	...props
+}) => (
+	<div
+		className={[styles.videoContainer, $rounded ? styles.videoContainerRounded : ``, className]
+			.filter(Boolean)
+			.join(` `)}
+		{...props}
+	/>
+)
 
-	background-image: url('/stripad/strip-thumbnail.png');
-	background-size: cover;
-	background-position-y: 50%;
-`
+export const StripActionsStyled: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className, ...props }) => (
+	<div className={[styles.actions, className].filter(Boolean).join(` `)} {...props} />
+)
 
-export const StripVideoContainerStyled = styled.div<{ $radius: string }>`
-	width: 100%;
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	z-index: 0;
+export const StripBottomSheetContainerStyled: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
+	className,
+	...props
+}) => <div className={[styles.bottomSheetContainer, className].filter(Boolean).join(` `)} {...props} />
 
-	border-radius: ${props => props.$radius};
+export const StripVideoHeaderStyled: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className, ...props }) => (
+	<div className={[styles.videoHeader, className].filter(Boolean).join(` `)} {...props} />
+)
 
-	video {
-		width: 100%;
-	}
-`
+export { styles as stripAdBottomSheetStyles }
 
-export const StripActionsStyled = styled.div`
-	position: absolute;
-	bottom: 40px;
-	z-index: 6;
-	left: 50%;
-	transform: translate(-50%, 0);
-	display: flex;
-	gap: 40px;
-	align-items: center;
-`
+export const StripActionButtonStyled: React.FC<React.AnchorHTMLAttributes<HTMLAnchorElement>> = ({
+	className,
+	...props
+	// eslint-disable-next-line jsx-a11y/anchor-has-content
+}) => <a className={[styles.actionButton, className].filter(Boolean).join(` `)} {...props} />
 
-export const StripBottomSheetContainerStyled = styled.div`
-	background-color: #000;
-	color: #fff;
-	border-radius: 25px 25px 0 0;
-
-	overflow: hidden;
-
-	@media all and (min-width: 766px) {
-		border-radius: 34px 34px 0 0;
-	}
-`
-
-export const StripVideoHeaderStyled = styled.div`
-	position: absolute;
-	top: 28px;
-	left: 50%;
-	transform: translate(-50%, 0);
-	z-index: 2;
-	text-align: center;
-
-	${StripHeaderStyled} {
-		white-space: nowrap;
-		margin-top: 9px;
-	}
-`
-
-export const StripActionButtonStyled = styled.a`
-	border: 1px solid #fff;
-	border-radius: 23px;
-	color: #fff;
-	padding: 6px 14px;
-`
-
-export const StripTextContainerStyled = styled.div`
-	display: flex;
-	flex-direction: column;
-	padding: 35px;
-
-	div {
-		margin-top: 26px;
-	}
-
-	a {
-		color: #fff;
-		text-decoration: underline;
-	}
-`
+export const StripTextContainerStyled: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className, ...props }) => (
+	<div className={[styles.textContainer, className].filter(Boolean).join(` `)} {...props} />
+)

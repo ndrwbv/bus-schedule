@@ -1,41 +1,25 @@
-import styled from 'styled-components'
+import React from 'react'
 
-export const HandWrapperStyled = styled.div`
-	position: absolute;
-	right: -10px;
-	bottom: 0;
-`
+import styles from './styled.module.css'
 
-export const SocialLinksStyled = styled.div`
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-`
+export const HandWrapperStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<div className={styles.handWrapper}>{children}</div>
+)
 
-export const SocialLinkStyled = styled.a`
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	padding: 12px 16px;
-	background: #f5f5f5;
-	border-radius: 14px;
-	text-decoration: none;
-	color: #333;
-	font-weight: 500;
-	font-size: 16px;
-	transition: background 0.2s;
+export const SocialLinksStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<div className={styles.socialLinks}>{children}</div>
+)
 
-	&:hover {
-		background: #ebebeb;
-	}
+export const SocialLinkStyled: React.FC<React.AnchorHTMLAttributes<HTMLAnchorElement>> = ({
+	children,
+	className,
+	...rest
+}) => (
+	<a className={styles.socialLink} {...rest}>
+		{children}
+	</a>
+)
 
-	span {
-		font-size: 20px;
-	}
-`
-
-export const SocialDescriptionStyled = styled.p`
-	margin: -12px 0 16px;
-	color: #a5a5a5;
-	font-size: 14px;
-`
+export const SocialDescriptionStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<p className={styles.socialDescription}>{children}</p>
+)

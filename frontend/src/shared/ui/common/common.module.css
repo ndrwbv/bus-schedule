@@ -1,0 +1,109 @@
+.container {
+	position: relative;
+}
+
+.container + .container {
+	margin-top: 12px;
+}
+
+.containerDoubled {
+	margin: 24px 0 !important;
+}
+
+.card {
+	position: relative;
+	background: #ffffff;
+	box-shadow: 2px 2px 25px rgba(210, 210, 210, 0.25);
+	border-radius: 25px;
+	padding: 18px 14px 14px 14px;
+}
+
+.cardOverflow {
+	overflow: hidden;
+}
+
+.card::after {
+	content: unset;
+}
+
+.cardNew::after {
+	content: 'New';
+	position: absolute;
+	top: -10px;
+	right: 15px;
+	background-color: #ff3333;
+	padding: 4px 8px;
+	font-size: 12px;
+	color: white;
+	font-weight: bold;
+	border-radius: 20px;
+}
+
+.grayText {
+	margin: 0;
+	color: #a5a5a5;
+	font-size: 14px;
+}
+
+.grayText a {
+	color: inherit;
+}
+
+.grayText + .grayText {
+	margin-top: 12px;
+}
+
+.cardHeader {
+	margin-bottom: 20px;
+	font-weight: 600;
+	font-size: 20px;
+}
+
+.customButton {
+	width: 100%;
+	border: none;
+	border-radius: 13px;
+	padding: 17px;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.customButton:disabled {
+	opacity: 0.5;
+}
+
+@media (hover: hover) {
+	.customButton:hover {
+		opacity: 0.8;
+	}
+}
+
+.customButtonPrimary {
+	background-color: #1191fb;
+	color: white;
+}
+
+.customButtonDanger {
+	background-color: #ffb2b2;
+	color: #9b2727;
+}
+
+.miniButton {
+	cursor: pointer;
+	font-weight: 600;
+	font-size: 16px;
+	padding: 8px 17px;
+	background: #1191fb;
+	border-radius: 14px;
+	color: white;
+}
+
+.miniButton:disabled {
+	opacity: 0.5;
+}
+
+@media (hover: hover) {
+	.miniButton:hover {
+		opacity: 0.8;
+	}
+}

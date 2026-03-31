@@ -1,73 +1,36 @@
-import { MAIN_BLUE, MAIN_GREY } from 'shared/theme'
-import styled from 'styled-components'
+import React from 'react'
 
-export const InlineOptionsItemStyled = styled.div<{
+import styles from './styled.module.css'
+
+export const InlineOptionsItemStyled: React.FC<{
 	$active: boolean
-	$defaultColor?: string | undefined
 	$disabled?: boolean
-}>`
-	cursor: ${props => (props.$disabled ? `default` : `pointer`)};
-	padding: 17px 17px;
+	children?: React.ReactNode
+	onClick?: () => void
+}> = ({ $active, $disabled, children, onClick }) => (
+	<div
+		className={[
+			styles.inlineOptionsItem,
+			$active ? styles.inlineOptionsItemActive : styles.inlineOptionsItemInactive,
+			$disabled ? styles.inlineOptionsItemDisabled : ``,
+		]
+			.filter(Boolean)
+			.join(` `)}
+		onClick={onClick}
+		role="button"
+		tabIndex={0}
+		onKeyDown={e => {
+			if (e.key === `Enter` || e.key === ` `) onClick?.()
+		}}
+	>
+		{children}
+	</div>
+)
 
-	border-radius: 16px;
-	background-color: ${props => (props.$active ? MAIN_BLUE : props.$defaultColor ?? MAIN_GREY)};
-	color: ${props => (props.$active ? `white` : `black`)};
-	opacity: ${props => (props.$disabled ? 0.4 : 1)};
+export const InlineOptionsContainerStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<div className={styles.inlineOptionsContainer}>{children}</div>
+)
 
-	font-weight: 600;
-	white-space: nowrap;
-
-	& + & {
-		margin-left: 12px;
-	}
-
-	@media (hover: hover) {
-		&:hover {
-			opacity: 0.8;
-		}
-	}
-`
-
-export const InlineOptionsContainerStyled = styled.div`
-	display: flex;
-	align-items: center;
-
-	overflow: auto;
-	padding: 0 40px 0 13px;
-
-	::-webkit-scrollbar {
-		@media all and (max-width: 766px) {
-			width: 0;
-			background: transparent;
-		}
-	}
-
-	::-webkit-scrollbar-thumb {
-		background-color: transparent;
-	}
-`
-
-export const OverLayContainerStyled = styled.div`
-	position: relative;
-	margin: 0 -12px;
-
-	&::before {
-		content: '';
-		position: absolute;
-		right: 0;
-		top: 0;
-		background: linear-gradient(270deg, #ffffff -11%, rgba(255, 255, 255, 0) 100%);
-		width: 16px;
-		height: 53px;
-	}
-
-	&::after {
-		content: '';
-		position: absolute;
-		left: 0;
-		top: 0;
-		background: linear-gradient(90deg, #ffffff -11%, rgba(255, 255, 255, 0) 100%);
-		width: 16px;
-		height: 53px;
-	}
-`
+export const OverLayContainerStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<div className={styles.overlayContainer}>{children}</div>
+)

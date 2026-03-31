@@ -7,6 +7,7 @@ import { StripHeader } from '../StripHeader/StripHeader'
 import {
 	StripActionButtonStyled,
 	StripActionsStyled,
+	stripAdBottomSheetStyles,
 	StripBottomSheetContainerStyled,
 	StripBottomSheetHeaderContainerStyled,
 	StripTextContainerStyled,
@@ -65,7 +66,7 @@ export const StripAdBottomSheet: FC<IStripAdBottomSheetProps> = ({ open, onClose
 			<StripBottomSheetContainerStyled>
 				<StripBottomSheetHeaderContainerStyled>
 					<StripVideoHeaderStyled>
-						<StripHeader />
+						<StripHeader headerClassName={stripAdBottomSheetStyles.videoHeaderStripHeader} />
 					</StripVideoHeaderStyled>
 
 					<StripActionsStyled>

@@ -1,0 +1,10 @@
+.stripDiscount span {
+	background-color: #f51313;
+	padding: 3px 9px;
+	border-radius: 14px;
+}
+
+.stripHeader {
+	font-size: 24px;
+	font-weight: bold;
+}

@@ -1,0 +1,17 @@
+.headerContainer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 14px;
+}
+
+.headerText {
+	font-size: 20px;
+	font-weight: 600;
+	margin-left: 6px;
+}
+
+.headerItem {
+	display: flex;
+	align-items: center;
+}

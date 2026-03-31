@@ -8,7 +8,6 @@ interface IProps<T = ValueType> {
 	list: IOption<T>[]
 	activeId: T
 	onClick: (value: T) => void
-	defaultColor?: string
 	disabled?: boolean
 }
 
@@ -16,7 +15,6 @@ export const InlineOptions = <T,>({
 	list,
 	activeId,
 	onClick,
-	defaultColor = undefined,
 	disabled = false,
 }: React.PropsWithChildren<IProps<T | null>>): JSX.Element => {
 	return (
@@ -25,7 +23,6 @@ export const InlineOptions = <T,>({
 				{list.map(option => (
 					<InlineOptionsItemStyled
 						$active={option.value === activeId}
-						$defaultColor={defaultColor}
 						$disabled={disabled}
 						key={option.value as string}
 						onClick={() => !disabled && onClick(option.value)}

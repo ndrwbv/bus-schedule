@@ -1,219 +1,132 @@
-import styled from 'styled-components'
+import React from 'react'
 
-// About block
+import styles from './styled.module.css'
 
-export const AboutBlockStyled = styled.button`
-	width: 100%;
-	background: #ffffff;
-	box-shadow: 2px 2px 25px rgba(210, 210, 210, 0.25);
-	border: none;
-	border-radius: 25px;
-	padding: 14px 18px;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	cursor: pointer;
-	transition: transform 0.15s;
+export const AboutBlockStyled: React.FC<{ onClick?: () => void; children?: React.ReactNode }> = ({
+	onClick,
+	children,
+}) => (
+	<button type="button" className={styles.aboutBlock} onClick={onClick}>
+		{children}
+	</button>
+)
 
-	&:active {
-		transform: scale(0.98);
-	}
+export const AboutBlockLeftStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<div className={styles.aboutBlockLeft}>{children}</div>
+)
 
-	@media (hover: hover) {
-		&:hover {
-			opacity: 0.85;
-		}
-	}
-`
+export const AboutBlockEmojiStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<span className={styles.aboutBlockEmoji}>{children}</span>
+)
 
-export const AboutBlockLeftStyled = styled.div`
-	display: flex;
-	align-items: center;
-	gap: 10px;
-`
+export const AboutBlockTextStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<div className={styles.aboutBlockText}>{children}</div>
+)
 
-export const AboutBlockEmojiStyled = styled.span`
-	font-size: 22px;
-`
+export const AboutBlockTitleStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<span className={styles.aboutBlockTitle}>{children}</span>
+)
 
-export const AboutBlockTextStyled = styled.div`
-	text-align: left;
-`
+export const AboutBlockSubStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<span className={styles.aboutBlockSub}>{children}</span>
+)
 
-export const AboutBlockTitleStyled = styled.span`
-	font-size: 14px;
-	font-weight: 600;
-	color: #333;
-	display: block;
-`
+export const AboutBlockArrowStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<span className={styles.aboutBlockArrow}>{children}</span>
+)
 
-export const AboutBlockSubStyled = styled.span`
-	font-size: 12px;
-	color: #888;
-`
+export const ModalOverlayStyled: React.FC<{ onClick?: (e: React.MouseEvent) => void; children?: React.ReactNode }> = ({
+	onClick,
+	children,
+}) => (
+	<div
+		className={styles.modalOverlay}
+		onClick={onClick}
+		role="button"
+		tabIndex={0}
+		onKeyDown={e => {
+			if (e.key === `Enter` || e.key === ` `) onClick?.(e as unknown as React.MouseEvent)
+		}}
+	>
+		{children}
+	</div>
+)
 
-export const AboutBlockArrowStyled = styled.span`
-	font-size: 16px;
-	color: #bbb;
-`
+export const ModalContentStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<div className={styles.modalContent}>{children}</div>
+)
 
-// Modal
+export const ModalCloseStyled: React.FC<{
+	onClick?: () => void
+	children?: React.ReactNode
+	'aria-label'?: string
+}> = ({ onClick, children, ...rest }) => (
+	<button type="button" className={styles.modalClose} onClick={onClick} {...rest}>
+		{children}
+	</button>
+)
 
-export const ModalOverlayStyled = styled.div`
-	position: fixed;
-	inset: 0;
-	z-index: 1100;
-	background: rgba(0, 0, 0, 0.4);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding: 16px;
-`
+export const ModalTitleStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<h2 className={styles.modalTitle}>{children}</h2>
+)
 
-export const ModalContentStyled = styled.div`
-	position: relative;
-	background: #fff;
-	border-radius: 20px;
-	padding: 28px 20px 24px;
-	max-width: 400px;
-	width: 100%;
-	text-align: center;
-`
+export const ModalTextStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<p className={styles.modalText}>{children}</p>
+)
 
-export const ModalCloseStyled = styled.button`
-	position: absolute;
-	top: 12px;
-	right: 12px;
-	background: none;
-	border: none;
-	cursor: pointer;
-	font-size: 20px;
-	color: #a5a5a5;
-	line-height: 1;
-	padding: 4px;
+export const DonatePhoneRowStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<div className={styles.donatePhoneRow}>{children}</div>
+)
 
-	@media (hover: hover) {
-		&:hover {
-			color: #555;
-		}
-	}
-`
+export const DonatePhoneStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<span className={styles.donatePhone}>{children}</span>
+)
 
-export const ModalTitleStyled = styled.h2`
-	font-size: 18px;
-	font-weight: 600;
-	margin-bottom: 12px;
-`
+export const DonatePhoneNameStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<span className={styles.donatePhoneName}>{children}</span>
+)
 
-export const ModalTextStyled = styled.p`
-	font-size: 14px;
-	line-height: 21px;
-	color: #555;
-	margin-bottom: 20px;
-`
+export const CopyButtonStyled: React.FC<{
+	onClick?: () => void
+	title?: string
+	children?: React.ReactNode
+}> = ({ onClick, title, children }) => (
+	<button type="button" className={styles.copyButton} onClick={onClick} title={title}>
+		{children}
+	</button>
+)
 
-export const DonatePhoneRowStyled = styled.div`
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: 10px;
-	background: #f2f4f4;
-	border-radius: 14px;
-	padding: 14px 16px;
-`
+export const CopiedTooltipStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<span className={styles.copiedTooltip}>{children}</span>
+)
 
-export const DonatePhoneStyled = styled.span`
-	font-size: 18px;
-	font-weight: 600;
-	letter-spacing: 0.5px;
-`
+export const ModalFooterStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<p className={styles.modalFooter}>{children}</p>
+)
 
-export const DonatePhoneNameStyled = styled.span`
-	font-size: 13px;
-	color: #a5a5a5;
-`
+export const BannerStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<div className={styles.banner}>{children}</div>
+)
 
-export const CopyButtonStyled = styled.button`
-	background: none;
-	border: none;
-	cursor: pointer;
-	padding: 4px;
-	display: flex;
-	align-items: center;
-	color: #1191fb;
-	font-size: 18px;
-	border-radius: 8px;
-	transition: background 0.15s;
+export const BannerTextStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<span className={styles.bannerText}>{children}</span>
+)
 
-	&:active {
-		background: rgba(17, 145, 251, 0.1);
-	}
+export const BannerButtonStyled: React.FC<{ onClick?: () => void; children?: React.ReactNode }> = ({
+	onClick,
+	children,
+}) => (
+	<button type="button" className={styles.bannerButton} onClick={onClick}>
+		{children}
+	</button>
+)
 
-	@media (hover: hover) {
-		&:hover {
-			background: rgba(17, 145, 251, 0.1);
-		}
-	}
-`
-
-export const CopiedTooltipStyled = styled.span`
-	font-size: 12px;
-	color: #1191fb;
-	font-weight: 500;
-`
-
-export const ModalFooterStyled = styled.p`
-	font-size: 18px;
-	margin-top: 16px;
-`
-
-// Banner
-
-export const BannerStyled = styled.div`
-	position: fixed;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	z-index: 1000;
-	background: #fff;
-	box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.1);
-	padding: 12px 16px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: 10px;
-	font-size: 14px;
-`
-
-export const BannerTextStyled = styled.span`
-	color: #333;
-	line-height: 20px;
-`
-
-export const BannerButtonStyled = styled.button`
-	background: #1191fb;
-	color: white;
-	border: none;
-	border-radius: 10px;
-	padding: 8px 14px;
-	font-weight: 600;
-	font-size: 14px;
-	cursor: pointer;
-	white-space: nowrap;
-
-	@media (hover: hover) {
-		&:hover {
-			opacity: 0.8;
-		}
-	}
-`
-
-export const BannerCloseStyled = styled.button`
-	background: none;
-	border: none;
-	cursor: pointer;
-	font-size: 18px;
-	color: #a5a5a5;
-	padding: 4px;
-	line-height: 1;
-`
+export const BannerCloseStyled: React.FC<{
+	onClick?: () => void
+	children?: React.ReactNode
+	'aria-label'?: string
+}> = ({ onClick, children, ...rest }) => (
+	<button type="button" className={styles.bannerClose} onClick={onClick} {...rest}>
+		{children}
+	</button>
+)

@@ -6,7 +6,7 @@ module.exports = {
 		`plugin:sonarjs/recommended`,
 		`plugin:prettier/recommended`,
 	],
-	plugins: [`optimize-regex`, `simple-import-sort`, `styled-components-varname`],
+	plugins: [`optimize-regex`, `simple-import-sort`],
 	ignorePatterns: [`**/dist/**/*.*`, `src/page/Game/*`, `vite.config.ts`, `dev-dist`],
 	rules: {
 		'react/prop-types': `off`,
@@ -79,15 +79,7 @@ module.exports = {
 			},
 			{ usePrettierrc: false },
 		],
-		'styled-components-varname/varname': [
-			`error`,
-			{
-				tagStyle: {
-					suffix: `Styled`,
-				},
-			},
-		],
-		'import/no-extraneous-dependencies': [
+'import/no-extraneous-dependencies': [
 			`error`,
 			{
 				devDependencies: true,

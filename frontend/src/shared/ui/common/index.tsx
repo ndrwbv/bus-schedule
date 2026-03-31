@@ -1,104 +1,83 @@
-import styled from 'styled-components'
+import React from 'react'
 
-export const ContainerStyled = styled.article<{ $doubled?: boolean }>`
-	position: relative;
+import styles from './common.module.css'
 
-	& + & {
-		margin-top: 12px;
-	}
+export const ContainerStyled: React.FC<{
+	$doubled?: boolean
+	children?: React.ReactNode
+	className?: string
+}> = ({ $doubled, children, className }) => (
+	<article
+		className={[styles.container, $doubled ? styles.containerDoubled : ``, className].filter(Boolean).join(` `)}
+	>
+		{children}
+	</article>
+)
 
-	margin: ${props => (props.$doubled ? `24px 0 !important` : `inherit`)};
-`
+export const CardStyled: React.FC<{
+	$isOverflow?: boolean
+	$isNew?: boolean
+	children?: React.ReactNode
+	className?: string
+}> = ({ $isOverflow, $isNew, children, className }) => (
+	<div
+		className={[styles.card, $isOverflow ? styles.cardOverflow : ``, $isNew ? styles.cardNew : ``, className]
+			.filter(Boolean)
+			.join(` `)}
+	>
+		{children}
+	</div>
+)
 
-export const CardStyled = styled.div<{ $isOverflow?: boolean | undefined; $isNew?: boolean }>`
-	position: relative;
+export const GrayTextStyled: React.FC<{
+	children?: React.ReactNode
+	className?: string
+}> = ({ children, className }) => <p className={[styles.grayText, className].filter(Boolean).join(` `)}>{children}</p>
 
-	background: #ffffff;
-	box-shadow: 2px 2px 25px rgba(210, 210, 210, 0.25);
-	border-radius: 25px;
-
-	padding: 18px 14px 14px 14px;
-
-	overflow: ${props => (props.$isOverflow === true ? `hidden` : `initial`)};
-
-	&::after {
-		content: ${props => (props.$isNew ? `'New'` : `unset`)};
-		position: absolute;
-		top: -10px;
-		right: 15px;
-		background-color: #ff3333;
-		padding: 4px 8px;
-		font-size: 12px;
-		color: white;
-		font-weight: bold;
-		border-radius: 20px;
-	}
-`
-
-export const GrayTextStyled = styled.p`
-	margin: 0;
-	color: #a5a5a5;
-	font-size: 14px;
-
-	a {
-		color: inherit;
-	}
-
-	& + & {
-		margin-top: 12px;
-	}
-`
-
-export const CardHeaderStyled = styled.p`
-	margin-bottom: 20px;
-	font-weight: 600;
-	font-size: 20px;
-`
+export const CardHeaderStyled: React.FC<{
+	children?: React.ReactNode
+	className?: string
+}> = ({ children, className }) => <p className={[styles.cardHeader, className].filter(Boolean).join(` `)}>{children}</p>
 
 export type ButtonType = 'primary' | 'danger'
-export const CustomButtonStyled = styled.button<{
+
+export const CustomButtonStyled: React.FC<{
 	$status: ButtonType
 	$mt?: string
-}>`
-	width: 100%;
-	border: none;
-	border-radius: 13px;
-	background-color: ${props => (props.$status === `primary` ? `#1191FB` : `#FFB2B2`)};
-	color: ${props => (props.$status === `primary` ? `white` : `#9B2727`)};
-	padding: 17px;
+	children?: React.ReactNode
+	className?: string
+	disabled?: boolean
+	onClick?: () => void
+}> = ({ $status, $mt, children, className, disabled, onClick }) => (
+	<button
+		type="button"
+		className={[
+			styles.customButton,
+			$status === `primary` ? styles.customButtonPrimary : styles.customButtonDanger,
+			className,
+		]
+			.filter(Boolean)
+			.join(` `)}
+		style={$mt ? { marginTop: $mt } : undefined}
+		disabled={disabled}
+		onClick={onClick}
+	>
+		{children}
+	</button>
+)
 
-	margin-top: ${props => props.$mt};
-	font-weight: 600;
-
-	cursor: pointer;
-
-	&:disabled {
-		opacity: 0.5;
-	}
-
-	@media (hover: hover) {
-		&:hover {
-			opacity: 0.8;
-		}
-	}
-`
-
-export const MiniButtonStyled = styled.button`
-	cursor: pointer;
-	font-weight: 600;
-	font-size: 16px;
-	padding: 8px 17px;
-	background: #1191fb;
-	border-radius: 14px;
-	color: white;
-
-	&:disabled {
-		opacity: 0.5;
-	}
-
-	@media (hover: hover) {
-		&:hover {
-			opacity: 0.8;
-		}
-	}
-`
+export const MiniButtonStyled: React.FC<{
+	children?: React.ReactNode
+	className?: string
+	disabled?: boolean
+	onClick?: () => void
+}> = ({ children, className, disabled, onClick }) => (
+	<button
+		type="button"
+		className={[styles.miniButton, className].filter(Boolean).join(` `)}
+		disabled={disabled}
+		onClick={onClick}
+	>
+		{children}
+	</button>
+)

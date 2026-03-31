@@ -1,7 +1,7 @@
-import styled from 'styled-components'
+import React from 'react'
 
-export const TimeStampStyled = styled.div`
-	& + & {
-		margin-top: 8px;
-	}
-`
+import styles from './timeStamp.module.css'
+
+export const TimeStampStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<div className={styles.timeStamp}>{children}</div>
+)

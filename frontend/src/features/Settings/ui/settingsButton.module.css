@@ -1,0 +1,23 @@
+.button {
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 6px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	transition: background 0.2s;
+}
+
+@media (hover: hover) {
+	.button:hover {
+		background: rgba(0, 0, 0, 0.05);
+	}
+}
+
+.button svg {
+	width: 22px;
+	height: 22px;
+	fill: #666;
+}

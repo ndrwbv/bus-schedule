@@ -4,99 +4,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useGetFeaturesQuery } from 'shared/api/scheduleApi'
 import { AndrewLytics } from 'shared/lib'
 import { liveTrackingEnabledSelector } from 'shared/store/app/selectors/liveTracking'
-import styled from 'styled-components'
 
 import { setShowLiveBus, showLiveBusSelector } from '../model/settingsSlice'
-
-const OverlayStyled = styled.div`
-	position: fixed;
-	inset: 0;
-	background: rgba(0, 0, 0, 0.4);
-	z-index: 9999;
-	display: flex;
-	align-items: flex-end;
-	justify-content: center;
-`
-
-const ModalStyled = styled.div`
-	background: #fff;
-	border-radius: 20px 20px 0 0;
-	width: 100%;
-	max-width: 768px;
-	padding: 20px;
-	padding-bottom: max(20px, env(safe-area-inset-bottom));
-`
-
-const HeaderStyled = styled.div`
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	margin-bottom: 20px;
-`
-
-const TitleStyled = styled.h2`
-	font-size: 18px;
-	font-weight: 700;
-	margin: 0;
-`
-
-const CloseButtonStyled = styled.button`
-	background: none;
-	border: none;
-	font-size: 24px;
-	cursor: pointer;
-	color: #999;
-	padding: 4px 8px;
-	line-height: 1;
-`
-
-const ToggleRowStyled = styled.label<{ $disabled?: boolean }>`
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 14px 0;
-	cursor: ${p => (p.$disabled ? `default` : `pointer`)};
-	opacity: ${p => (p.$disabled ? 0.5 : 1)};
-`
-
-const ToggleLabelStyled = styled.div`
-	display: flex;
-	flex-direction: column;
-	gap: 2px;
-`
-
-const ToggleTitleStyled = styled.span`
-	font-size: 15px;
-	font-weight: 500;
-`
-
-const ToggleSubtitleStyled = styled.span`
-	font-size: 12px;
-	color: #999;
-`
-
-const SwitchStyled = styled.div<{ $checked: boolean; $disabled?: boolean }>`
-	width: 44px;
-	height: 24px;
-	border-radius: 12px;
-	background: ${p => (p.$checked ? `#336CFF` : `#ccc`)};
-	position: relative;
-	flex-shrink: 0;
-	transition: background 0.2s;
-	pointer-events: ${p => (p.$disabled ? `none` : `auto`)};
-
-	&::after {
-		content: '';
-		position: absolute;
-		top: 2px;
-		left: ${p => (p.$checked ? `22px` : `2px`)};
-		width: 20px;
-		height: 20px;
-		border-radius: 50%;
-		background: #fff;
-		transition: left 0.2s;
-	}
-`
+import styles from './settingsModal.module.css'
 
 interface Props {
 	onClose: () => void
@@ -117,26 +27,61 @@ export const SettingsModal: React.FC<Props> = ({ onClose }) => {
 		AndrewLytics(newValue ? `set_live_bus_on` : `set_live_bus_off`)
 	}
 
+	const isChecked = liveTrackingEnabled && showLiveBus
+	const isDisabled = !liveTrackingEnabled
+
 	return createPortal(
-		<OverlayStyled onClick={onClose}>
-			<ModalStyled onClick={e => e.stopPropagation()}>
-				<HeaderStyled>
-					<TitleStyled>Настройки</TitleStyled>
-					<CloseButtonStyled onClick={onClose}>&times;</CloseButtonStyled>
-				</HeaderStyled>
+		<div
+			className={styles.overlay}
+			onClick={onClose}
+			role="button"
+			tabIndex={0}
+			onKeyDown={e => {
+				if (e.key === `Enter` || e.key === ` `) onClose()
+			}}
+		>
+			{/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
+			<div
+				className={styles.modal}
+				onClick={e => e.stopPropagation()}
+				role="dialog"
+				tabIndex={-1}
+				onKeyDown={e => e.stopPropagation()}
+			>
+				<div className={styles.header}>
+					<h2 className={styles.title}>Настройки</h2>
+					<button type="button" className={styles.closeButton} onClick={onClose}>
+						&times;
+					</button>
+				</div>
 
-				<ToggleRowStyled $disabled={!liveTrackingEnabled} onClick={handleToggle}>
-					<ToggleLabelStyled>
-						<ToggleTitleStyled>Автобус на карте</ToggleTitleStyled>
-						<ToggleSubtitleStyled>
+				{/* eslint-disable-next-line jsx-a11y/label-has-associated-control, jsx-a11y/no-noninteractive-element-interactions */}
+				<label
+					className={[styles.toggleRow, isDisabled ? styles.toggleRowDisabled : ``].filter(Boolean).join(` `)}
+					onClick={handleToggle}
+					onKeyDown={e => {
+						if (e.key === `Enter` || e.key === ` `) handleToggle()
+					}}
+				>
+					<div className={styles.toggleLabel}>
+						<span className={styles.toggleTitle}>Автобус на карте</span>
+						<span className={styles.toggleSubtitle}>
 							{liveTrackingEnabled ? `Показывать позицию 112С в реальном времени` : `Временно недоступно`}
-						</ToggleSubtitleStyled>
-					</ToggleLabelStyled>
+						</span>
+					</div>
 
-					<SwitchStyled $checked={liveTrackingEnabled && showLiveBus} $disabled={!liveTrackingEnabled} />
-				</ToggleRowStyled>
-			</ModalStyled>
-		</OverlayStyled>,
+					<div
+						className={[
+							styles.switch,
+							isChecked ? styles.switchChecked : ``,
+							isDisabled ? styles.switchDisabled : ``,
+						]
+							.filter(Boolean)
+							.join(` `)}
+					/>
+				</label>
+			</div>
+		</div>,
 		document.body,
 	)
 }

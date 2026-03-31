@@ -1,0 +1,106 @@
+.triggerButton {
+	background: #f2f4f4;
+	border: none;
+	border-radius: 12px;
+	padding: 10px 14px;
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+	max-width: 200px;
+	text-align: left;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+@media (hover: hover) {
+	.triggerButton:hover {
+		opacity: 0.8;
+	}
+}
+
+.overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.4);
+	z-index: 9999;
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+}
+
+.modal {
+	background: #fff;
+	border-radius: 20px 20px 0 0;
+	width: 100%;
+	max-width: 768px;
+	max-height: 70vh;
+	display: flex;
+	flex-direction: column;
+}
+
+.modalHeader {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 16px 20px;
+	border-bottom: 1px solid #f2f4f4;
+	flex-shrink: 0;
+}
+
+.modalTitle {
+	margin: 0;
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.closeButton {
+	background: none;
+	border: none;
+	font-size: 24px;
+	cursor: pointer;
+	padding: 0 4px;
+	line-height: 1;
+	color: #999;
+}
+
+.list {
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
+	padding: 8px 0 24px;
+}
+
+.item {
+	display: block;
+	width: 100%;
+	border: none;
+	background: transparent;
+	color: #000;
+	text-align: left;
+	padding: 14px 20px;
+	font-size: 16px;
+	font-weight: 400;
+	cursor: pointer;
+}
+
+.item + .item {
+	border-top: 1px solid #f2f4f4;
+}
+
+@media (hover: hover) {
+	.item:hover {
+		background: #f2f4f4;
+	}
+}
+
+.itemActive {
+	background: #336cff;
+	color: #fff;
+	font-weight: 600;
+}
+
+@media (hover: hover) {
+	.itemActive:hover {
+		background: #336cff;
+	}
+}

@@ -20,14 +20,14 @@ const Arrow: FC = () => {
 	)
 }
 
-export const StripHeader: FC<{ arrow?: boolean }> = ({ arrow }) => {
+export const StripHeader: FC<{ arrow?: boolean; headerClassName?: string }> = ({ arrow, headerClassName }) => {
 	return (
 		<>
 			<StripDiscountStyled>
 				скидка <span>500₽</span>
 			</StripDiscountStyled>
 
-			<StripHeaderStyled>
+			<StripHeaderStyled className={headerClassName}>
 				На занятия по танцам
 				{arrow ? <Arrow /> : null}
 			</StripHeaderStyled>

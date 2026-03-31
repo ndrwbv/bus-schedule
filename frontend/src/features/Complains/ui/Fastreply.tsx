@@ -3,10 +3,10 @@ import { useSelector } from 'react-redux'
 import { AndrewLytics } from 'shared/lib'
 import { busStopNewSelector, directionSelector } from 'shared/store/busStop/busStopInfoSlice'
 import { InlineOptions } from 'shared/ui/InlineOptions'
-import styled from 'styled-components'
 
 import { ComplainType } from '../model/Complains'
 import { useComplainsContext } from '../model/ComplainsContext'
+import fastreplyStyles from './fastreply.module.css'
 
 const COOLDOWN_MS = 2 * 60 * 1000 // 2 minutes
 
@@ -25,9 +25,9 @@ const ComplainsOptions = [
 	},
 ]
 
-export const ComplainOptionContainerStyled = styled.div`
-	margin-top: 12px;
-`
+export const ComplainOptionContainerStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+	<div className={fastreplyStyles.complainOptionContainer}>{children}</div>
+)
 
 export const Fastreply: React.FC = () => {
 	const [activeComplain, setActiveComplain] = useState<ComplainType | null>(null)

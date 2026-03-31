@@ -1,15 +1,11 @@
 import { MyLocation } from 'features/MyLocation'
-import styled from 'styled-components'
 
-const ContainerStyled = styled.div`
-	position: absolute;
-	top: -63px;
-	padding: 0 10px;
-`
+import styles from './bottomSheetHeader.module.css'
+
 export const BottomSheetHeader: React.FC = () => {
 	return (
-		<ContainerStyled>
+		<div className={styles.container}>
 			<MyLocation />
-		</ContainerStyled>
+		</div>
 	)
 }

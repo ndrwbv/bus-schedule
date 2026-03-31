@@ -1,31 +1,15 @@
-import { styled } from 'styled-components'
+import React from 'react'
 
-export const StripAdStyled = styled.div`
-	position: relative;
-	color: white;
-`
+import styles from './StripAdBlock.module.css'
 
-export const StripAdVideoBlockStyled = styled.div`
-	border-radius: 25px;
-	overflow: hidden;
-	background-image: url('/stripad/strip-thumbnail.png');
-	background-size: cover;
-	min-height: 92px;
-	background-position-y: 160%;
-	background-position-x: 50px;
+export const StripAdStyled: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className, ...props }) => (
+	<div className={[styles.stripAd, className].filter(Boolean).join(` `)} {...props} />
+)
 
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-end;
+export const StripAdVideoBlockStyled: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className, ...props }) => (
+	<div className={[styles.stripAdVideoBlock, className].filter(Boolean).join(` `)} {...props} />
+)
 
-	padding: 20px;
-`
-
-export const StripTextBlockStyled = styled.div`
-	position: absolute;
-	z-index: 3;
-
-	p + p {
-		margin-top: 4px;
-	}
-`
+export const StripTextBlockStyled: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className, ...props }) => (
+	<div className={[styles.stripTextBlock, className].filter(Boolean).join(` `)} {...props} />
+)
