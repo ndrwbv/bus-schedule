@@ -2,181 +2,162 @@ import { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import * as maptilersdk from '@maptiler/sdk'
 import { showLiveBusSelector } from 'features/Settings/model/settingsSlice'
-import { LiveBusPosition, useGetFeaturesQuery, useGetLiveQuery } from 'shared/api/scheduleApi'
+import { useGetFeaturesQuery, useGetLiveQuery } from 'shared/api/scheduleApi'
 import { setLiveTracking } from 'shared/store/app/featureToggleSlice'
 import { liveTrackingEnabledSelector } from 'shared/store/app/selectors/liveTracking'
 
-import { BUS_ICON_SIZE, busIconSvg } from '../assets/busIcon'
+import { BUS_ICON_ID, loadBusImage } from '../assets/busIcon'
 import { TMap } from '../TMap'
 
-interface MarkerState {
-	marker: maptilersdk.Marker
-	lat: number
-	lng: number
-	targetLat: number
-	targetLng: number
-	animationId: number | null
+const SOURCE_ID = `livebus-source`
+const LAYER_PULSE = `livebus-pulse`
+const LAYER_DOT = `livebus-dot`
+
+const EMPTY_GEOJSON: GeoJSON.FeatureCollection = { type: `FeatureCollection`, features: [] }
+
+function buildGeoJSON(buses: { lat: number; lng: number; description: string }[]): GeoJSON.FeatureCollection {
+	return {
+		type: `FeatureCollection`,
+		features: buses.map((bus, i) => ({
+			type: `Feature`,
+			id: i,
+			properties: { description: bus.description },
+			geometry: { type: `Point`, coordinates: [bus.lng, bus.lat] },
+		})),
+	}
 }
 
-const LERP_DURATION = 1500 // ms for smooth movement
-
-function createBusElement(): HTMLDivElement {
-	const el = document.createElement(`div`)
-	el.className = `live-bus-marker`
-	el.innerHTML = `
-		<div class="live-bus-pulse"></div>
-		<div class="live-bus-icon">${busIconSvg}</div>
-	`
-	el.style.cssText = `
-		position: relative;
-		width: ${BUS_ICON_SIZE}px;
-		height: ${BUS_ICON_SIZE}px;
-		opacity: 0;
-		transition: opacity 0.8s ease;
-	`
-
-	// Fade in
-	requestAnimationFrame(() => {
-		el.style.opacity = `1`
-	})
-
-	return el
+function hasLayer(map: maptilersdk.Map, id: string): boolean {
+	return Boolean(map.getLayer(id))
 }
 
-function animateMarker(state: MarkerState): void {
-	if (state.animationId) {
-		cancelAnimationFrame(state.animationId)
+function hasSource(map: maptilersdk.Map, id: string): boolean {
+	return Boolean(map.getSource(id))
+}
+
+function addLayers(map: maptilersdk.Map): void {
+	if (!hasSource(map, SOURCE_ID)) {
+		map.addSource(SOURCE_ID, { type: `geojson`, data: EMPTY_GEOJSON })
 	}
 
-	const startLat = state.lat
-	const startLng = state.lng
-	const startTime = performance.now()
+	if (!hasLayer(map, LAYER_PULSE)) {
+		map.addLayer({
+			id: LAYER_PULSE,
+			type: `circle`,
+			source: SOURCE_ID,
+			paint: { 'circle-radius': 18, 'circle-color': `#FF6B35`, 'circle-opacity': 0.3, 'circle-stroke-width': 0 },
+		})
+	}
 
-	const step = (now: number): void => {
-		const elapsed = now - startTime
-		const t = Math.min(elapsed / LERP_DURATION, 1)
-		// Ease-out cubic
-		const ease = 1 - (1 - t) ** 3
+	if (!hasLayer(map, LAYER_DOT)) {
+		map.addLayer({
+			id: LAYER_DOT,
+			type: `symbol`,
+			source: SOURCE_ID,
+			layout: {
+				'icon-image': BUS_ICON_ID,
+				'icon-size': 1,
+				'icon-allow-overlap': true,
+				'icon-ignore-placement': true,
+			},
+		})
+	}
+}
 
-		state.lat = startLat + (state.targetLat - startLat) * ease
-		state.lng = startLng + (state.targetLng - startLng) * ease
-		state.marker.setLngLat([state.lng, state.lat])
+function removeLayers(map: maptilersdk.Map): void {
+	try {
+		if (hasLayer(map, LAYER_PULSE)) map.removeLayer(LAYER_PULSE)
+		if (hasLayer(map, LAYER_DOT)) map.removeLayer(LAYER_DOT)
+		if (hasSource(map, SOURCE_ID)) map.removeSource(SOURCE_ID)
+	} catch {
+		// map already destroyed
+	}
+}
 
-		if (t < 1) {
-			state.animationId = requestAnimationFrame(step)
-		} else {
-			state.animationId = null
+function startPulse(map: maptilersdk.Map): number {
+	let t = 0
+
+	const tick = (): void => {
+		t += 0.03
+		if (hasLayer(map, LAYER_PULSE)) {
+			map.setPaintProperty(LAYER_PULSE, `circle-radius`, 12 + Math.sin(t) * 6)
+			map.setPaintProperty(LAYER_PULSE, `circle-opacity`, 0.15 + Math.abs(Math.sin(t)) * 0.25)
 		}
+		requestAnimationFrame(tick)
 	}
 
-	state.animationId = requestAnimationFrame(step)
+	return requestAnimationFrame(tick)
 }
 
 export const LiveBusLayer: React.FC<{ map: TMap }> = ({ map }) => {
 	const dispatch = useDispatch()
 	const liveTrackingEnabled = useSelector(liveTrackingEnabledSelector)
 	const showLiveBus = useSelector(showLiveBusSelector)
-
 	const shouldPoll = liveTrackingEnabled && showLiveBus
-	const markersRef = useRef<MarkerState[]>([])
 
-	// Poll features every 60s
-	const { data: features } = useGetFeaturesQuery(undefined, {
-		pollingInterval: 60_000,
-	})
+	const pulseAnimRef = useRef<number | null>(null)
+	const layersAddedRef = useRef(false)
 
-	// Sync feature flag to Redux
+	const { data: features } = useGetFeaturesQuery(undefined, { pollingInterval: 60_000 })
+
 	useEffect(() => {
-		if (features) {
-			dispatch(setLiveTracking(Boolean(features.liveTracking)))
-		}
+		if (features) dispatch(setLiveTracking(Boolean(features.liveTracking)))
 	}, [features, dispatch])
 
-	// Poll live data every 15s when enabled
 	const { data: liveData } = useGetLiveQuery(undefined, {
 		pollingInterval: 15_000,
 		skip: !shouldPoll,
 	})
 
+	// Add source + layers once map is ready
 	useEffect(() => {
-		if (!map) return
+		if (!map || layersAddedRef.current) return
 
-		const buses: LiveBusPosition[] = liveData?.buses ?? []
-		const existingMarkers = markersRef.current
-		const newMarkerStates: MarkerState[] = []
-
-		// Match new buses to existing markers by index (no IDs from API)
-		for (let i = 0; i < buses.length; i++) {
-			const bus = buses[i]
-
-			if (i < existingMarkers.length) {
-				// Update existing marker position with animation
-				const state = existingMarkers[i]
-				state.targetLat = bus.lat
-				state.targetLng = bus.lng
-				animateMarker(state)
-				newMarkerStates.push(state)
-			} else {
-				// Create new marker
-				const el = createBusElement()
-				const marker = new maptilersdk.Marker({ element: el, anchor: `center` })
-					.setLngLat([bus.lng, bus.lat])
-					.addTo(map)
-
-				newMarkerStates.push({
-					marker,
-					lat: bus.lat,
-					lng: bus.lng,
-					targetLat: bus.lat,
-					targetLng: bus.lng,
-					animationId: null,
-				})
-			}
+		const activate = (): void => {
+			addLayers(map)
+			layersAddedRef.current = true
+			pulseAnimRef.current = startPulse(map)
 		}
 
-		// Remove extra markers with fade-out
-		for (let i = buses.length; i < existingMarkers.length; i++) {
-			const state = existingMarkers[i]
-			if (state.animationId) cancelAnimationFrame(state.animationId)
-
-			const el = state.marker.getElement()
-			el.style.opacity = `0`
-			setTimeout(() => {
-				state.marker.remove()
-			}, 800)
+		const setup = (): void => {
+			void loadBusImage(map).then(activate).catch(activate)
 		}
 
-		markersRef.current = newMarkerStates
+		if (map.isStyleLoaded()) {
+			setup()
+		} else {
+			void map.once(`load`, setup)
+		}
+	}, [map])
 
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [liveData, map])
+	// Update source data when live data changes
+	useEffect(() => {
+		if (!map || !layersAddedRef.current) return
+
+		const source = map.getSource(SOURCE_ID) as maptilersdk.GeoJSONSource | undefined
+		if (!source) return
+
+		const buses = shouldPoll ? liveData?.buses ?? [] : []
+		source.setData(buildGeoJSON(buses))
+	}, [liveData, shouldPoll, map])
+
+	// Clear data when disabled
+	useEffect(() => {
+		if (shouldPoll || !map || !layersAddedRef.current) return
+
+		const source = map.getSource(SOURCE_ID) as maptilersdk.GeoJSONSource | undefined
+		source?.setData(EMPTY_GEOJSON)
+	}, [shouldPoll, map])
 
 	// Cleanup on unmount
 	useEffect(() => {
 		return () => {
-			// eslint-disable-next-line react-hooks/exhaustive-deps
-			for (const state of markersRef.current) {
-				if (state.animationId) cancelAnimationFrame(state.animationId)
-				state.marker.remove()
-			}
-			markersRef.current = []
+			if (pulseAnimRef.current) cancelAnimationFrame(pulseAnimRef.current)
+			if (map) removeLayers(map)
+			layersAddedRef.current = false
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
-
-	// Remove markers when disabled
-	useEffect(() => {
-		if (!shouldPoll) {
-			for (const state of markersRef.current) {
-				if (state.animationId) cancelAnimationFrame(state.animationId)
-				const el = state.marker.getElement()
-				el.style.opacity = `0`
-				setTimeout(() => {
-					state.marker.remove()
-				}, 800)
-			}
-			markersRef.current = []
-		}
-	}, [shouldPoll])
 
 	return null
 }

@@ -48,38 +48,5 @@ export const GlobalStyle = createGlobalStyle`
 
 ${clusterIconsCss}
 
-	.live-bus-marker {
-		position: relative;
-		cursor: pointer;
-	}
 
-	.live-bus-icon {
-		position: relative;
-		z-index: 2;
-		filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-	}
-
-	.live-bus-pulse {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		width: 40px;
-		height: 40px;
-		border-radius: 50%;
-		background: rgba(255, 107, 53, 0.3);
-		z-index: 1;
-		animation: busPulse 2s ease-out infinite;
-	}
-
-	@keyframes busPulse {
-		0% {
-			transform: translate(-50%, -50%) scale(1);
-			opacity: 0.6;
-		}
-		100% {
-			transform: translate(-50%, -50%) scale(2.5);
-			opacity: 0;
-		}
-	}
 `
