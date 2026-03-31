@@ -17,7 +17,6 @@ import { STOPS } from 'shared/store/busStop/const/stops'
 import { DirectionsNew, IStops } from 'shared/store/busStop/Stops'
 import { currentDaySelector, scheduleSelector } from 'shared/store/schedule/scheduleSlice'
 import { ITime } from 'shared/store/timeLeft/ITime'
-import useEverySecondUpdater from 'shared/store/timeLeft/useEverySecondUpdater'
 
 import { TMap } from '../TMap'
 import { getPinContent } from './getPinContent'
@@ -42,7 +41,7 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 	const currentDayKey = useSelector(currentDaySelector)
 	const shedule = useSelector(scheduleSelector)
 	const [stopsCollection, setStopsCollections] = useState<IFeature[]>([])
-	const updater = useEverySecondUpdater()
+
 	const [mapLoaded, setMapLoaded] = useState(false)
 
 	const getCurrentTime = useCallback(
@@ -115,9 +114,20 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 	useEffect(() => {
 		if (!map) return
 
-		map.on(`load`, () => {
+		const onLoad = (): void => {
 			setMapLoaded(true)
-		})
+		}
+
+		map.on(`load`, onLoad)
+
+		// If map is already loaded, set immediately
+		if (map.isStyleLoaded()) {
+			setMapLoaded(true)
+		}
+
+		return () => {
+			map.off(`load`, onLoad)
+		}
 	}, [map])
 
 	// eslint-disable-next-line sonarjs/cognitive-complexity
@@ -184,16 +194,13 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 			removeMarkers(featureIds)
 		}
 
-		const onLoad = (e: any): void => {
+		const onData = (e: any): void => {
 			if (e.sourceId !== STOPS_SOURCE_ID || !e.isSourceLoaded) return
 
 			updateMarkers()
 		}
 
-		// after the GeoJSON data is loaded, update markers on the screen and do so on every map move/moveend
-		map.on(`data`, onLoad)
-
-		map.on(`zoomend`, () => {
+		const onZoomEnd = (): void => {
 			if (map.getZoom() < 15) {
 				removeMarkers()
 			} else {
@@ -201,14 +208,21 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 			}
 
 			AndrewLytics(`map:zoomend`)
-		})
+		}
 
-		map.on(`dragend`, () => {
+		const onDragEnd = (): void => {
 			updateMarkers()
-		})
+		}
 
-		// eslint-disable-next-line consistent-return
+		// after the GeoJSON data is loaded, update markers on the screen and do so on every map move/moveend
+		map.on(`data`, onData)
+		map.on(`zoomend`, onZoomEnd)
+		map.on(`dragend`, onDragEnd)
+
 		return () => {
+			map.off(`data`, onData)
+			map.off(`zoomend`, onZoomEnd)
+			map.off(`dragend`, onDragEnd)
 			removeMarkers()
 		}
 	}, [getCurrentTime, handleMarkerClick, map, mapLoaded])
@@ -217,9 +231,13 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 		if (!map || !mapLoaded || !map.isStyleLoaded()) return
 
 		if (map.getSource(STOPS_SOURCE_ID)) {
-			map.removeLayer(`clusters`)
-			map.removeLayer(`cluster-count`)
-			map.removeSource(STOPS_SOURCE_ID)
+			try {
+				map.removeLayer(`clusters`)
+				map.removeLayer(`cluster-count`)
+				map.removeSource(STOPS_SOURCE_ID)
+			} catch {
+				// layers may not exist yet
+			}
 		}
 
 		map.addSource(STOPS_SOURCE_ID, {
@@ -239,11 +257,6 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 			source: STOPS_SOURCE_ID,
 			filter: [`has`, `point_count`],
 			paint: {
-				// Use step expressions (https://docs.maptiler.com/gl-style-specification/expressions/#step)
-				// with three steps to implement three types of circles:
-				//   * Blue, 20px circles when point count is less than 100
-				//   * Yellow, 30px circles when point count is between 100 and 750
-				//   * Pink, 40px circles when point count is greater than or equal to 750
 				'circle-color': [`step`, [`get`, `point_count`], `#47daff`, 100, `#f1f075`, 750, `#f28cb1`],
 				'circle-radius': [`step`, [`get`, `point_count`], 20, 100, 30, 750, 40],
 			},
@@ -261,7 +274,7 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 			},
 		})
 
-		map.on(`click`, `clusters`, e => {
+		const onClusterClick = (e: any): void => {
 			const features = map.queryRenderedFeatures(e.point, {
 				layers: [`clusters`],
 			})
@@ -279,15 +292,34 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 					zoom,
 				})
 			})
-		})
+		}
 
-		map.on(`mouseenter`, `clusters`, () => {
+		const onMouseEnter = (): void => {
 			map.getCanvas().style.cursor = `pointer`
-		})
-		map.on(`mouseleave`, `clusters`, () => {
+		}
+
+		const onMouseLeave = (): void => {
 			map.getCanvas().style.cursor = ``
-		})
-	}, [map, stopsCollection, mapLoaded, getCurrentTime, handleMarkerClick])
+		}
+
+		map.on(`click`, `clusters`, onClusterClick)
+		map.on(`mouseenter`, `clusters`, onMouseEnter)
+		map.on(`mouseleave`, `clusters`, onMouseLeave)
+
+		return () => {
+			map.off(`click`, `clusters`, onClusterClick)
+			map.off(`mouseenter`, `clusters`, onMouseEnter)
+			map.off(`mouseleave`, `clusters`, onMouseLeave)
+
+			try {
+				if (map.getLayer(`clusters`)) map.removeLayer(`clusters`)
+				if (map.getLayer(`cluster-count`)) map.removeLayer(`cluster-count`)
+				if (map.getSource(STOPS_SOURCE_ID)) map.removeSource(STOPS_SOURCE_ID)
+			} catch {
+				// map may already be destroyed
+			}
+		}
+	}, [map, stopsCollection, mapLoaded])
 
 	useEffect(() => {
 		if (!map) return
@@ -301,13 +333,21 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 		}))
 
 		setStopsCollections(features)
-	}, [getCurrentTime, handleMarkerClick, map, updater])
+	}, [map])
 
 	useEffect(() => {
-		map?.on(`dragstart`, () => {
+		if (!map) return
+
+		const onDragStart = (): void => {
 			dispath(setBottomSheetPosition(BottomSheetStates.BOTTOM))
 			AndrewLytics(`map:dragstart`)
-		})
+		}
+
+		map.on(`dragstart`, onDragStart)
+
+		return () => {
+			map.off(`dragstart`, onDragStart)
+		}
 	}, [dispath, map])
 
 	return (

@@ -122,11 +122,19 @@ export const LiveBusLayer: React.FC<{ map: TMap }> = ({ map }) => {
 	// Main animation loop: lerp positions + pulse
 	const startAnimLoop = (animMap: maptilersdk.Map): number => {
 		const tick = (now: number): void => {
+			const states = busStatesRef.current
+
+			// Skip all work when no buses are present
+			if (states.length === 0) {
+				lastFrameTimeRef.current = 0
+				animFrameRef.current = requestAnimationFrame(tick)
+				return
+			}
+
 			const dt = lastFrameTimeRef.current ? Math.min((now - lastFrameTimeRef.current) / 1000, 0.1) : 0
 			lastFrameTimeRef.current = now
 
 			// Lerp bus positions
-			const states = busStatesRef.current
 			let dirty = false
 
 			for (const s of states) {
@@ -147,10 +155,9 @@ export const LiveBusLayer: React.FC<{ map: TMap }> = ({ map }) => {
 			}
 
 			// Pulse: grow from icon edge outward and fade
-			// Fade-in first 15% of cycle so restart is invisible (opacity 0→0 at boundaries)
-			if (hasLayer(animMap, LAYER_PULSE) && states.length > 0) {
+			if (hasLayer(animMap, LAYER_PULSE)) {
 				const t = (now % PULSE_PERIOD) / PULSE_PERIOD
-				animMap.setPaintProperty(LAYER_PULSE, `circle-radius`, 22 + t * 18) // 22 → 40
+				animMap.setPaintProperty(LAYER_PULSE, `circle-radius`, 22 + t * 18)
 				animMap.setPaintProperty(LAYER_PULSE, `circle-opacity`, pulseOpacity(t))
 			}
 
