@@ -27,12 +27,6 @@ export const StopPickerModal: React.FC<StopPickerModalProps> = ({
 
 	const displayLabel = options.find(o => o.value === value)?.label
 
-	const handleSelect = (stop: StopKeys | null): void => {
-		if (!stop) return
-		onChange(stop)
-		close()
-	}
-
 	const open = (): void => {
 		setIsOpen(true)
 		dispatch(setModalOpen(true))
@@ -41,6 +35,12 @@ export const StopPickerModal: React.FC<StopPickerModalProps> = ({
 	const close = (): void => {
 		setIsOpen(false)
 		dispatch(setModalOpen(false))
+	}
+
+	const handleSelect = (stop: StopKeys | null): void => {
+		if (!stop) return
+		onChange(stop)
+		close()
 	}
 
 	const handleOverlayKeyDown = (e: React.KeyboardEvent): void => {
@@ -64,12 +64,12 @@ export const StopPickerModal: React.FC<StopPickerModalProps> = ({
 						onClick={close}
 						onKeyDown={handleOverlayKeyDown}
 					>
+						{/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
 						<div
 							role="dialog"
 							tabIndex={-1}
 							className={styles.modal}
 							onClick={(e): void => e.stopPropagation()}
-							onKeyDown={(e): void => e.stopPropagation()}
 						>
 							<div className={styles.modalHeader}>
 								<h3 className={styles.modalTitle}>Остановка</h3>
