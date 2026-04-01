@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import * as maptilersdk from '@maptiler/sdk'
 import { showLiveBusSelector } from 'features/Settings/model/settingsSlice'
+import maplibregl from 'maplibre-gl'
 import { useGetFeaturesQuery, useGetLiveQuery } from 'shared/api/scheduleApi'
 import { setLiveTracking } from 'shared/store/app/featureToggleSlice'
 import { liveTrackingEnabledSelector } from 'shared/store/app/selectors/liveTracking'
@@ -37,15 +37,15 @@ function buildGeoJSON(states: BusState[]): GeoJSON.FeatureCollection {
 	}
 }
 
-function hasLayer(map: maptilersdk.Map, id: string): boolean {
+function hasLayer(map: maplibregl.Map, id: string): boolean {
 	return Boolean(map.getLayer(id))
 }
 
-function hasSource(map: maptilersdk.Map, id: string): boolean {
+function hasSource(map: maplibregl.Map, id: string): boolean {
 	return Boolean(map.getSource(id))
 }
 
-function addLayers(map: maptilersdk.Map): void {
+function addLayers(map: maplibregl.Map): void {
 	if (!hasSource(map, SOURCE_ID)) {
 		map.addSource(SOURCE_ID, { type: `geojson`, data: EMPTY_GEOJSON })
 	}
@@ -87,7 +87,7 @@ function pulseOpacity(t: number): number {
 	return t < 0.15 ? (t / 0.15) * 0.45 : (0.45 * (1 - t)) / 0.85
 }
 
-function removeLayers(map: maptilersdk.Map): void {
+function removeLayers(map: maplibregl.Map): void {
 	try {
 		if (hasLayer(map, LAYER_ICON)) map.removeLayer(LAYER_ICON)
 		if (hasLayer(map, LAYER_PULSE)) map.removeLayer(LAYER_PULSE)
@@ -120,7 +120,7 @@ export const LiveBusLayer: React.FC<{ map: TMap }> = ({ map }) => {
 	})
 
 	// Main animation loop: lerp positions + pulse
-	const startAnimLoop = (animMap: maptilersdk.Map): number => {
+	const startAnimLoop = (animMap: maplibregl.Map): number => {
 		const tick = (now: number): void => {
 			const states = busStatesRef.current
 
@@ -151,8 +151,7 @@ export const LiveBusLayer: React.FC<{ map: TMap }> = ({ map }) => {
 			}
 
 			if (dirty && hasSource(animMap, SOURCE_ID)) {
-				const src = animMap.getSource(SOURCE_ID) as maptilersdk.GeoJSONSource | undefined
-				src?.setData(buildGeoJSON(states))
+				;(animMap.getSource(SOURCE_ID) as maplibregl.GeoJSONSource).setData(buildGeoJSON(states))
 			}
 
 			// Pulse: grow from icon edge outward and fade
@@ -214,8 +213,9 @@ export const LiveBusLayer: React.FC<{ map: TMap }> = ({ map }) => {
 
 		// Immediately update GeoJSON so new buses appear without waiting for lerp
 		if (map && layersAddedRef.current) {
-			const src = map.getSource(SOURCE_ID) as maptilersdk.GeoJSONSource | undefined
-			src?.setData(incoming.length > 0 ? buildGeoJSON(busStatesRef.current) : EMPTY_GEOJSON)
+			;(map.getSource(SOURCE_ID) as maplibregl.GeoJSONSource).setData(
+				incoming.length > 0 ? buildGeoJSON(busStatesRef.current) : EMPTY_GEOJSON,
+			)
 		}
 	}, [liveData, shouldPoll, map])
 

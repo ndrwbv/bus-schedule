@@ -1,3 +1,3 @@
-import * as maptilersdk from '@maptiler/sdk'
+import maplibregl from 'maplibre-gl'
 
-export type TMap = maptilersdk.Map | undefined
+export type TMap = maplibregl.Map | undefined

@@ -26,15 +26,19 @@
 	justify-content: center;
 	font-weight: 400;
 	color: #ffff;
+	z-index: 1;
+	pointer-events: none;
 }
 
 .pin-text__amount {
 	font-size: 20px;
 	line-height: 14px;
+	margin: 0;
 }
 
 .pin-text__unit {
 	font-size: 13px;
+	margin: 0;
 }
 
 .maplibregl-ctrl-bottom-left,
