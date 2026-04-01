@@ -31,5 +31,7 @@ yarn-error.log*
 .yarn/*
 !.yarn/releases
 !.yarn/plugins
+frontend/.yarn/*
+!frontend/.yarn/releases
+!frontend/.yarn/plugins
 backend/data/severbus.db-shm
-frontend/.yarn/cache/bus-schedule.code-workspace
