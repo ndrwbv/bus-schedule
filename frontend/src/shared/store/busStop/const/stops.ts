@@ -8,8 +8,15 @@ import { STOPS_OUT } from './stopsOutOptions'
 
 /** Ordered stop labels per direction — used for interpolation */
 const STOP_ORDER_INSP = STOPS_IN_SP.map(s => s.label)
-const STOP_ORDER_OUT = STOPS_OUT.map(s => s.label)
 const STOP_ORDER_INLB = STOPS_IN_LB.map(s => s.label)
+
+// LB-only stops exist in STOPS_OUT so the UI shows "В город",
+// but must be excluded from interpolation order: on days without
+// explicit schedule data, interpolation would generate wrong times.
+const LB_ONLY_LABELS = new Set<string>(
+	STOPS_IN_LB.filter(lb => !STOPS_IN_SP.some(sp => sp.label === lb.label)).map(s => s.label),
+)
+const STOP_ORDER_OUT = STOPS_OUT.filter(s => !LB_ONLY_LABELS.has(s.label)).map(s => s.label)
 
 const STOP_ORDER: Record<string, string[]> = {
 	[DirectionsNew.inSP]: STOP_ORDER_INSP,
