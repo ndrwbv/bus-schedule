@@ -13,6 +13,9 @@ interface StopPickerModalProps {
 
 const stopTouchPropagation = (e: React.TouchEvent): void => e.stopPropagation()
 
+const getItemClassName = (isActive: boolean): string =>
+	isActive ? `${styles.item} ${styles.itemActive}` : styles.item
+
 export const StopPickerModal: React.FC<StopPickerModalProps> = ({
 	options,
 	value,
@@ -29,6 +32,12 @@ export const StopPickerModal: React.FC<StopPickerModalProps> = ({
 		setIsOpen(false)
 	}
 
+	const close = (): void => setIsOpen(false)
+
+	const handleOverlayKeyDown = (e: React.KeyboardEvent): void => {
+		if (e.key === `Enter` || e.key === ` `) close()
+	}
+
 	const stopsOnly = options.filter(o => o.value !== null)
 
 	return (
@@ -40,19 +49,24 @@ export const StopPickerModal: React.FC<StopPickerModalProps> = ({
 			{isOpen &&
 				createPortal(
 					<div
+						role="button"
+						tabIndex={0}
 						className={styles.overlay}
-						onClick={(): void => setIsOpen(false)}
+						onClick={close}
+						onKeyDown={handleOverlayKeyDown}
 						onTouchStart={stopTouchPropagation}
 						onTouchMove={stopTouchPropagation}
 					>
-						<div className={styles.modal} onClick={(e): void => e.stopPropagation()}>
+						<div
+							role="dialog"
+							tabIndex={-1}
+							className={styles.modal}
+							onClick={(e): void => e.stopPropagation()}
+							onKeyDown={(e): void => e.stopPropagation()}
+						>
 							<div className={styles.modalHeader}>
 								<h3 className={styles.modalTitle}>Остановка</h3>
-								<button
-									className={styles.closeButton}
-									type="button"
-									onClick={(): void => setIsOpen(false)}
-								>
+								<button className={styles.closeButton} type="button" onClick={close}>
 									&times;
 								</button>
 							</div>
@@ -60,7 +74,7 @@ export const StopPickerModal: React.FC<StopPickerModalProps> = ({
 								{stopsOnly.map(option => (
 									<button
 										key={option.value as string}
-										className={`${styles.item} ${option.value === value ? styles.itemActive : ``}`}
+										className={getItemClassName(option.value === value)}
 										type="button"
 										onClick={(): void => handleSelect(option.value)}
 									>
