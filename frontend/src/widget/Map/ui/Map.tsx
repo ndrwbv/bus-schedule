@@ -7,6 +7,7 @@ import { MapContainerStyled } from './Map.styled'
 import { MapContent } from './MapContent'
 
 const getMapApiKey = (attempt: number): string => {
+	// eslint-disable-next-line no-console
 	console.info(
 		`trying MAPTILER_KEY_${attempt} ${
 			process.env[`MAPTILER_KEY_${attempt}`] ? `KEY exists` : `KEY does not exists`

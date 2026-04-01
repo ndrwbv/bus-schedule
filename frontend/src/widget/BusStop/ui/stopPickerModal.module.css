@@ -28,6 +28,7 @@
 	align-items: flex-end;
 	justify-content: center;
 	overscroll-behavior: contain;
+	touch-action: none;
 }
 
 .modal {
@@ -71,6 +72,7 @@
 	overflow-y: auto;
 	overscroll-behavior: contain;
 	-webkit-overflow-scrolling: touch;
+	touch-action: pan-y;
 	padding: 8px 0 24px;
 }
 
