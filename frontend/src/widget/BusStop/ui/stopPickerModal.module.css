@@ -67,6 +67,7 @@
 .list {
 	overflow-y: auto;
 	-webkit-overflow-scrolling: touch;
+	overscroll-behavior: contain;
 	padding: 8px 0 24px;
 }
 

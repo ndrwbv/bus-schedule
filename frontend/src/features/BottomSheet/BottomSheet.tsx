@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { BottomSheet, BottomSheetRef } from 'react-spring-bottom-sheet'
 
@@ -7,6 +7,7 @@ import {
 	bottomSheetPositionSelector,
 	BottomSheetStates,
 	maxHeightSelector,
+	modalOpenSelector,
 	setBottomSheetPosition,
 	setMaxHeight,
 } from './model/bottomSheetSlice'
@@ -17,7 +18,7 @@ interface IProps {
 }
 export const BottomSheetCustom: React.FC<IProps> = ({ children, header }) => {
 	const sheetRef = useRef<BottomSheetRef>(null)
-	const [expandOnContentDrag] = useState<boolean>(true)
+	const isModalOpen = useSelector(modalOpenSelector)
 	const focusRef = useRef<HTMLButtonElement>(null)
 	const dispatch = useDispatch()
 	const bottomSheetMaxHeight = useSelector(maxHeightSelector)
@@ -72,7 +73,7 @@ export const BottomSheetCustom: React.FC<IProps> = ({ children, header }) => {
 			initialFocusRef={focusRef}
 			defaultSnap={getDefaultSnap}
 			snapPoints={getSnapPoints}
-			expandOnContentDrag={expandOnContentDrag}
+			expandOnContentDrag={!isModalOpen}
 			blocking={false}
 			onSpringEnd={handleSpringEnd}
 			header={header}
