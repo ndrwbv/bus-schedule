@@ -6,7 +6,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import * as maptilersdk from '@maptiler/sdk'
+import maplibregl from 'maplibre-gl'
 import { BottomSheetStates, setBottomSheetPosition } from 'features/BottomSheet/model/bottomSheetSlice'
 import { userLocationSelector } from 'features/MyLocation/model/myLocationSlice'
 import { AndrewLytics } from 'shared/lib'
@@ -135,7 +135,7 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 		if (!map) return undefined
 		if (!mapLoaded) return undefined
 
-		const newMarkers: Record<string, maptilersdk.Marker> = {}
+		const newMarkers: Record<string, maplibregl.Marker> = {}
 
 		const removeMarkers = (liveIds?: string[]): void => {
 			Object.keys(newMarkers).forEach(markerId => {
@@ -159,7 +159,7 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 				const coords = features[i].geometry.coordinates
 				const props = features[i].properties
 
-				if (props.cluster_id) return
+				if (props.cluster_id) continue
 
 				const { id } = props as
 					| IStops<DirectionsNew.inSP>
@@ -178,7 +178,7 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 					handleMarkerClick(stop)
 				})
 
-				const marker = new maptilersdk.Marker(el)
+				const marker = new maplibregl.Marker(el)
 					.on(`click`, () => handleMarkerClick(stop))
 					.setLngLat(coords)
 					.addTo(map)

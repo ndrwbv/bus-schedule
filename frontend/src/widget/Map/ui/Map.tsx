@@ -1,60 +1,41 @@
-import React, { useEffect, useState } from 'react'
-import * as maptilersdk from '@maptiler/sdk'
+import React, { useEffect, useRef, useState } from 'react'
+import maplibregl from 'maplibre-gl'
 
-import '@maptiler/sdk/dist/maptiler-sdk.css'
+import 'maplibre-gl/dist/maplibre-gl.css'
+import { MAP_STYLE_URL } from '../mapProvider'
 import { TMap } from '../TMap'
 import { MapContainerStyled } from './Map.styled'
 import { MapContent } from './MapContent'
 
-const getMapApiKey = (attempt: number): string => {
-	// eslint-disable-next-line no-console
-	console.info(
-		`trying MAPTILER_KEY_${attempt} ${
-			process.env[`MAPTILER_KEY_${attempt}`] ? `KEY exists` : `KEY does not exists`
-		}`,
-	)
-
-	if (process.env[`MAPTILER_KEY_${attempt}`]) {
-		return process.env[`MAPTILER_KEY_${attempt}`] ?? ``
-	}
-
-	// eslint-disable-next-line no-console
-	console.info(`MAPTILER_KEY is not set. Attempt: `, attempt)
-
-	return ``
-}
-
-const MAX_KEY_AMOUNT = 10
-const KEY_START_INDEX = 1
 export const Map: React.FC = () => {
 	const [mapExt, setMapExt] = useState<TMap>(undefined)
-	const [mapApiKeyIndex, setMapApiKeyIndex] = useState(KEY_START_INDEX)
+	const mapRef = useRef<maplibregl.Map | null>(null)
 
 	useEffect(() => {
-		maptilersdk.config.apiKey = getMapApiKey(mapApiKeyIndex)
+		if (mapRef.current) {
+			mapRef.current.remove()
+			mapRef.current = null
+		}
 
-		const map = new maptilersdk.Map({
-			style: maptilersdk.MapStyle.STREETS,
+		const map = new maplibregl.Map({
+			style: MAP_STYLE_URL,
 			center: [84.899966, 56.47177],
 			zoom: 15.5,
 			pitch: 45,
 			bearing: 60,
 			container: `map`,
 			antialias: true,
-			geolocateControl: false,
-			scaleControl: false,
-			terrainControl: false,
-			navigationControl: false,
-			maptilerLogo: false,
-			logoPosition: undefined,
-		}).on(`error`, () => {
-			if (mapApiKeyIndex < MAX_KEY_AMOUNT) {
-				setMapApiKeyIndex(prev => prev + 1)
-			}
+			attributionControl: false,
 		})
 
+		mapRef.current = map
 		setMapExt(map)
-	}, [mapApiKeyIndex])
+
+		return () => {
+			map.remove()
+			mapRef.current = null
+		}
+	}, [])
 
 	return (
 		<MapContainerStyled id="map">
