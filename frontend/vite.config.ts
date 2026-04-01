@@ -1,3 +1,4 @@
+import fs from 'node:fs'
 import process from 'node:process'
 import path from 'path'
 // import visualizer from 'rollup-plugin-visualizer'
@@ -54,6 +55,9 @@ export default defineConfig(({ mode }) => {
 	return {
 		define: {
 			'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV ?? mode),
+			__APP_VERSION__: JSON.stringify(
+				JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf-8')).version,
+			),
 		},
 		root: appRootPath,
 		envDir: root,
