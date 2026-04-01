@@ -37,25 +37,12 @@ const errorTextStyle: React.CSSProperties = {
 	fontFamily: `Roboto, sans-serif`,
 }
 
-const debugStyle: React.CSSProperties = {
-	position: `absolute`,
-	bottom: 10,
-	left: 10,
-	fontSize: 10,
-	color: `#999`,
-	fontFamily: `monospace`,
-	whiteSpace: `pre-wrap`,
-	maxHeight: 150,
-	overflow: `auto`,
-}
-
 interface MapLoaderProps {
 	loading: boolean
 	error: string | null
-	debugLog?: string[]
 }
 
-export const MapLoader: React.FC<MapLoaderProps> = ({ loading, error, debugLog }) => {
+export const MapLoader: React.FC<MapLoaderProps> = ({ loading, error }) => {
 	if (!loading && !error) return null
 
 	return (
@@ -69,9 +56,6 @@ export const MapLoader: React.FC<MapLoaderProps> = ({ loading, error, debugLog }
 						<div style={spinnerStyle} />
 						<p style={textStyle}>Загрузка карты...</p>
 					</>
-				)}
-				{debugLog && debugLog.length > 0 && (
-					<div style={debugStyle}>{debugLog.join(`\n`)}</div>
 				)}
 			</div>
 		</>

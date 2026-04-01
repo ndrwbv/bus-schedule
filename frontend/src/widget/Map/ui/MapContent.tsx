@@ -6,9 +6,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import maplibregl from 'maplibre-gl'
 import { BottomSheetStates, setBottomSheetPosition } from 'features/BottomSheet/model/bottomSheetSlice'
 import { userLocationSelector } from 'features/MyLocation/model/myLocationSlice'
+import maplibregl from 'maplibre-gl'
 import { AndrewLytics } from 'shared/lib'
 import { calculateHowMuchIsLeft } from 'shared/lib/time/calculateHowMuchIsLeft'
 import { findClosesTime } from 'shared/lib/time/findClosesTime'
@@ -111,7 +111,6 @@ export const MapContent: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map, m
 
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
-
 		if (!map) return undefined
 		if (!mapLoaded) return undefined
 
@@ -138,36 +137,34 @@ export const MapContent: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map, m
 			for (let i = 0; i < features.length; i++) {
 				const props = features[i].properties
 
-				if (props.cluster_id) continue
+				if (!props.cluster_id) {
+					const { id } = props as
+						| IStops<DirectionsNew.inSP>
+						| IStops<DirectionsNew.out>
+						| IStops<DirectionsNew.inLB>
 
-				const { id } = props as
-					| IStops<DirectionsNew.inSP>
-					| IStops<DirectionsNew.out>
-					| IStops<DirectionsNew.inLB>
+					featureIds.push(id)
 
-				featureIds.push(id)
+					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+					if (!newMarkers[id]) {
+						const coords = features[i].geometry.coordinates
+						const stop = features[i].properties
+						stop.latLon = JSON.parse(stop.latLon)
 
-				// Skip if marker already exists
-				if (newMarkers[id]) continue
+						const html = getPinContent(getCurrentTime(stop), stop.id)
 
-				const coords = features[i].geometry.coordinates
-				const stop = features[i].properties
-				stop.latLon = JSON.parse(stop.latLon)
+						const el = document.createElement(`div`)
+						el.innerHTML = html.trim()
 
-				const html = getPinContent(getCurrentTime(stop), stop.id)
+						el.addEventListener(`click`, () => {
+							handleMarkerClick(stop)
+						})
 
-				const el = document.createElement(`div`)
-				el.innerHTML = html.trim()
+						const marker = new maplibregl.Marker({ element: el }).setLngLat(coords).addTo(map)
 
-				el.addEventListener(`click`, () => {
-					handleMarkerClick(stop)
-				})
-
-				const marker = new maplibregl.Marker({ element: el })
-					.setLngLat(coords)
-					.addTo(map)
-
-				newMarkers[id] = marker
+						newMarkers[id] = marker
+					}
+				}
 			}
 
 			removeMarkers(featureIds)
@@ -215,64 +212,65 @@ export const MapContent: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map, m
 	useEffect(() => {
 		if (!map || !mapLoaded || stopsCollection.length === 0) return undefined
 
-		if (map.getSource(STOPS_SOURCE_ID)) {
-			try {
+		try {
+			if (map.getSource(STOPS_SOURCE_ID)) {
 				map.removeLayer(`clusters`)
 				map.removeLayer(`cluster-count`)
 				map.removeLayer(`unclustered-point`)
 				map.removeSource(STOPS_SOURCE_ID)
-			} catch {
-				// layers may not exist yet
 			}
+
+			map.addSource(STOPS_SOURCE_ID, {
+				type: `geojson`,
+				data: {
+					type: `FeatureCollection`,
+					features: stopsCollection,
+				},
+				cluster: true,
+				clusterMaxZoom: 14,
+				clusterRadius: 50,
+			})
+
+			map.addLayer({
+				id: `clusters`,
+				type: `circle`,
+				source: STOPS_SOURCE_ID,
+				filter: [`has`, `point_count`],
+				paint: {
+					'circle-color': [`step`, [`get`, `point_count`], `#47daff`, 100, `#f1f075`, 750, `#f28cb1`],
+					'circle-radius': [`step`, [`get`, `point_count`], 20, 100, 30, 750, 40],
+				},
+			})
+
+			map.addLayer({
+				id: `cluster-count`,
+				type: `symbol`,
+				source: STOPS_SOURCE_ID,
+				filter: [`has`, `point_count`],
+				layout: {
+					'text-field': `{point_count_abbreviated}`,
+					'text-font': [`Noto Sans Regular`],
+					'text-size': 12,
+				},
+			})
+
+			map.addLayer({
+				id: `unclustered-point`,
+				type: `circle`,
+				source: STOPS_SOURCE_ID,
+				filter: [`!`, [`has`, `point_count`]],
+				maxzoom: 15,
+				paint: {
+					'circle-color': `#47daff`,
+					'circle-radius': 6,
+					'circle-stroke-width': 2,
+					'circle-stroke-color': `#fff`,
+				},
+			})
+		} catch {
+			// Style may not be fully ready yet
+			return undefined
 		}
-
-		map.addSource(STOPS_SOURCE_ID, {
-			type: `geojson`,
-			data: {
-				type: `FeatureCollection`,
-				features: stopsCollection,
-			},
-			cluster: true,
-			clusterMaxZoom: 14,
-			clusterRadius: 50,
-		})
-
-		map.addLayer({
-			id: `clusters`,
-			type: `circle`,
-			source: STOPS_SOURCE_ID,
-			filter: [`has`, `point_count`],
-			paint: {
-				'circle-color': [`step`, [`get`, `point_count`], `#47daff`, 100, `#f1f075`, 750, `#f28cb1`],
-				'circle-radius': [`step`, [`get`, `point_count`], 20, 100, 30, 750, 40],
-			},
-		})
-
-		map.addLayer({
-			id: `cluster-count`,
-			type: `symbol`,
-			source: STOPS_SOURCE_ID,
-			filter: [`has`, `point_count`],
-			layout: {
-				'text-field': `{point_count_abbreviated}`,
-				'text-font': [`Noto Sans Regular`],
-				'text-size': 12,
-			},
-		})
-
-		map.addLayer({
-			id: `unclustered-point`,
-			type: `circle`,
-			source: STOPS_SOURCE_ID,
-			filter: [`!`, [`has`, `point_count`]],
-			maxzoom: 15,
-			paint: {
-				'circle-color': `#47daff`,
-				'circle-radius': 6,
-				'circle-stroke-width': 2,
-				'circle-stroke-color': `#fff`,
-			},
-		})
 
 		const onClusterClick = (e: any): void => {
 			const features = map.queryRenderedFeatures(e.point, {

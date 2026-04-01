@@ -6,7 +6,7 @@ const USER_ID_KEY = `severbus:user_id`
 function getUserId(): string {
 	let id = localStorage.getItem(USER_ID_KEY)
 	if (!id) {
-		id = crypto.randomUUID?.() ?? Math.random().toString(36).slice(2) + Date.now().toString(36)
+		id = crypto.randomUUID()
 		localStorage.setItem(USER_ID_KEY, id)
 	}
 

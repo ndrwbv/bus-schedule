@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import maplibregl from 'maplibre-gl'
 import { showLiveBusSelector } from 'features/Settings/model/settingsSlice'
+import maplibregl from 'maplibre-gl'
 import { useGetFeaturesQuery, useGetLiveQuery } from 'shared/api/scheduleApi'
 import { setLiveTracking } from 'shared/store/app/featureToggleSlice'
 import { liveTrackingEnabledSelector } from 'shared/store/app/selectors/liveTracking'
@@ -151,7 +151,8 @@ export const LiveBusLayer: React.FC<{ map: TMap }> = ({ map }) => {
 			}
 
 			if (dirty && hasSource(animMap, SOURCE_ID)) {
-				const src = animMap.getSource(SOURCE_ID) as maplibregl.GeoJSONSource | undefined
+				const src = animMap.getSource(SOURCE_ID)
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 				src?.setData(buildGeoJSON(states))
 			}
 
@@ -214,7 +215,8 @@ export const LiveBusLayer: React.FC<{ map: TMap }> = ({ map }) => {
 
 		// Immediately update GeoJSON so new buses appear without waiting for lerp
 		if (map && layersAddedRef.current) {
-			const src = map.getSource(SOURCE_ID) as maplibregl.GeoJSONSource | undefined
+			const src = map.getSource(SOURCE_ID)
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 			src?.setData(incoming.length > 0 ? buildGeoJSON(busStatesRef.current) : EMPTY_GEOJSON)
 		}
 	}, [liveData, shouldPoll, map])
