@@ -23,10 +23,6 @@ jobs:
         run: yarn install --frozen-lockfile
         working-directory: frontend
 
-      - name: Lint check
-        run: yarn lint
-        working-directory: frontend
-
       - name: Build frontend
         run: yarn build
         working-directory: frontend

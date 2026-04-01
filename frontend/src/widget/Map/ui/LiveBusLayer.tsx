@@ -151,7 +151,7 @@ export const LiveBusLayer: React.FC<{ map: TMap }> = ({ map }) => {
 			}
 
 			if (dirty && hasSource(animMap, SOURCE_ID)) {
-				;(animMap.getSource(SOURCE_ID) as maplibregl.GeoJSONSource)?.setData(buildGeoJSON(states))
+				;(animMap.getSource(SOURCE_ID) as maplibregl.GeoJSONSource).setData(buildGeoJSON(states))
 			}
 
 			// Pulse: grow from icon edge outward and fade
@@ -213,7 +213,7 @@ export const LiveBusLayer: React.FC<{ map: TMap }> = ({ map }) => {
 
 		// Immediately update GeoJSON so new buses appear without waiting for lerp
 		if (map && layersAddedRef.current) {
-			;(map.getSource(SOURCE_ID) as maplibregl.GeoJSONSource)?.setData(
+			;(map.getSource(SOURCE_ID) as maplibregl.GeoJSONSource).setData(
 				incoming.length > 0 ? buildGeoJSON(busStatesRef.current) : EMPTY_GEOJSON,
 			)
 		}
