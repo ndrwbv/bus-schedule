@@ -54,6 +54,7 @@ export default defineConfig(({ mode }) => {
 	return {
 		define: {
 			'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV ?? mode),
+			'process.env.YANDEX_AD_BLOCK_ID': JSON.stringify(process.env.YANDEX_AD_BLOCK_ID ?? ''),
 		},
 		root: appRootPath,
 		envDir: root,
