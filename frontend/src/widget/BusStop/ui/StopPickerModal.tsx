@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { createPortal } from 'react-dom'
+import { useDispatch } from 'react-redux'
+import { setModalOpen } from 'features/BottomSheet/model/bottomSheetSlice'
 import { IOption, StopKeys } from 'shared/store/busStop/Stops'
 
 import styles from './stopPickerModal.module.css'
@@ -11,8 +13,6 @@ interface StopPickerModalProps {
 	placeholder?: string
 }
 
-const stopTouchPropagation = (e: React.TouchEvent): void => e.stopPropagation()
-
 const getItemClassName = (isActive: boolean): string =>
 	isActive ? `${styles.item} ${styles.itemActive}` : styles.item
 
@@ -23,16 +23,25 @@ export const StopPickerModal: React.FC<StopPickerModalProps> = ({
 	placeholder = `Выберите остановку`,
 }) => {
 	const [isOpen, setIsOpen] = useState(false)
+	const dispatch = useDispatch()
 
 	const displayLabel = options.find(o => o.value === value)?.label
 
 	const handleSelect = (stop: StopKeys | null): void => {
 		if (!stop) return
 		onChange(stop)
-		setIsOpen(false)
+		close()
 	}
 
-	const close = (): void => setIsOpen(false)
+	const open = (): void => {
+		setIsOpen(true)
+		dispatch(setModalOpen(true))
+	}
+
+	const close = (): void => {
+		setIsOpen(false)
+		dispatch(setModalOpen(false))
+	}
 
 	const handleOverlayKeyDown = (e: React.KeyboardEvent): void => {
 		if (e.key === `Enter` || e.key === ` `) close()
@@ -42,7 +51,7 @@ export const StopPickerModal: React.FC<StopPickerModalProps> = ({
 
 	return (
 		<>
-			<button className={styles.triggerButton} type="button" onClick={(): void => setIsOpen(true)}>
+			<button className={styles.triggerButton} type="button" onClick={open}>
 				{displayLabel ?? placeholder}
 			</button>
 
@@ -54,8 +63,6 @@ export const StopPickerModal: React.FC<StopPickerModalProps> = ({
 						className={styles.overlay}
 						onClick={close}
 						onKeyDown={handleOverlayKeyDown}
-						onTouchStart={stopTouchPropagation}
-						onTouchMove={stopTouchPropagation}
 					>
 						<div
 							role="dialog"
