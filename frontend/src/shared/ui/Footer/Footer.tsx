@@ -8,6 +8,7 @@ export const Footer: React.FC = () => (
 		<ContainerStyled>
 			<div>
 				<GrayTextStyled>{COPYRIGHT}</GrayTextStyled>
+				<GrayTextStyled>v{__APP_VERSION__}</GrayTextStyled>
 			</div>
 		</ContainerStyled>
 	</FooterStyled>
