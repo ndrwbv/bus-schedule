@@ -32,14 +32,14 @@ export const StopPickerModal: React.FC<StopPickerModalProps> = ({
 
 	useEffect(() => {
 		if (isOpen) {
-			const scrollY = window.scrollY
+			const { scrollY } = window
 			document.body.style.overflow = `hidden`
 			document.body.style.position = `fixed`
 			document.body.style.top = `-${scrollY}px`
 			document.body.style.left = `0`
 			document.body.style.right = `0`
 		} else {
-			const top = document.body.style.top
+			const { top } = document.body.style
 			document.body.style.overflow = ``
 			document.body.style.position = ``
 			document.body.style.top = ``
@@ -51,7 +51,7 @@ export const StopPickerModal: React.FC<StopPickerModalProps> = ({
 		}
 
 		return (): void => {
-			const top = document.body.style.top
+			const { top } = document.body.style
 			document.body.style.overflow = ``
 			document.body.style.position = ``
 			document.body.style.top = ``
