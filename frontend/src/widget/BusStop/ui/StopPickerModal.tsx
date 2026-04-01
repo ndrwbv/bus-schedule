@@ -13,8 +13,7 @@ interface StopPickerModalProps {
 	placeholder?: string
 }
 
-const getItemClassName = (isActive: boolean): string =>
-	isActive ? `${styles.item} ${styles.itemActive}` : styles.item
+const getItemClassName = (isActive: boolean): string => (isActive ? `${styles.item} ${styles.itemActive}` : styles.item)
 
 export const StopPickerModal: React.FC<StopPickerModalProps> = ({
 	options,
