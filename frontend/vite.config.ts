@@ -55,6 +55,7 @@ export default defineConfig(({ mode }) => {
 	return {
 		define: {
 			'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV ?? mode),
+			'process.env.YANDEX_AD_BLOCK_ID': JSON.stringify(process.env.YANDEX_AD_BLOCK_ID ?? ''),
 			__APP_VERSION__: JSON.stringify(
 				JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf-8')).version,
 			),

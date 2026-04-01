@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// eslint-disable-next-line no-underscore-dangle, @typescript-eslint/naming-convention
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/naming-convention, no-underscore-dangle */
 declare const __APP_VERSION__: string
 declare module '*.svg' {
 	const content: string
