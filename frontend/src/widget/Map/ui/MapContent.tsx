@@ -34,15 +34,13 @@ interface IFeature {
 
 const STOPS_SOURCE_ID = `stopssource`
 
-export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
+export const MapContent: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map, mapLoaded }) => {
 	const dispath = useDispatch()
 	const busStop = useSelector(busStopNewSelector)
 	const userLocation = useSelector(userLocationSelector)
 	const currentDayKey = useSelector(currentDaySelector)
 	const shedule = useSelector(scheduleSelector)
 	const [stopsCollection, setStopsCollections] = useState<IFeature[]>([])
-
-	const [mapLoaded, setMapLoaded] = useState(false)
 
 	const getCurrentTime = useCallback(
 		(stop: IStops<DirectionsNew.inSP> | IStops<DirectionsNew.out> | IStops<DirectionsNew.inLB>): ITime => {
@@ -111,27 +109,9 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 		[dispath, flyToStop],
 	)
 
-	useEffect(() => {
-		if (!map) return undefined
-
-		const onLoad = (): void => {
-			setMapLoaded(true)
-		}
-
-		map.on(`load`, onLoad)
-
-		// If map is already loaded, set immediately
-		if (map.isStyleLoaded()) {
-			setMapLoaded(true)
-		}
-
-		return () => {
-			map.off(`load`, onLoad)
-		}
-	}, [map])
-
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
+
 		if (!map) return undefined
 		if (!mapLoaded) return undefined
 
@@ -153,10 +133,9 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 
 			if (!features || features.length === 0) return
 
-			const featureIds = features.map(feature => feature.properties.id as string)
+			const featureIds: string[] = []
 
 			for (let i = 0; i < features.length; i++) {
-				const coords = features[i].geometry.coordinates
 				const props = features[i].properties
 
 				if (props.cluster_id) continue
@@ -166,6 +145,12 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 					| IStops<DirectionsNew.out>
 					| IStops<DirectionsNew.inLB>
 
+				featureIds.push(id)
+
+				// Skip if marker already exists
+				if (newMarkers[id]) continue
+
+				const coords = features[i].geometry.coordinates
 				const stop = features[i].properties
 				stop.latLon = JSON.parse(stop.latLon)
 
@@ -178,15 +163,9 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 					handleMarkerClick(stop)
 				})
 
-				const marker = new maplibregl.Marker(el)
-					.on(`click`, () => handleMarkerClick(stop))
+				const marker = new maplibregl.Marker({ element: el })
 					.setLngLat(coords)
 					.addTo(map)
-
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				if (newMarkers[id]) {
-					newMarkers[id].remove()
-				}
 
 				newMarkers[id] = marker
 			}
@@ -195,7 +174,7 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 		}
 
 		const onData = (e: any): void => {
-			if (e.sourceId !== STOPS_SOURCE_ID || !e.isSourceLoaded) return
+			if (e.dataType !== `source` || e.sourceId !== STOPS_SOURCE_ID || !e.isSourceLoaded) return
 
 			updateMarkers()
 		}
@@ -219,6 +198,11 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 		map.on(`zoomend`, onZoomEnd)
 		map.on(`dragend`, onDragEnd)
 
+		// If source already has data (e.g. effect re-ran due to getCurrentTime change), render immediately
+		if (map.getSource(STOPS_SOURCE_ID) && map.getZoom() >= 15) {
+			updateMarkers()
+		}
+
 		return () => {
 			map.off(`data`, onData)
 			map.off(`zoomend`, onZoomEnd)
@@ -229,7 +213,7 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
-		if (!map || !mapLoaded || !map.isStyleLoaded()) return undefined
+		if (!map || !mapLoaded || stopsCollection.length === 0) return undefined
 
 		if (map.getSource(STOPS_SOURCE_ID)) {
 			try {
