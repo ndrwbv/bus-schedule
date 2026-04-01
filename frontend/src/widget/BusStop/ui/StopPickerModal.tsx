@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { IOption, StopKeys } from 'shared/store/busStop/Stops'
 
@@ -18,6 +18,8 @@ export const StopPickerModal: React.FC<StopPickerModalProps> = ({
 	placeholder = `Выберите остановку`,
 }) => {
 	const [isOpen, setIsOpen] = useState(false)
+	const listRef = useRef<HTMLDivElement>(null)
+	const overlayRef = useRef<HTMLDivElement>(null)
 
 	const displayLabel = options.find(o => o.value === value)?.label
 
@@ -31,14 +33,28 @@ export const StopPickerModal: React.FC<StopPickerModalProps> = ({
 	}
 
 	useEffect(() => {
-		if (isOpen) {
-			document.body.style.overflow = `hidden`
-		} else {
+		if (!isOpen) {
 			document.body.style.overflow = ``
+			return (): void => {}
 		}
+
+		document.body.style.overflow = `hidden`
+
+		const overlay = overlayRef.current
+		const list = listRef.current
+
+		const handleTouchMove = (e: TouchEvent): void => {
+			if (list && list.contains(e.target as Node)) {
+				return
+			}
+			e.preventDefault()
+		}
+
+		overlay?.addEventListener(`touchmove`, handleTouchMove, { passive: false })
 
 		return (): void => {
 			document.body.style.overflow = ``
+			overlay?.removeEventListener(`touchmove`, handleTouchMove)
 		}
 	}, [isOpen])
 
@@ -53,6 +69,7 @@ export const StopPickerModal: React.FC<StopPickerModalProps> = ({
 			{isOpen &&
 				createPortal(
 					<div
+						ref={overlayRef}
 						className={styles.overlay}
 						onClick={(): void => setIsOpen(false)}
 						role="button"
@@ -79,7 +96,7 @@ export const StopPickerModal: React.FC<StopPickerModalProps> = ({
 									&times;
 								</button>
 							</div>
-							<div className={styles.list}>
+							<div ref={listRef} className={styles.list}>
 								{stopsOnly.map(option => (
 									<button
 										key={option.value as string}
