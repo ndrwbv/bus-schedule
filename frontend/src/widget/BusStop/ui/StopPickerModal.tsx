@@ -39,11 +39,7 @@ export const StopPickerModal: React.FC<StopPickerModalProps> = ({
 					<div className={styles.modal} onClick={(e): void => e.stopPropagation()}>
 						<div className={styles.modalHeader}>
 							<h3 className={styles.modalTitle}>Остановка</h3>
-							<button
-								className={styles.closeButton}
-								type="button"
-								onClick={(): void => setIsOpen(false)}
-							>
+							<button className={styles.closeButton} type="button" onClick={(): void => setIsOpen(false)}>
 								&times;
 							</button>
 						</div>
