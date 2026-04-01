@@ -235,6 +235,7 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 			try {
 				map.removeLayer(`clusters`)
 				map.removeLayer(`cluster-count`)
+				map.removeLayer(`unclustered-point`)
 				map.removeSource(STOPS_SOURCE_ID)
 			} catch {
 				// layers may not exist yet
@@ -270,8 +271,22 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 			filter: [`has`, `point_count`],
 			layout: {
 				'text-field': `{point_count_abbreviated}`,
-				'text-font': [`DIN Offc Pro Medium`, `Arial Unicode MS Bold`],
+				'text-font': [`Noto Sans Regular`],
 				'text-size': 12,
+			},
+		})
+
+		map.addLayer({
+			id: `unclustered-point`,
+			type: `circle`,
+			source: STOPS_SOURCE_ID,
+			filter: [`!`, [`has`, `point_count`]],
+			maxzoom: 15,
+			paint: {
+				'circle-color': `#47daff`,
+				'circle-radius': 6,
+				'circle-stroke-width': 2,
+				'circle-stroke-color': `#fff`,
 			},
 		})
 
@@ -315,6 +330,7 @@ export const MapContent: React.FC<{ map: TMap }> = ({ map }) => {
 			try {
 				map.removeLayer(`clusters`)
 				map.removeLayer(`cluster-count`)
+				map.removeLayer(`unclustered-point`)
 				map.removeSource(STOPS_SOURCE_ID)
 			} catch {
 				// map may already be destroyed
