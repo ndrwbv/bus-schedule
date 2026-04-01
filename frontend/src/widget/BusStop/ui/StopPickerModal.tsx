@@ -69,6 +69,7 @@ export const StopPickerModal: React.FC<StopPickerModalProps> = ({
 							tabIndex={-1}
 							className={styles.modal}
 							onClick={(e): void => e.stopPropagation()}
+							onKeyDown={(e): void => e.stopPropagation()}
 						>
 							<div className={styles.modalHeader}>
 								<h3 className={styles.modalTitle}>Остановка</h3>
