@@ -27,7 +27,6 @@
 	display: flex;
 	align-items: flex-end;
 	justify-content: center;
-	overscroll-behavior: contain;
 }
 
 .modal {
@@ -66,10 +65,8 @@
 }
 
 .list {
-	flex: 1;
-	min-height: 0;
 	overflow-y: auto;
-	overscroll-behavior: contain;
+	-webkit-overflow-scrolling: touch;
 	padding: 8px 0 24px;
 }
 
