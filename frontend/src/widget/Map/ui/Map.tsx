@@ -33,28 +33,11 @@ export const Map: React.FC = () => {
 		})
 
 		map.on(`load`, () => {
-			// Hide minor street/road labels to reduce clutter
-			const layersToHide = [
-				'highway_name_minor',
-				'highway_name_minor_construction',
-				'housenumber',
-			]
-
-			for (const layerId of layersToHide) {
-				if (map.getLayer(layerId)) {
-					map.setLayoutProperty(layerId, 'visibility', 'none')
-				}
-			}
-
-			// Make remaining road labels smaller
-			const layersToShrink = [
-				'highway_name_major',
-				'highway_name_other',
-			]
-
-			for (const layerId of layersToShrink) {
-				if (map.getLayer(layerId)) {
-					map.setLayoutProperty(layerId, 'text-size', 10)
+			// Hide all map text labels (street names, POIs, etc.)
+			const keepLayers = new Set(['ad-banner-layer', 'livebus-icon'])
+			for (const layer of map.getStyle().layers) {
+				if (layer.type === 'symbol' && !keepLayers.has(layer.id)) {
+					map.setLayoutProperty(layer.id, 'visibility', 'none')
 				}
 			}
 
