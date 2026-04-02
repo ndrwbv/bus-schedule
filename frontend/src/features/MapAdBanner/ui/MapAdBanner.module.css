@@ -20,6 +20,8 @@
   width: 100%;
   max-height: 80vh;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 
 .modalClose {

@@ -40,11 +40,6 @@ export const MapAdBannerModal: React.FC<Props> = ({ isOpen, onClose, messages })
 		<div
 			className={styles.modalOverlay}
 			onClick={handleOverlayClick}
-			role="button"
-			tabIndex={0}
-			onKeyDown={e => {
-				if (e.key === `Enter` || e.key === ` `) handleOverlayClick(e as unknown as React.MouseEvent)
-			}}
 		>
 			<div className={styles.modalContent}>
 				<button
