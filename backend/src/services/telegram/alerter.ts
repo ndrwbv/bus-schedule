@@ -195,4 +195,16 @@ export const telegramAlerter = {
     broadcastMessage(
       `✅ <b>SeverBus: расписание обновлено</b>\n\n${summary}\nМетод: ${parseMethod}\nВремя: ${durationMs}ms`,
     ),
+
+  /** Запланирован повтор пайплайна */
+  pipelineRetryScheduled: (attempt: number, maxAttempts: number, delayMin: number, error: string) =>
+    broadcastMessage(
+      `🔁 <b>SeverBus: повтор через ${delayMin} мин</b>\n\nПопытка ${attempt}/${maxAttempts} не удалась.\nСледующая попытка: ${attempt + 1}/${maxAttempts}\n\n<code>${error}</code>`,
+    ),
+
+  /** Все попытки исчерпаны */
+  pipelineRetriesExhausted: (maxAttempts: number, error: string) =>
+    broadcastMessage(
+      `🚨 <b>SeverBus: обновление не удалось</b>\n\nВсе ${maxAttempts} попытки исчерпаны. Расписание НЕ обновлено. Требуется ручная проверка.\n\n<code>${error}</code>`,
+    ),
 }
