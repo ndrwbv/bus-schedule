@@ -54,6 +54,17 @@ export interface LiveResponse {
 	cachedAt: number
 }
 
+export interface BannerMessage {
+	id: number
+	author_name: string
+	message: string
+	created_at: string
+}
+
+export interface BannerMessagesResponse {
+	messages: BannerMessage[]
+}
+
 export type FeaturesResponse = Record<string, boolean>
 
 export const scheduleApi = createApi({
@@ -77,10 +88,19 @@ export const scheduleApi = createApi({
 		getFeatures: builder.query<FeaturesResponse, void>({
 			query: () => `/features`,
 		}),
+		getBannerMessages: builder.query<BannerMessagesResponse, void>({
+			query: () => `/banner-messages`,
+		}),
 	}),
 })
 
-export const { useGetScheduleQuery, useGetChangelogQuery, useGetLiveQuery, useGetFeaturesQuery } = scheduleApi
+export const {
+	useGetScheduleQuery,
+	useGetChangelogQuery,
+	useGetLiveQuery,
+	useGetFeaturesQuery,
+	useGetBannerMessagesQuery,
+} = scheduleApi
 
 // ─── localStorage cache helpers ──────────────────────────────────────────────
 
