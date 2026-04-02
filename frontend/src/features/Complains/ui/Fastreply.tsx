@@ -63,7 +63,7 @@ export const Fastreply: React.FC = () => {
 		}, COOLDOWN_MS)
 
 		addComplain({
-			stop: busStopNew.label,
+			stop_id: busStopNew.id,
 			direction,
 			date: new Date().toISOString(),
 			type: key,

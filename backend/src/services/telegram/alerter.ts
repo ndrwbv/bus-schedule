@@ -1,4 +1,6 @@
+import * as os from 'os'
 import { getDb } from '../db'
+import { getErrorStats } from '../errorTracker'
 
 const TELEGRAM_API = 'https://api.telegram.org'
 
@@ -22,7 +24,7 @@ export function initTelegramSubscribers(): void {
 }
 
 /**
- * Poll getUpdates to discover new subscribers (users who sent /start).
+ * Poll getUpdates to discover new subscribers and handle commands.
  * Stores discovered chat_ids in the database for persistent broadcasting.
  * Uses update_offset stored in DB to avoid reprocessing.
  */
@@ -74,6 +76,12 @@ export async function pollSubscribers(): Promise<void> {
         `INSERT OR IGNORE INTO telegram_subscribers (chat_id, username, first_name)
          VALUES (?, ?, ?)`,
       ).run(String(chat.id), chat.username ?? null, chat.first_name ?? null)
+
+      // Handle /stats command
+      const text = update.message?.text?.trim()
+      if (text === '/stats') {
+        await handleStatsCommand(String(chat.id))
+      }
     }
 
     // Persist offset so we don't reprocess updates
@@ -83,6 +91,104 @@ export async function pollSubscribers(): Promise<void> {
     ).run(String(maxUpdateId), String(maxUpdateId))
   } catch (err) {
     console.error(`[telegram] Ошибка при опросе подписчиков: ${err}`)
+  }
+}
+
+/**
+ * Start periodic polling for Telegram updates (commands + subscribers).
+ */
+export function startTelegramPolling(): void {
+  const token = getToken()
+  if (!token) {
+    console.log('[telegram] TELEGRAM_BOT_TOKEN not set, polling disabled')
+    return
+  }
+
+  // Poll every 10 seconds
+  setInterval(() => {
+    pollSubscribers().catch(err => {
+      console.error('[telegram] Polling error:', err)
+    })
+  }, 10_000)
+
+  console.log('[telegram] Polling started (10s interval)')
+}
+
+/**
+ * Handle /stats command — respond with health + error info.
+ */
+async function handleStatsCommand(chatId: string): Promise<void> {
+  const token = getToken()
+  if (!token) return
+
+  try {
+    const db = getDb()
+    const uptime = process.uptime()
+    const mem = process.memoryUsage()
+
+    // DB status
+    let dbStatus = 'ok'
+    let dbSizeMb = 0
+    try {
+      db.prepare('SELECT 1').get()
+      const pragma = db.prepare('PRAGMA page_count').get() as { page_count: number } | undefined
+      const pageSize = db.prepare('PRAGMA page_size').get() as { page_size: number } | undefined
+      dbSizeMb = Math.round(((pragma?.page_count ?? 0) * (pageSize?.page_size ?? 0)) / 1024 / 1024 * 100) / 100
+    } catch {
+      dbStatus = 'error'
+    }
+
+    // Visit stats
+    let daily = 0, weekly = 0
+    try {
+      const d = db.prepare(`SELECT COUNT(DISTINCT user_id) as cnt FROM visits WHERE created_at > datetime('now', '-1 day')`).get() as { cnt: number }
+      const w = db.prepare(`SELECT COUNT(DISTINCT user_id) as cnt FROM visits WHERE created_at > datetime('now', '-7 days')`).get() as { cnt: number }
+      daily = d.cnt
+      weekly = w.cnt
+    } catch { /* ignore */ }
+
+    // Complaints today
+    let complainsToday = 0
+    try {
+      const row = db.prepare(`SELECT COUNT(*) as cnt FROM complains WHERE created_at > datetime('now', '-1 day')`).get() as { cnt: number }
+      complainsToday = row.cnt
+    } catch { /* ignore */ }
+
+    // Error stats
+    const errStats = getErrorStats()
+
+    const uptimeH = Math.floor(uptime / 3600)
+    const uptimeM = Math.floor((uptime % 3600) / 60)
+
+    const text = [
+      `📊 <b>SeverBus Stats</b>`,
+      ``,
+      `<b>Server</b>`,
+      `Uptime: ${uptimeH}h ${uptimeM}m`,
+      `Memory: ${Math.round(mem.rss / 1024 / 1024)}MB (heap: ${Math.round(mem.heapUsed / 1024 / 1024)}MB)`,
+      `CPU: ${os.cpus().length} cores, load: ${os.loadavg().map(v => v.toFixed(2)).join(', ')}`,
+      ``,
+      `<b>DB</b>: ${dbStatus}, ${dbSizeMb}MB`,
+      ``,
+      `<b>Users</b>: ${daily} today, ${weekly} week`,
+      `<b>Complaints</b>: ${complainsToday} today`,
+      ``,
+      `<b>500 Errors</b>`,
+      `Last hour: ${errStats.lastHour}`,
+      `Last 24h: ${errStats.last24h}`,
+      `Total tracked: ${errStats.total}`,
+      ...(errStats.recent.length > 0
+        ? [``, `<b>Recent errors:</b>`, ...errStats.recent.map(e => `• ${e.method} ${e.path}: ${e.message.slice(0, 80)}`)]
+        : []),
+    ].join('\n')
+
+    await fetch(`${TELEGRAM_API}/bot${token}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML' }),
+    })
+  } catch (err) {
+    console.error(`[telegram] Error handling /stats:`, err)
   }
 }
 
@@ -147,6 +253,10 @@ async function broadcastMessage(text: string): Promise<void> {
   }
 }
 
+// Debounce: don't spam on repeated 500s
+let lastErrorAlertAt = 0;
+const ERROR_ALERT_COOLDOWN_MS = 60_000; // 1 minute
+
 export const telegramAlerter = {
   /** Пайплайн запущен */
   pipelineStarted: (trigger: string, hasUrl: boolean, hasFile: boolean) => {
@@ -195,4 +305,15 @@ export const telegramAlerter = {
     broadcastMessage(
       `✅ <b>SeverBus: расписание обновлено</b>\n\n${summary}\nМетод: ${parseMethod}\nВремя: ${durationMs}ms`,
     ),
+
+  /** 500 error alert (debounced) */
+  serverError: (method: string, path: string, message: string) => {
+    const now = Date.now()
+    if (now - lastErrorAlertAt < ERROR_ALERT_COOLDOWN_MS) return Promise.resolve()
+    lastErrorAlertAt = now
+
+    return broadcastMessage(
+      `🔥 <b>SeverBus: 500 ошибка</b>\n\n<code>${method} ${path}</code>\n<code>${message.slice(0, 200)}</code>`,
+    )
+  },
 }

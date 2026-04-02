@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { AndrewLytics } from 'shared/lib'
-import { Directions, StopKeys } from 'shared/store/busStop/Stops'
+import { Directions } from 'shared/store/busStop/Stops'
 
 import { ComplainType } from './Complains'
 
@@ -20,7 +20,7 @@ function getUserId(): string {
 }
 
 export interface IComplains {
-	stop: StopKeys
+	stop_id: string
 	direction: Directions
 	date: string
 	type: ComplainType
@@ -28,7 +28,7 @@ export interface IComplains {
 
 export interface IComplainsResponse {
 	id: number
-	stop: string
+	stop_id: string
 	direction: string
 	type: string
 	date: string
@@ -71,7 +71,7 @@ export const useComplains = (): IReturns => {
 			// Optimistic update
 			const optimistic: IComplainsResponse = {
 				id: Date.now(),
-				stop: data.stop,
+				stop_id: data.stop_id,
 				direction: data.direction,
 				type: data.type,
 				date: data.date,
@@ -82,7 +82,7 @@ export const useComplains = (): IReturns => {
 				method: `POST`,
 				headers: { 'Content-Type': `application/json` },
 				body: JSON.stringify({
-					stop: data.stop,
+					stop_id: data.stop_id,
 					direction: data.direction,
 					type: data.type,
 					user_id: getUserId(),

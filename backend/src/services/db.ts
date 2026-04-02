@@ -95,6 +95,19 @@ function initSchema(db: Database.Database): void {
 
   // Seed default feature flags
   db.prepare(`INSERT OR IGNORE INTO feature_flags (key, enabled) VALUES ('liveTracking', 1)`).run();
+
+  // --- Migrations ---
+  migrateComplainsStopToStopId(db);
+}
+
+/** Rename complains.stop → stop_id, drop unused message column */
+function migrateComplainsStopToStopId(db: Database.Database): void {
+  const cols = db.prepare(`PRAGMA table_info(complains)`).all() as Array<{ name: string }>;
+  const hasOldStop = cols.some(c => c.name === 'stop');
+  if (!hasOldStop) return; // already migrated
+
+  db.exec(`ALTER TABLE complains RENAME COLUMN stop TO stop_id`);
+  console.log('[db] Migration: complains.stop → stop_id');
 }
 
 function seedIfEmpty(db: Database.Database): void {
