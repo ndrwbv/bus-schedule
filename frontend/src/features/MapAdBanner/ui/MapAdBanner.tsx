@@ -103,12 +103,13 @@ function hasSource(map: maplibregl.Map, id: string): boolean {
 export const MapAdBanner: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map }) => {
 	const { data } = useGetBannerMessagesQuery()
 	const [modalOpen, setModalOpen] = useState(false)
-	const [currentIndex, setCurrentIndex] = useState(0)
-	const [opacity, setOpacity] = useState(1)
 	const layerReadyRef = useRef(false)
 	const openRef = useRef<() => void>()
+	const animRef = useRef<{ index: number; rafId: number; intervalId: ReturnType<typeof setInterval> } | null>(null)
 
 	const messages = data?.messages?.length ? data.messages : DEFAULT_MESSAGES
+	const messagesRef = useRef(messages)
+	messagesRef.current = messages
 
 	const handleOpen = useCallback(() => {
 		setModalOpen(true)
@@ -121,26 +122,44 @@ export const MapAdBanner: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map }
 		setModalOpen(false)
 	}, [])
 
-	// Rotate messages with fade
-	useEffect(() => {
-		if (messages.length <= 1) return undefined
-		let fadeTimeout: ReturnType<typeof setTimeout>
-		const interval = setInterval(() => {
-			setOpacity(0)
-			fadeTimeout = setTimeout(() => {
-				setCurrentIndex(prev => (prev + 1) % messages.length)
-				setOpacity(1)
-			}, FADE_DURATION)
-		}, ROTATION_INTERVAL)
-		return () => {
-			clearInterval(interval)
-			clearTimeout(fadeTimeout)
+	const updateMapImage = useCallback((text: string, opacity: number) => {
+		if (!map || !layerReadyRef.current) return
+		try {
+			map.updateImage(IMAGE_ID, renderBannerImage(text, opacity))
+			map.triggerRepaint()
+		} catch {
+			try {
+				map.removeImage(IMAGE_ID)
+				map.addImage(IMAGE_ID, renderBannerImage(text, opacity))
+			} catch {
+				// ignore
+			}
 		}
-	}, [messages.length])
+	}, [map])
 
-	useEffect(() => {
-		setCurrentIndex(0)
-	}, [messages.length])
+	// Smooth fade animation between messages
+	const animateFade = useCallback((fromText: string, toText: string, onDone: () => void) => {
+		const start = performance.now()
+		const half = FADE_DURATION
+
+		const tick = (now: number): void => {
+			const elapsed = now - start
+			if (elapsed < half) {
+				// Fade out old text
+				updateMapImage(fromText, 1 - elapsed / half)
+				animRef.current!.rafId = requestAnimationFrame(tick)
+			} else if (elapsed < half * 2) {
+				// Fade in new text
+				updateMapImage(toText, (elapsed - half) / half)
+				animRef.current!.rafId = requestAnimationFrame(tick)
+			} else {
+				updateMapImage(toText, 1)
+				onDone()
+			}
+		}
+
+		animRef.current!.rafId = requestAnimationFrame(tick)
+	}, [updateMapImage])
 
 	// Setup source + layer once (follows LiveBusLayer pattern)
 	useEffect(() => {
@@ -148,12 +167,9 @@ export const MapAdBanner: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map }
 
 		const activate = (): void => {
 			try {
-				// Add initial image
 				if (!map.hasImage(IMAGE_ID)) {
 					map.addImage(IMAGE_ID, renderBannerImage(DEFAULT_MESSAGES[0].message, 1))
 				}
-
-				// Add source
 				if (!hasSource(map, SOURCE_ID)) {
 					map.addSource(SOURCE_ID, {
 						type: 'geojson',
@@ -167,8 +183,6 @@ export const MapAdBanner: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map }
 						},
 					})
 				}
-
-				// Add layer
 				if (!hasLayer(map, LAYER_ID)) {
 					map.addLayer({
 						id: LAYER_ID,
@@ -183,7 +197,6 @@ export const MapAdBanner: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map }
 						},
 					})
 				}
-
 				layerReadyRef.current = true
 			} catch {
 				// Style might not be fully ready
@@ -196,12 +209,9 @@ export const MapAdBanner: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map }
 			map.once('load', activate)
 		}
 
-		// Click handler
 		const onClick = (e: maplibregl.MapMouseEvent): void => {
 			const features = map.queryRenderedFeatures(e.point, { layers: [LAYER_ID] })
-			if (features.length > 0) {
-				openRef.current?.()
-			}
+			if (features.length > 0) openRef.current?.()
 		}
 		const onMouseEnter = (): void => { map.getCanvas().style.cursor = 'pointer' }
 		const onMouseLeave = (): void => { map.getCanvas().style.cursor = '' }
@@ -226,23 +236,40 @@ export const MapAdBanner: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map }
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [map])
 
-	// Update image when text or opacity changes
+	// Rotation loop with smooth fade
 	useEffect(() => {
-		if (!map || !layerReadyRef.current) return
-		const current = messages[currentIndex % messages.length]
-		try {
-			map.updateImage(IMAGE_ID, renderBannerImage(current?.message ?? '', opacity))
-			map.triggerRepaint()
-		} catch {
-			// fallback: remove + add
-			try {
-				map.removeImage(IMAGE_ID)
-				map.addImage(IMAGE_ID, renderBannerImage(current?.message ?? '', opacity))
-			} catch {
-				// ignore
+		if (!map) return
+		const msgs = messagesRef.current
+		if (msgs.length <= 1) {
+			updateMapImage(msgs[0]?.message ?? '', 1)
+			return
+		}
+
+		let index = 0
+		let animating = false
+		animRef.current = { index: 0, rafId: 0, intervalId: setInterval(() => {}) }
+		clearInterval(animRef.current.intervalId)
+
+		const rotate = (): void => {
+			if (animating) return
+			animating = true
+			const currentMsgs = messagesRef.current
+			const fromText = currentMsgs[index % currentMsgs.length]?.message ?? ''
+			index = (index + 1) % currentMsgs.length
+			const toText = currentMsgs[index]?.message ?? ''
+			animateFade(fromText, toText, () => { animating = false })
+		}
+
+		animRef.current.intervalId = setInterval(rotate, ROTATION_INTERVAL)
+
+		return () => {
+			if (animRef.current) {
+				clearInterval(animRef.current.intervalId)
+				cancelAnimationFrame(animRef.current.rafId)
+				animRef.current = null
 			}
 		}
-	}, [map, currentIndex, opacity, messages])
+	}, [map, updateMapImage, animateFade])
 
 	return (
 		<MapAdBannerModal
