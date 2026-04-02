@@ -33,6 +33,14 @@ export const Map: React.FC = () => {
 		})
 
 		map.on(`load`, () => {
+			// Hide all map text labels (street names, POIs, etc.)
+			const keepLayers = new Set(['ad-banner-layer', 'livebus-icon'])
+			for (const layer of map.getStyle().layers) {
+				if (layer.type === 'symbol' && !keepLayers.has(layer.id)) {
+					map.setLayoutProperty(layer.id, 'visibility', 'none')
+				}
+			}
+
 			setLoading(false)
 		})
 

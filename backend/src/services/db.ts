@@ -109,6 +109,14 @@ function initSchema(db: Database.Database): void {
     CREATE INDEX IF NOT EXISTS idx_request_logs_created ON request_logs(created_at DESC);
     CREATE INDEX IF NOT EXISTS idx_request_logs_level ON request_logs(level);
     CREATE INDEX IF NOT EXISTS idx_request_logs_status ON request_logs(status_code);
+
+    CREATE TABLE IF NOT EXISTS banner_messages (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      author_name TEXT NOT NULL,
+      message TEXT NOT NULL,
+      is_approved INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
   `);
 
   // Seed default feature flags

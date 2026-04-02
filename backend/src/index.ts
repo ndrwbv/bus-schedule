@@ -11,6 +11,7 @@ import { docsRouter } from './routes/docs';
 import { featuresRouter } from './routes/features';
 import { liveRouter } from './routes/live';
 import { logsRouter } from './routes/logs';
+import { bannerMessagesRouter } from './routes/bannerMessages';
 import { startScheduleCron } from './services/schedule/cron';
 import { startComplainsCron } from './services/complains/cron';
 import { startLogsCron } from './services/logs/cron';
@@ -36,6 +37,7 @@ app.use('/api', complainsRouter);
 app.use('/api', featuresRouter);
 app.use('/api', liveRouter);
 app.use('/api', logsRouter);
+app.use('/api', bannerMessagesRouter);
 app.use('/api', docsRouter);
 
 app.use((_req, res) => {

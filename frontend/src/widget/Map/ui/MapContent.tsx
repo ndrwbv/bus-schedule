@@ -18,6 +18,8 @@ import { DirectionsNew, IStops } from 'shared/store/busStop/Stops'
 import { currentDaySelector, scheduleSelector } from 'shared/store/schedule/scheduleSlice'
 import { ITime } from 'shared/store/timeLeft/ITime'
 
+import { MapAdBanner } from 'features/MapAdBanner'
+
 import { TMap } from '../TMap'
 import { getPinContent } from './getPinContent'
 import { GlobalStyle } from './GlobalStyle'
@@ -353,6 +355,7 @@ export const MapContent: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map, m
 		<>
 			<GlobalStyle />
 			<LiveBusLayer map={map} />
+			<MapAdBanner map={map} mapLoaded={mapLoaded} />
 		</>
 	)
 }
