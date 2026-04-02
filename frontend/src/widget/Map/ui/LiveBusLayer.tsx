@@ -108,7 +108,7 @@ export const LiveBusLayer: React.FC<{ map: TMap }> = ({ map }) => {
 	const busStatesRef = useRef<BusState[]>([])
 	const lastFrameTimeRef = useRef<number>(0)
 
-	const { data: features } = useGetFeaturesQuery(undefined, { pollingInterval: 60_000 })
+	const { data: features } = useGetFeaturesQuery()
 
 	useEffect(() => {
 		if (features) dispatch(setLiveTracking(Boolean(features.liveTracking)))

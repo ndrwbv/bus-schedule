@@ -17,8 +17,7 @@ export const SettingsModal: React.FC<Props> = ({ onClose }) => {
 	const showLiveBus = useSelector(showLiveBusSelector)
 	const liveTrackingEnabled = useSelector(liveTrackingEnabledSelector)
 
-	// Keep polling features to stay in sync
-	useGetFeaturesQuery(undefined, { pollingInterval: 60_000 })
+	useGetFeaturesQuery()
 
 	const handleToggle = (): void => {
 		if (!liveTrackingEnabled) return

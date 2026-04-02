@@ -101,7 +101,7 @@ function hasSource(map: maplibregl.Map, id: string): boolean {
 }
 
 export const MapAdBanner: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map }) => {
-	const { data } = useGetBannerMessagesQuery(undefined, { pollingInterval: 60_000 })
+	const { data } = useGetBannerMessagesQuery()
 	const [modalOpen, setModalOpen] = useState(false)
 	const [currentIndex, setCurrentIndex] = useState(0)
 	const [opacity, setOpacity] = useState(1)
@@ -124,14 +124,18 @@ export const MapAdBanner: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map }
 	// Rotate messages with fade
 	useEffect(() => {
 		if (messages.length <= 1) return undefined
+		let fadeTimeout: ReturnType<typeof setTimeout>
 		const interval = setInterval(() => {
 			setOpacity(0)
-			setTimeout(() => {
+			fadeTimeout = setTimeout(() => {
 				setCurrentIndex(prev => (prev + 1) % messages.length)
 				setOpacity(1)
 			}, FADE_DURATION)
 		}, ROTATION_INTERVAL)
-		return () => clearInterval(interval)
+		return () => {
+			clearInterval(interval)
+			clearTimeout(fadeTimeout)
+		}
 	}, [messages.length])
 
 	useEffect(() => {
@@ -228,6 +232,7 @@ export const MapAdBanner: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map }
 		const current = messages[currentIndex % messages.length]
 		try {
 			map.updateImage(IMAGE_ID, renderBannerImage(current?.message ?? '', opacity))
+			map.triggerRepaint()
 		} catch {
 			// fallback: remove + add
 			try {
