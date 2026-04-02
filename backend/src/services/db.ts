@@ -91,6 +91,24 @@ function initSchema(db: Database.Database): void {
       enabled INTEGER NOT NULL DEFAULT 0,
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
+
+    CREATE TABLE IF NOT EXISTS request_logs (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      level TEXT NOT NULL DEFAULT 'info',
+      method TEXT,
+      url TEXT,
+      status_code INTEGER,
+      duration_ms INTEGER,
+      error_message TEXT,
+      error_stack TEXT,
+      user_agent TEXT,
+      ip TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_request_logs_created ON request_logs(created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_request_logs_level ON request_logs(level);
+    CREATE INDEX IF NOT EXISTS idx_request_logs_status ON request_logs(status_code);
   `);
 
   // Seed default feature flags
