@@ -114,10 +114,17 @@ function initSchema(db: Database.Database): void {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       author_name TEXT NOT NULL,
       message TEXT NOT NULL,
+      amount INTEGER,
       is_approved INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
   `);
+
+  // Migrate: add amount column if missing (existing DBs)
+  const columns = db.prepare(`PRAGMA table_info(banner_messages)`).all() as { name: string }[];
+  if (!columns.some(c => c.name === 'amount')) {
+    db.exec(`ALTER TABLE banner_messages ADD COLUMN amount INTEGER`);
+  }
 
   // Seed default feature flags
   db.prepare(`INSERT OR IGNORE INTO feature_flags (key, enabled) VALUES ('liveTracking', 1)`).run();

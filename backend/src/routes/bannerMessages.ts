@@ -11,7 +11,7 @@ bannerMessagesRouter.get('/banner-messages', (_req: Request, res: Response) => {
     const db = getDb();
     const rows = db
       .prepare(
-        `SELECT id, author_name, message, created_at
+        `SELECT id, author_name, message, amount, created_at
          FROM banner_messages
          WHERE is_approved = 1
          ORDER BY created_at DESC`
@@ -38,9 +38,10 @@ bannerMessagesRouter.post('/banner-messages', (req: Request, res: Response) => {
     return;
   }
 
-  const { author_name, message, is_approved } = req.body as {
+  const { author_name, message, amount, is_approved } = req.body as {
     author_name?: string;
     message?: string;
+    amount?: number;
     is_approved?: boolean;
   };
 
@@ -53,12 +54,12 @@ bannerMessagesRouter.post('/banner-messages', (req: Request, res: Response) => {
     const db = getDb();
     const result = db
       .prepare(
-        `INSERT INTO banner_messages (author_name, message, is_approved)
-         VALUES (?, ?, ?)`
+        `INSERT INTO banner_messages (author_name, message, amount, is_approved)
+         VALUES (?, ?, ?, ?)`
       )
-      .run(author_name, message, is_approved !== false ? 1 : 0);
+      .run(author_name, message, amount ?? null, is_approved !== false ? 1 : 0);
 
-    res.status(201).json({ id: result.lastInsertRowid, author_name, message, is_approved: is_approved !== false });
+    res.status(201).json({ id: result.lastInsertRowid, author_name, message, amount: amount ?? null, is_approved: is_approved !== false });
   } catch (err) {
     console.error('[banner-messages] Error creating:', err);
     res.status(500).json({ error: 'Internal error' });

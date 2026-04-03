@@ -102,6 +102,7 @@ const spec = {
           id:         { type: 'integer', example: 1 },
           author_name: { type: 'string', example: 'Иван' },
           message:    { type: 'string', example: 'Спасибо за сервис!' },
+          amount:     { type: 'integer', nullable: true, example: 500, description: 'Сумма доната в рублях' },
           is_approved: { type: 'boolean', example: true },
           created_at: { type: 'string', format: 'date-time' },
         },
@@ -388,6 +389,7 @@ const spec = {
                 properties: {
                   author_name: { type: 'string', example: 'Иван' },
                   message:     { type: 'string', example: 'Спасибо за сервис!' },
+                  amount:      { type: 'integer', example: 500, description: 'Сумма доната в рублях' },
                   is_approved: { type: 'boolean', default: true },
                 },
               },

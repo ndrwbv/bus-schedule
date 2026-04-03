@@ -58,6 +58,7 @@ export interface BannerMessage {
 	id: number
 	author_name: string
 	message: string
+	amount: number | null
 	created_at: string
 }
 

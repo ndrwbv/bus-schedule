@@ -102,7 +102,10 @@ export const MapAdBannerModal: React.FC<Props> = ({ isOpen, onClose, messages })
 					<div className={styles.messagesList}>
 						{messages.map(msg => (
 							<div key={msg.id} className={styles.messageCard}>
-								<div className={styles.messageAuthor}>{msg.author_name}</div>
+								<div className={styles.messageAuthor}>
+									{msg.author_name}
+									{msg.amount != null && <span className={styles.messageAmount}> — {msg.amount} руб.</span>}
+								</div>
 								<div className={styles.messageBody}>{msg.message}</div>
 							</div>
 						))}
