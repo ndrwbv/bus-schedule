@@ -96,6 +96,16 @@ const spec = {
           liveTracking: { type: 'boolean', default: true, description: 'Показывать live-позицию автобуса на карте' },
         },
       },
+      BannerMessage: {
+        type: 'object',
+        properties: {
+          id:         { type: 'integer', example: 1 },
+          author_name: { type: 'string', example: 'Иван' },
+          message:    { type: 'string', example: 'Спасибо за сервис!' },
+          is_approved: { type: 'boolean', example: true },
+          created_at: { type: 'string', format: 'date-time' },
+        },
+      },
     },
   },
   paths: {
@@ -335,6 +345,87 @@ const spec = {
           },
           '400': { description: 'Неизвестный флаг или невалидное значение' },
           '401': { description: 'Неверный токен' },
+        },
+      },
+    },
+    '/banner-messages': {
+      get: {
+        tags: ['Banner Messages'],
+        summary: 'Получить одобренные сообщения доноров',
+        description: 'Публичный эндпоинт. Возвращает список одобренных сообщений для отображения на баннере.',
+        responses: {
+          '200': {
+            description: 'Список одобренных сообщений',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    messages: {
+                      type: 'array',
+                      items: { $ref: '#/components/schemas/BannerMessage' },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          '500': { description: 'Ошибка сервера', content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } } },
+        },
+      },
+      post: {
+        tags: ['Banner Messages'],
+        summary: 'Добавить сообщение донора',
+        description: 'Admin-only. Добавляет новое сообщение. По умолчанию `is_approved = true`.',
+        security: [{ bearerAuth: [] }],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['author_name', 'message'],
+                properties: {
+                  author_name: { type: 'string', example: 'Иван' },
+                  message:     { type: 'string', example: 'Спасибо за сервис!' },
+                  is_approved: { type: 'boolean', default: true },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          '201': {
+            description: 'Сообщение создано',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/BannerMessage' },
+              },
+            },
+          },
+          '400': { description: 'Не указан author_name или message' },
+          '401': { description: 'Неверный токен' },
+          '500': { description: 'Ошибка сервера' },
+        },
+      },
+    },
+    '/banner-messages/{id}': {
+      delete: {
+        tags: ['Banner Messages'],
+        summary: 'Удалить сообщение донора',
+        description: 'Admin-only. Удаляет сообщение по ID.',
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          { in: 'path', name: 'id', required: true, schema: { type: 'integer' }, description: 'ID сообщения' },
+        ],
+        responses: {
+          '200': {
+            description: 'Удалено',
+            content: { 'application/json': { schema: { type: 'object', properties: { ok: { type: 'boolean' } } } } },
+          },
+          '401': { description: 'Неверный токен' },
+          '404': { description: 'Сообщение не найдено' },
+          '500': { description: 'Ошибка сервера' },
         },
       },
     },
