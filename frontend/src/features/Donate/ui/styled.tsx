@@ -42,11 +42,6 @@ export const ModalOverlayStyled: React.FC<{ onClick?: (e: React.MouseEvent) => v
 	<div
 		className={styles.modalOverlay}
 		onClick={onClick}
-		role="button"
-		tabIndex={0}
-		onKeyDown={e => {
-			if (e.key === `Enter` || e.key === ` `) onClick?.(e as unknown as React.MouseEvent)
-		}}
 	>
 		{children}
 	</div>
