@@ -17,10 +17,10 @@ const CANVAS_W = 240
 const CANVAS_H = 132
 
 const DEFAULT_MESSAGES: BannerMessage[] = [
-	{ id: -1, author_name: ``, message: `Продам опель астра`, created_at: `` },
-	{ id: -2, author_name: ``, message: `Ищу девушку с остановки`, created_at: `` },
-	{ id: -3, author_name: ``, message: `Хочу лето`, created_at: `` },
-	{ id: -4, author_name: ``, message: `Сделай мне ням-ням`, created_at: `` },
+	{ id: -1, author_name: ``, message: `Продам опель астра`, amount: null, created_at: `` },
+	{ id: -2, author_name: ``, message: `Ищу девушку с остановки`, amount: null, created_at: `` },
+	{ id: -3, author_name: ``, message: `Хочу лето`, amount: null, created_at: `` },
+	{ id: -4, author_name: ``, message: `Сделай мне ням-ням`, amount: null, created_at: `` },
 ]
 
 function renderBannerImage(text: string, opacity: number): { width: number; height: number; data: Uint8Array } {

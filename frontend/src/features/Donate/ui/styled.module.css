@@ -59,9 +59,9 @@
 	inset: 0;
 	z-index: 1100;
 	background: rgba(0, 0, 0, 0.4);
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
+	overscroll-behavior: contain;
 	padding: 16px;
 }
 
@@ -73,6 +73,7 @@
 	max-width: 400px;
 	width: 100%;
 	text-align: center;
+	margin: 16px auto;
 }
 
 .modalClose {
