@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { AndrewLytics } from 'shared/lib'
 import { BannerMessage } from 'shared/api/scheduleApi'
 
@@ -36,7 +37,7 @@ export const MapAdBannerModal: React.FC<Props> = ({ isOpen, onClose, messages })
 
 	if (!isOpen) return null
 
-	return (
+	return createPortal(
 		<div
 			className={styles.modalOverlay}
 			onClick={handleOverlayClick}
@@ -116,6 +117,7 @@ export const MapAdBannerModal: React.FC<Props> = ({ isOpen, onClose, messages })
 					</div>
 				)}
 			</div>
-		</div>
+		</div>,
+		document.body,
 	)
 }
