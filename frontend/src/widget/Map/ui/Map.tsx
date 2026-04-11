@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import maplibregl from 'maplibre-gl'
+import { Protocol } from 'pmtiles'
 
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { MAP_STYLE_URL } from '../mapProvider'
@@ -7,6 +8,10 @@ import { TMap } from '../TMap'
 import { MapContainerStyled } from './Map.styled'
 import { MapContent } from './MapContent'
 import { MapLoader } from './MapLoader'
+
+// Register PMTiles protocol for self-hosted vector tiles
+const pmtilesProtocol = new Protocol()
+maplibregl.addProtocol('pmtiles', pmtilesProtocol.tile)
 
 export const Map: React.FC = () => {
 	const [mapExt, setMapExt] = useState<TMap>(undefined)
