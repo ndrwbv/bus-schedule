@@ -2,6 +2,7 @@ name: Deploy
 
 env:
   YANDEX_AD_BLOCK_ID: ${{secrets.YANDEX_AD_BLOCK_ID}}
+  VITE_MAP_STYLE_URL: /tiles/style.json
 
 on:
   push:
@@ -90,6 +91,19 @@ jobs:
               echo "No database file found, skipping backup"
             fi
           BACKUP_SCRIPT
+
+      - name: Check tiles are present
+        run: |
+          ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} bash -s << 'CHECK_SCRIPT'
+            TILES_DIR="${{ secrets.DEPLOY_PATH }}/data/tiles"
+            if [ ! -f "$TILES_DIR/tomsk.pmtiles" ]; then
+              echo "WARNING: PMTiles file not found at $TILES_DIR/tomsk.pmtiles"
+              echo "Run scripts/setup-tiles.sh and rsync the output to the server"
+              echo "Map will fall back to OpenFreeMap (may not work in restricted networks)"
+            else
+              echo "PMTiles found: $(du -h "$TILES_DIR/tomsk.pmtiles" | cut -f1)"
+            fi
+          CHECK_SCRIPT
 
       - name: Restart containers
         run: |
