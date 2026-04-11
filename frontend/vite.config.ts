@@ -25,7 +25,8 @@ export default defineConfig(({ mode }) => {
 				enabled: mode !== `production`,
 			},
 			workbox: {
-				globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+				globPatterns: ['**/*.{js,css,html,ico,svg}'],
+				globIgnores: ['**/stripad/**'],
 				cleanupOutdatedCaches: true,
 				skipWaiting: true,
 				clientsClaim: true,
@@ -72,6 +73,15 @@ export default defineConfig(({ mode }) => {
 			rollupOptions: {
 				input: app,
 				preserveEntrySignatures: `strict`,
+				output: {
+					manualChunks: {
+						'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+						'vendor-redux': ['@reduxjs/toolkit', 'react-redux'],
+						'vendor-maplibre': ['maplibre-gl'],
+						'vendor-leaflet': ['leaflet'],
+						'vendor-bottomsheet': ['react-spring-bottom-sheet'],
+					},
+				},
 			},
 		},
 		publicDir,
