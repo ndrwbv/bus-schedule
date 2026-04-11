@@ -54,48 +54,8 @@
 	color: #bbb;
 }
 
-.modalOverlay {
-	position: fixed;
-	inset: 0;
-	z-index: 1100;
-	background: rgba(0, 0, 0, 0.4);
-	overflow-y: auto;
-	-webkit-overflow-scrolling: touch;
-	overscroll-behavior: contain;
-	padding: 16px;
-}
-
-.modalContent {
-	position: relative;
-	background: #fff;
-	border-radius: 20px;
-	padding: 28px 20px 24px;
-	max-width: 400px;
-	width: 100%;
-	text-align: center;
-	margin: 16px auto;
-}
-
-.modalClose {
-	position: absolute;
-	top: 12px;
-	right: 12px;
-	background: none;
-	border: none;
-	cursor: pointer;
-	font-size: 20px;
-	color: #a5a5a5;
-	line-height: 1;
-	padding: 4px;
-}
-
-@media (hover: hover) {
-	.modalClose:hover {
-		color: #555;
-	}
-}
-
 .modalTitle {
+	text-align: center;
 	font-size: 18px;
 	font-weight: 600;
 	margin-bottom: 12px;

@@ -1,6 +1,9 @@
 import React, { createContext, useCallback, useContext, useMemo, useState } from 'react'
+import { BottomSheet } from 'react-spring-bottom-sheet'
 import { AndrewLytics } from 'shared/lib'
 import { ContainerStyled } from 'shared/ui/common'
+import { BottomSheetBgStyled } from 'shared/ui/MainLayout'
+import { PopupContentStyled } from 'shared/ui/Popup/PopupContent'
 
 import { DonateBanner } from './DonateBanner'
 import {
@@ -16,10 +19,7 @@ import {
 	DonatePhoneNameStyled,
 	DonatePhoneRowStyled,
 	DonatePhoneStyled,
-	ModalCloseStyled,
-	ModalContentStyled,
 	ModalFooterStyled,
-	ModalOverlayStyled,
 	ModalTextStyled,
 	ModalTitleStyled,
 } from './styled'
@@ -63,13 +63,6 @@ export const DonateProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 		setIsOpen(false)
 	}, [])
 
-	const handleOverlayClick = useCallback(
-		(e: React.MouseEvent) => {
-			if (e.target === e.currentTarget) handleClose()
-		},
-		[handleClose],
-	)
-
 	const handleCopy = useCallback(async () => {
 		try {
 			await navigator.clipboard.writeText(PHONE)
@@ -89,13 +82,14 @@ export const DonateProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
 			<DonateBanner onDonate={handleOpen} />
 
-			{isOpen && (
-				<ModalOverlayStyled onClick={handleOverlayClick}>
-					<ModalContentStyled>
-						<ModalCloseStyled onClick={handleClose} aria-label="Закрыть">
-							✕
-						</ModalCloseStyled>
-
+			<BottomSheet
+				open={isOpen}
+				onDismiss={handleClose}
+				defaultSnap={({ maxHeight }) => maxHeight * 0.6}
+				snapPoints={({ maxHeight }) => [maxHeight - maxHeight / 10, maxHeight * 0.6]}
+			>
+				<BottomSheetBgStyled $bg="#fff">
+					<PopupContentStyled>
 						<ModalTitleStyled>О проекте</ModalTitleStyled>
 
 						<ModalTextStyled>
@@ -119,9 +113,9 @@ export const DonateProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 						</DonatePhoneRowStyled>
 
 						<ModalFooterStyled>Спасибо! ❤️</ModalFooterStyled>
-					</ModalContentStyled>
-				</ModalOverlayStyled>
-			)}
+					</PopupContentStyled>
+				</BottomSheetBgStyled>
+			</BottomSheet>
 		</DonateContext.Provider>
 	)
 }

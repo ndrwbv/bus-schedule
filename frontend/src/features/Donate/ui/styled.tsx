@@ -35,32 +35,6 @@ export const AboutBlockArrowStyled: React.FC<{ children?: React.ReactNode }> = (
 	<span className={styles.aboutBlockArrow}>{children}</span>
 )
 
-export const ModalOverlayStyled: React.FC<{ onClick?: (e: React.MouseEvent) => void; children?: React.ReactNode }> = ({
-	onClick,
-	children,
-}) => (
-	<div
-		className={styles.modalOverlay}
-		onClick={onClick}
-	>
-		{children}
-	</div>
-)
-
-export const ModalContentStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
-	<div className={styles.modalContent}>{children}</div>
-)
-
-export const ModalCloseStyled: React.FC<{
-	onClick?: () => void
-	children?: React.ReactNode
-	'aria-label'?: string
-}> = ({ onClick, children, ...rest }) => (
-	<button type="button" className={styles.modalClose} onClick={onClick} {...rest}>
-		{children}
-	</button>
-)
-
 export const ModalTitleStyled: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
 	<h2 className={styles.modalTitle}>{children}</h2>
 )
