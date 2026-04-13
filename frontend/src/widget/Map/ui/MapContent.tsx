@@ -46,7 +46,7 @@ export const MapContent: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map, m
 
 	const getCurrentTime = useCallback(
 		(stop: IStops<DirectionsNew.inSP> | IStops<DirectionsNew.out> | IStops<DirectionsNew.inLB>): ITime => {
-			const daySchedule = shedule[stop.direction]?.[currentDayKey] as Record<string, string[] | undefined> | undefined
+			const daySchedule = shedule?.[stop.direction]?.[currentDayKey] as Record<string, string[] | undefined> | undefined
 			const times = daySchedule?.[stop.label]
 
 			if (!times || times.length === 0)
