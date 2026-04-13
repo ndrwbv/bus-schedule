@@ -9,7 +9,7 @@ import { setScheduleFromApi } from './scheduleSlice'
  * 1. localStorage (< 24ч) → dispatch немедленно
  * 2. GET /api/schedule → dispatch + записать в localStorage
  * 3. Если API недоступен → остаётся то, что загружено на шаге 1
- * 4. Если localStorage пуст → остаётся захардкоженный SCHEDULE из initialState
+ * 4. Если localStorage пуст → остаётся пустой initialState (scheduleSource === 'empty')
  */
 export function useScheduleLoader(): void {
 	const dispatch = useDispatch()
