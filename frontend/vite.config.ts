@@ -73,12 +73,24 @@ export default defineConfig(({ mode }) => {
 				input: app,
 				preserveEntrySignatures: `strict`,
 				output: {
-					manualChunks: {
-						'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-						'vendor-redux': ['@reduxjs/toolkit', 'react-redux'],
-						'vendor-maplibre': ['maplibre-gl'],
-						'vendor-leaflet': ['leaflet'],
-						'vendor-bottomsheet': ['react-spring-bottom-sheet'],
+					// Vite 8 uses rolldown, which only accepts the function form of manualChunks
+					manualChunks(id) {
+						if (!id.includes(`node_modules`)) return undefined
+
+						if (id.includes(`maplibre-gl`)) return `vendor-maplibre`
+						if (id.includes(`leaflet`)) return `vendor-leaflet`
+						if (id.includes(`react-spring-bottom-sheet`) || id.includes(`react-spring`) || id.includes(`@react-spring`))
+							return `vendor-bottomsheet`
+						if (id.includes(`@reduxjs/toolkit`) || id.includes(`react-redux`)) return `vendor-redux`
+						if (
+							id.includes(`/react/`) ||
+							id.includes(`/react-dom/`) ||
+							id.includes(`/react-router`) ||
+							id.includes(`scheduler`)
+						)
+							return `vendor-react`
+
+						return undefined
 					},
 				},
 			},
