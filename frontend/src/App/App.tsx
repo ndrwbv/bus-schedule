@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect } from 'react'
+import React, { lazy, Suspense } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { Home } from 'page/Home'
 import { configureI18next, YM } from 'shared/lib'
@@ -19,20 +19,9 @@ const ScheduleLoader: React.FC = () => {
 	return null
 }
 
-const LazyAnalytics: React.FC = () => {
-	useEffect(() => {
-		void import('shared/lib/analytics/helpers').then(({ initGA }) => {
-			initGA()
-		})
-	}, [])
-
-	return null
-}
-
 export const Root: React.FC = () => (
 	<>
 		<ScheduleLoader />
-		<LazyAnalytics />
 		<BrowserRouter>
 			<Routes>
 				<Route path="/" element={<Home />} />

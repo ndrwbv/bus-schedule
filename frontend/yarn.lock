@@ -2906,7 +2906,6 @@ __metadata:
     query-string: ^8.1.0
     react: ^18.2.0
     react-dom: ^18.2.0
-    react-ga: ^3.3.1
     react-i18next: ^12.1.4
     react-inlinesvg: ^3.0.1
     react-qr-code: ^2.0.11
@@ -6434,16 +6433,6 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
   checksum: 5d66b0c1eb591247a73bed9487a04e390abb4ad6c65e6cea7bfdd35070685b90a5da720de30915b963aba3f4628135d6db4c93da40cd5114c8bbe34a9725a83e
-  languageName: node
-  linkType: hard
-
-"react-ga@npm:^3.3.1":
-  version: 3.3.1
-  resolution: "react-ga@npm:3.3.1"
-  peerDependencies:
-    prop-types: ^15.6.0
-    react: ^15.6.2 || ^16.0 || ^17 || ^18
-  checksum: 3026976d0249fbf80e7b5dad7707964198064d7ac460f3397de40524e76dd6c29dead0900f850e2bd3135a86a9b083af8cda9cfa087f195852bf8d2b17c1fcfb
   languageName: node
   linkType: hard
 
