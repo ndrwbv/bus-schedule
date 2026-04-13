@@ -25,8 +25,7 @@ export default defineConfig(({ mode }) => {
 				enabled: mode !== `production`,
 			},
 			workbox: {
-				globPatterns: ['**/*.{js,css,html,ico,svg}'],
-				globIgnores: ['**/stripad/**'],
+				globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
 				cleanupOutdatedCaches: true,
 				skipWaiting: true,
 				clientsClaim: true,
