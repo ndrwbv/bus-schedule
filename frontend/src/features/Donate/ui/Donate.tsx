@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useContext, useMemo, useState } from 'react'
 import { AndrewLytics } from 'shared/lib'
 import { ContainerStyled } from 'shared/ui/common'
+import { Modal } from 'shared/ui/Modal'
 
 import { DonateBanner } from './DonateBanner'
 import {
@@ -16,12 +17,8 @@ import {
 	DonatePhoneNameStyled,
 	DonatePhoneRowStyled,
 	DonatePhoneStyled,
-	ModalCloseStyled,
-	ModalContentStyled,
 	ModalFooterStyled,
-	ModalOverlayStyled,
 	ModalTextStyled,
-	ModalTitleStyled,
 } from './styled'
 
 const PHONE = `+79969386490`
@@ -63,13 +60,6 @@ export const DonateProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 		setIsOpen(false)
 	}, [])
 
-	const handleOverlayClick = useCallback(
-		(e: React.MouseEvent) => {
-			if (e.target === e.currentTarget) handleClose()
-		},
-		[handleClose],
-	)
-
 	const handleCopy = useCallback(async () => {
 		try {
 			await navigator.clipboard.writeText(PHONE)
@@ -90,37 +80,29 @@ export const DonateProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 			<DonateBanner onDonate={handleOpen} />
 
 			{isOpen && (
-				<ModalOverlayStyled onClick={handleOverlayClick}>
-					<ModalContentStyled>
-						<ModalCloseStyled onClick={handleClose} aria-label="Закрыть">
-							✕
-						</ModalCloseStyled>
+				<Modal title="О проекте" onClose={handleClose}>
+					<ModalTextStyled>
+						Привет! Меня зовут Андрей. Этот сайт я сделал для жителей района, чтобы было проще
+						ориентироваться в расписании 112С.
+						<br />
+						<br />
+						Если сервис полезен — буду признателен донату, который пойдет на оплату хостинга, домена или
+						напитка с пеной)
+					</ModalTextStyled>
 
-						<ModalTitleStyled>О проекте</ModalTitleStyled>
-
-						<ModalTextStyled>
-							Привет! Меня зовут Андрей. Этот сайт я сделал для жителей района, чтобы было проще
-							ориентироваться в расписании 112С.
+					<DonatePhoneRowStyled>
+						<div>
+							<DonatePhoneStyled>{PHONE_DISPLAY}</DonatePhoneStyled>
 							<br />
-							<br />
-							Если сервис полезен — буду признателен донату, который пойдет на оплату хостинга, домена или
-							напитка с пеной)
-						</ModalTextStyled>
+							<DonatePhoneNameStyled>Андрей · Т-Банк</DonatePhoneNameStyled>
+						</div>
+						<CopyButtonStyled onClick={handleCopy} title="Скопировать номер">
+							{copied ? <CopiedTooltipStyled>Скопировано!</CopiedTooltipStyled> : `📋`}
+						</CopyButtonStyled>
+					</DonatePhoneRowStyled>
 
-						<DonatePhoneRowStyled>
-							<div>
-								<DonatePhoneStyled>{PHONE_DISPLAY}</DonatePhoneStyled>
-								<br />
-								<DonatePhoneNameStyled>Андрей · Т-Банк</DonatePhoneNameStyled>
-							</div>
-							<CopyButtonStyled onClick={handleCopy} title="Скопировать номер">
-								{copied ? <CopiedTooltipStyled>Скопировано!</CopiedTooltipStyled> : `📋`}
-							</CopyButtonStyled>
-						</DonatePhoneRowStyled>
-
-						<ModalFooterStyled>Спасибо! ❤️</ModalFooterStyled>
-					</ModalContentStyled>
-				</ModalOverlayStyled>
+					<ModalFooterStyled>Спасибо! ❤️</ModalFooterStyled>
+				</Modal>
 			)}
 		</DonateContext.Provider>
 	)

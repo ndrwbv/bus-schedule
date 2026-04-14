@@ -1,0 +1,54 @@
+.overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.4);
+	z-index: 9999;
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+}
+
+.modal {
+	background: #fff;
+	border-radius: 20px 20px 0 0;
+	width: 100%;
+	max-width: 768px;
+	max-height: 85vh;
+	display: flex;
+	flex-direction: column;
+}
+
+.header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 16px 20px;
+	border-bottom: 1px solid #f2f4f4;
+	flex-shrink: 0;
+}
+
+.title {
+	margin: 0;
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.closeButton {
+	background: none;
+	border: none;
+	font-size: 24px;
+	cursor: pointer;
+	padding: 0 4px;
+	line-height: 1;
+	color: #999;
+}
+
+.body {
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
+	overscroll-behavior: contain;
+	touch-action: pan-y;
+	min-height: 0;
+	padding: 20px;
+	padding-bottom: max(24px, env(safe-area-inset-bottom));
+}
