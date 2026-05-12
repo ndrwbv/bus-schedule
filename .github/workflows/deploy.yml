@@ -92,18 +92,16 @@ jobs:
             fi
           BACKUP_SCRIPT
 
-      - name: Check tiles are present
+      - name: Ensure map tiles on VDS
+        timeout-minutes: 30
         run: |
-          ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} bash -s << 'CHECK_SCRIPT'
-            TILES_DIR="${{ secrets.DEPLOY_PATH }}/data/tiles"
-            if [ ! -f "$TILES_DIR/tomsk.pmtiles" ]; then
-              echo "WARNING: PMTiles file not found at $TILES_DIR/tomsk.pmtiles"
-              echo "Run scripts/setup-tiles.sh and rsync the output to the server"
-              echo "Map will fall back to OpenFreeMap (may not work in restricted networks)"
-            else
-              echo "PMTiles found: $(du -h "$TILES_DIR/tomsk.pmtiles" | cut -f1)"
-            fi
-          CHECK_SCRIPT
+          ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} bash -s << 'TILES_SCRIPT'
+            set -euo pipefail
+            DEPLOY_PATH="${{ secrets.DEPLOY_PATH }}"
+            TILES_DIR="$DEPLOY_PATH/data/tiles"
+            mkdir -p "$TILES_DIR"
+            bash "$DEPLOY_PATH/scripts/setup-tiles.sh" "$TILES_DIR"
+          TILES_SCRIPT
 
       - name: Restart containers
         run: |

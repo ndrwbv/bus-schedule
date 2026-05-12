@@ -1,18 +1,23 @@
 #!/usr/bin/env bash
 # ============================================================================
-# setup-tiles.sh — Скачивает PMTiles, шрифты и стиль для самохостинга карты
+# setup-tiles.sh — Готовит PMTiles, шрифты и стиль для самохостинга карты
+#
+# Идемпотентен: повторный запуск ничего не качает заново.
+# Может запускаться где угодно — на ноутбуке (с последующим rsync) или прямо
+# на VDS из деплойного пайплайна.
 #
 # Запуск: bash scripts/setup-tiles.sh [OUTPUT_DIR]
 #   OUTPUT_DIR — куда складывать файлы (по умолчанию ./tiles-output)
 #
-# Результат: директория с файлами, готовыми для загрузки на VDS:
-#   tiles-output/
-#     tomsk.pmtiles    — векторные тайлы региона Томска
-#     style.json       — стиль карты для MapLibre GL
-#     fonts/            — шрифты (PBF glyphs)
+# Env:
+#   PMTILES_PLANET_URL — переопределить URL планетарного билда.
+#                        По умолчанию берётся самый свежий с build.protomaps.com.
 #
-# После запуска скрипта загрузите файлы на VDS:
-#   rsync -avz tiles-output/ user@host:/opt/severbus/data/tiles/
+# Результат:
+#   $OUTPUT_DIR/tomsk.pmtiles    — векторные тайлы региона Томска
+#   $OUTPUT_DIR/style.json       — стиль карты для MapLibre GL
+#   $OUTPUT_DIR/fonts/           — шрифты (PBF glyphs)
+#   $OUTPUT_DIR/pmtiles          — закешированный CLI (для следующих запусков)
 # ============================================================================
 set -euo pipefail
 
@@ -26,8 +31,21 @@ BBOX_MIN_LAT=56.35
 BBOX_MAX_LON=85.10
 BBOX_MAX_LAT=56.55
 
-# Protomaps daily build — последний доступный
-PMTILES_PLANET_URL="https://build.protomaps.com/20250101.pmtiles"
+# Protomaps weekly builds: https://build.protomaps.com/ (публичный S3 листинг).
+# Если PMTILES_PLANET_URL не задан в env — берём самый свежий YYYYMMDD.pmtiles.
+PMTILES_BUILDS_INDEX="https://build.protomaps.com/"
+
+resolve_latest_build_url() {
+  local latest
+  latest=$(curl -fsSL "$PMTILES_BUILDS_INDEX" \
+    | grep -oE '[0-9]{8}\.pmtiles' \
+    | sort -ur \
+    | head -n1)
+  if [ -z "$latest" ]; then
+    return 1
+  fi
+  echo "${PMTILES_BUILDS_INDEX}${latest}"
+}
 
 echo "=== Severbus: Настройка самохостинга тайлов ==="
 echo ""
@@ -37,7 +55,15 @@ mkdir -p "$OUTPUT_DIR/fonts/Noto Sans Regular"
 # ──────────────────────────────────────────────
 # 1. Скачиваем PMTiles CLI (если нет)
 # ──────────────────────────────────────────────
-if ! command -v pmtiles &> /dev/null; then
+PMTILES_BIN_LOCAL="$OUTPUT_DIR/pmtiles"
+
+if command -v pmtiles &> /dev/null; then
+  PMTILES_BIN="pmtiles"
+  echo "[1/4] pmtiles CLI найден в PATH"
+elif [ -x "$PMTILES_BIN_LOCAL" ]; then
+  PMTILES_BIN="$PMTILES_BIN_LOCAL"
+  echo "[1/4] pmtiles CLI уже скачан в $PMTILES_BIN_LOCAL"
+else
   echo "[1/4] Скачиваю pmtiles CLI..."
   ARCH=$(uname -m)
   OS=$(uname -s | tr '[:upper:]' '[:lower:]')
@@ -45,14 +71,11 @@ if ! command -v pmtiles &> /dev/null; then
   if [ "$ARCH" = "x86_64" ]; then ARCH="amd64"; fi
   if [ "$ARCH" = "aarch64" ]; then ARCH="arm64"; fi
 
-  PMTILES_URL="https://github.com/protomaps/go-pmtiles/releases/latest/download/go-pmtiles_${OS}_${ARCH}.tar.gz"
-  curl -L "$PMTILES_URL" | tar xz -C /tmp
-  PMTILES_BIN="/tmp/pmtiles"
-  chmod +x "$PMTILES_BIN"
-  echo "  pmtiles CLI установлен в /tmp/pmtiles"
-else
-  PMTILES_BIN="pmtiles"
-  echo "[1/4] pmtiles CLI уже установлен"
+  PMTILES_DL_URL="https://github.com/protomaps/go-pmtiles/releases/latest/download/go-pmtiles_${OS}_${ARCH}.tar.gz"
+  curl -L "$PMTILES_DL_URL" | tar xz -C "$OUTPUT_DIR" pmtiles
+  chmod +x "$PMTILES_BIN_LOCAL"
+  PMTILES_BIN="$PMTILES_BIN_LOCAL"
+  echo "  pmtiles CLI установлен в $PMTILES_BIN_LOCAL"
 fi
 
 # ──────────────────────────────────────────────
@@ -63,16 +86,22 @@ PMTILES_FILE="$OUTPUT_DIR/tomsk.pmtiles"
 if [ -f "$PMTILES_FILE" ]; then
   echo "[2/4] tomsk.pmtiles уже существует, пропускаю"
 else
-  echo "[2/4] Извлекаю регион Томска из планетарного билда..."
-  echo "  Это может занять 5-15 минут (скачивается только нужная область)"
-  echo "  Bbox: $BBOX_MIN_LON,$BBOX_MIN_LAT,$BBOX_MAX_LON,$BBOX_MAX_LAT"
-  echo ""
-  echo "  ВАЖНО: Если URL не работает, найдите актуальный билд на:"
-  echo "  https://maps.protomaps.com/builds/"
-  echo "  и передайте его через переменную PMTILES_PLANET_URL"
-  echo ""
+  if [ -z "${PMTILES_PLANET_URL:-}" ]; then
+    echo "[2/4] Ищу последний билд Protomaps..."
+    if ! PMTILES_PLANET_URL=$(resolve_latest_build_url); then
+      echo "  ОШИБКА: не удалось разобрать листинг $PMTILES_BUILDS_INDEX"
+      echo "  Передайте URL вручную через env PMTILES_PLANET_URL"
+      exit 1
+    fi
+    echo "  Найден: $PMTILES_PLANET_URL"
+  else
+    echo "[2/4] Использую заданный PMTILES_PLANET_URL=$PMTILES_PLANET_URL"
+  fi
 
-  $PMTILES_BIN extract \
+  echo "  Извлекаю регион Томска (это 5-15 минут, качается только bbox)..."
+  echo "  Bbox: $BBOX_MIN_LON,$BBOX_MIN_LAT,$BBOX_MAX_LON,$BBOX_MAX_LAT"
+
+  "$PMTILES_BIN" extract \
     "${PMTILES_PLANET_URL}" \
     "$PMTILES_FILE" \
     --bbox="${BBOX_MIN_LON},${BBOX_MIN_LAT},${BBOX_MAX_LON},${BBOX_MAX_LAT}" \
@@ -134,14 +163,4 @@ echo "  Готово"
 # ──────────────────────────────────────────────
 echo ""
 echo "=== Все файлы готовы в $OUTPUT_DIR ==="
-echo ""
 du -sh "$OUTPUT_DIR"/* 2>/dev/null || true
-echo ""
-echo "Следующие шаги:"
-echo "  1. Загрузите файлы на VDS:"
-echo "     rsync -avz $OUTPUT_DIR/ user@host:/opt/severbus/data/tiles/"
-echo ""
-echo "  2. Настройте nginx (в reverse-proxy репо) для раздачи /tiles/"
-echo "     (см. PR с контекстом для reverse-proxy)"
-echo ""
-echo "  3. Задеплойте frontend с VITE_MAP_STYLE_URL=/tiles/style.json"
