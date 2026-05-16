@@ -2902,6 +2902,7 @@ __metadata:
     i18next: ^22.4.9
     leaflet: ^1.9.3
     maplibre-gl: ^4.7.1
+    pmtiles: ^4.2.0
     prettier: ^2.8.3
     query-string: ^8.1.0
     react: ^18.2.0
@@ -4081,6 +4082,13 @@ __metadata:
     picomatch:
       optional: true
   checksum: bd537daa9d3cd53887eed35efa0eab2dbb1ca408790e10e024120e7a36c6e9ae2b33710cb8381e35def01bc9c1d7eaba746f886338413e68ff6ebaee07b9a6e8
+  languageName: node
+  linkType: hard
+
+"fflate@npm:^0.8.2":
+  version: 0.8.3
+  resolution: "fflate@npm:0.8.3"
+  checksum: a2a417e8fb5128b946cb397ab59a90e089057cba492f2c17a89c4af6ba8568b3da72ed36ef1efe901df7858a20964ce56e84d282e60498be1947fcc6133bc891
   languageName: node
   linkType: hard
 
@@ -6243,6 +6251,15 @@ __metadata:
   dependencies:
     find-up: ^4.0.0
   checksum: 9863e3f35132bf99ae1636d31ff1e1e3501251d480336edb1c211133c8d58906bed80f154a1d723652df1fda91e01c7442c2eeaf9dc83157c7ae89087e43c8d6
+  languageName: node
+  linkType: hard
+
+"pmtiles@npm:^4.2.0":
+  version: 4.4.1
+  resolution: "pmtiles@npm:4.4.1"
+  dependencies:
+    fflate: ^0.8.2
+  checksum: c5c5f4a2ac95e3e120f8dd2f79a5b69dc27b4108e80f45144edf6da34a5dc0b3ed28fc311cdab532cd3647b5ed1079021604e8f8aaa03a7ded3e31937f8031f5
   languageName: node
   linkType: hard
 
