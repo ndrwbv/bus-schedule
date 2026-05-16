@@ -2,6 +2,7 @@ name: Deploy
 
 env:
   YANDEX_AD_BLOCK_ID: ${{secrets.YANDEX_AD_BLOCK_ID}}
+  VITE_MAP_STYLE_URL: /tiles/style.json
 
 on:
   push:
@@ -90,6 +91,34 @@ jobs:
               echo "No database file found, skipping backup"
             fi
           BACKUP_SCRIPT
+
+      # Tiles собираются на github-runner'е (он за рубежом — у него гарантированный
+      # доступ к build.protomaps.com и github releases, в отличие от VDS в РФ),
+      # затем rsync'ом отправляются на VDS. Кэш инвалидируется только при изменении
+      # setup-tiles.sh или style.json — на обычном деплое тайлы берутся из кэша
+      # и скрипт выходит мгновенно (он идемпотентный). Чтобы принудительно
+      # пересобрать (получить свежие данные OSM) — очисти GH Actions cache.
+      - name: Restore tiles cache
+        id: tiles-cache
+        uses: actions/cache@v4
+        with:
+          path: ./tiles-output
+          key: tiles-${{ hashFiles('scripts/tiles/style.json', 'scripts/setup-tiles.sh') }}-${{ github.run_id }}
+          restore-keys: |
+            tiles-${{ hashFiles('scripts/tiles/style.json', 'scripts/setup-tiles.sh') }}-
+
+      - name: Build tiles on runner
+        timeout-minutes: 30
+        run: bash scripts/setup-tiles.sh ./tiles-output
+
+      - name: Upload tiles to VDS
+        run: |
+          ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} \
+            "mkdir -p ${{ secrets.DEPLOY_PATH }}/data/tiles"
+          rsync -avz --delete \
+            --exclude='pmtiles' \
+            ./tiles-output/ \
+            ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}/data/tiles/
 
       - name: Restart containers
         run: |

@@ -24,6 +24,9 @@
 			"last 1 safari version"
 		]
 	},
+	"dependencies": {
+		"pmtiles": "^4.2.0"
+	},
 	"devDependencies": {
 		"@reduxjs/toolkit": "^2.11.2",
 		"@testing-library/react": "^13.4.0",
