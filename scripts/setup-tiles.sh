@@ -31,20 +31,36 @@ BBOX_MIN_LAT=56.35
 BBOX_MAX_LON=85.10
 BBOX_MAX_LAT=56.55
 
-# Protomaps weekly builds: https://build.protomaps.com/ (публичный S3 листинг).
-# Если PMTILES_PLANET_URL не задан в env — берём самый свежий YYYYMMDD.pmtiles.
-PMTILES_BUILDS_INDEX="https://build.protomaps.com/"
+# Protomaps weekly builds: https://build.protomaps.com/YYYYMMDD.pmtiles.
+# Если PMTILES_PLANET_URL не задан в env — ищем самый свежий доступный билд:
+#   1) сначала через S3 list API (?list-type=2),
+#   2) если listing закрыт — пробуем последние 60 дней по HEAD-запросу.
+PMTILES_BUILDS_BASE="https://build.protomaps.com/"
 
 resolve_latest_build_url() {
+  # 1) Через S3 listing API
   local latest
-  latest=$(curl -fsSL "$PMTILES_BUILDS_INDEX" \
+  latest=$(curl -fsSL "${PMTILES_BUILDS_BASE}?list-type=2" 2>/dev/null \
     | grep -oE '[0-9]{8}\.pmtiles' \
     | sort -ur \
-    | head -n1)
-  if [ -z "$latest" ]; then
-    return 1
+    | head -n1) || true
+
+  if [ -n "$latest" ]; then
+    echo "${PMTILES_BUILDS_BASE}${latest}"
+    return 0
   fi
-  echo "${PMTILES_BUILDS_INDEX}${latest}"
+
+  # 2) Fallback: пробуем последние 60 дней назад по HEAD-запросу
+  local i date url
+  for i in $(seq 0 60); do
+    date=$(date -u -d "$i days ago" +%Y%m%d 2>/dev/null || date -u -v "-${i}d" +%Y%m%d)
+    url="${PMTILES_BUILDS_BASE}${date}.pmtiles"
+    if curl -fsI --max-time 5 "$url" >/dev/null 2>&1; then
+      echo "$url"
+      return 0
+    fi
+  done
+  return 1
 }
 
 echo "=== Severbus: Настройка самохостинга тайлов ==="

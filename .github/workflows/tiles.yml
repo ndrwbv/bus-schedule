@@ -1,0 +1,56 @@
+name: Update map tiles
+
+# Этот workflow полностью независим от deploy: тайлы обновляются по своему
+# расписанию (раз в неделю или вручную), и его падение не блокирует деплой
+# фронта/бэка. Тайлы — это статика на VDS, фронт продолжает работать со
+# старой версией, пока не накатим новую.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/setup-tiles.sh'
+      - 'scripts/tiles/**'
+      - '.github/workflows/tiles.yml'
+  schedule:
+    # Понедельник, 03:00 UTC — даём Protomaps опубликовать свежий weekly билд.
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            scripts
+
+      - name: Restore tiles cache
+        id: tiles-cache
+        uses: actions/cache@v4
+        with:
+          path: ./tiles-output
+          key: tiles-${{ hashFiles('scripts/tiles/style.json', 'scripts/setup-tiles.sh') }}-${{ github.run_id }}
+          restore-keys: |
+            tiles-${{ hashFiles('scripts/tiles/style.json', 'scripts/setup-tiles.sh') }}-
+
+      - name: Build tiles
+        run: bash scripts/setup-tiles.sh ./tiles-output
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Upload tiles to VDS
+        run: |
+          ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} \
+            "mkdir -p ${{ secrets.DEPLOY_PATH }}/data/tiles"
+          rsync -avz --delete \
+            --exclude='pmtiles' \
+            ./tiles-output/ \
+            ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}/data/tiles/
