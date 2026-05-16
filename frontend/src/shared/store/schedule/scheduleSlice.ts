@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { SCHEDULE } from 'shared/common'
 import { RootState } from 'shared/store/app/configureStore'
 
 import { getNextDay } from './getNextDay'
@@ -9,17 +8,19 @@ export interface BusStopInfoState {
 	schedule: ISchedule
 	currentDayKey: number
 	nextDayKey: number
-	scheduleSource: 'hardcoded' | 'api' | 'cache'
+	scheduleSource: 'empty' | 'api' | 'cache'
 	lastUpdatedAt: string | null
 	lastCheckedAt: string | null
 	parseMethod: string | null
 }
 
+const EMPTY_SCHEDULE: ISchedule = { inSP: {}, out: {}, inLB: {} }
+
 const initialState: BusStopInfoState = {
-	schedule: SCHEDULE,
+	schedule: EMPTY_SCHEDULE,
 	currentDayKey: new Date().getDay(),
 	nextDayKey: getNextDay(new Date().getDay()),
-	scheduleSource: `hardcoded`,
+	scheduleSource: `empty`,
 	lastUpdatedAt: null,
 	lastCheckedAt: null,
 	parseMethod: null,
@@ -60,7 +61,7 @@ export const { setSchedule, setScheduleFromApi, setCurrentDayKey } = busStopInfo
 export const scheduleSelector = (state: RootState): ISchedule => state.scheduleSlice.schedule
 export const currentDaySelector = (state: RootState): number => state.scheduleSlice.currentDayKey
 export const nextDaySelector = (state: RootState): number => state.scheduleSlice.nextDayKey
-export const scheduleSourceSelector = (state: RootState): 'cache' | 'api' | 'hardcoded' =>
+export const scheduleSourceSelector = (state: RootState): 'cache' | 'api' | 'empty' =>
 	state.scheduleSlice.scheduleSource
 export const lastUpdatedAtSelector = (state: RootState): string | null => state.scheduleSlice.lastUpdatedAt
 export const lastCheckedAtSelector = (state: RootState): string | null => state.scheduleSlice.lastCheckedAt

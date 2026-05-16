@@ -30,8 +30,8 @@ export const ScheduleInfo: React.FC = () => {
 
 	const { data: changelog } = useGetChangelogQuery({ limit: 5 }, { skip: !showChangelog })
 
-	// Не показываем блок если расписание захардкожено и нет даты обновления
-	if (source === `hardcoded` && !lastUpdatedAt) return null
+	// Не показываем блок пока расписание не загружено
+	if (source === `empty` || !lastUpdatedAt) return null
 
 	// Показываем «проверено» если дата проверки отличается от даты обновления
 	const showCheckedAt = lastCheckedAt && lastCheckedAt !== lastUpdatedAt

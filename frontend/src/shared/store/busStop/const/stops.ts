@@ -105,20 +105,20 @@ function sortTaggedTimes(tagged: TaggedTime[]): TaggedTime[] {
 }
 
 export const getScheduleTimes = (
-	schedule: ISchedule,
+	schedule: ISchedule | null | undefined,
 	userDirection: UserDirection,
 	dayKey: number,
 	stopLabel: string,
 ): TaggedTime[] => {
 	if (userDirection === UserDirection.toCity) {
-		const result = getDirectionTimes(schedule.out, dayKey, stopLabel, DirectionsNew.out)
+		const result = getDirectionTimes(schedule?.out, dayKey, stopLabel, DirectionsNew.out)
 
 		return mapToTagged(result, null)
 	}
 
 	// fromCity: merge inSP + inLB (with interpolation fallback for each)
-	const inSpResult = getDirectionTimes(schedule.inSP, dayKey, stopLabel, DirectionsNew.inSP)
-	const inLbResult = getDirectionTimes(schedule.inLB, dayKey, stopLabel, DirectionsNew.inLB)
+	const inSpResult = getDirectionTimes(schedule?.inSP, dayKey, stopLabel, DirectionsNew.inSP)
+	const inLbResult = getDirectionTimes(schedule?.inLB, dayKey, stopLabel, DirectionsNew.inLB)
 
 	const needsTag = inSpResult.times.length > 0 && inLbResult.times.length > 0
 	const spVia = needsTag ? (`park` as const) : null
