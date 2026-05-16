@@ -65,14 +65,32 @@ elif [ -x "$PMTILES_BIN_LOCAL" ]; then
   echo "[1/4] pmtiles CLI уже скачан в $PMTILES_BIN_LOCAL"
 else
   echo "[1/4] Скачиваю pmtiles CLI..."
-  ARCH=$(uname -m)
-  OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 
-  if [ "$ARCH" = "x86_64" ]; then ARCH="amd64"; fi
-  if [ "$ARCH" = "aarch64" ]; then ARCH="arm64"; fi
+  # go-pmtiles использует goreleaser naming: go-pmtiles_<ver>_Linux_x86_64.tar.gz
+  # (с заглавным OS и x86_64 вместо amd64). URL /latest/download/<file> не работает,
+  # потому что имя файла включает версию — ищем asset через GitHub API.
+  OS_RAW=$(uname -s)
+  ARCH_RAW=$(uname -m)
+  case "$ARCH_RAW" in
+    x86_64|amd64)   GR_ARCH="x86_64" ;;
+    arm64|aarch64)  GR_ARCH="arm64" ;;
+    *) echo "  ОШИБКА: неподдерживаемая архитектура $ARCH_RAW"; exit 1 ;;
+  esac
 
-  PMTILES_DL_URL="https://github.com/protomaps/go-pmtiles/releases/latest/download/go-pmtiles_${OS}_${ARCH}.tar.gz"
-  curl -L "$PMTILES_DL_URL" | tar xz -C "$OUTPUT_DIR" pmtiles
+  ASSET_URL=$(curl -fsSL "https://api.github.com/repos/protomaps/go-pmtiles/releases/latest" \
+    | grep '"browser_download_url"' \
+    | grep -E "${OS_RAW}_${GR_ARCH}\\.tar\\.gz\"" \
+    | head -n1 \
+    | sed -E 's/.*"browser_download_url": "([^"]+)".*/\1/')
+
+  if [ -z "$ASSET_URL" ]; then
+    echo "  ОШИБКА: не нашёл pmtiles release для ${OS_RAW}/${GR_ARCH}"
+    echo "  Проверь https://github.com/protomaps/go-pmtiles/releases/latest"
+    exit 1
+  fi
+
+  echo "  Качаю: $ASSET_URL"
+  curl -fsSL "$ASSET_URL" | tar xz -C "$OUTPUT_DIR" pmtiles
   chmod +x "$PMTILES_BIN_LOCAL"
   PMTILES_BIN="$PMTILES_BIN_LOCAL"
   echo "  pmtiles CLI установлен в $PMTILES_BIN_LOCAL"
