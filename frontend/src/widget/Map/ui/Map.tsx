@@ -62,6 +62,17 @@ export const Map: React.FC = () => {
 				style: MAP_STYLE_URL,
 				center: [84.899966, 56.47177],
 				zoom: 15.5,
+				// Self-hosted pmtiles содержит только bbox Томска (84.75-85.10, 56.35-56.55).
+				// За пределами bbox данных нет, и на низких zoom большой water polygon
+				// перекрывает всё — выглядит будто город в воде. Ограничиваем камеру
+				// city-level (~zoom 11) и не даём улететь от Томска. maxzoom тайлов 15,
+				// дальше MapLibre overzoom — выше 18 теряет смысл.
+				minZoom: 11,
+				maxZoom: 18,
+				maxBounds: [
+					[84.5, 56.25],
+					[85.35, 56.65],
+				],
 				pitch: 45,
 				bearing: 60,
 				container: `map`,
