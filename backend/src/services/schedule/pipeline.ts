@@ -225,7 +225,7 @@ function pipelineError(err: unknown, stage: PipelineStage): PipelineResult {
   return { status: 'error', error: message, errorStage: stage }
 }
 
-function countStops(schedule: ISchedule): number {
+export function countStops(schedule: ISchedule): number {
   const stops = new Set<string>()
   const dirs = ['inSP', 'out', 'inLB'] as const
   for (const dir of dirs) {
@@ -236,7 +236,7 @@ function countStops(schedule: ISchedule): number {
   return stops.size
 }
 
-function countTrips(schedule: ISchedule): number {
+export function countTrips(schedule: ISchedule): number {
   let max = 0
   const dirs = ['inSP', 'out', 'inLB'] as const
   for (const dir of dirs) {
@@ -249,15 +249,15 @@ function countTrips(schedule: ISchedule): number {
   return max
 }
 
-type DiffEntry = { direction: string; day: string; stop: string; times?: string[]; before?: string[]; after?: string[] }
+export type DiffEntry = { direction: string; day: string; stop: string; times?: string[]; before?: string[]; after?: string[] }
 
-interface ScheduleDiff {
+export interface ScheduleDiff {
   added: DiffEntry[]
   removed: DiffEntry[]
   changed: DiffEntry[]
 }
 
-function buildDiff(before: ISchedule, after: ISchedule): ScheduleDiff {
+export function buildDiff(before: ISchedule, after: ISchedule): ScheduleDiff {
   const diff: ScheduleDiff = { added: [], removed: [], changed: [] }
   const dirs = ['inSP', 'out', 'inLB'] as const
   const days = ['0', '1', '2', '3', '4', '5', '6']
@@ -285,7 +285,7 @@ function buildDiff(before: ISchedule, after: ISchedule): ScheduleDiff {
   return diff
 }
 
-function summarizeDiff(diff: ScheduleDiff): string {
+export function summarizeDiff(diff: ScheduleDiff): string {
   const parts: string[] = []
   if (diff.added.length) parts.push(`добавлено ${diff.added.length} остановок`)
   if (diff.removed.length) parts.push(`удалено ${diff.removed.length} остановок`)

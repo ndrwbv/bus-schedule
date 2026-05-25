@@ -1,3 +1,9 @@
+// ⚠️ Отключено 2026-05-25.
+// Перевозчик больше не публикует Word-документ — расписание приходит
+// картинками. Скрейпинг/скачивание/детерминированный парсер перестали работать,
+// поэтому startScheduleCron() закомментирован в src/index.ts.
+// Этот файл оставлен на случай, если перевозчик вернёт Word-таблицу — тогда
+// достаточно раскомментировать импорт и вызов в index.ts.
 import cron, { ScheduledTask } from 'node-cron'
 import { runPipeline } from './pipeline'
 import { telegramAlerter } from '../telegram/alerter'

@@ -12,7 +12,12 @@ import { featuresRouter } from './routes/features';
 import { liveRouter } from './routes/live';
 import { logsRouter } from './routes/logs';
 import { bannerMessagesRouter } from './routes/bannerMessages';
-import { startScheduleCron } from './services/schedule/cron';
+// Отключено 2026-05-25: перевозчик перестал публиковать Word-документ и
+// перешёл на картинки — авто-скрейпинг больше не работает. Расписание теперь
+// обновляется вручную через POST /api/schedule/refresh-json (см. routes/schedule.ts).
+// Если перевозчик снова вернётся к Word-документу — раскомментировать импорт и
+// вызов startScheduleCron() ниже.
+// import { startScheduleCron } from './services/schedule/cron';
 import { startComplainsCron } from './services/complains/cron';
 import { startLogsCron } from './services/logs/cron';
 import { initTelegramSubscribers, pollSubscribers } from './services/telegram/alerter';
@@ -27,7 +32,7 @@ app.use(requestLogger);
 initDb();
 initTelegramSubscribers();
 pollSubscribers().catch((err) => logger.error({ err }, '[telegram] Ошибка первичного опроса'));
-startScheduleCron();
+// startScheduleCron(); // см. комментарий к импорту выше
 startComplainsCron();
 startLogsCron();
 
