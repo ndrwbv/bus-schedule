@@ -248,6 +248,83 @@ const spec = {
         },
       },
     },
+    '/schedule/refresh-json': {
+      post: {
+        tags: ['Schedule'],
+        summary: 'Ручная загрузка расписания готовым JSON',
+        description: [
+          'Сохраняет переданный `ISchedule` напрямую, минуя скрейпинг и парсер.',
+          'Используется, когда перевозчик публикует расписание в формате, который не парсится автоматически (например, картинками).',
+          '',
+          '**Поведение:**',
+          '- Считает SHA-256 от канонического (с отсортированными ключами) JSON.',
+          '- Если хеш совпал с активным расписанием и `force=false` — возвращает `no_changes`.',
+          '- Прогоняет `validateSchedule` (формат, ascending, мин. 5 остановок, порог 50% изменений).',
+          '- При успехе помечает старую запись `is_active=0`, вставляет новую с `parse_method="manual_json"`, пишет diff в `schedule_changelog`, шлёт алерт в Telegram.',
+          '- `parse_method = "manual_json"` (отличается от `deterministic` у Word-парсера).',
+          '',
+          '**Когда нужен `force=true`:** новый формат от перевозчика обычно сильно отличается от прежнего (часть остановок ушла из публикации), и порог 50% валидации без force заблокирует обновление.',
+        ].join('\n'),
+        security: [{ bearerAuth: [] }],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['schedule'],
+                properties: {
+                  schedule: { $ref: '#/components/schemas/ISchedule' },
+                  force:    { type: 'boolean', default: false, description: 'Пропустить проверки хеша и порога изменений (валидация формата всё равно выполняется)' },
+                  note:     { type: 'string', maxLength: 200, description: 'Короткий комментарий, попадёт в начало `changesSummary` и в Telegram-алерт', example: 'Ручное обновление 2026-05-25: перевозчик публикует картинками' },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          '200': {
+            description: 'Расписание обновлено либо актуально',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status:         { type: 'string', enum: ['updated', 'no_changes'] },
+                    parseMethod:    { type: 'string', example: 'manual_json' },
+                    fileHash:       { type: 'string' },
+                    stopsCount:     { type: 'integer' },
+                    tripsCount:     { type: 'integer' },
+                    changesSummary: { type: 'string' },
+                    durationMs:     { type: 'integer' },
+                    message:        { type: 'string', description: 'Только при status=no_changes' },
+                  },
+                },
+              },
+            },
+          },
+          '400': { description: 'Тело запроса не содержит поля schedule', content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } } },
+          '401': { description: 'Неверный токен', content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } } },
+          '422': {
+            description: 'Валидация не прошла (формат или превышен порог изменений)',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    error:   { type: 'string', example: 'validation_failed' },
+                    message: { type: 'string' },
+                    details: { type: 'string' },
+                    hint:    { type: 'string', description: 'Подсказка, если порог изменений превышен — обычно «переотправь с force=true»' },
+                  },
+                },
+              },
+            },
+          },
+          '500': { description: 'Ошибка сервера', content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } } },
+        },
+      },
+    },
     '/schedule/changelog': {
       get: {
         tags: ['Schedule'],
