@@ -30,6 +30,14 @@ export default defineConfig(({ mode }) => {
 				skipWaiting: true,
 				clientsClaim: true,
 				navigateFallback: 'index.html',
+				// Без denylist SPA-фолбэк глотает реальные файлы: открыть
+				// /schedule/112s-weekdays-2026-08.jpg (ввод в адресную строку или клик по
+				// ссылке из футера) — это navigate-запрос, и workbox отдавал на него
+				// index.html вместо картинки. Получалась пустая страница: React грузился
+				// на несуществующий роут, а сам JPEG даже не запрашивался.
+				// Правило «в последнем сегменте пути есть точка» покрывает фото
+				// перевозчика и заодно robots.txt / sitemap.xml / manifest.json.
+				navigateFallbackDenylist: [/^\/api\//, /\.[^/]*$/],
 				runtimeCaching: [
 					{
 						// NetworkFirst, а не StaleWhileRevalidate: SWR всегда отдаёт кеш
