@@ -16,10 +16,10 @@ echo "==> Syncing project to server..."
 rsync -avz --delete \
   --exclude='node_modules' \
   --exclude='.env' \
-  --exclude='data/' \
-  --exclude='frontend-dist/' \
+  --exclude='/data/' \
+  --exclude='/frontend-dist/' \
   --exclude='.git' \
-  --exclude='backend/data/' \
+  --exclude='/backend/data/' \
   --exclude='backend/node_modules/' \
   ./ \
   "${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/"
