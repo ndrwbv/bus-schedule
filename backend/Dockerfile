@@ -7,7 +7,9 @@ COPY package.json package-lock.json* ./
 RUN npm install
 COPY tsconfig.json ./
 COPY src ./src
-RUN npx tsc
+# npm run build = tsc + копирование src/data (schedule-seed.json читается через fs,
+# tsc его сам в dist не переносит)
+RUN npm run build
 
 FROM node:20-alpine
 
