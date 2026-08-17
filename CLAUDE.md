@@ -51,8 +51,21 @@ Days are `Date.getDay()` keys: `'0'` = Sunday … `'6'` = Saturday.
 
 It is **not** hardcoded in the frontend anymore (that was removed in `93cc8ac`). It lives in
 SQLite on the VDS and is served by `GET /api/schedule`; the frontend lazy-loads it via RTK Query
-(`shared/api/scheduleApi.ts`) with a 24h localStorage cache. `backend/src/data/schedule-seed.json`
-only seeds an **empty** DB — editing it does not change the live site.
+(`shared/api/scheduleApi.ts`). `backend/src/data/schedule-seed.json` only seeds an **empty** DB —
+editing it does not change the live site.
+
+**Caching — three layers, all of them revalidate now.** A schedule push must reach users on their
+next page load, so nothing may serve stale data without asking the server first:
+- `GET /api/schedule` sends `Cache-Control: no-cache` + an `ETag` (= `file_hash`), on both the 200
+  and the 304 path. Unchanged schedule → 304 with no body (24 KB → 0).
+- The service worker uses `NetworkFirst` with `networkTimeoutSeconds: 3` (`vite.config.ts`), not
+  `StaleWhileRevalidate` — SWR always served cache first and delayed updates by one visit.
+- `CACHE_TTL_MS` in `scheduleApi.ts` is the **offline window**, not a freshness limit:
+  `useScheduleLoader` paints the localStorage copy instantly and then overwrites it with the API
+  response. Do not shorten it to "make updates faster" — that only shrinks offline coverage.
+
+Internet gets throttled in the Tomsk region, so a stale schedule beats an empty screen: keep the
+cache fallbacks when touching this.
 
 Only stops the carrier actually publishes have times. Intermediate city stops (Главпочтамт, ТГУ,
 ТЭМЗ, Учебная, …) are estimated at runtime by `shared/lib/time/interpolateStopTimes.ts`, which

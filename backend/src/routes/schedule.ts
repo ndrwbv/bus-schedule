@@ -41,16 +41,26 @@ scheduleRouter.get('/schedule', (_req: Request, res: Response) => {
 
     const etag = `"${row.file_hash}"`
 
+    // no-cache — это не «не кешируй», а «кешируй, но каждый раз перепроверяй».
+    // Раньше стояло max-age=3600: браузер час вообще не спрашивал сервер, поэтому
+    // после обновления расписания часть людей ещё час видела старые времена
+    // (а дальше старый ответ уезжал в localStorage ещё на сутки).
+    // Теперь каждый запрос — условный, и при неизменном расписании сервер отвечает
+    // 304 без тела: свежесть моментальная, трафика почти нет.
+    //
+    // Заголовки ставим ДО ветки с 304: по RFC 7232 валидаторы и директивы
+    // кеширования должны быть и в 304-ответе, иначе браузер обновит сохранённую
+    // запись без Cache-Control и снова начнёт угадывать свежесть эвристикой.
+    res.set({
+      'Cache-Control': 'no-cache',
+      ETag: etag,
+    })
+
     // Conditional request support
     if (_req.headers['if-none-match'] === etag) {
       res.status(304).end()
       return
     }
-
-    res.set({
-      'Cache-Control': 'public, max-age=3600',
-      ETag: etag,
-    })
 
     res.json({
       schedule: JSON.parse(row.data),

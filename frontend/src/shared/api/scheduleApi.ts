@@ -4,7 +4,13 @@ import { ISchedule } from 'shared/store/schedule/ISchedule'
 const API_BASE = import.meta.env.VITE_API_URL || `/api`
 
 const CACHE_KEY = `severbus:schedule`
-const CACHE_TTL_MS = 24 * 60 * 60 * 1000 // 24 hours
+/**
+ * Окно офлайна, а не срок свежести: useScheduleLoader рисует кеш мгновенно и сразу
+ * же перекрывает его ответом от /api/schedule. Просроченный кеш просто перестаёт
+ * годиться как фолбэк, когда сети нет. Свежесть обеспечивают ETag + Cache-Control:
+ * no-cache на бэкенде и NetworkFirst в service worker'е.
+ */
+const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000 // 7 days
 
 export interface ScheduleMeta {
 	updatedAt: string

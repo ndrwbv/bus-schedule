@@ -32,11 +32,20 @@ export default defineConfig(({ mode }) => {
 				navigateFallback: 'index.html',
 				runtimeCaching: [
 					{
+						// NetworkFirst, а не StaleWhileRevalidate: SWR всегда отдаёт кеш
+						// первым, поэтому обновлённое расписание доезжало до пользователя
+						// только со второго открытия сайта.
+						// networkTimeoutSeconds — страховка для Томска, где интернет
+						// периодически глушат: если сеть не ответила за 3 секунды, отдаём
+						// кеш вместо бесконечного ожидания.
 						urlPattern: /\/api\/schedule$/,
-						handler: 'StaleWhileRevalidate',
+						handler: 'NetworkFirst',
 						options: {
 							cacheName: 'schedule-api',
-							expiration: { maxEntries: 1, maxAgeSeconds: 86400 },
+							networkTimeoutSeconds: 3,
+							// Кеш здесь — только офлайн-фолбэк, свежесть даёт сеть.
+							// Поэтому окно большое: старое расписание полезнее пустого экрана.
+							expiration: { maxEntries: 1, maxAgeSeconds: 604800 },
 						},
 					},
 				],
