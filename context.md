@@ -32,6 +32,7 @@
 │   │   ├── entities/      — базовые UI-сущности
 │   │   └── shared/        — api, common, configs, lib, store, theme, ui
 │   ├── public/
+│   │   └── schedule/      — фото расписания от перевозчика (первоисточник)
 │   ├── package.json
 │   ├── vite.config.ts
 │   ├── tsconfig.json
@@ -41,6 +42,7 @@
 │   ├── src/
 │   │   ├── index.ts       — точка входа
 │   │   ├── routes/        — роуты (health)
+│   │   ├── data/          — schedule-seed.json (сид для пустой БД)
 │   │   └── services/      — сервисы (db)
 │   ├── package.json
 │   ├── tsconfig.json
@@ -48,8 +50,9 @@
 │   └── .env.example
 ├── docker-compose.yml     ← backend + shared-proxy network
 ├── scripts/
-│   └── deploy.sh          — ручной деплой
-├── specs/
+│   ├── deploy.sh          — ручной деплой
+│   └── push-schedule.sh   — заливка расписания JSON'ом в прод
+├── specs/                 ← спецификации фич + JSON расписания
 ├── .github/workflows/
 │   ├── ci.yml             — lint + build на PR
 │   └── deploy.yml         — деплой на push в main
@@ -91,8 +94,8 @@ src/
 │   ├── SelectBusStopText/
 │   └── Holiday/
 └── shared/
-    ├── api/       — Contentful API (расписание, инфо)
-    ├── common/    — schedule.ts (ГЛАВНЫЙ ФАЙЛ С РАСПИСАНИЕМ)
+    ├── api/       — scheduleApi.ts (RTK Query к /api), Contentful (инфо, праздники)
+    ├── common/    — строки и константы
     ├── configs/   — base.ts (токены Contentful, MapTiler)
     ├── lib/       — утилиты (время, аналитика, запросы, redux хелперы)
     ├── store/     — Redux slices
@@ -110,7 +113,20 @@ src/
 
 ### Данные расписания
 
-Расписание захардкожено в TypeScript-файле `src/shared/common/schedule.ts` как константа `SCHEDULE`.
+Расписание больше **не** захардкожено на фронте (константу `SCHEDULE` убрали в `93cc8ac`).
+Оно лежит в SQLite на VDS, отдаётся из `GET /api/schedule` и подтягивается лениво через
+RTK Query (`src/shared/api/scheduleApi.ts`) с кешем в localStorage на 24 часа.
+`backend/src/data/schedule-seed.json` — сид только для **пустой** БД; правка сида живой сайт
+не меняет, для этого есть `POST /api/schedule/refresh-json` (`scripts/push-schedule.sh`).
+
+Первоисточник — фотографии расписания от перевозчика: лежат в `frontend/public/schedule/`,
+ссылки на них выведены в футере сайта. Процедура расшифровки, соответствие названий остановок
+и список аномалий перевозчика — в `specs/13-schedule-from-images.md`.
+
+Время есть только у тех остановок, которые печатает перевозчик. Промежуточные городские
+остановки считаются приблизительно в `shared/lib/time/interpolateStopTimes.ts` — рейсы там
+сопоставляются **по индексу массива**, поэтому изменение числа рейсов может незаметно сдвинуть
+расчётные времена.
 
 **Интерфейс:**
 ```typescript
@@ -129,9 +145,9 @@ direction → dayOfWeek → stopName → ["8:15", "10:25", ...]
 - Направления: `inSP` (в Северный парк), `out` (в город), `inLB` (в Левобережный)
 - Дни недели: `'0'` (вс) – `'6'` (сб), совпадает с `Date.getDay()`
 - Остановки: строковые ключи на русском (`Интернационалистов`, `пл. Ленина`, ...)
-- Время: массив строк `"8:15"`, `"08:39"` (формат не нормализован)
+- Время: массив строк, с 2026-08 нормализовано до `"07:15"` (двузначный час)
 
-**Contentful:** Есть код загрузки расписания из Contentful CMS (`src/shared/api/schedule.ts`), но `dispatch(setSchedule(...))` закомментирован — приложение использует захардкоженный `SCHEDULE`.
+**Contentful:** Есть код загрузки расписания из Contentful CMS (`src/shared/api/schedule.ts`), но он не используется — расписание приходит из `/api/schedule`.
 
 **Праздники:** Загружаются из Contentful, middleware переопределяет `currentDayKey` если сегодня — праздник.
 

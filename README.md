@@ -15,6 +15,7 @@
 │   │   ├── entities/      — базовые UI-сущности
 │   │   └── shared/        — api, common, configs, lib, store, theme, ui
 │   ├── public/
+│   │   └── schedule/      — фото расписания от перевозчика (первоисточник)
 │   ├── package.json
 │   ├── vite.config.ts
 │   ├── tsconfig.json
@@ -23,6 +24,7 @@
 │   ├── src/
 │   │   ├── index.ts       — точка входа
 │   │   ├── routes/        — роуты (health)
+│   │   ├── data/          — schedule-seed.json (сид для пустой БД)
 │   │   └── services/      — сервисы (db)
 │   ├── package.json
 │   ├── tsconfig.json
@@ -30,8 +32,9 @@
 │   └── .env.example
 ├── docker-compose.yml     ← backend + shared-proxy network
 ├── scripts/
-│   └── deploy.sh          — ручной деплой
-├── specs/                 ← спецификации фич
+│   ├── deploy.sh          — ручной деплой
+│   └── push-schedule.sh   — заливка расписания JSON'ом в прод
+├── specs/                 ← спецификации фич + JSON расписания
 ├── .github/workflows/     ← CI/CD
 │   ├── ci.yml             — lint + build на PR
 │   └── deploy.yml         — деплой на push в main
