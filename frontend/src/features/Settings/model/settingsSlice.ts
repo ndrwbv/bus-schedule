@@ -2,6 +2,9 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 const STORAGE_KEY = `severbus:settings`
 
+/** Живой автобус включён всем по умолчанию; кто выключил его сам — остаётся с выключенным. */
+const DEFAULT_SHOW_LIVE_BUS = true
+
 interface SettingsState {
 	showLiveBus: boolean
 }
@@ -13,14 +16,14 @@ function loadFromStorage(): SettingsState {
 			const parsed = JSON.parse(raw) as Partial<SettingsState>
 
 			return {
-				showLiveBus: parsed.showLiveBus ?? false,
+				showLiveBus: parsed.showLiveBus ?? DEFAULT_SHOW_LIVE_BUS,
 			}
 		}
 	} catch {
 		// ignore
 	}
 
-	return { showLiveBus: false }
+	return { showLiveBus: DEFAULT_SHOW_LIVE_BUS }
 }
 
 function saveToStorage(state: SettingsState): void {
