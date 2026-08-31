@@ -120,11 +120,11 @@ export const getScheduleTimes = (
 	const inSpResult = getDirectionTimes(schedule?.inSP, dayKey, stopLabel, DirectionsNew.inSP)
 	const inLbResult = getDirectionTimes(schedule?.inLB, dayKey, stopLabel, DirectionsNew.inLB)
 
-	const needsTag = inSpResult.times.length > 0 && inLbResult.times.length > 0
-	const spVia = needsTag ? (`park` as const) : null
-	const lbVia = needsTag ? (`lb` as const) : null
-
-	const tagged: TaggedTime[] = [...mapToTagged(inSpResult, spVia), ...mapToTagged(inLbResult, lbVia)]
+	// Every "from city" trip carries its branch. After Лагерный Сад the route splits into
+	// Северный парк and Левобережный, and the departure time alone doesn't say which one it is —
+	// so tag even the stops served by a single branch: "через парк" on all of them is what tells
+	// a passenger that no bus from here goes to Левобережный.
+	const tagged: TaggedTime[] = [...mapToTagged(inSpResult, `park`), ...mapToTagged(inLbResult, `lb`)]
 
 	return sortTaggedTimes(tagged)
 }
