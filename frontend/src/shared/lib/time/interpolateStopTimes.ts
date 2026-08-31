@@ -128,6 +128,11 @@ export const interpolateStopTimes = (
 
 	if (!prevStop && !nextStop) return null
 
+	// Trips are matched by array index, so neighbours with different trip counts describe
+	// different trips at the same index — interpolating between them silently skews the result.
+	// Better no times than wrong ones.
+	if (prevStop && nextStop && prevStop.times.length !== nextStop.times.length) return null
+
 	const tripCount = prevStop?.times.length ?? nextStop?.times.length ?? 0
 	const result: string[] = []
 
