@@ -124,7 +124,16 @@ export const getScheduleTimes = (
 	// Северный парк and Левобережный, and the departure time alone doesn't say which one it is —
 	// so tag even the stops served by a single branch: "через парк" on all of them is what tells
 	// a passenger that no bus from here goes to Левобережный.
-	const tagged: TaggedTime[] = [...mapToTagged(inSpResult, `park`), ...mapToTagged(inLbResult, `lb`)]
+	//
+	// Unless there is nothing to disambiguate: since September 2026 every from-city trip runs
+	// through Левобережный and inSP arrives empty, so "через ЛБ" on every single row would be
+	// noise. Tag only while both branches actually run that day.
+	const hasBothBranches =
+		Object.keys(schedule?.inSP[dayKey] ?? {}).length > 0 && Object.keys(schedule?.inLB[dayKey] ?? {}).length > 0
+	const spVia = hasBothBranches ? (`park` as const) : null
+	const lbVia = hasBothBranches ? (`lb` as const) : null
+
+	const tagged: TaggedTime[] = [...mapToTagged(inSpResult, spVia), ...mapToTagged(inLbResult, lbVia)]
 
 	return sortTaggedTimes(tagged)
 }

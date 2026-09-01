@@ -49,6 +49,11 @@ Schedule shape: `direction → dayOfWeek → stopName → ["07:15", "10:25", ...
 Directions: `inSP` (to North Park), `out` (to city), `inLB` (to Left Bank).
 Days are `Date.getDay()` keys: `'0'` = Sunday … `'6'` = Saturday.
 
+**Since 2026-09 the carrier runs a single loop, so `inSP` is empty.** Every from-city trip goes
+via Левобережный (`inLB`); Маяк, ул. М. Цветаевой, Набережная and В. Маяковского are served only
+on the way back (`out`). `STOPS_IN_SP` is an empty array for the same reason, and
+`validateSchedule()` accepts a direction with no trips. Sat and Sun now share one carrier table.
+
 It is **not** hardcoded in the frontend anymore (that was removed in `93cc8ac`). It lives in
 SQLite on the VDS and is served by `GET /api/schedule`; the frontend lazy-loads it via RTK Query
 (`shared/api/scheduleApi.ts`). `backend/src/data/schedule-seed.json` only seeds an **empty** DB —
@@ -68,8 +73,10 @@ Internet gets throttled in the Tomsk region, so a stale schedule beats an empty 
 cache fallbacks when touching this.
 
 Only stops the carrier actually publishes have times. Intermediate city stops (Главпочтамт, ТГУ,
-ТЭМЗ, Учебная, …) are estimated at runtime by `shared/lib/time/interpolateStopTimes.ts`, which
-matches trips **by array index** — so a change to trip counts can silently skew those estimates.
+ТЭМЗ, Учебная, Поликлиника (Алые Паруса), …) are estimated at runtime by
+`shared/lib/time/interpolateStopTimes.ts`, which matches trips **by array index** — so a change to
+trip counts can silently skew those estimates. Keep every stop in a direction/day at the same
+array length; that is why the two weekday trips starting from Серебряный бор stay out of `inLB`.
 
 ### Schedule source of truth
 The carrier now publishes the 112С schedule as **photos**, not Word files, so the cron parser

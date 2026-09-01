@@ -7,12 +7,12 @@
 # применяется лишь к пустой БД. Живой сайт обновляется этим запросом.
 #
 #   ADMIN_TOKEN=xxx ./scripts/push-schedule.sh
-#   ADMIN_TOKEN=xxx ./scripts/push-schedule.sh specs/schedule-2026-08-payload.json
+#   ADMIN_TOKEN=xxx ./scripts/push-schedule.sh specs/schedule-2026-09-payload.json
 #
 # ADMIN_TOKEN берётся из окружения или из .env в корне репозитория.
 set -euo pipefail
 
-PAYLOAD="${1:-specs/schedule-2026-08-payload.json}"
+PAYLOAD="${1:-specs/schedule-2026-09-payload.json}"
 API_URL="${API_URL:-https://severbus.ru/api}"
 
 if [ ! -f "$PAYLOAD" ]; then

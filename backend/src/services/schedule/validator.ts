@@ -25,9 +25,25 @@ export function validateSchedule(
 
   if (errors.length) return { ok: false, errors }
 
+  // Направление может остаться совсем без рейсов: с сентября 2026 перевозчик
+  // возит «из города» только через Левобережный, и inSP приходит с пустыми днями.
+  // Такое направление пропускаем — иначе правило «минимум 5 остановок» заворачивает
+  // корректное расписание. Полностью пустое расписание при этом не пройдёт.
+  const isEmptyDirection = (dir: (typeof REQUIRED_DIRECTIONS)[number]): boolean =>
+    ALL_DAYS.every((day) => {
+      const dayData = schedule[dir][day]
+      return !dayData || Object.keys(dayData).length === 0
+    })
+
+  if (REQUIRED_DIRECTIONS.every(isEmptyDirection)) {
+    errors.push('Расписание пустое: ни в одном направлении нет рейсов')
+    return { ok: false, errors }
+  }
+
   // Проверяем каждое направление
   for (const dir of REQUIRED_DIRECTIONS) {
     const dirData = schedule[dir]
+    const dirIsEmpty = isEmptyDirection(dir)
 
     // Все дни недели присутствуют
     for (const day of ALL_DAYS) {
@@ -39,8 +55,8 @@ export function validateSchedule(
       const dayData = dirData[day]
       const stopNames = Object.keys(dayData)
 
-      // Минимум 5 остановок
-      if (stopNames.length < 5) {
+      // Минимум 5 остановок — только у направлений, где рейсы вообще есть
+      if (!dirIsEmpty && stopNames.length < 5) {
         errors.push(
           `Слишком мало остановок в ${dir}/${day}: ${stopNames.length} (минимум 5)`,
         )
