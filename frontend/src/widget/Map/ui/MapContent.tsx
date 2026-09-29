@@ -16,7 +16,7 @@ import { currentDaySelector, scheduleSelector } from 'shared/store/schedule/sche
 import { TMap } from '../TMap'
 import { GlobalStyle } from './GlobalStyle'
 import { LiveBusLayer } from './LiveBusLayer'
-import { getPinTime, stopPinHtml } from './stopPin'
+import { stopPinHtml } from './stopPin'
 
 type Stop = IStops<DirectionsNew>
 
@@ -27,7 +27,6 @@ const LAYER_POINTS = `unclustered-point`
 /** Below this zoom stops are dots and clusters; from it on — pins with times */
 const PINS_MIN_ZOOM = 15
 const PIN_REFRESH_MS = 30_000
-const DIRECTION_COLORS = { toCity: `#336cff`, fromCity: `#e8680c` }
 
 const STOPS_BY_ID = new Map(STOPS.map(stop => [stop.id, stop]))
 
@@ -68,8 +67,7 @@ export const MapContent: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map, m
 	const selectedPinRef = useRef<PinEntry | null>(null)
 
 	const renderPin = useCallback((entry: PinEntry): void => {
-		const time = getPinTime(scheduleRef.current, entry.stop, dayRef.current)
-		entry.el.innerHTML = stopPinHtml(entry.stop, time, entry.selected).trim()
+		entry.el.innerHTML = stopPinHtml(scheduleRef.current, entry.stop, dayRef.current, entry.selected).trim()
 	}, [])
 
 	const flyToStop = useCallback(
@@ -105,7 +103,8 @@ export const MapContent: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map, m
 			})
 			if (selected) el.style.zIndex = `10`
 
-			const marker = new maplibregl.Marker({ element: el, anchor: `bottom` })
+			// the leg's shadow (12 px above the svg's bottom edge) is what sits on the stop
+			const marker = new maplibregl.Marker({ element: el, anchor: `bottom`, offset: [0, 12] })
 				.setLngLat([stop.latLon[1], stop.latLon[0]])
 				.addTo(map)
 			const entry: PinEntry = { marker, el, stop, selected }
@@ -167,7 +166,7 @@ export const MapContent: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map, m
 				data: stopsFeatureCollection(selectedIdRef.current),
 				cluster: true,
 				clusterMaxZoom: 14,
-				clusterRadius: 45,
+				clusterRadius: 50,
 			})
 
 			map.addLayer({
@@ -176,11 +175,8 @@ export const MapContent: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map, m
 				source: STOPS_SOURCE_ID,
 				filter: [`has`, `point_count`],
 				paint: {
-					'circle-color': `#1d1d1f`,
-					'circle-opacity': 0.85,
-					'circle-radius': [`step`, [`get`, `point_count`], 16, 5, 20, 15, 25],
-					'circle-stroke-width': 3,
-					'circle-stroke-color': `#fff`,
+					'circle-color': [`step`, [`get`, `point_count`], `#47daff`, 100, `#f1f075`, 750, `#f28cb1`],
+					'circle-radius': [`step`, [`get`, `point_count`], 20, 100, 30, 750, 40],
 				},
 			})
 
@@ -192,10 +188,7 @@ export const MapContent: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map, m
 				layout: {
 					'text-field': `{point_count_abbreviated}`,
 					'text-font': [`Noto Sans Regular`],
-					'text-size': 13,
-				},
-				paint: {
-					'text-color': `#fff`,
+					'text-size': 12,
 				},
 			})
 
@@ -206,13 +199,7 @@ export const MapContent: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map, m
 				filter: [`!`, [`has`, `point_count`]],
 				maxzoom: PINS_MIN_ZOOM,
 				paint: {
-					'circle-color': [
-						`match`,
-						[`get`, `direction`],
-						DirectionsNew.out,
-						DIRECTION_COLORS.toCity,
-						DIRECTION_COLORS.fromCity,
-					],
+					'circle-color': `#47daff`,
 					'circle-radius': 6,
 					'circle-stroke-width': 2,
 					'circle-stroke-color': `#fff`,

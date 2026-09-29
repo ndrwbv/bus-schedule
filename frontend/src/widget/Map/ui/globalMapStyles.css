@@ -10,134 +10,91 @@
 	}
 }
 
-/* Stop pins — see stopPin.ts */
-.stop-pin {
-	--pin-dir: #336cff;
-	--pin-dir-bg: #e8efff;
+.pin {
+	position: relative;
+}
+
+.pin-text {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 46px;
+	height: 46px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	font-weight: 400;
+	color: #ffff;
+	z-index: 1;
+	pointer-events: none;
+}
+
+.pin-text__amount {
+	font-size: 20px;
+	line-height: 14px;
+	margin: 0;
+}
+
+.pin-text__unit {
+	font-size: 13px;
+	margin: 0;
+}
+
+/* Direction label above the pin — see getPinContent.ts */
+.pin-wrap {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	cursor: pointer;
-	font-family: inherit;
-	filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.18));
-	transition: transform 0.15s ease;
 }
 
-.stop-pin--from-city {
-	--pin-dir: #e8680c;
-	--pin-dir-bg: #fff0e3;
+.pin-wrap svg {
+	display: block;
 }
 
-@media (hover: hover) {
-	.stop-pin:hover {
-		transform: translateY(-2px);
-	}
-}
-
-.stop-pin__card {
-	min-width: 58px;
-	padding: 5px 8px 0;
-	border: 2px solid var(--pin-dir);
-	border-radius: 12px;
-	background: #fff;
-	text-align: center;
-	overflow: hidden;
-}
-
-.stop-pin__time {
-	font-size: 17px;
-	font-weight: 700;
-	line-height: 20px;
-	white-space: nowrap;
-	font-variant-numeric: tabular-nums;
-}
-
-.stop-pin__unit {
-	margin-left: 2px;
-	font-size: 11px;
-	font-weight: 600;
-}
-
-.stop-pin__time--imminent {
-	color: #e03131;
-}
-
-.stop-pin__time--soon {
-	color: #2b8a3e;
-}
-
-.stop-pin__time--later {
-	color: #1d1d1f;
-}
-
-.stop-pin__time--none {
-	color: #a5a5a5;
-}
-
-.stop-pin__dir {
-	margin: 4px -8px 0;
+.pin-label {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-bottom: 3px;
 	padding: 2px 8px 3px;
-	background: var(--pin-dir);
+	border-radius: 10px;
 	color: #fff;
 	font-size: 11px;
 	font-weight: 700;
 	line-height: 14px;
 	white-space: nowrap;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-.stop-pin__tail {
-	width: 0;
-	height: 0;
-	margin-top: -1px;
-	border-top: 8px solid var(--pin-dir);
-	border-right: 7px solid transparent;
-	border-left: 7px solid transparent;
+.pin-label--to-city {
+	background: #336cff;
 }
 
-/* The user's own stop: bigger, named, never clustered, always on top */
-.stop-pin--selected .stop-pin__card {
-	min-width: 96px;
-	max-width: 180px;
-	padding-top: 7px;
-	border-width: 3px;
+.pin-label--from-city {
+	background: #e8680c;
 }
 
-.stop-pin--selected {
-	filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.28));
-}
-
-.stop-pin__name {
+.pin-label__name {
+	max-width: 160px;
 	overflow: hidden;
-	color: #1d1d1f;
 	font-size: 13px;
-	font-weight: 700;
-	line-height: 16px;
-	white-space: nowrap;
+	line-height: 17px;
 	text-overflow: ellipsis;
 }
 
-.stop-pin--selected .stop-pin__time {
-	font-size: 22px;
-	line-height: 26px;
+/* The user's own stop: never clustered, named, a bit bigger and always on top */
+.pin-wrap--selected .pin {
+	transform: scale(1.15);
+	transform-origin: 50% 87%;
 }
 
-.stop-pin__clock {
-	color: #6b7075;
+.pin-wrap--selected .pin-label {
+	margin-bottom: 8px;
+	padding: 4px 10px 5px;
+	border-radius: 12px;
 	font-size: 12px;
-	font-weight: 500;
-	line-height: 14px;
-}
-
-.stop-pin--selected .stop-pin__dir {
-	margin-top: 6px;
-	font-size: 12px;
-	line-height: 16px;
-}
-
-.stop-pin--selected .stop-pin__tail {
-	border-top-width: 10px;
-	border-right-width: 9px;
-	border-left-width: 9px;
 }
 
 .maplibregl-ctrl-bottom-left,
