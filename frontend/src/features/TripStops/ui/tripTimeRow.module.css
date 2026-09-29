@@ -1,0 +1,53 @@
+.row {
+	display: flex;
+	align-items: baseline;
+	gap: 8px;
+	width: calc(100% + 16px);
+	margin: 0 -8px;
+	padding: 7px 8px;
+	border: none;
+	border-radius: 10px;
+	background: transparent;
+	color: inherit;
+	font: inherit;
+	text-align: left;
+	cursor: pointer;
+}
+
+.row + .row {
+	margin-top: 2px;
+}
+
+@media (hover: hover) {
+	.row:hover {
+		background: #e6e9ea;
+	}
+}
+
+.row:active {
+	background: #e6e9ea;
+}
+
+.time {
+	font-variant-numeric: tabular-nums;
+}
+
+.via {
+	color: #a5a5a5;
+	font-size: 13px;
+}
+
+.approx {
+	overflow: hidden;
+	color: #c4a02c;
+	font-size: 11px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.more {
+	margin-left: auto;
+	color: #336cff;
+	font-size: 13px;
+	white-space: nowrap;
+}

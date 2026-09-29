@@ -3,34 +3,18 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import Select from 'react-select'
+import { TripTimeRow } from 'features/TripStops'
 import { AndrewLytics } from 'shared/lib'
 import { busStopSelector, userDirectionSelector } from 'shared/store/busStop/busStopInfoSlice'
 import { getScheduleTimes } from 'shared/store/busStop/const/stops'
-import { IOption, TaggedTime } from 'shared/store/busStop/Stops'
+import { IOption } from 'shared/store/busStop/Stops'
 import { nextDaySelector, scheduleSelector } from 'shared/store/schedule/scheduleSlice'
 import { CardStyled, ContainerStyled } from 'shared/ui'
 import { Header } from 'shared/ui/Header/Header'
 import { OtherTimeStyled } from 'shared/ui/OtherTime'
 import { selectStyles } from 'shared/ui/SelectStyles'
-import { TimeStampStyled } from 'shared/ui/TimeStamp'
 
 import { SelectBusStopText } from '../../entities/SelectBusStopText'
-
-const VIA_LABELS: Record<string, string> = {
-	park: `через парк`,
-	lb: `через ЛБ`,
-}
-
-const TaggedTimeStamp: React.FC<{ item: TaggedTime }> = ({ item }) => (
-	<TimeStampStyled>
-		{item.interpolated ? `~` : ``}
-		{item.time}
-		{item.via && <span style={{ color: `#a5a5a5`, fontSize: 13, marginLeft: 6 }}>{VIA_LABELS[item.via]}</span>}
-		{item.interpolated && item.interpolatedFrom && (
-			<span style={{ color: `#c4a02c`, fontSize: 11, marginLeft: 4 }}>(на основе: {item.interpolatedFrom})</span>
-		)}
-	</TimeStampStyled>
-)
 
 export const OtherTimeBusses: React.FC = () => {
 	const busStop = useSelector(busStopSelector)
@@ -73,10 +57,9 @@ export const OtherTimeBusses: React.FC = () => {
 		if (tagged.length === 0) return <SelectBusStopText />
 
 		return tagged.map(item => {
-			const via = item.via ?? `d`
-			const key = `${item.time}-${via}`
+			const key = `${item.direction}-${item.tripIndex}`
 
-			return <TaggedTimeStamp key={key} item={item} />
+			return <TripTimeRow key={key} item={item} />
 		})
 	}, [busStop, SCHEDULE, userDirection, busOption])
 

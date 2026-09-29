@@ -4,8 +4,10 @@ import favoriteStops from 'features/FavoriteStops/model/favoriteStopsSlice'
 import { infoApi } from 'features/Info/model/info'
 import myLocationSlice from 'features/MyLocation/model/myLocationSlice'
 import settings from 'features/Settings/model/settingsSlice'
+import tripStops from 'features/TripStops/model/tripStopsSlice'
 import { scheduleApi } from 'shared/api/scheduleApi'
 import busStopInfo from 'shared/store/busStop/busStopInfoSlice'
+import { stopUsageListener } from 'shared/store/busStop/stopUsage'
 import { holidaysSetter } from 'shared/store/holidays/holidaysMiddleware'
 import holidaysSlice from 'shared/store/holidays/holidaysSlice'
 import scheduleSlice from 'shared/store/schedule/scheduleSlice'
@@ -24,12 +26,18 @@ export const store = configureStore({
 		timeLeftSlice,
 		bottomSheetSlice,
 		myLocationSlice,
+		tripStops,
 		[infoApi.reducerPath]: infoApi.reducer,
 		[scheduleApi.reducerPath]: scheduleApi.reducer,
 	},
 	devTools: process.env.NODE_ENV !== `production`,
 	middleware: getDefaultMiddleware =>
-		getDefaultMiddleware().prepend([holidaysSetter.middleware, infoApi.middleware, scheduleApi.middleware]),
+		getDefaultMiddleware().prepend([
+			holidaysSetter.middleware,
+			stopUsageListener.middleware,
+			infoApi.middleware,
+			scheduleApi.middleware,
+		]),
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

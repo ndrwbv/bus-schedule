@@ -14,9 +14,11 @@ const toMinutes = (time: string): number => {
 const formatMinutes = (total: number): string => {
 	const h = Math.floor(total / 60)
 	const m = Math.round(total % 60)
-	const padded = m.toString().padStart(2, `0`)
+	const hours = h.toString().padStart(2, `0`)
+	const minutes = m.toString().padStart(2, `0`)
 
-	return `${String(h)}:${padded}`
+	// same "06:05" shape the carrier's times have, so both kinds line up in lists
+	return `${hours}:${minutes}`
 }
 
 const FALLBACK_GAP_MINUTES = 2
@@ -63,11 +65,32 @@ function findNextStop(
 	return null
 }
 
+/**
+ * Share of the prev→next leg the stop sits at. With positions (distance along the route)
+ * a stop 300 m past a known one gets 300 m worth of the leg's minutes; without them every
+ * stop counts as an equal step, which skews long legs with unevenly spaced stops.
+ */
+function legFraction(
+	stopIndex: number,
+	prevIndex: number,
+	nextIndex: number,
+	stopPositions: number[] | undefined,
+): number {
+	if (stopPositions) {
+		const span = stopPositions[nextIndex] - stopPositions[prevIndex]
+
+		if (span > 0) return (stopPositions[stopIndex] - stopPositions[prevIndex]) / span
+	}
+
+	return (stopIndex - prevIndex) / (nextIndex - prevIndex)
+}
+
 function interpolateTrip(
 	trip: number,
 	stopIndex: number,
 	prevStop: StopWithTimes | null,
 	nextStop: StopWithTimes | null,
+	stopPositions: number[] | undefined,
 ): string | null {
 	const hasPrev = prevStop !== null && trip < prevStop.times.length
 	const hasNext = nextStop !== null && trip < nextStop.times.length
@@ -75,7 +98,7 @@ function interpolateTrip(
 	if (hasPrev && hasNext) {
 		const prevMin = toMinutes(prevStop.times[trip])
 		const nextMin = toMinutes(nextStop.times[trip])
-		const fraction = (stopIndex - prevStop.index) / (nextStop.index - prevStop.index)
+		const fraction = legFraction(stopIndex, prevStop.index, nextStop.index, stopPositions)
 
 		return formatMinutes(Math.round(prevMin + fraction * (nextMin - prevMin)))
 	}
@@ -112,11 +135,15 @@ function buildFromStopsLabel(prevStop: StopWithTimes | null, nextStop: StopWithT
 /**
  * Given a direction's schedule for a specific day, the stop label, and the ordered list
  * of stop labels, returns interpolated time strings and the source stop names.
+ *
+ * `stopPositions` (optional, same length as `stopOrder`) is the distance of each stop along
+ * the route in any unit; when given, times are spread by distance instead of by stop count.
  */
 export const interpolateStopTimes = (
 	daySchedule: Record<string, string[] | undefined> | undefined,
 	stopLabel: string,
 	stopOrder: string[],
+	stopPositions?: number[],
 ): InterpolationResult | null => {
 	if (!daySchedule) return null
 
@@ -137,7 +164,7 @@ export const interpolateStopTimes = (
 	const result: string[] = []
 
 	for (let trip = 0; trip < tripCount; trip++) {
-		const time = interpolateTrip(trip, stopIndex, prevStop, nextStop)
+		const time = interpolateTrip(trip, stopIndex, prevStop, nextStop, stopPositions)
 		if (time !== null) {
 			result.push(time)
 		}

@@ -1,0 +1,165 @@
+.summary {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 18px;
+}
+
+.route {
+	color: #6b7075;
+	font-size: 14px;
+}
+
+.list {
+	position: relative;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+/* the vertical route line behind the dots */
+.list::before {
+	content: '';
+	position: absolute;
+	top: 22px;
+	bottom: 22px;
+	left: 67px;
+	width: 3px;
+	border-radius: 2px;
+	background: var(--trip-line, #336cff);
+	opacity: 0.25;
+}
+
+.row {
+	position: relative;
+	display: flex;
+	align-items: center;
+	width: 100%;
+	min-height: 44px;
+	padding: 0 8px;
+	border: none;
+	border-radius: 12px;
+	background: transparent;
+	color: #1d1d1f;
+	font: inherit;
+	text-align: left;
+	cursor: pointer;
+}
+
+@media (hover: hover) {
+	.row:hover {
+		background: #f2f4f4;
+	}
+}
+
+.time {
+	flex: 0 0 48px;
+	font-size: 15px;
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+	text-align: right;
+}
+
+.timeApprox {
+	color: #8a8f94;
+	font-weight: 500;
+}
+
+.dot {
+	position: relative;
+	z-index: 1;
+	flex: 0 0 11px;
+	height: 11px;
+	margin: 0 14px 0 11px;
+	border: 3px solid var(--trip-line, #336cff);
+	border-radius: 50%;
+	background: #fff;
+}
+
+.dotPrinted {
+	background: var(--trip-line, #336cff);
+}
+
+.name {
+	flex: 1;
+	font-size: 15px;
+}
+
+.badge {
+	margin-left: 8px;
+	padding: 3px 8px;
+	border-radius: 8px;
+	background: #336cff;
+	color: #fff;
+	font-size: 12px;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.rowMine {
+	background: #eef3ff;
+}
+
+.rowMine .name {
+	font-weight: 600;
+}
+
+.rowMine .dot {
+	flex-basis: 15px;
+	height: 15px;
+	margin: 0 12px 0 9px;
+	background: var(--trip-line, #336cff);
+	box-shadow: 0 0 0 4px rgba(51, 108, 255, 0.2);
+}
+
+.rowPassed {
+	color: #a5a5a5;
+}
+
+.rowPassed .time {
+	color: #a5a5a5;
+}
+
+.rowPassed .dot {
+	border-color: #c9ccd0;
+	background: #fff;
+}
+
+.legend {
+	margin: 16px 0 0;
+	color: #8a8f94;
+	font-size: 13px;
+}
+
+.linked {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	width: 100%;
+	margin-top: 16px;
+	padding: 14px 16px;
+	border: none;
+	border-radius: 14px;
+	background: #f2f4f4;
+	color: #1d1d1f;
+	font: inherit;
+	font-weight: 600;
+	text-align: left;
+	cursor: pointer;
+}
+
+@media (hover: hover) {
+	.linked:hover {
+		opacity: 0.8;
+	}
+}
+
+.linkedHint {
+	display: block;
+	margin-top: 2px;
+	color: #6b7075;
+	font-size: 13px;
+	font-weight: 400;
+}

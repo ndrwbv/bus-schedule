@@ -1,0 +1,21 @@
+.chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 3px 9px;
+	border-radius: 999px;
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 18px;
+	white-space: nowrap;
+}
+
+.toCity {
+	background: #e8efff;
+	color: #2451c7;
+}
+
+.fromCity {
+	background: #fff0e3;
+	color: #b64a00;
+}

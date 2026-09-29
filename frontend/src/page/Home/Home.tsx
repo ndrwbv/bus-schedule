@@ -7,6 +7,7 @@ import { DonateProvider } from 'features/Donate'
 import { FavoriteStops } from 'features/FavoriteStops'
 import { Info } from 'features/Info'
 import { SettingsButton } from 'features/Settings'
+import { TripStopsModal } from 'features/TripStops'
 import useSchedule from 'shared/store/schedule/useSchedule'
 import { ContainerStyled } from 'shared/ui/common'
 import { Footer } from 'shared/ui/Footer'
@@ -85,6 +86,8 @@ export const Home: React.FC = () => {
 						<Footer />
 					</BottomSheetBgStyled>
 				</BottomSheetCustom>
+
+				<TripStopsModal />
 			</HomeContainerStyled>
 		</DonateProvider>
 	)

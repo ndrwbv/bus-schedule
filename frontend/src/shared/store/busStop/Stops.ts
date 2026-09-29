@@ -19,6 +19,15 @@ export type StopKeysInSP =
 
 export type StopKeysInLB =
 	| 'Интернационалистов'
+	| 'Автопарк'
+	| '10-я поликлиника'
+	| 'пр. Мира'
+	| 'ул. Карла Ильмера'
+	| 'Старокаштачная'
+	| 'ул. Дальне-Ключевская'
+	| 'Центральный рынок'
+	| 'Речной вокзал'
+	| 'ЦУМ'
 	| 'пл. Ленина'
 	| 'ТЮЗ'
 	| 'Главпочтамт'
@@ -47,6 +56,7 @@ export type StopKeysOut =
 	| 'Маяк'
 	| 'ул. М. Цветаевой'
 	| 'В. Маяковского'
+	| 'Левобережье'
 	| 'Набережная'
 	| 'Лагерный Сад'
 	| 'Учебная'
@@ -57,6 +67,14 @@ export type StopKeysOut =
 	| 'ТЮЗ'
 	| 'пл. Ленина'
 	| 'ЦУМ'
+	| 'Речной вокзал'
+	| 'Центральный рынок'
+	| 'ул. Дальне-Ключевская'
+	| 'Старокаштачная'
+	| 'ул. Карла Ильмера'
+	| 'пр. Мира'
+	| '10-я поликлиника'
+	| 'Сбербанк'
 	| 'Интернационалистов'
 
 export type StopKeys = StopKeysInSP | StopKeysOut | StopKeysInLB
@@ -78,6 +96,11 @@ export interface IOption<ValueType> {
 export interface TaggedTime {
 	time: string
 	via: 'park' | 'lb' | null
+	/** Internal direction the trip belongs to — together with dayKey + tripIndex it identifies the trip */
+	direction: DirectionsNew
+	dayKey: number
+	/** Index of the trip in the direction's per-stop time arrays (trips are aligned by index) */
+	tripIndex: number
 	interpolated?: boolean
 	/** Human-readable label of the stops used for interpolation, e.g. "Набережная и В. Маяковского" */
 	interpolatedFrom?: string

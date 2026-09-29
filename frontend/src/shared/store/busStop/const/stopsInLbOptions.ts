@@ -1,11 +1,77 @@
 import { DirectionsNew, IOption, IStops, StopKeys } from '../Stops'
 
+/**
+ * Порядок массива = физический порядок остановок на плече «из города»
+ * (Интернационалистов → Левобережный → Cеребряный бор). От него и от координат
+ * зависит interpolateStopTimes(), поэтому порядок меняется только вместе с расписанием.
+ *
+ * Перевозчик печатает только Интернационалистов, пл. Ленина, Лагерный Сад и
+ * Левобережный. Остальные остановки взяты из маршрута 112С в OpenStreetMap
+ * (relation 16313537) — их время считается по соседним остановкам.
+ *
+ * Id уникальны во всех направлениях: карта и `?stop=` ищут остановку по id.
+ */
+
 export const STOPS_IN_LB: IStops<DirectionsNew.inLB>[] = [
 	{
 		id: `15`,
 		label: `Интернационалистов`,
 		direction: DirectionsNew.inLB,
 		latLon: [56.513582, 84.989332],
+	},
+	{
+		id: `48`,
+		label: `Автопарк`,
+		direction: DirectionsNew.inLB,
+		latLon: [56.516815, 84.978774],
+	},
+	{
+		id: `49`,
+		label: `10-я поликлиника`,
+		direction: DirectionsNew.inLB,
+		latLon: [56.514602, 84.97577],
+	},
+	{
+		id: `50`,
+		label: `пр. Мира`,
+		direction: DirectionsNew.inLB,
+		latLon: [56.511798, 84.971992],
+	},
+	{
+		id: `51`,
+		label: `ул. Карла Ильмера`,
+		direction: DirectionsNew.inLB,
+		latLon: [56.508897, 84.968026],
+	},
+	{
+		id: `52`,
+		label: `Старокаштачная`,
+		direction: DirectionsNew.inLB,
+		latLon: [56.503244, 84.959101],
+	},
+	{
+		id: `53`,
+		label: `ул. Дальне-Ключевская`,
+		direction: DirectionsNew.inLB,
+		latLon: [56.504154, 84.950422],
+	},
+	{
+		id: `54`,
+		label: `Центральный рынок`,
+		direction: DirectionsNew.inLB,
+		latLon: [56.499326, 84.948191],
+	},
+	{
+		id: `55`,
+		label: `Речной вокзал`,
+		direction: DirectionsNew.inLB,
+		latLon: [56.494177, 84.947994],
+	},
+	{
+		id: `56`,
+		label: `ЦУМ`,
+		direction: DirectionsNew.inLB,
+		latLon: [56.489982, 84.947945],
 	},
 	{
 		id: `16`,

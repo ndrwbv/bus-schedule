@@ -3,10 +3,11 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { Fastreply } from 'features/Complains'
 import { HowMuchLeft } from 'features/HowMuchLeft/HowMuchLeft'
+import { openTrip } from 'features/TripStops'
 import { AndrewLytics } from 'shared/lib'
-import { StopKeys, UserDirection } from 'shared/store/busStop/Stops'
+import { StopKeys, TaggedTime, UserDirection } from 'shared/store/busStop/Stops'
 import { todayHolidaySelector } from 'shared/store/holidays/holidaysSlice'
-import { leftSelector } from 'shared/store/timeLeft/timeLeftSlice'
+import { closestTimeArraySelector, leftSelector } from 'shared/store/timeLeft/timeLeftSlice'
 import { useTimeLeftUpdater } from 'shared/store/timeLeft/useTimeLeftUpdater'
 import { CardStyled, ContainerStyled } from 'shared/ui'
 import { Header } from 'shared/ui/Header'
@@ -21,6 +22,7 @@ import {
 	userDirectionSelector,
 } from '../../shared/store/busStop/busStopInfoSlice'
 import { useUrlBusStop } from './model/useUrlBusStop'
+import styles from './ui/busStop.module.css'
 import { StopPickerModal } from './ui/StopPickerModal'
 
 const USER_DIRECTION_LABELS: Record<UserDirection, string> = {
@@ -40,6 +42,7 @@ export const BusStop: React.FC = () => {
 	const left = useSelector(leftSelector)
 	const userDirection = useSelector(userDirectionSelector)
 	const availableUserDirections = useSelector(availableUserDirectionsSelector)
+	const nextBus = useSelector(closestTimeArraySelector)[0] as TaggedTime | undefined
 
 	const handleChangeBusStop = useCallback(
 		(busStopToChange: StopKeys) => {
@@ -58,6 +61,12 @@ export const BusStop: React.FC = () => {
 		},
 		[dispatch],
 	)
+
+	const handleNextBusClick = useCallback(() => {
+		if (!nextBus) return
+		dispatch(openTrip({ direction: nextBus.direction, dayKey: nextBus.dayKey, tripIndex: nextBus.tripIndex }))
+		AndrewLytics(`trip:open-next`)
+	}, [dispatch, nextBus])
 
 	useEffect(() => {
 		setQueryParams(busStopNew)
@@ -95,7 +104,14 @@ export const BusStop: React.FC = () => {
 					</div>
 				)}
 
-				<HowMuchLeft holiday={todaysHoliday} busStopLabel={busStopNew?.label || null} left={left} />
+				{nextBus ? (
+					<button className={styles.nextBusButton} type="button" onClick={handleNextBusClick}>
+						<HowMuchLeft holiday={todaysHoliday} busStopLabel={busStopNew?.label || null} left={left} />
+						<span className={styles.nextBusHint}>Все остановки этого рейса ›</span>
+					</button>
+				) : (
+					<HowMuchLeft holiday={todaysHoliday} busStopLabel={busStopNew?.label || null} left={left} />
+				)}
 
 				<Fastreply />
 			</CardStyled>

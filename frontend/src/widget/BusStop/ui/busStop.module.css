@@ -1,0 +1,26 @@
+.nextBusButton {
+	display: block;
+	width: 100%;
+	padding: 0;
+	border: none;
+	background: none;
+	color: inherit;
+	font: inherit;
+	text-align: left;
+	cursor: pointer;
+}
+
+@media (hover: hover) {
+	.nextBusButton:hover {
+		opacity: 0.85;
+	}
+}
+
+.nextBusHint {
+	display: block;
+	margin: 8px 4px 0;
+	color: #336cff;
+	font-size: 14px;
+	font-weight: 600;
+	text-align: right;
+}
