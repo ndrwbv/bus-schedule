@@ -2,25 +2,33 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { modalOpenSelector } from 'features/BottomSheet/model/bottomSheetSlice'
 import { AndrewLytics } from 'shared/lib'
-import { busStopNewSelector, userDirectionSelector } from 'shared/store/busStop/busStopInfoSlice'
-import { getScheduleTimes } from 'shared/store/busStop/const/stops'
-import { StopKeys, TaggedTime } from 'shared/store/busStop/Stops'
+import {
+	availableUserDirectionsSelector,
+	busStopNewSelector,
+	userDirectionSelector,
+} from 'shared/store/busStop/busStopInfoSlice'
+import { getScheduleTimes, userDirectionFromInternal } from 'shared/store/busStop/const/stops'
+import { StopKeys, TaggedTime, UserDirection } from 'shared/store/busStop/Stops'
 import { currentDaySelector, scheduleSelector } from 'shared/store/schedule/scheduleSlice'
 import useEverySecondUpdater from 'shared/store/timeLeft/useEverySecondUpdater'
 
+import { fromMinutes, nowMinutesInTomsk, stopOrder, toMinutes } from '../lib/matchReports'
 import {
-	ASK_AFTER,
+	applyWaitAnswer,
 	Coords,
 	decideWaitCheck,
-	FOLLOW_UP,
 	MAX_ACCURACY_M,
-	MAX_ASKS,
 	TARGET_AFTER,
 	TARGET_BEFORE,
+	toWaitTrip,
+	tripLabel,
+	WaitAction,
+	WaitAnswer,
 	WAITING_MS,
+	WaitOutcome,
 	WaitStep,
-} from '../lib/decideWaitCheck'
-import { fromMinutes, nowMinutesInTomsk, toMinutes } from '../lib/matchReports'
+	WaitStop,
+} from '../lib/waitMachine'
 import { ComplainType } from './Complains'
 import { useComplainsContext } from './ComplainsContext'
 import { useStopInsights, useTripMarks } from './useCrowdReports'
@@ -36,16 +44,23 @@ import {
 } from './waitState'
 
 /**
- * «Опрос на остановке» (spec 15). Instead of hoping people press a button at the right moment,
- * notice that someone is waiting and ask them — once they are at the stop, and when the bus should
- * be there:
- *
- * 1. The stop has been open for a while and a bus is due → «Вы на остановке?» (skipped when the
- *    location says so; not asked at all when it says they are far away).
- * 2. When the bus should be there — by the timetable, or later if passengers upstream said it is
- *    late — «Автобус 12:55 пришёл?». «Ещё нет» → ask again in a few minutes.
- * 3. If the location shows they left the stop, they most likely got on the bus → «Вы сели в него?»
+ * «Опрос на остановке» (spec 15): React, storage and the API around the pure machine in
+ * `lib/waitMachine.ts` — see there for when we ask and what the answers mean.
  */
+
+const DIRECTION_TEXT: Record<UserDirection, string> = {
+	[UserDirection.fromCity]: `из города`,
+	[UserDirection.toCity]: `в город`,
+}
+
+/** People wait at a stop with a phone. A desktop tab left open at work is not waiting for a bus */
+const isPhone = (): boolean => {
+	try {
+		return window.matchMedia(`(pointer: coarse)`).matches
+	} catch {
+		return false
+	}
+}
 
 /** Location only when the passenger allowed it — we never ask for it out of the blue */
 const useLocation = (active: boolean): { coords: Coords | null; request: () => void } => {
@@ -54,7 +69,8 @@ const useLocation = (active: boolean): { coords: Coords | null; request: () => v
 	const [coords, setCoords] = useState<Coords | null>(null)
 
 	useEffect(() => {
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		// Safari before 16 has no Permissions API — then we only watch after an explicit «Да, жду»
+		if (!(`permissions` in navigator)) return
 		navigator.permissions
 			.query({ name: `geolocation` })
 			.then(status => {
@@ -67,8 +83,7 @@ const useLocation = (active: boolean): { coords: Coords | null; request: () => v
 	}, [])
 
 	useEffect(() => {
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		if (!active || !(granted || requested) || !navigator.geolocation) return undefined
+		if (!active || !(granted || requested) || !(`geolocation` in navigator)) return undefined
 
 		const id = navigator.geolocation.watchPosition(
 			p => {
@@ -90,20 +105,18 @@ export interface WaitCheck {
 	step: WaitStep | null
 	wait: WaitState | null
 	/** The stop on screen — the one «Вы на остановке?» is about */
-	stopLabel: string | null
+	stop: WaitStop | null
+	now: number
+	answer: (answer: WaitAnswer) => void
 	/** Inline «Не приехал»: ask «Вы были здесь к 12:55?» */
 	askOnTime: (trip: TaggedTime) => void
-	confirmPresence: (atStop: boolean) => void
-	answerBus: (answer: 'arrived' | 'notYet' | 'passedBy' | 'gone') => void
-	answerLeft: (boarded: boolean) => void
-	answerWhen: (minutesAgo: number) => void
-	answerOnTime: (onTime: boolean) => void
 	close: () => void
 }
 
 export const useWaitCheck = (): WaitCheck => {
-	const stop = useSelector(busStopNewSelector)
+	const busStop = useSelector(busStopNewSelector)
 	const userDirection = useSelector(userDirectionSelector)
+	const availableDirections = useSelector(availableUserDirectionsSelector)
 	const schedule = useSelector(scheduleSelector)
 	const dayKey = useSelector(currentDaySelector)
 	const otherModalOpen = useSelector(modalOpenSelector)
@@ -120,6 +133,20 @@ export const useWaitCheck = (): WaitCheck => {
 		saveWait(next)
 		setWaitState(next)
 	}, [])
+
+	const stop = useMemo(
+		(): WaitStop | null =>
+			busStop && {
+				id: busStop.id,
+				label: busStop.label,
+				direction: busStop.direction,
+				directionText:
+					availableDirections.length > 1
+						? DIRECTION_TEXT[userDirectionFromInternal(busStop.direction)]
+						: null,
+			},
+		[availableDirections.length, busStop],
+	)
 
 	useEffect(() => {
 		openedAt.current = Date.now()
@@ -146,58 +173,106 @@ export const useWaitCheck = (): WaitCheck => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [stop, schedule, userDirection, dayKey, marksFor, tick])
 
+	// The bus after the one we wait for, at the waiting stop — to keep waiting after «Проехал мимо»
+	const nextTrip = useMemo(() => {
+		if (!wait) return null
+		const after = toMinutes(wait.trip.time)
+		const next = getScheduleTimes(schedule, userDirectionFromInternal(wait.direction), dayKey, wait.stopLabel).find(
+			t => t.direction === wait.direction && toMinutes(t.time) > after,
+		)
+
+		return next ? toWaitTrip(next) : null
+	}, [dayKey, schedule, wait])
+
+	// Other passengers' «Приехал» about our trip: at the waiting stop, and further along the route
+	const seen = useMemo(() => {
+		if (!wait) return { hereAt: null, downstream: null }
+		const ref = { direction: wait.direction, dayKey: wait.trip.dayKey, tripIndex: wait.trip.tripIndex }
+		const arrived = (marksFor(ref)?.all ?? []).filter(m => m.type === ComplainType.arrived)
+		const order = stopOrder(schedule, ref)
+		const myPos = order.get(wait.stopLabel) ?? Infinity
+		const here = arrived.filter(m => m.stop === wait.stopLabel)
+		const further = arrived.filter(m => (order.get(m.stop) ?? -1) > myPos).sort((a, b) => a.at - b.at)[0] as
+			| (typeof arrived)[number]
+			| undefined
+
+		return {
+			hereAt: here.length > 0 ? Math.min(...here.map(m => m.at)) : null,
+			downstream: further ? { stop: further.stop, at: further.at } : null,
+		}
+	}, [marksFor, schedule, wait])
+
 	const { coords, request: requestLocation } = useLocation(!!wait || !!target)
-
-	const startWait = useCallback(
-		(trip: TaggedTime, presenceAt: number, askAt: number, asks = 0): WaitState | null => {
-			if (!stop) return null
-			const next: WaitState = {
-				day: todayInTomsk(),
-				stopId: stop.id,
-				stopLabel: stop.label,
-				direction: stop.direction,
-				trip: { time: trip.time, tripIndex: trip.tripIndex, dayKey: trip.dayKey },
-				presenceAt,
-				onTime: presenceAt <= toMinutes(trip.time),
-				askAt,
-				asks,
-				notYetAt: null,
-				where: coords,
-			}
-			setWait(next)
-
-			return next
-		},
-		[coords, setWait, stop],
-	)
-
-	const finish = useCallback(
-		(text: string | null) => {
-			if (wait) markTripDone(wait.stopId, wait.trip.time)
-			setWait(null)
-			setStep(text ? { kind: `thanks`, text } : null)
-		},
-		[setWait, wait],
-	)
-
-	const submit = useCallback(
-		(of: WaitState, type: ComplainType, extra: { arrivedAt?: string; wasOnTime?: boolean } = {}) => {
-			void addComplain({
-				stop: of.stopLabel as StopKeys,
-				direction: of.direction,
-				date: new Date().toISOString(),
-				type,
-				trip: { scheduledTime: of.trip.time, tripIndex: of.trip.tripIndex, dayKey: of.trip.dayKey },
-				...extra,
-			})
-		},
-		[addComplain],
-	)
 
 	// Remember where they stand once the location comes in
 	useEffect(() => {
 		if (wait && !wait.where && coords) setWait({ ...wait, where: coords })
 	}, [coords, setWait, wait])
+
+	const apply = useCallback(
+		(out: WaitOutcome, of: WaitState | null) => {
+			out.marks.forEach(mark => {
+				const at = out.wait ?? of
+				if (!at) return
+				void addComplain({
+					stop: at.stopLabel as StopKeys,
+					direction: at.direction,
+					date: new Date().toISOString(),
+					type: mark.type,
+					trip: { scheduledTime: mark.trip.time, tripIndex: mark.trip.tripIndex, dayKey: mark.trip.dayKey },
+					arrivedAt: mark.arrivedAt,
+					wasOnTime: mark.wasOnTime,
+				})
+			})
+			const stopId = (out.wait ?? of)?.stopId ?? stop?.id
+			if (out.doneTrip && stopId) markTripDone(stopId, out.doneTrip)
+			if (out.dismiss && stopId) dismissStop(stopId)
+			if (out.requestLocation) requestLocation()
+			setWait(out.wait)
+			setStep(out.step)
+		},
+		[addComplain, requestLocation, setWait, stop?.id],
+	)
+
+	const outcomeOf = (a: WaitAnswer, of: WaitStep, now: number): WaitOutcome =>
+		applyWaitAnswer({ answer: a, step: of, wait, stop, nextTrip, now, day: todayInTomsk(), coords })
+
+	const run = (action: WaitAction, now: number): void => {
+		if (!action) return
+		AndrewLytics([`wait`, action.kind, action.kind === `ask` ? action.step.kind : ``].join(`:`))
+
+		if (action.kind === `drop`) setWait(null)
+		if (action.kind === `ask`) setStep(action.step)
+		if (action.kind === `start` && target) {
+			// Silently: we know where they are, nothing to ask or thank them for yet
+			const out = outcomeOf(
+				{ kind: `presence`, answer: `justCame` },
+				{ kind: `presence`, trip: target, overdue: false },
+				now,
+			)
+			apply({ ...out, step: null }, null)
+		}
+		if (action.kind === `rollover` && wait) {
+			// Not a «проехал мимо» — the bus came before them. They are waiting for a bus that is gone:
+			// that is the one thing they need to know
+			const out = outcomeOf({ kind: `bus`, answer: `passedBy` }, { kind: `bus`, left: false, hint: null }, now)
+			const next = out.wait
+				? `Следующий — ${tripLabel(out.wait.trip)}, спросим про него.`
+				: `Сегодня больше рейсов скоро нет.`
+			apply(
+				{
+					...out,
+					marks: [],
+					step: {
+						kind: `info`,
+						title: `Автобус ${tripLabel(wait.trip)} уже прошёл`,
+						text: `Здесь его отметили в ${fromMinutes(action.seenAt)}, раньше, чем вы подошли. ${next}`,
+					},
+				},
+				wait,
+			)
+		}
+	}
 
 	// The decision, re-made every 10 s: is it the moment to ask something?
 	useEffect(() => {
@@ -206,123 +281,38 @@ export const useWaitCheck = (): WaitCheck => {
 		const live =
 			wait && wait.stopId === stop?.id ? insights?.live.find(l => l.trip.time === wait.trip.time) : undefined
 
-		const action = decideWaitCheck({
+		run(
+			decideWaitCheck({
+				now,
+				wait,
+				coords,
+				liveExpected: live && live.delay > 0 ? live.expected : null,
+				seen,
+				stopLatLon: busStop?.latLon ?? null,
+				target,
+				mayAskPresence:
+					!!stop && isPhone() && !isDismissed(stop.id) && Date.now() - openedAt.current >= WAITING_MS,
+			}),
 			now,
-			wait,
-			coords,
-			liveExpected: live && live.delay > 0 ? live.expected : null,
-			stopLatLon: stop?.latLon ?? null,
-			target,
-			mayAskPresence: !!stop && !isDismissed(stop.id) && Date.now() - openedAt.current >= WAITING_MS,
-		})
-
-		if (action?.kind === `start` && target) startWait(target, now, toMinutes(target.time) + ASK_AFTER)
-		if (action?.kind === `ask`) {
-			setStep(action.step)
-			const isLeft = action.step.kind === `bus` && action.step.left
-			AndrewLytics(isLeft ? `wait:left` : [`wait`, action.step.kind].join(`:`))
-		}
+		)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [tick, step, otherModalOpen, wait, target, coords])
+	}, [tick, step, otherModalOpen, wait, target, coords, seen])
 
-	const confirmPresence = (atStop: boolean): void => {
-		if (step?.kind !== `presence` || !stop) return
-		AndrewLytics(atStop ? `wait:presence:yes` : `wait:presence:no`)
-
-		if (!atStop) {
-			dismissStop(stop.id)
-			setStep(null)
-
-			return
-		}
-
-		startWait(step.trip, nowMinutesInTomsk(), toMinutes(step.trip.time) + ASK_AFTER)
-		// Watching the location lets us skip «Вы на остановке?» and notice them boarding. The browser
-		// asks for permission right here, after a «Да» — never on page load
-		requestLocation()
-		setStep({ kind: `thanks`, text: `Хорошо! Когда подойдёт время, спросим, пришёл ли автобус ${step.trip.time}` })
-	}
-
-	const answerBus = (answer: 'arrived' | 'notYet' | 'passedBy' | 'gone'): void => {
-		if (!wait) return
-		AndrewLytics(`wait:bus:${answer}`)
-
-		if (answer === `arrived`) {
-			setStep({ kind: `when` })
-
-			return
-		}
-		if (answer === `passedBy`) {
-			submit(wait, ComplainType.passed_by)
-			finish(`Спасибо! Предупредим остальных`)
-
-			return
-		}
-		if (answer === `gone`) {
-			finish(null)
-
-			return
-		}
-
-		submit(wait, ComplainType.not_arrive, { wasOnTime: wait.onTime })
-		if (wait.asks + 1 >= MAX_ASKS) {
-			finish(`Спасибо! Это поможет понять, насколько он опаздывает`)
-
-			return
-		}
-		const now = nowMinutesInTomsk()
-		setWait({ ...wait, asks: wait.asks + 1, askAt: now + FOLLOW_UP, notYetAt: now })
-		setStep({ kind: `thanks`, text: `Спасибо! Спросим ещё раз через ${FOLLOW_UP} минуты` })
-	}
-
-	const answerLeft = (boarded: boolean): void => {
-		if (!wait) return
-		AndrewLytics(boarded ? `wait:left:boarded` : `wait:left:walked`)
-		// Left a minute ago or so — about when the bus pulled away
-		if (boarded) submit(wait, ComplainType.arrived, { arrivedAt: fromMinutes(nowMinutesInTomsk() - 1) })
-		finish(boarded ? `Спасибо! Это подскажет тем, кто ждёт этот автобус дальше` : null)
-	}
-
-	const answerWhen = (minutesAgo: number): void => {
-		if (!wait) return
-		AndrewLytics(`wait:when:${minutesAgo}`)
-		submit(wait, ComplainType.arrived, { arrivedAt: fromMinutes(nowMinutesInTomsk() - minutesAgo) })
-		finish(`Спасибо! Это подскажет тем, кто ждёт этот автобус дальше`)
+	const answer = (a: WaitAnswer): void => {
+		if (!step) return
+		AndrewLytics([`wait:answer`, a.kind, `answer` in a ? a.answer : ``].join(`:`))
+		apply(outcomeOf(a, step, nowMinutesInTomsk()), wait)
 	}
 
 	const askOnTime = (trip: TaggedTime): void => setStep({ kind: `onTime`, trip })
 
-	const answerOnTime = (onTime: boolean): void => {
-		if (step?.kind !== `onTime`) return
-		AndrewLytics(onTime ? `wait:ontime:yes` : `wait:ontime:no`)
-		const now = nowMinutesInTomsk()
-		const started = startWait(step.trip, onTime ? toMinutes(step.trip.time) : now, now + FOLLOW_UP, 1)
-		if (started) {
-			// That was a «не приехал» too — the bus comes after it
-			setWait({ ...started, notYetAt: now })
-			submit(started, ComplainType.not_arrive, { wasOnTime: onTime })
-		}
-		requestLocation()
-		setStep({ kind: `thanks`, text: `Спасибо! Спросим через ${FOLLOW_UP} минуты, пришёл ли он` })
-	}
-
 	const close = (): void => {
-		if (step?.kind === `presence` && stop) dismissStop(stop.id)
-		// Closing a question about the bus = «не спрашивайте больше про этот рейс»
-		if (step?.kind === `bus` || step?.kind === `when`) finish(null)
+		if (!step) return
+		// ✕ on «Вы на остановке?» = «нет»; on a question about the bus = «не спрашивайте про этот рейс»
+		if (step.kind === `presence`) answer({ kind: `presence`, answer: `no` })
+		else if (step.kind === `bus` || step.kind === `when`) answer({ kind: `bus`, answer: `gone` })
 		else setStep(null)
 	}
 
-	return {
-		step,
-		wait,
-		stopLabel: stop?.label ?? null,
-		askOnTime,
-		confirmPresence,
-		answerBus,
-		answerLeft,
-		answerWhen,
-		answerOnTime,
-		close,
-	}
+	return { step, wait, stop, now: nowMinutesInTomsk(), answer, askOnTime, close }
 }

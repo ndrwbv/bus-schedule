@@ -1,5 +1,13 @@
 import { DirectionsNew } from 'shared/store/busStop/Stops'
 
+/** The trip a passenger waits for. `approx` — the stop's time is interpolated, shown as «~13:28» */
+export interface WaitTrip {
+	time: string
+	tripIndex: number
+	dayKey: number
+	approx: boolean
+}
+
 /**
  * A passenger waiting at a stop (spec 15, «опрос на остановке»). Kept in localStorage so a reload
  * or a locked phone doesn't lose it — the questions are about *this* wait, not a page visit.
@@ -9,7 +17,9 @@ export interface WaitState {
 	stopId: string
 	stopLabel: string
 	direction: DirectionsNew
-	trip: { time: string; tripIndex: number; dayKey: number }
+	/** «в город» / «из города» for stops served both ways */
+	directionText: string | null
+	trip: WaitTrip
 	/** Minutes since midnight (Tomsk) when we learned they are at the stop */
 	presenceAt: number
 	/** Here by the scheduled time — then «ещё нет» is a real delay, not a missed bus */
@@ -28,8 +38,15 @@ const WAIT_KEY = `severbus:wait`
 const DISMISSED_KEY = `severbus:wait-dismissed`
 const DONE_KEY = `severbus:wait-done`
 
-/** «Нет, я не на остановке» — don't ask about this stop again for a while */
+/** «Нет, я не на остановке» — don't ask about this stop again for a while; twice a day — until tomorrow */
 const DISMISS_MS = 60 * 60 * 1000
+const DISMISSALS_PER_DAY = 2
+
+interface Dismissal {
+	day: string
+	until: number
+	count: number
+}
 
 export const todayInTomsk = (): string => new Date().toLocaleDateString(`sv-SE`, { timeZone: `Asia/Tomsk` })
 
@@ -60,11 +77,22 @@ export const loadWait = (): WaitState | null => {
 
 export const saveWait = (wait: WaitState | null): void => write(WAIT_KEY, wait)
 
-export const isDismissed = (stopId: string): boolean =>
-	(read<Record<string, number>>(DISMISSED_KEY, {})[stopId] ?? 0) > Date.now()
+const readDismissals = (): Record<string, Dismissal | undefined> => read(DISMISSED_KEY, {})
 
-export const dismissStop = (stopId: string): void =>
-	write(DISMISSED_KEY, { ...read<Record<string, number>>(DISMISSED_KEY, {}), [stopId]: Date.now() + DISMISS_MS })
+export const isDismissed = (stopId: string): boolean => {
+	const d = readDismissals()[stopId]
+	if (!d || d.day !== todayInTomsk()) return false
+
+	return d.count >= DISMISSALS_PER_DAY || d.until > Date.now()
+}
+
+export const dismissStop = (stopId: string): void => {
+	const all = readDismissals()
+	const today = todayInTomsk()
+	const prev = all[stopId]
+	const count = prev?.day === today ? prev.count + 1 : 1
+	write(DISMISSED_KEY, { ...all, [stopId]: { day: today, until: Date.now() + DISMISS_MS, count } })
+}
 
 const doneKey = (stopId: string, time: string): string => `${todayInTomsk()}|${stopId}|${time}`
 
