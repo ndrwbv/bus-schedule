@@ -6,11 +6,11 @@ import { ComplainType, DelayStat } from '../model/Complains'
 import { MatchedReport, stopOrder, toMinutes, tripKey } from './matchReports'
 
 /**
- * What passengers upstream said about a trip that is due at your stop now:
- * `late` — «на ЦУМ отметили +6 мин», `missing` — «на ЦУМ он не пришёл».
+ * What passengers upstream said about a trip that is due at your stop now, from the freshest mark:
+ * `timing` — «на ЦУМ отметили +6 мин» (or −3, or вовремя), `missing` — «на ЦУМ он не пришёл».
  */
 export interface LiveSignal {
-	kind: 'late' | 'missing'
+	kind: 'timing' | 'missing'
 	trip: TaggedTime
 	/** Where the freshest mark was left */
 	fromStop: string
@@ -57,6 +57,8 @@ const STOP_MIN_DAYS = 3
 const LOOKAHEAD = 60
 /** A mark older than this says little about where the bus is now */
 const SIGNAL_TTL = 50
+/** Marks at one stop this close in time are the same bus seen by several people */
+const FRESH_GROUP = 5
 
 const median = (values: number[]): number => {
 	const sorted = [...values].sort((a, b) => a - b)
@@ -97,47 +99,47 @@ const buildLiveSignals = (
 		)
 		if (passed) return []
 
-		const upstream = marks.filter(m => (order.get(m.stop) ?? Infinity) < myPos)
-		const arrived = upstream.filter(m => m.type === ComplainType.arrived && m.delay !== null)
-		const missing = upstream.filter(m => m.type === ComplainType.not_arrive)
+		// The freshest mark wins: it is the latest known position of *this* bus. Ties go to the stop
+		// closer to yours
+		const upstream = marks
+			.filter(m => (order.get(m.stop) ?? Infinity) < myPos)
+			.filter(m => (m.type === ComplainType.arrived && m.delay !== null) || m.type === ComplainType.not_arrive)
+			.sort((a, b) => b.at - a.at || (order.get(b.stop) ?? 0) - (order.get(a.stop) ?? 0))
+		const freshest = upstream[0] as MatchedReport | undefined
+		if (!freshest) return []
 
-		if (arrived.length > 0) {
-			const freshest = arrived.reduce((a, b) => (b.at > a.at ? b : a))
-			const delay = median(arrived.filter(m => m.stop === freshest.stop).map(m => m.delay as number))
-			const expected = scheduled + delay
-			// Expected a while ago and nobody here marked it — don't keep promising
-			if (expected < now - 5) return []
+		const arrived = upstream.filter(m => m.type === ComplainType.arrived)
+		const lastArrived = arrived[0] as MatchedReport | undefined
+		// People standing together press within a couple of minutes — those agree on one moment
+		const sameMoment = (m: MatchedReport, ref: MatchedReport): boolean =>
+			m.stop === ref.stop && ref.at - m.at <= FRESH_GROUP
+		const arrivedDelay = lastArrived
+			? median(arrived.filter(m => sameMoment(m, lastArrived)).map(m => m.delay as number))
+			: null
+		// «Не приехал» at a stop means the bus is at least this late there
+		const missingDelay =
+			freshest.type === ComplainType.not_arrive && freshest.scheduledTime
+				? freshest.at - toMinutes(freshest.scheduledTime)
+				: null
 
-			return [
-				{
-					kind: `late` as const,
-					trip,
-					fromStop: freshest.stop,
-					markedAt: freshest.at,
-					marks: arrived.length,
-					delay,
-					expected,
-				},
-			]
+		const base = {
+			trip,
+			fromStop: freshest.stop,
+			markedAt: freshest.at,
+			marks: upstream.filter(m => sameMoment(m, freshest) && m.type === freshest.type).length,
 		}
 
-		if (missing.length > 0) {
-			const freshest = missing.reduce((a, b) => (b.at > a.at ? b : a))
-
-			return [
-				{
-					kind: `missing` as const,
-					trip,
-					fromStop: freshest.stop,
-					markedAt: freshest.at,
-					marks: missing.length,
-					delay: 0,
-					expected: scheduled,
-				},
-			]
+		if (!lastArrived || (missingDelay === null && freshest.type === ComplainType.not_arrive)) {
+			return [{ ...base, kind: `missing`, delay: missingDelay ?? 0, expected: scheduled }]
 		}
 
-		return []
+		// Seen upstream, then not seen further along later — it is later than the old mark said
+		const delay = Math.max(arrivedDelay as number, missingDelay ?? -Infinity)
+		const expected = scheduled + delay
+		// Expected a while ago and nobody here marked it — don't keep promising
+		if (expected < now - 5) return []
+
+		return [{ ...base, kind: `timing`, delay, expected }]
 	})
 }
 

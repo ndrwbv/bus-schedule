@@ -4,7 +4,7 @@ import { AndrewLytics } from 'shared/lib'
 import { busStopNewSelector } from 'shared/store/busStop/busStopInfoSlice'
 import { Modal } from 'shared/ui/Modal'
 
-import { fromMinutes } from '../lib/matchReports'
+import { fromMinutes, nowMinutesInTomsk } from '../lib/matchReports'
 import { FeedItem, LiveSignal, StopInsights, UsualDelay } from '../lib/stopInsights'
 import { ComplainType } from '../model/Complains'
 import { useStopInsights } from '../model/useCrowdReports'
@@ -22,6 +22,14 @@ const plural = (n: number, one: string, few: string, many: string): string => {
 const minutes = (n: number): string => [n, plural(n, `минуту`, `минуты`, `минут`)].join(` `)
 const people = (n: number): string => [n, plural(n, `человек`, `человека`, `человек`)].join(` `)
 
+/** «15 мин назад» — how fresh a mark is matters more than the clock time it was left at */
+const ago = (at: number): string => {
+	const diff = nowMinutesInTomsk() - at
+	if (diff <= 0) return `только что`
+
+	return `${diff} мин назад`
+}
+
 export const formatDelay = (delay: number): string => {
 	if (delay === 0) return `вовремя`
 
@@ -36,7 +44,7 @@ const LiveSignalCard: React.FC<{ signal: LiveSignal }> = ({ signal }) => {
 			<div className={`${styles.signal} ${styles.signalMissing}`}>
 				<b>Рейс {signal.trip.time} может не прийти</b>
 				<span>
-					На остановке «{signal.fromStop}» отметили «не приехал» в {fromMinutes(signal.markedAt)}
+					На остановке «{signal.fromStop}» отметили «не приехал» {ago(signal.markedAt)}
 					{by}
 				</span>
 			</div>
@@ -54,7 +62,7 @@ const LiveSignalCard: React.FC<{ signal: LiveSignal }> = ({ signal }) => {
 		<div className={`${styles.signal} ${signal.delay < -1 ? styles.signalEarly : styles.signalLate}`}>
 			<b>{title}</b>
 			<span>
-				«{signal.fromStop}» — приехал в {fromMinutes(signal.markedAt)}
+				«{signal.fromStop}» — отметили {ago(signal.markedAt)}
 				{by}. Здесь ждите около <b>{fromMinutes(signal.expected)}</b>
 			</span>
 		</div>
@@ -128,7 +136,10 @@ interface Headline {
  * about the trip due now beat the long-run «обычно»; «по расписанию» is not news and stays hidden.
  */
 const pickHeadline = ({ live, usual }: StopInsights): Headline | null => {
-	const signal = live.find(l => l.kind === `missing` || Math.abs(l.delay) > 1)
+	// The bus you are waiting for. A fresh mark about it beats any statistics — even when it says
+	// «вовремя»: then there is simply no news, and «обычно опаздывает» would contradict it
+	const signal = live[0] as LiveSignal | undefined
+	if (signal && signal.kind === `timing` && Math.abs(signal.delay) <= 1) return null
 
 	if (signal?.kind === `missing`) return { tone: `missing`, text: `Рейс ${signal.trip.time} может не прийти` }
 	if (signal && signal.delay > 1)
