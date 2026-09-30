@@ -1,5 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import maplibregl from 'maplibre-gl'
+import * as maplibregl from 'maplibre-gl'
+// maplibre 6 loads its worker from a file next to its own bundle, which Vite doesn't copy. `?worker&url`
+// bundles the worker with its imports into one file and gives us its URL
+// eslint-disable-next-line import/extensions -- the file name, not an extension to drop
+import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import { Protocol } from 'pmtiles'
 
 import 'maplibre-gl/dist/maplibre-gl.css'
@@ -8,6 +12,8 @@ import { TMap } from '../TMap'
 import { MapContainerStyled } from './Map.styled'
 import { MapContent } from './MapContent'
 import { MapLoader } from './MapLoader'
+
+maplibregl.setWorkerUrl(maplibreWorkerUrl)
 
 // Register PMTiles protocol for self-hosted vector tiles
 const pmtilesProtocol = new Protocol()
@@ -18,7 +24,8 @@ const LOAD_TIMEOUT_MS = 15000
 const isWebGLSupported = (): boolean => {
 	try {
 		const canvas = document.createElement(`canvas`)
-		const gl = canvas.getContext(`webgl2`) || canvas.getContext(`webgl`) || canvas.getContext(`experimental-webgl`)
+		// maplibre 6 dropped WebGL 1: without WebGL 2 the map can't render, show the fallback instead
+		const gl = canvas.getContext(`webgl2`)
 
 		return Boolean(gl)
 	} catch {
@@ -76,9 +83,9 @@ export const Map: React.FC = () => {
 				pitch: 45,
 				bearing: 60,
 				container: `map`,
-				antialias: false,
 				attributionControl: false,
-				failIfMajorPerformanceCaveat: false,
+				// Since maplibre 5 WebGL context options live here (the defaults are the same, kept explicit)
+				canvasContextAttributes: { antialias: false, failIfMajorPerformanceCaveat: false },
 			})
 		} catch (e) {
 			const message = e instanceof Error ? e.message : String(e)

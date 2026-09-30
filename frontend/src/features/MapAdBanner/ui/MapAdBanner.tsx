@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import maplibregl from 'maplibre-gl'
+import * as maplibregl from 'maplibre-gl'
 import { AndrewLytics } from 'shared/lib'
 import { BannerMessage, useGetBannerMessagesQuery } from 'shared/api/scheduleApi'
 

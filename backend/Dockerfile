@@ -1,4 +1,4 @@
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 
 RUN apk add --no-cache python3 make g++
 
@@ -11,7 +11,7 @@ COPY src ./src
 # tsc его сам в dist не переносит)
 RUN npm run build
 
-FROM node:20-alpine
+FROM node:22-alpine
 
 # Chromium for Puppeteer
 RUN apk add --no-cache chromium

@@ -6,7 +6,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { BottomSheetStates, setBottomSheetPosition } from 'features/BottomSheet/model/bottomSheetSlice'
 import { MapAdBanner } from 'features/MapAdBanner'
 import { userLocationSelector } from 'features/MyLocation/model/myLocationSlice'
-import maplibregl, { GeoJSONSource } from 'maplibre-gl'
+import * as maplibregl from 'maplibre-gl'
+import { GeoJSONSource } from 'maplibre-gl'
 import { AndrewLytics } from 'shared/lib'
 import { busStopNewSelector, setBusStopNew } from 'shared/store/busStop/busStopInfoSlice'
 import { STOPS } from 'shared/store/busStop/const/stops'
@@ -336,7 +337,8 @@ export const MapContent: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map, m
 		if (!map || !mapLoaded) return undefined
 
 		const source = map.getSource<GeoJSONSource>(STOPS_SOURCE_ID)
-		source?.setData(stopsFeatureCollection(busStop?.id ?? null))
+		// maplibre 6: setData is async; a newer call supersedes this one, nothing to handle
+		source?.setData(stopsFeatureCollection(busStop?.id ?? null)).catch(() => undefined)
 
 		if (!busStop) return undefined
 
