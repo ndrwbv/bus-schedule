@@ -1,0 +1,52 @@
+.text {
+	margin: 0 0 16px;
+	font-size: 16px;
+	line-height: 22px;
+	text-align: left;
+}
+
+.buttons {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.button {
+	width: 100%;
+	padding: 14px 16px;
+	border: 1px solid #d5dbda;
+	border-radius: 14px;
+	background: #fff;
+	color: inherit;
+	font: inherit;
+	font-size: 16px;
+	font-weight: 500;
+	cursor: pointer;
+}
+
+.primary {
+	border-color: #336cff;
+	background: #336cff;
+	color: #fff;
+	font-weight: 600;
+}
+
+.hint {
+	margin: 14px 2px 0;
+	color: #8a8f8e;
+	font-size: 13px;
+	line-height: 18px;
+	text-align: left;
+}
+
+.link {
+	display: block;
+	margin: 14px auto 0;
+	padding: 4px;
+	border: none;
+	background: none;
+	color: #8a8f8e;
+	font: inherit;
+	font-size: 14px;
+	cursor: pointer;
+}

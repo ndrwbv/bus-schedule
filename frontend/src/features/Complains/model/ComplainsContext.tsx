@@ -7,7 +7,6 @@ const DEFAULT_PROPS = {
 	complains: [],
 	delays: [],
 	addComplain: () => Promise.resolve(null),
-	answerWasOnTime: () => {},
 }
 
 export const ComplainsContext = createContext<ContextProps>(DEFAULT_PROPS)
@@ -16,19 +15,15 @@ interface ContextProps {
 	complains: IComplainsResponse[]
 	delays: DelayStat[]
 	addComplain: (data: IComplains) => Promise<number | null>
-	answerWasOnTime: (id: number, wasOnTime: boolean) => void
 }
 
 interface IProviderProps {
 	children: React.ReactElement
 }
 export const ComplainsProvider = ({ children }: IProviderProps): JSX.Element => {
-	const { complains, delays, addComplain, answerWasOnTime } = useComplains()
+	const { complains, delays, addComplain } = useComplains()
 
-	const values = useMemo(
-		() => ({ complains, delays, addComplain, answerWasOnTime }),
-		[addComplain, answerWasOnTime, complains, delays],
-	)
+	const values = useMemo(() => ({ complains, delays, addComplain }), [addComplain, complains, delays])
 
 	return <ComplainsContext.Provider value={values}>{children}</ComplainsContext.Provider>
 }

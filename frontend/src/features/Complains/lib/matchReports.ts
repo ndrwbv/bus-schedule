@@ -111,7 +111,8 @@ export const matchReport = (
 ): MatchedReport => {
 	const direction = report.direction as DirectionsNew
 	const type = report.type as ComplainType
-	const at = reportMinutes(report.date)
+	// «Пришёл 2 мин назад» — the arrival itself, not the moment of the tap
+	const at = reportMinutes(report.arrived_at ?? report.date)
 	const wasOnTime = report.was_on_time == null ? null : report.was_on_time === 1
 	const base = { id: report.id, stop: report.stop, direction, type, at, wasOnTime }
 

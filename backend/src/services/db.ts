@@ -137,6 +137,9 @@ function initSchema(db: Database.Database): void {
     // «Не приехал»: was the passenger at the stop by the scheduled time? 1 — yes (so the bus is
     // really late), 0 — came later (the bus may have left before them), NULL — didn't answer
     was_on_time: `ALTER TABLE complains ADD COLUMN was_on_time INTEGER`,
+    // «Приехал»: when the bus actually came (HH:MM, Tomsk) if the passenger said so — «2 мин назад»
+    // is closer to the truth than the moment they pressed the button
+    arrived_at: `ALTER TABLE complains ADD COLUMN arrived_at TEXT`,
   };
   for (const [column, sql] of Object.entries(complainMigrations)) {
     if (!complainColumns.some(c => c.name === column)) db.exec(sql);

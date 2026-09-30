@@ -34,6 +34,10 @@ export interface IComplains {
 	date: string
 	type: ComplainType
 	trip?: IComplainTrip
+	/** «Приехал»: when the bus came (HH:MM), if the passenger said «2 мин назад» */
+	arrivedAt?: string
+	/** «Не приехал»: was the passenger at the stop by the scheduled time */
+	wasOnTime?: boolean
 }
 
 export interface IComplainsResponse {
@@ -49,14 +53,14 @@ export interface IComplainsResponse {
 	delay_min?: number | null
 	/** «Не приехал»: 1 — was at the stop by the scheduled time, 0 — came later, null — didn't answer */
 	was_on_time?: 0 | 1 | null
+	arrived_at?: string | null
 }
 
 interface IReturns {
 	complains: IComplainsResponse[]
 	delays: DelayStat[]
-	/** Resolves with the id of the saved mark — needed to answer «Вы были здесь к 12:15?» */
+	/** Resolves with the id of the saved mark */
 	addComplain: (data: IComplains) => Promise<number | null>
-	answerWasOnTime: (id: number, wasOnTime: boolean) => void
 }
 
 /** Same shape the API returns, so optimistic rows parse like the real ones */
@@ -119,6 +123,8 @@ export const useComplains = (): IReturns => {
 				scheduled_time: data.trip?.scheduledTime ?? null,
 				trip_index: data.trip?.tripIndex ?? null,
 				day_key: data.trip?.dayKey ?? null,
+				arrived_at: data.arrivedAt ?? null,
+				was_on_time: data.wasOnTime === undefined ? null : data.wasOnTime ? 1 : 0,
 			}
 			setComplains(prev => [optimistic, ...prev])
 
@@ -133,6 +139,8 @@ export const useComplains = (): IReturns => {
 					scheduled_time: data.trip?.scheduledTime,
 					trip_index: data.trip?.tripIndex,
 					day_key: data.trip?.dayKey,
+					arrived_at: data.arrivedAt,
+					was_on_time: data.wasOnTime,
 				}),
 			})
 				.then(res => res.json() as Promise<{ id?: number }>)
@@ -150,27 +158,5 @@ export const useComplains = (): IReturns => {
 		[fetchComplains],
 	)
 
-	const answerWasOnTime = useCallback(
-		(id: number, wasOnTime: boolean): void => {
-			AndrewLytics(wasOnTime ? `notArrived:wasOnTime` : `notArrived:cameLater`)
-			setComplains(prev => prev.map(c => (c.id === id ? { ...c, was_on_time: wasOnTime ? 1 : 0 } : c)))
-
-			fetch(`${API_BASE}/complains/${id}`, {
-				method: `PATCH`,
-				headers: { 'Content-Type': `application/json` },
-				body: JSON.stringify({ user_id: getUserId(), was_on_time: wasOnTime }),
-			})
-				.then(() => {
-					fetchComplains()
-
-					return null
-				})
-				.catch((err: unknown) => {
-					console.error(`[complains] patch error:`, err)
-				})
-		},
-		[fetchComplains],
-	)
-
-	return { complains, delays, addComplain, answerWasOnTime }
+	return { complains, delays, addComplain }
 }

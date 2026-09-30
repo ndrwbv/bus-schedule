@@ -15,7 +15,7 @@ export const STOPS_BY_DIRECTION: Record<DirectionsNew, IStops<DirectionsNew>[]> 
 
 const EARTH_RADIUS_M = 6371000
 
-const distanceMeters = ([lat1, lon1]: [number, number], [lat2, lon2]: [number, number]): number => {
+export const distanceMeters = ([lat1, lon1]: [number, number], [lat2, lon2]: [number, number]): number => {
 	const toRad = (deg: number): number => (deg * Math.PI) / 180
 	const dLat = toRad(lat2 - lat1)
 	const dLon = toRad(lon2 - lon1)

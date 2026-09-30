@@ -1,18 +1,17 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { AndrewLytics } from 'shared/lib'
 import { busStopNewSelector, directionSelector } from 'shared/store/busStop/busStopInfoSlice'
 import { currentDaySelector, scheduleSelector } from 'shared/store/schedule/scheduleSlice'
-import useEverySecondUpdater from 'shared/store/timeLeft/useEverySecondUpdater'
 import { InlineOptions } from 'shared/ui/InlineOptions'
 
 import { findCandidateTrips, nowMinutesInTomsk, TripCandidate } from '../lib/matchReports'
 import { ComplainType } from '../model/Complains'
 import { useComplainsContext } from '../model/ComplainsContext'
-import { IComplainTrip } from '../model/useComplains'
 import { useTripMarks } from '../model/useCrowdReports'
+import { useWaitCheck } from '../model/useWaitCheck'
 import fastreplyStyles from './fastreply.module.css'
-import { delayPhrase } from './StopCrowdStatus'
+import { WaitCheckModal } from './WaitCheckModal'
 
 const COOLDOWN_MS = 2 * 60 * 1000 // 2 minutes
 
@@ -35,33 +34,14 @@ export const ComplainOptionContainerStyled: React.FC<{ children?: React.ReactNod
 	<div className={fastreplyStyles.complainOptionContainer}>{children}</div>
 )
 
-const thanksText = (type: ComplainType, trip: TripCandidate | undefined): string => {
-	if (!trip) return `Спасибо! Отметка сохранена`
-
-	if (type === ComplainType.arrived) {
-		return `Спасибо! Записали: рейс ${trip.item.time} пришёл ${delayPhrase(trip.delay)}`
-	}
-
-	return `Спасибо! Отметка сохранена`
-}
-
-/** How long «Вы были здесь к 12:15?» waits for an answer */
-const QUESTION_MS = 60 * 1000
-
 /**
- * After «Не приехал»: the bus may be late — or it left before the passenger came. Only they know
- * which, so ask. Until the mark is saved (`id` null) the answer can't be sent yet.
+ * Three buttons for whoever sees the bus. The trip is picked silently; «Не приехал» opens the same
+ * modal as the automatic check (`useWaitCheck`), because only the passenger knows whether the bus is
+ * late or left before they came.
  */
-interface WasOnTimeQuestion {
-	id: number | null
-	time: string
-}
-
 export const Fastreply: React.FC = () => {
 	const [activeComplain, setActiveComplain] = useState<ComplainType | null>(null)
-	const [thanks, setThanks] = useState<string | null>(null)
-	const [question, setQuestion] = useState<WasOnTimeQuestion | null>(null)
-	const [pickedTime, setPickedTime] = useState<string | null>(null)
+	const [thanks, setThanks] = useState(false)
 	const cooldownsRef = useRef<Record<string, number>>({})
 	const [, forceUpdate] = useState(0)
 
@@ -69,36 +49,10 @@ export const Fastreply: React.FC = () => {
 	const direction = useSelector(directionSelector)
 	const schedule = useSelector(scheduleSelector)
 	const dayKey = useSelector(currentDaySelector)
-	const tick = useEverySecondUpdater()
 
-	const { addComplain, answerWasOnTime } = useComplainsContext()
-
-	// The question and the picked trip belong to the stop they were asked at
-	useEffect(() => {
-		setQuestion(null)
-		setPickedTime(null)
-	}, [busStopNew?.id])
+	const { addComplain } = useComplainsContext()
 	const marksFor = useTripMarks()
-
-	// Trips a mark made right now can be about. Two of them — let the passenger choose. A trip
-	// someone already saw arrive here is done: a new «Приехал» is about the next one
-	const candidates = useMemo(
-		() =>
-			busStopNew
-				? findCandidateTrips(
-						schedule,
-						direction,
-						dayKey,
-						busStopNew.label,
-						nowMinutesInTomsk(),
-						ComplainType.arrived,
-				  )
-						.filter(c => !marksFor(c.item, busStopNew.label)?.arrivedHere)
-						.slice(0, 2)
-				: [],
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[busStopNew, direction, schedule, dayKey, marksFor, tick],
-	)
+	const check = useWaitCheck()
 
 	const isOnCooldown = useCallback((stopLabel: string): boolean => {
 		const until = cooldownsRef.current[stopLabel]
@@ -112,35 +66,29 @@ export const Fastreply: React.FC = () => {
 		return true
 	}, [])
 
-	const tripFor = (type: ComplainType): TripCandidate | undefined => {
-		if (!busStopNew) return undefined
-		// The trip shown in the prompt is the one being marked, whatever the button
-		const shown = candidates.find(c => c.item.time === pickedTime) ?? (candidates[0] as TripCandidate | undefined)
-		if (shown) return shown
-
-		// «Не приехал» is about the trip that was due, even if it is past the «Приехал» window
-		return type === ComplainType.not_arrive
+	// A trip someone already saw arrive here is done: a new mark is about the next one
+	const tripFor = (type: ComplainType): TripCandidate | undefined =>
+		busStopNew
 			? findCandidateTrips(schedule, direction, dayKey, busStopNew.label, nowMinutesInTomsk(), type).find(
 					c => !marksFor(c.item, busStopNew.label)?.arrivedHere,
 			  )
 			: undefined
-	}
 
 	const handleFastReplyClick = (key: ComplainType | null): void => {
 		if (!key || !busStopNew) return
 		if (isOnCooldown(busStopNew.label)) return
 
 		const candidate = tripFor(key)
-		const trip: IComplainTrip | undefined = candidate && {
-			scheduledTime: candidate.item.time,
-			tripIndex: candidate.item.tripIndex,
-			dayKey: candidate.item.dayKey,
+		AndrewLytics(`fastReply`)
+
+		if (key === ComplainType.not_arrive && candidate) {
+			check.askOnTime(candidate.item)
+
+			return
 		}
 
 		setActiveComplain(key)
-		const asks = key === ComplainType.not_arrive && !!candidate
-		setThanks(asks ? null : thanksText(key, candidate))
-		setQuestion(asks ? { id: null, time: candidate.item.time } : null)
+		setThanks(true)
 
 		cooldownsRef.current[busStopNew.label] = Date.now() + COOLDOWN_MS
 		setTimeout(() => {
@@ -152,95 +100,33 @@ export const Fastreply: React.FC = () => {
 			direction,
 			date: new Date().toISOString(),
 			type: key,
-			trip,
-		}).then(id => {
-			if (asks) setQuestion(q => q && { ...q, id })
-
-			return null
+			trip: candidate && {
+				scheduledTime: candidate.item.time,
+				tripIndex: candidate.item.tripIndex,
+				dayKey: candidate.item.dayKey,
+			},
 		})
-
-		AndrewLytics(`fastReply`)
 
 		setTimeout(() => {
 			setActiveComplain(null)
-			setThanks(null)
-		}, 6000)
-		if (asks) setTimeout(() => setQuestion(null), QUESTION_MS)
-	}
-
-	const handleAnswer = (wasOnTime: boolean): void => {
-		if (question?.id == null) return
-		answerWasOnTime(question.id, wasOnTime)
-		setQuestion(null)
-		setThanks(`Спасибо! Это поможет понять, опаздывает ли автобус`)
-		setTimeout(() => setThanks(null), 4000)
+			setThanks(false)
+		}, 3000)
 	}
 
 	if (!busStopNew) return null
 
-	const onCooldown = isOnCooldown(busStopNew.label)
-	const current = candidates.find(c => c.item.time === pickedTime) ?? candidates[0]
-
 	return (
 		<ComplainOptionContainerStyled>
-			<div className={fastreplyStyles.prompt}>
-				{candidates.length === 0 && <span>Отметьте автобус на этой остановке</span>}
-				{candidates.length === 1 && (
-					<span>
-						Отметьте рейс <b>{candidates[0].item.time}</b>
-					</span>
-				)}
-				{candidates.length > 1 && (
-					<>
-						<span>Какой рейс?</span>
-						{candidates.map(c => (
-							<button
-								key={c.item.time}
-								type="button"
-								className={`${fastreplyStyles.tripChip} ${
-									c === current ? fastreplyStyles.tripChipActive : ``
-								}`}
-								onClick={(): void => setPickedTime(c.item.time)}
-							>
-								{c.item.time}
-							</button>
-						))}
-					</>
-				)}
-			</div>
-
 			<InlineOptions<ComplainType>
 				list={ComplainsOptions}
 				onClick={handleFastReplyClick}
 				activeId={activeComplain}
-				disabled={onCooldown}
+				disabled={isOnCooldown(busStopNew.label)}
 			/>
 
-			{question && (
-				<div className={fastreplyStyles.question}>
-					<span>Вы были здесь к {question.time}?</span>
-					<div className={fastreplyStyles.answers}>
-						<button
-							type="button"
-							className={fastreplyStyles.answer}
-							disabled={question.id === null}
-							onClick={(): void => handleAnswer(true)}
-						>
-							Да, ждал
-						</button>
-						<button
-							type="button"
-							className={fastreplyStyles.answer}
-							disabled={question.id === null}
-							onClick={(): void => handleAnswer(false)}
-						>
-							Подошёл позже
-						</button>
-					</div>
-				</div>
-			)}
+			{thanks && <p className={fastreplyStyles.thanks}>Спасибо!</p>}
 
-			{thanks && <p className={fastreplyStyles.thanks}>{thanks}</p>}
+			<WaitCheckModal check={check} />
 		</ComplainOptionContainerStyled>
 	)
 }
