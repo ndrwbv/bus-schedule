@@ -112,6 +112,10 @@ export default defineConfig(({ mode }) => {
 				},
 			},
 		},
+		// maplibre 6 runs its worker as an ES module
+		worker: {
+			format: `es`,
+		},
 		publicDir,
 		server: {
 			https: false,
