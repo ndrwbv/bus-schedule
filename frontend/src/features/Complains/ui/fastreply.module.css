@@ -1,3 +1,39 @@
 .complainOptionContainer {
 	margin-top: 12px;
 }
+
+.prompt {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px;
+	margin: 0 4px 8px;
+	color: #5f6463;
+	font-size: 13px;
+	text-align: left;
+}
+
+.tripChip {
+	padding: 2px 10px;
+	border: 1px solid #d5dbda;
+	border-radius: 999px;
+	background: #fff;
+	color: inherit;
+	font: inherit;
+	font-variant-numeric: tabular-nums;
+	cursor: pointer;
+}
+
+.tripChipActive {
+	border-color: #336cff;
+	background: #336cff;
+	color: #fff;
+}
+
+.thanks {
+	margin: 8px 4px 0;
+	color: #2e9e5b;
+	font-size: 13px;
+	line-height: 18px;
+	text-align: left;
+}

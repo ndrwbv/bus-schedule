@@ -22,7 +22,10 @@ const cx = (...names: (string | false)[]): string => names.filter(Boolean).join(
 const rowClassName = (isMine: boolean, isPassed: boolean): string =>
 	cx(styles.row, isMine && styles.rowMine, isPassed && styles.rowPassed)
 
-const TripStops: React.FC<{ trip: TripRef }> = ({ trip }) => {
+/** What to show next to a stop in the trip — the page plugs crowd marks in here */
+export type RenderStopExtra = (trip: TripRef, stopLabel: string) => React.ReactNode
+
+const TripStops: React.FC<{ trip: TripRef; renderStopExtra?: RenderStopExtra }> = ({ trip, renderStopExtra }) => {
 	const dispatch = useDispatch()
 	const schedule = useSelector(scheduleSelector)
 	const currentDayKey = useSelector(currentDaySelector)
@@ -118,6 +121,7 @@ const TripStops: React.FC<{ trip: TripRef }> = ({ trip }) => {
 								</span>
 								<span className={cx(styles.dot, !interpolated && styles.dotPrinted)} />
 								<span className={styles.name}>{stop.label}</span>
+								{renderStopExtra?.(trip, stop.label)}
 								{isMine && <span className={styles.badge}>ваша</span>}
 							</button>
 						</li>
@@ -137,7 +141,7 @@ const TripStops: React.FC<{ trip: TripRef }> = ({ trip }) => {
 }
 
 /** Every stop of the tapped trip with its time. Mounted once on the page, opened via `openTrip()` */
-export const TripStopsModal: React.FC = () => {
+export const TripStopsModal: React.FC<{ renderStopExtra?: RenderStopExtra }> = ({ renderStopExtra }) => {
 	const dispatch = useDispatch()
 	const trip = useSelector(openedTripSelector)
 	const schedule = useSelector(scheduleSelector)
@@ -152,7 +156,7 @@ export const TripStopsModal: React.FC = () => {
 
 	return (
 		<Modal title={title} onClose={handleClose}>
-			<TripStops trip={trip} />
+			<TripStops trip={trip} renderStopExtra={renderStopExtra} />
 		</Modal>
 	)
 }

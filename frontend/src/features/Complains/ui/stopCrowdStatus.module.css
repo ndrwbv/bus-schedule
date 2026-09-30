@@ -1,0 +1,194 @@
+.headline,
+.headlineQuiet {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+	margin-top: 12px;
+	padding: 10px 12px;
+	border: none;
+	border-radius: 12px;
+	font: inherit;
+	font-size: 14px;
+	text-align: left;
+	cursor: pointer;
+}
+
+.headline {
+	font-weight: 600;
+}
+
+.headlineLate {
+	background: #fff3e0;
+	color: #7a4a00;
+}
+
+.headlineEarly {
+	background: #e6f4ea;
+	color: #1e5b32;
+}
+
+.headlineMissing {
+	background: #fdecea;
+	color: #8a1c14;
+}
+
+.headlineQuiet {
+	padding: 6px 4px;
+	background: none;
+	color: #8a8f8e;
+}
+
+.headlineText {
+	flex: 1;
+}
+
+.headlineMore {
+	flex: none;
+	color: #336cff;
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.signal {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	margin-bottom: 10px;
+	padding: 10px 12px;
+	border-radius: 12px;
+	font-size: 13px;
+	line-height: 18px;
+	text-align: left;
+}
+
+.signal > b {
+	font-size: 15px;
+}
+
+.signalLate {
+	background: #fff3e0;
+	color: #7a4a00;
+}
+
+.signalEarly {
+	background: #e6f4ea;
+	color: #1e5b32;
+}
+
+.signalMissing {
+	background: #fdecea;
+	color: #8a1c14;
+}
+
+.usual {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	margin-bottom: 12px;
+	padding: 0 4px;
+	font-size: 13px;
+	line-height: 18px;
+	text-align: left;
+}
+
+.usualIcon {
+	flex: none;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background: #e7edec;
+	color: #336cff;
+	font-weight: 700;
+	line-height: 20px;
+	text-align: center;
+}
+
+.muted {
+	color: #8a8f8e;
+	font-weight: 400;
+}
+
+.feedHeader {
+	display: flex;
+	justify-content: space-between;
+	padding: 0 4px;
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.empty {
+	margin: 6px 4px 0;
+	color: #8a8f8e;
+	font-size: 13px;
+	line-height: 18px;
+	text-align: left;
+}
+
+.feed {
+	margin: 6px 0 0;
+	padding: 0;
+	list-style: none;
+}
+
+.feedRow {
+	display: flex;
+	align-items: baseline;
+	gap: 8px;
+	padding: 6px 4px;
+	font-size: 14px;
+	text-align: left;
+}
+
+.feedRow + .feedRow {
+	border-top: 1px solid #eef0f0;
+}
+
+.feedTime {
+	flex: none;
+	color: #8a8f8e;
+	font-variant-numeric: tabular-nums;
+}
+
+.feedMark {
+	flex: none;
+	width: 14px;
+	font-weight: 700;
+	text-align: center;
+}
+
+.feedMarkGood {
+	color: #2e9e5b;
+}
+
+.feedMarkBad {
+	color: #d93025;
+}
+
+.feedText {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.delay {
+	flex: none;
+	margin-left: auto;
+	color: #2e9e5b;
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+}
+
+.delayLate {
+	color: #c26a00;
+}
+
+.count {
+	flex: none;
+	color: #8a8f8e;
+	font-size: 12px;
+}
+
+.feedText + .count {
+	margin-left: auto;
+}

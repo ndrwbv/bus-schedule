@@ -10,8 +10,8 @@ const VIA_LABELS: Record<string, string> = {
 	lb: `через ЛБ`,
 }
 
-/** One departure in a time list. Tap → the whole trip with every stop */
-export const TripTimeRow: React.FC<{ item: TaggedTime }> = ({ item }) => {
+/** One departure in a time list. Tap → the whole trip with every stop. `badge` — what passengers marked */
+export const TripTimeRow: React.FC<{ item: TaggedTime; badge?: React.ReactNode }> = ({ item, badge }) => {
 	const dispatch = useDispatch()
 
 	const handleClick = (): void => {
@@ -29,6 +29,7 @@ export const TripTimeRow: React.FC<{ item: TaggedTime }> = ({ item }) => {
 			{item.interpolated && item.interpolatedFrom && (
 				<span className={styles.approx}>(на основе: {item.interpolatedFrom})</span>
 			)}
+			{badge}
 			<span className={styles.more}>остановки ›</span>
 		</button>
 	)

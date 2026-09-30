@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { SelectBusStopText } from 'entities/SelectBusStopText'
+import { TripMarkBadge } from 'features/Complains'
 import { FavoriteButton } from 'features/FavoriteStops'
 import { TripTimeRow } from 'features/TripStops'
 import { DefaultTFuncReturn } from 'i18next'
@@ -24,7 +25,7 @@ export const TodaysBuses: React.FC = () => {
 			: closestTimeArray.map(d => {
 					const key = `${d.direction}-${d.tripIndex}`
 
-					return <TripTimeRow key={key} item={d} />
+					return <TripTimeRow key={key} item={d} badge={<TripMarkBadge trip={d} stop={busStop} />} />
 			  })
 	}
 

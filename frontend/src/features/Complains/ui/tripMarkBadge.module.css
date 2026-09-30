@@ -1,0 +1,30 @@
+.badge {
+	flex: none;
+	padding: 1px 7px;
+	border-radius: 999px;
+	font-size: 12px;
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+
+.good {
+	background: #e6f4ea;
+	color: #1e7a45;
+}
+
+.late {
+	background: #fff3e0;
+	color: #a65a00;
+}
+
+.bad {
+	background: #fdecea;
+	color: #b3261e;
+}
+
+/* Marked at another stop — an estimate, so lighter */
+.remote {
+	background: transparent;
+	box-shadow: inset 0 0 0 1px currentColor;
+}

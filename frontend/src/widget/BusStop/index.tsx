@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
-import { Fastreply } from 'features/Complains'
+import { Fastreply, StopCrowdStatus } from 'features/Complains'
 import { HowMuchLeft } from 'features/HowMuchLeft/HowMuchLeft'
 import { openTrip } from 'features/TripStops'
 import { AndrewLytics } from 'shared/lib'
@@ -112,6 +112,8 @@ export const BusStop: React.FC = () => {
 				) : (
 					<HowMuchLeft holiday={todaysHoliday} busStopLabel={busStopNew?.label || null} left={left} />
 				)}
+
+				<StopCrowdStatus />
 
 				<Fastreply />
 			</CardStyled>

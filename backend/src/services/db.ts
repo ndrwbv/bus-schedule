@@ -126,6 +126,20 @@ function initSchema(db: Database.Database): void {
     db.exec(`ALTER TABLE banner_messages ADD COLUMN amount INTEGER`);
   }
 
+  // Migrate: tie a report to the scheduled trip it is about (spec 15). Old rows keep NULLs —
+  // the frontend matches those to a trip by the report time itself
+  const complainColumns = db.prepare(`PRAGMA table_info(complains)`).all() as { name: string }[];
+  const complainMigrations: Record<string, string> = {
+    scheduled_time: `ALTER TABLE complains ADD COLUMN scheduled_time TEXT`,
+    trip_index: `ALTER TABLE complains ADD COLUMN trip_index INTEGER`,
+    day_key: `ALTER TABLE complains ADD COLUMN day_key INTEGER`,
+    delay_min: `ALTER TABLE complains ADD COLUMN delay_min INTEGER`,
+  };
+  for (const [column, sql] of Object.entries(complainMigrations)) {
+    if (!complainColumns.some(c => c.name === column)) db.exec(sql);
+  }
+  db.exec(`CREATE INDEX IF NOT EXISTS idx_complains_stop ON complains(stop, direction, created_at)`);
+
   // Seed default feature flags
   db.prepare(`INSERT OR IGNORE INTO feature_flags (key, enabled) VALUES ('liveTracking', 1)`).run();
 }
