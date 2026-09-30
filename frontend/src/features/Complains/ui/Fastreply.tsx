@@ -12,7 +12,7 @@ import { useComplainsContext } from '../model/ComplainsContext'
 import { IComplainTrip } from '../model/useComplains'
 import { useTripMarks } from '../model/useCrowdReports'
 import fastreplyStyles from './fastreply.module.css'
-import { formatDelay } from './StopCrowdStatus'
+import { delayPhrase } from './StopCrowdStatus'
 
 const COOLDOWN_MS = 2 * 60 * 1000 // 2 minutes
 
@@ -39,9 +39,7 @@ const thanksText = (type: ComplainType, trip: TripCandidate | undefined): string
 	if (!trip) return `Спасибо! Отметка сохранена`
 
 	if (type === ComplainType.arrived) {
-		const delay = formatDelay(trip.delay)
-
-		return `Спасибо! Рейс ${trip.item.time}: ${delay}`
+		return `Спасибо! Записали: рейс ${trip.item.time} пришёл ${delayPhrase(trip.delay)}`
 	}
 
 	return `Спасибо! Предупредим тех, кто ждёт рейс ${trip.item.time}`

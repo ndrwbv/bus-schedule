@@ -1,6 +1,6 @@
 export * from './ui/Complains'
 export { Fastreply } from './ui/Fastreply'
-export { formatDelay, StopCrowdStatus } from './ui/StopCrowdStatus'
+export { delayPhrase, StopCrowdStatus } from './ui/StopCrowdStatus'
 export { TripMarkBadge } from './ui/TripMarkBadge'
 export { useTripMarks } from './model/useCrowdReports'
 export * from './model/Complains'

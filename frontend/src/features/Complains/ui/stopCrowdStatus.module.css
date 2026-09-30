@@ -50,83 +50,73 @@
 	font-weight: 600;
 }
 
-.signal {
-	display: flex;
-	flex-direction: column;
-	gap: 4px;
-	margin-bottom: 10px;
-	padding: 10px 12px;
-	border-radius: 12px;
-	font-size: 13px;
-	line-height: 18px;
+/* Modal: the answer first, big */
+.main {
+	margin-bottom: 20px;
+	padding: 14px 16px;
+	border-radius: 14px;
 	text-align: left;
 }
 
-.signal > b {
-	font-size: 15px;
+.main p {
+	margin: 0;
 }
 
-.signalLate {
+.mainLate {
 	background: #fff3e0;
 	color: #7a4a00;
 }
 
-.signalEarly {
+.mainEarly {
 	background: #e6f4ea;
 	color: #1e5b32;
 }
 
-.signalMissing {
+.mainMissing {
 	background: #fdecea;
 	color: #8a1c14;
 }
 
-.usual {
-	display: flex;
-	align-items: flex-start;
-	gap: 8px;
-	margin-bottom: 12px;
-	padding: 0 4px;
+.mainTitle {
+	font-size: 20px;
+	font-weight: 700;
+}
+
+.mainLine {
+	margin-top: 4px !important;
+	font-size: 15px;
+}
+
+.mainSource {
+	margin-top: 8px !important;
 	font-size: 13px;
-	line-height: 18px;
+	opacity: 0.75;
+}
+
+.usual {
+	margin: 0 4px 20px;
+	color: #5f6463;
+	font-size: 14px;
+	line-height: 20px;
 	text-align: left;
 }
 
-.usualIcon {
-	flex: none;
-	width: 20px;
-	height: 20px;
-	border-radius: 50%;
-	background: #e7edec;
-	color: #336cff;
-	font-weight: 700;
-	line-height: 20px;
-	text-align: center;
-}
-
-.muted {
-	color: #8a8f8e;
-	font-weight: 400;
-}
-
 .feedHeader {
-	display: flex;
-	justify-content: space-between;
-	padding: 0 4px;
-	font-size: 14px;
+	margin: 0 4px;
+	font-size: 15px;
 	font-weight: 600;
+	text-align: left;
 }
 
 .empty {
 	margin: 6px 4px 0;
 	color: #8a8f8e;
-	font-size: 13px;
-	line-height: 18px;
+	font-size: 14px;
 	text-align: left;
 }
 
 .feed {
-	margin: 6px 0 0;
+	margin: 4px 0 0;
 	padding: 0;
 	list-style: none;
 }
@@ -134,9 +124,9 @@
 .feedRow {
 	display: flex;
 	align-items: baseline;
-	gap: 8px;
-	padding: 6px 4px;
-	font-size: 14px;
+	gap: 12px;
+	padding: 8px 4px;
+	font-size: 15px;
 	text-align: left;
 }
 
@@ -144,51 +134,27 @@
 	border-top: 1px solid #eef0f0;
 }
 
-.feedTime {
+.feedTrip,
+.feedTripUnknown {
 	flex: none;
-	color: #8a8f8e;
-	font-variant-numeric: tabular-nums;
-}
-
-.feedMark {
-	flex: none;
-	width: 14px;
-	font-weight: 700;
-	text-align: center;
-}
-
-.feedMarkGood {
-	color: #2e9e5b;
-}
-
-.feedMarkBad {
-	color: #d93025;
-}
-
-.feedText {
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-}
-
-.delay {
-	flex: none;
-	margin-left: auto;
-	color: #2e9e5b;
+	width: 44px;
 	font-weight: 600;
 	font-variant-numeric: tabular-nums;
 }
 
-.delayLate {
-	color: #c26a00;
-}
-
-.count {
-	flex: none;
+.feedTripUnknown {
 	color: #8a8f8e;
-	font-size: 12px;
+	font-weight: 400;
 }
 
-.feedText + .count {
-	margin-left: auto;
+.feedGood {
+	color: #1e7a45;
+}
+
+.feedLate {
+	color: #a65a00;
+}
+
+.feedBad {
+	color: #b3261e;
 }

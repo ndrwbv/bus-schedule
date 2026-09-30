@@ -2,15 +2,14 @@ import { TripRef } from 'shared/store/busStop/const/stops'
 
 import { fromMinutes } from '../lib/matchReports'
 import { useTripMarks } from '../model/useCrowdReports'
-import { formatDelay } from './StopCrowdStatus'
 import styles from './tripMarkBadge.module.css'
 
-const delayClass = (delay: number): string => (delay > 1 ? styles.late : styles.good)
+const delayClass = (delay: number | null): string => (delay !== null && delay > 1 ? styles.late : styles.good)
 
 /**
- * A trip's crowd status at one stop: «✓ 11:34 +4» when it was marked here, «~+6 мин» when it was
- * marked somewhere else along the route today (`onlyHere` hides that — used in the trip modal,
- * where every stop gets its own badge).
+ * A trip's crowd status at one stop, in words: «пришёл в 12:34» when it was marked here,
+ * «опаздывает ~8 мин» when it was marked earlier along the route today (`onlyHere` hides that —
+ * used in the trip modal, where every stop gets its own badge). «По расписанию» is not shown.
  */
 export const TripMarkBadge: React.FC<{ trip: TripRef; stop?: string; onlyHere?: boolean }> = ({
 	trip,
@@ -24,25 +23,20 @@ export const TripMarkBadge: React.FC<{ trip: TripRef; stop?: string; onlyHere?: 
 
 	if (arrivedHere) {
 		return (
-			<span className={`${styles.badge} ${delayClass(arrivedHere.delay ?? 0)}`}>
-				✓ {fromMinutes(arrivedHere.at)}
-				{arrivedHere.delay !== null && ` ${formatDelay(arrivedHere.delay)}`}
+			<span className={`${styles.badge} ${delayClass(arrivedHere.delay)}`}>
+				пришёл в {fromMinutes(arrivedHere.at)}
 			</span>
 		)
 	}
 
-	if (missingHere > 0) return <span className={`${styles.badge} ${styles.bad}`}>✕ не пришёл</span>
+	if (missingHere > 0) return <span className={`${styles.badge} ${styles.bad}`}>не пришёл</span>
 
-	if (!onlyHere && lastArrived?.delay != null) {
-		return (
-			<span
-				className={`${styles.badge} ${styles.remote} ${delayClass(lastArrived.delay)}`}
-				title={`Отметили на «${lastArrived.stop}» в ${fromMinutes(lastArrived.at)}`}
-			>
-				~{formatDelay(lastArrived.delay)}
-			</span>
-		)
-	}
+	const delay = onlyHere ? null : lastArrived?.delay ?? null
+	if (delay === null || Math.abs(delay) <= 1) return null
 
-	return null
+	return (
+		<span className={`${styles.badge} ${delayClass(delay)}`}>
+			{delay > 0 ? `опаздывает ~${delay} мин` : `раньше ~${-delay} мин`}
+		</span>
+	)
 }
