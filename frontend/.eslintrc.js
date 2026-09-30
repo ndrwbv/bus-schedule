@@ -7,7 +7,7 @@ module.exports = {
 		`plugin:prettier/recommended`,
 	],
 	plugins: [`optimize-regex`, `simple-import-sort`],
-	ignorePatterns: [`**/dist/**/*.*`, `src/page/Game/*`, `vite.config.ts`, `dev-dist`],
+	ignorePatterns: [`**/dist/**/*.*`, `src/page/Game/*`, `vite.config.ts`, `vitest.config.ts`, `dev-dist`],
 	rules: {
 		'react/prop-types': `off`,
 		'sonarjs/prefer-single-boolean-return': `off`,
@@ -144,7 +144,7 @@ module.exports = {
 			},
 		},
 		{
-			files: [`**/*.spec.ts`, `**/*.spec.tsx`, `**/dsl/**`],
+			files: [`**/*.spec.ts`, `**/*.spec.tsx`, `**/__tests__/**/*.test.ts`, `**/dsl/**`],
 			extends: [`plugin:jest/recommended`],
 			rules: {
 				'jest/no-focused-tests': `error`,
@@ -162,6 +162,9 @@ module.exports = {
 
 				'sonarjs/no-duplicate-string': `off`,
 				'sonarjs/no-identical-functions': `off`,
+				// Scenario logs and players read better inline than split up for the linter
+				'sonarjs/no-nested-template-literals': `off`,
+				'sonarjs/cognitive-complexity': `off`,
 			},
 		},
 		{
