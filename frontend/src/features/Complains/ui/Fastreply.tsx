@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { AndrewLytics } from 'shared/lib'
 import { busStopNewSelector, directionSelector } from 'shared/store/busStop/busStopInfoSlice'
@@ -42,12 +42,25 @@ const thanksText = (type: ComplainType, trip: TripCandidate | undefined): string
 		return `Спасибо! Записали: рейс ${trip.item.time} пришёл ${delayPhrase(trip.delay)}`
 	}
 
-	return `Спасибо! Предупредим тех, кто ждёт рейс ${trip.item.time}`
+	return `Спасибо! Отметка сохранена`
+}
+
+/** How long «Вы были здесь к 12:15?» waits for an answer */
+const QUESTION_MS = 60 * 1000
+
+/**
+ * After «Не приехал»: the bus may be late — or it left before the passenger came. Only they know
+ * which, so ask. Until the mark is saved (`id` null) the answer can't be sent yet.
+ */
+interface WasOnTimeQuestion {
+	id: number | null
+	time: string
 }
 
 export const Fastreply: React.FC = () => {
 	const [activeComplain, setActiveComplain] = useState<ComplainType | null>(null)
 	const [thanks, setThanks] = useState<string | null>(null)
+	const [question, setQuestion] = useState<WasOnTimeQuestion | null>(null)
 	const [pickedTime, setPickedTime] = useState<string | null>(null)
 	const cooldownsRef = useRef<Record<string, number>>({})
 	const [, forceUpdate] = useState(0)
@@ -58,7 +71,13 @@ export const Fastreply: React.FC = () => {
 	const dayKey = useSelector(currentDaySelector)
 	const tick = useEverySecondUpdater()
 
-	const { addComplain } = useComplainsContext()
+	const { addComplain, answerWasOnTime } = useComplainsContext()
+
+	// The question and the picked trip belong to the stop they were asked at
+	useEffect(() => {
+		setQuestion(null)
+		setPickedTime(null)
+	}, [busStopNew?.id])
 	const marksFor = useTripMarks()
 
 	// Trips a mark made right now can be about. Two of them — let the passenger choose. A trip
@@ -119,19 +138,25 @@ export const Fastreply: React.FC = () => {
 		}
 
 		setActiveComplain(key)
-		setThanks(thanksText(key, candidate))
+		const asks = key === ComplainType.not_arrive && !!candidate
+		setThanks(asks ? null : thanksText(key, candidate))
+		setQuestion(asks ? { id: null, time: candidate.item.time } : null)
 
 		cooldownsRef.current[busStopNew.label] = Date.now() + COOLDOWN_MS
 		setTimeout(() => {
 			forceUpdate(n => n + 1)
 		}, COOLDOWN_MS)
 
-		addComplain({
+		void addComplain({
 			stop: busStopNew.label,
 			direction,
 			date: new Date().toISOString(),
 			type: key,
 			trip,
+		}).then(id => {
+			if (asks) setQuestion(q => q && { ...q, id })
+
+			return null
 		})
 
 		AndrewLytics(`fastReply`)
@@ -140,6 +165,15 @@ export const Fastreply: React.FC = () => {
 			setActiveComplain(null)
 			setThanks(null)
 		}, 6000)
+		if (asks) setTimeout(() => setQuestion(null), QUESTION_MS)
+	}
+
+	const handleAnswer = (wasOnTime: boolean): void => {
+		if (question?.id == null) return
+		answerWasOnTime(question.id, wasOnTime)
+		setQuestion(null)
+		setThanks(`Спасибо! Это поможет понять, опаздывает ли автобус`)
+		setTimeout(() => setThanks(null), 4000)
 	}
 
 	if (!busStopNew) return null
@@ -181,6 +215,30 @@ export const Fastreply: React.FC = () => {
 				activeId={activeComplain}
 				disabled={onCooldown}
 			/>
+
+			{question && (
+				<div className={fastreplyStyles.question}>
+					<span>Вы были здесь к {question.time}?</span>
+					<div className={fastreplyStyles.answers}>
+						<button
+							type="button"
+							className={fastreplyStyles.answer}
+							disabled={question.id === null}
+							onClick={(): void => handleAnswer(true)}
+						>
+							Да, ждал
+						</button>
+						<button
+							type="button"
+							className={fastreplyStyles.answer}
+							disabled={question.id === null}
+							onClick={(): void => handleAnswer(false)}
+						>
+							Подошёл позже
+						</button>
+					</div>
+				</div>
+			)}
 
 			{thanks && <p className={fastreplyStyles.thanks}>{thanks}</p>}
 		</ComplainOptionContainerStyled>

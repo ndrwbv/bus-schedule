@@ -51,7 +51,8 @@ export const useStopInsights = (): StopInsights | null => {
 
 export interface TripMarks {
 	arrivedHere: MatchedReport | null
-	missingHere: number
+	/** Latest «Не приехал» here — shown as a fact, «в 12:25 не было» */
+	notArrivedHere: MatchedReport | null
 	/** Freshest «Приехал» anywhere on the trip */
 	lastArrived: MatchedReport | null
 	all: MatchedReport[]
@@ -77,7 +78,12 @@ export const useTripMarks = (): ((trip: TripRef, stop?: string) => TripMarks | n
 
 			return {
 				arrivedHere: (stop && arrived.find(r => r.stop === stop)) || null,
-				missingHere: stop ? all.filter(r => r.stop === stop && r.type === ComplainType.not_arrive).length : 0,
+				notArrivedHere:
+					(stop &&
+						all
+							.filter(r => r.stop === stop && r.type === ComplainType.not_arrive)
+							.reduce<MatchedReport | null>((a, b) => (!a || b.at > a.at ? b : a), null)) ||
+					null,
 				lastArrived: arrived.reduce<MatchedReport | null>((a, b) => (!a || b.at > a.at ? b : a), null),
 				all,
 			}

@@ -4,7 +4,7 @@ import { AndrewLytics } from 'shared/lib'
 import { busStopNewSelector } from 'shared/store/busStop/busStopInfoSlice'
 import { Modal } from 'shared/ui/Modal'
 
-import { fromMinutes, nowMinutesInTomsk } from '../lib/matchReports'
+import { fromMinutes, nowMinutesInTomsk, toMinutes } from '../lib/matchReports'
 import { FeedItem, LiveSignal, StopInsights, UsualDelay } from '../lib/stopInsights'
 import { ComplainType } from '../model/Complains'
 import { useStopInsights } from '../model/useCrowdReports'
@@ -26,35 +26,32 @@ export const delayPhrase = (delay: number): string => {
 	return `вовремя`
 }
 
+const signalTitle = (signal: LiveSignal): string => {
+	if (signal.atLeast) return `Опаздывает минимум на ${signal.delay} мин`
+	if (signal.delay > 1) return `Опаздывает на ~${signal.delay} мин`
+	if (signal.delay < -1) return `Придёт раньше на ~${-signal.delay} мин`
+
+	return `Идёт по расписанию`
+}
+
 /** The bus you are waiting for: what the freshest mark says about it, in plain words */
-const MainSignal: React.FC<{ signal: LiveSignal }> = ({ signal }) => {
-	const who = signal.marks > 1 ? `Пассажиры` : `Пассажир`
-
-	if (signal.kind === `missing`) {
-		return (
-			<div className={`${styles.main} ${styles.mainMissing}`}>
-				<p className={styles.mainTitle}>Может не прийти</p>
-				<p className={styles.mainLine}>Рейс {signal.trip.time}</p>
-				<p className={styles.mainSource}>
-					На остановке «{signal.fromStop}» его не дождались, {ago(signal.markedAt)}
-				</p>
-			</div>
-		)
-	}
-
-	let title = `Идёт по расписанию`
-	if (signal.delay > 1) title = `Опаздывает на ~${signal.delay} мин`
-	if (signal.delay < -1) title = `Придёт раньше на ~${-signal.delay} мин`
+const MainSignal: React.FC<{ signal: LiveSignal; stop: string }> = ({ signal, stop }) => {
+	const where = signal.fromStop === stop ? `Здесь` : `На остановке «${signal.fromStop}»`
+	const who = signal.marks > 1 ? `пассажиры отметили` : `пассажир отметил`
+	const source =
+		signal.fromType === ComplainType.not_arrive
+			? `${where} в ${fromMinutes(signal.markedAt)} его ещё не было`
+			: `${where} ${who} его ${ago(signal.markedAt)}`
 
 	return (
 		<div className={`${styles.main} ${signal.delay < -1 ? styles.mainEarly : styles.mainLate}`}>
-			<p className={styles.mainTitle}>{title}</p>
+			<p className={styles.mainTitle}>{signalTitle(signal)}</p>
 			<p className={styles.mainLine}>
-				Рейс {signal.trip.time} будет здесь около <b>{fromMinutes(signal.expected)}</b>
+				Рейс {signal.trip.time} будет здесь {signal.atLeast ? `не раньше` : `около`}
+				{` `}
+				<b>{fromMinutes(signal.expected)}</b>
 			</p>
-			<p className={styles.mainSource}>
-				{who} на остановке «{signal.fromStop}» отметил{signal.marks > 1 ? `и` : ``} {ago(signal.markedAt)}
-			</p>
+			<p className={styles.mainSource}>{source}</p>
 		</div>
 	)
 }
@@ -70,34 +67,43 @@ const usualText = (usual: UsualDelay): string => {
 }
 
 const feedText = (item: FeedItem): string => {
-	if (item.type === ComplainType.arrived) {
-		return item.delay === null ? `пришёл` : `пришёл ${delayPhrase(item.delay)}`
+	const at = fromMinutes(item.at)
+	const scheduled = item.scheduledTime ? toMinutes(item.scheduledTime) : null
+
+	switch (item.status) {
+		case `arrived`:
+			return `пришёл около ${at}`
+		case `passedBy`:
+			return `проехал мимо в ${at}`
+		case `passedBefore`:
+			return scheduled !== null && item.at < scheduled ? `прошёл раньше, около ${at}` : `прошёл около ${at}`
+		case `cancelled`:
+			return `не пришёл`
+		default:
+			return `в ${at} ещё не было`
 	}
-	if (item.type === ComplainType.not_arrive) return `не пришёл`
-	if (item.type === ComplainType.passed_by) return `проехал мимо`
-
-	return item.type === ComplainType.earlier ? `пришёл раньше` : `пришёл позже`
 }
 
-const feedTone = (item: FeedItem): string => {
-	if (item.type !== ComplainType.arrived) return styles.feedBad
-	if (item.delay !== null && item.delay > 1) return styles.feedLate
-
-	return styles.feedGood
+const FEED_TONE: Record<FeedItem['status'], string> = {
+	arrived: styles.feedGood,
+	passedBy: styles.feedBad,
+	passedBefore: styles.feedLate,
+	cancelled: styles.feedBad,
+	notYet: styles.feedMuted,
 }
 
-/** One trip per row: «12:15 — пришёл на 5 мин позже». Without a known trip — the time of the mark */
+/** One trip per row: «12:15 — пришёл около 12:19». Without a known trip — the time of the mark */
 const FeedRow: React.FC<{ item: FeedItem }> = ({ item }) => (
 	<li className={styles.feedRow}>
 		<span className={item.scheduledTime ? styles.feedTrip : styles.feedTripUnknown}>
 			{item.scheduledTime ?? fromMinutes(item.at)}
 		</span>
-		<span className={feedTone(item)}>{feedText(item)}</span>
+		<span className={FEED_TONE[item.status]}>{feedText(item)}</span>
 	</li>
 )
 
 interface Headline {
-	tone: 'late' | 'early' | 'missing'
+	tone: 'late' | 'early'
 	text: string
 }
 
@@ -109,11 +115,10 @@ const pickHeadline = ({ live, usual }: StopInsights): Headline | null => {
 	// The bus you are waiting for. A fresh mark about it beats any statistics — even when it says
 	// «вовремя»: then there is simply no news, and «обычно опаздывает» would contradict it
 	const signal = live[0] as LiveSignal | undefined
-	if (signal && signal.kind === `timing` && Math.abs(signal.delay) <= 1) return null
+	if (signal && !signal.atLeast && Math.abs(signal.delay) <= 1) return null
 
-	if (signal?.kind === `missing`) return { tone: `missing`, text: `Рейс ${signal.trip.time} может не прийти` }
-	if (signal && signal.delay > 1)
-		return { tone: `late`, text: `Рейс ${signal.trip.time} опаздывает на ~${signal.delay} мин` }
+	if (signal && (signal.atLeast || signal.delay > 1))
+		return { tone: `late`, text: `Рейс ${signal.trip.time} ${signalTitle(signal).toLowerCase()}` }
 	if (signal) return { tone: `early`, text: `Рейс ${signal.trip.time} придёт раньше на ~${-signal.delay} мин` }
 
 	if (usual && usual.median > 1) return { tone: `late`, text: `Обычно опаздывает на ~${usual.median} мин` }
@@ -125,7 +130,6 @@ const pickHeadline = ({ live, usual }: StopInsights): Headline | null => {
 const HEADLINE_CLASS: Record<Headline['tone'], string> = {
 	late: styles.headlineLate,
 	early: styles.headlineEarly,
-	missing: styles.headlineMissing,
 }
 
 const CrowdDetailsModal: React.FC<{ insights: StopInsights; stop: string; onClose: () => void }> = ({
@@ -138,7 +142,7 @@ const CrowdDetailsModal: React.FC<{ insights: StopInsights; stop: string; onClos
 
 	return (
 		<Modal title={stop} onClose={onClose}>
-			{signal && <MainSignal signal={signal} />}
+			{signal && <MainSignal signal={signal} stop={stop} />}
 
 			{/* A fresh mark already answered the question — «обычно» would only add noise */}
 			{!signal && usual && <p className={styles.usual}>{usualText(usual)}</p>}

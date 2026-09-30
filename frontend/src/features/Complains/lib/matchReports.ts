@@ -100,6 +100,8 @@ export interface MatchedReport {
 	scheduledTime: string | null
 	/** Only for «Приехал» */
 	delay: number | null
+	/** «Не приехал»: was the passenger here by the scheduled time (null — didn't answer) */
+	wasOnTime: boolean | null
 }
 
 export const matchReport = (
@@ -110,7 +112,8 @@ export const matchReport = (
 	const direction = report.direction as DirectionsNew
 	const type = report.type as ComplainType
 	const at = reportMinutes(report.date)
-	const base = { id: report.id, stop: report.stop, direction, type, at }
+	const wasOnTime = report.was_on_time == null ? null : report.was_on_time === 1
+	const base = { id: report.id, stop: report.stop, direction, type, at, wasOnTime }
 
 	// The passenger picked the trip themselves — trust it
 	if (report.scheduled_time && report.trip_index != null) {

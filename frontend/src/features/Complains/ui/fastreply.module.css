@@ -37,3 +37,33 @@
 	line-height: 18px;
 	text-align: left;
 }
+
+.question {
+	margin: 10px 4px 0;
+	font-size: 14px;
+	font-weight: 600;
+	text-align: left;
+}
+
+.answers {
+	display: flex;
+	gap: 8px;
+	margin-top: 8px;
+}
+
+.answer {
+	flex: 1;
+	padding: 9px 10px;
+	border: 1px solid #d5dbda;
+	border-radius: 12px;
+	background: #fff;
+	color: inherit;
+	font: inherit;
+	font-weight: 500;
+	cursor: pointer;
+}
+
+.answer:disabled {
+	opacity: 0.5;
+	cursor: default;
+}

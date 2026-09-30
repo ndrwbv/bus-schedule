@@ -19,7 +19,7 @@ export const TripMarkBadge: React.FC<{ trip: TripRef; stop?: string; onlyHere?: 
 	const marks = useTripMarks()(trip, stop)
 	if (!marks) return null
 
-	const { arrivedHere, missingHere, lastArrived } = marks
+	const { arrivedHere, notArrivedHere, lastArrived } = marks
 
 	if (arrivedHere) {
 		return (
@@ -29,7 +29,9 @@ export const TripMarkBadge: React.FC<{ trip: TripRef; stop?: string; onlyHere?: 
 		)
 	}
 
-	if (missingHere > 0) return <span className={`${styles.badge} ${styles.bad}`}>не пришёл</span>
+	// Only the fact: it may have been late — or left before this passenger came
+	if (notArrivedHere)
+		return <span className={`${styles.badge} ${styles.bad}`}>в {fromMinutes(notArrivedHere.at)} не было</span>
 
 	const delay = onlyHere ? null : lastArrived?.delay ?? null
 	if (delay === null || Math.abs(delay) <= 1) return null

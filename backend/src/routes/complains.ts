@@ -69,6 +69,35 @@ complainsRouter.post('/complains', (req: Request, res: Response) => {
   res.status(201).json({ id: result.lastInsertRowid, delay_min: delayMin });
 });
 
+/** The answer to «Вы были здесь к 12:15?» can come this long after the mark */
+const ANSWER_WINDOW = '-30 minutes';
+
+/**
+ * PATCH /api/complains/:id — answer «Вы были здесь к {scheduled_time}?» after «Не приехал».
+ * Body: { user_id, was_on_time: boolean }. Only the author, only shortly after the mark.
+ */
+complainsRouter.patch('/complains/:id', (req: Request, res: Response) => {
+  const { user_id, was_on_time } = req.body as { user_id?: string; was_on_time?: unknown };
+  const id = Number(req.params.id);
+
+  if (!Number.isInteger(id) || !user_id || typeof was_on_time !== 'boolean') {
+    res.status(400).json({ error: 'id, user_id and boolean was_on_time are required' });
+    return;
+  }
+
+  const result = getDb().prepare(
+    `UPDATE complains SET was_on_time = ?
+     WHERE id = ? AND user_id = ? AND type = 'not_arrive' AND created_at > datetime('now', ?)`
+  ).run(was_on_time ? 1 : 0, id, user_id, ANSWER_WINDOW);
+
+  if (result.changes === 0) {
+    res.status(404).json({ error: 'No such recent «not_arrive» mark of this user' });
+    return;
+  }
+
+  res.json({ id, was_on_time });
+});
+
 /** Today in Tomsk (UTC+7), not «the last 24 hours» — yesterday evening's marks say nothing about this morning */
 const TODAY_IN_TOMSK = `date(created_at, '+7 hours') = date('now', '+7 hours')`;
 
@@ -80,7 +109,7 @@ complainsRouter.get('/complains', (_req: Request, res: Response) => {
 
   const rows = db.prepare(
     `SELECT id, stop, direction, type, datetime(created_at, '+7 hours') as date,
-            scheduled_time, trip_index, day_key, delay_min
+            scheduled_time, trip_index, day_key, delay_min, was_on_time
      FROM complains
      WHERE ${TODAY_IN_TOMSK}
      ORDER BY created_at DESC

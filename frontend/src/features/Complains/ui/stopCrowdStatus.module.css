@@ -28,10 +28,6 @@
 	color: #1e5b32;
 }
 
-.headlineMissing {
-	background: #fdecea;
-	color: #8a1c14;
-}
 
 .headlineQuiet {
 	padding: 6px 4px;
@@ -72,10 +68,6 @@
 	color: #1e5b32;
 }
 
-.mainMissing {
-	background: #fdecea;
-	color: #8a1c14;
-}
 
 .mainTitle {
 	font-size: 20px;
@@ -157,4 +149,8 @@
 
 .feedBad {
 	color: #b3261e;
+}
+
+.feedMuted {
+	color: #5f6463;
 }

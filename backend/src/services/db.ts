@@ -134,6 +134,9 @@ function initSchema(db: Database.Database): void {
     trip_index: `ALTER TABLE complains ADD COLUMN trip_index INTEGER`,
     day_key: `ALTER TABLE complains ADD COLUMN day_key INTEGER`,
     delay_min: `ALTER TABLE complains ADD COLUMN delay_min INTEGER`,
+    // «Не приехал»: was the passenger at the stop by the scheduled time? 1 — yes (so the bus is
+    // really late), 0 — came later (the bus may have left before them), NULL — didn't answer
+    was_on_time: `ALTER TABLE complains ADD COLUMN was_on_time INTEGER`,
   };
   for (const [column, sql] of Object.entries(complainMigrations)) {
     if (!complainColumns.some(c => c.name === column)) db.exec(sql);

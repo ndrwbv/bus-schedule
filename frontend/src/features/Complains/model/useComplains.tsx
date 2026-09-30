@@ -47,12 +47,16 @@ export interface IComplainsResponse {
 	trip_index?: number | null
 	day_key?: number | null
 	delay_min?: number | null
+	/** «Не приехал»: 1 — was at the stop by the scheduled time, 0 — came later, null — didn't answer */
+	was_on_time?: 0 | 1 | null
 }
 
 interface IReturns {
 	complains: IComplainsResponse[]
 	delays: DelayStat[]
-	addComplain: (data: IComplains) => void
+	/** Resolves with the id of the saved mark — needed to answer «Вы были здесь к 12:15?» */
+	addComplain: (data: IComplains) => Promise<number | null>
+	answerWasOnTime: (id: number, wasOnTime: boolean) => void
 }
 
 /** Same shape the API returns, so optimistic rows parse like the real ones */
@@ -102,7 +106,7 @@ export const useComplains = (): IReturns => {
 	}, [fetchComplains, fetchDelays])
 
 	const addComplain = useCallback(
-		(data: IComplains): void => {
+		(data: IComplains): Promise<number | null> => {
 			AndrewLytics(`addComplainMethod`)
 
 			// Optimistic update
@@ -118,7 +122,7 @@ export const useComplains = (): IReturns => {
 			}
 			setComplains(prev => [optimistic, ...prev])
 
-			fetch(`${API_BASE}/complains`, {
+			return fetch(`${API_BASE}/complains`, {
 				method: `POST`,
 				headers: { 'Content-Type': `application/json` },
 				body: JSON.stringify({
@@ -131,17 +135,42 @@ export const useComplains = (): IReturns => {
 					day_key: data.trip?.dayKey,
 				}),
 			})
+				.then(res => res.json() as Promise<{ id?: number }>)
+				.then(({ id }) => {
+					fetchComplains()
+
+					return id ?? null
+				})
+				.catch((err: unknown) => {
+					console.error(`[complains] post error:`, err)
+
+					return null
+				})
+		},
+		[fetchComplains],
+	)
+
+	const answerWasOnTime = useCallback(
+		(id: number, wasOnTime: boolean): void => {
+			AndrewLytics(wasOnTime ? `notArrived:wasOnTime` : `notArrived:cameLater`)
+			setComplains(prev => prev.map(c => (c.id === id ? { ...c, was_on_time: wasOnTime ? 1 : 0 } : c)))
+
+			fetch(`${API_BASE}/complains/${id}`, {
+				method: `PATCH`,
+				headers: { 'Content-Type': `application/json` },
+				body: JSON.stringify({ user_id: getUserId(), was_on_time: wasOnTime }),
+			})
 				.then(() => {
 					fetchComplains()
 
 					return null
 				})
 				.catch((err: unknown) => {
-					console.error(`[complains] post error:`, err)
+					console.error(`[complains] patch error:`, err)
 				})
 		},
 		[fetchComplains],
 	)
 
-	return { complains, delays, addComplain }
+	return { complains, delays, addComplain, answerWasOnTime }
 }
