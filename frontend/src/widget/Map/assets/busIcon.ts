@@ -1,5 +1,3 @@
-export const BUS_ICON_ID = `bus-icon`
-
 export const BUS_ICON_SVG = `<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
   <circle cx="20" cy="20" r="18" fill="#FF6B35" stroke="#fff" stroke-width="2"/>
   <path d="M13 14h14c1.1 0 2 .9 2 2v8c0 1.1-.9 2-2 2h-1l-1 2h-2l-1-2h-4l-1 2h-2l-1-2h-1c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2z" fill="#fff"/>
@@ -8,24 +6,3 @@ export const BUS_ICON_SVG = `<svg width="40" height="40" viewBox="0 0 40 40" fil
   <circle cx="15" cy="24" r="1" fill="#333"/>
   <circle cx="25" cy="24" r="1" fill="#333"/>
 </svg>`
-
-export function loadBusImage(map: {
-	hasImage: (id: string) => boolean
-	addImage: (id: string, img: HTMLImageElement) => void
-}): Promise<void> {
-	return new Promise((resolve, reject) => {
-		if (map.hasImage(BUS_ICON_ID)) {
-			resolve()
-
-			return
-		}
-
-		const img = new Image(40, 40)
-		img.onload = () => {
-			map.addImage(BUS_ICON_ID, img)
-			resolve()
-		}
-		img.onerror = reject
-		img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(BUS_ICON_SVG)}`
-	})
-}

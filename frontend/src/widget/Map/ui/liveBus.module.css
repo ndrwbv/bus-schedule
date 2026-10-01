@@ -1,0 +1,76 @@
+/*
+ * Live-автобус — DOM-маркер, а не слой карты: пины остановок тоже DOM и всегда поверх canvas,
+ * поэтому автобус у остановки (и под кластерами на мелком зуме) пропадал.
+ * Элемент 40×40 — это иконка, остальное позиционируется от его центра.
+ */
+.bus {
+	position: relative;
+	width: 40px;
+	height: 40px;
+	/* не мешает тапать по пинам и таскать карту */
+	pointer-events: none;
+}
+
+/* Пульс: от края иконки (22 px) наружу до 40 px и затухает */
+.pulse {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 44px;
+	height: 44px;
+	margin: -22px 0 0 -22px;
+	border-radius: 50%;
+	background: #ff6b35;
+	opacity: 0;
+	animation: livebus-pulse 2s linear infinite;
+}
+
+@keyframes livebus-pulse {
+	0% {
+		transform: scale(1);
+		opacity: 0;
+	}
+	15% {
+		transform: scale(1.12);
+		opacity: 0.45;
+	}
+	100% {
+		transform: scale(1.82);
+		opacity: 0;
+	}
+}
+
+/* Стрелка курса 64×64 вокруг центра иконки, треугольник у верхнего края — обходит кружок */
+.arrow {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 64px;
+	height: 64px;
+	margin: -32px 0 0 -32px;
+}
+
+.icon {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 40px;
+	height: 40px;
+}
+
+.label {
+	position: absolute;
+	top: 42px;
+	left: 50%;
+	transform: translateX(-50%);
+	padding: 1px 8px;
+	border: 1px solid #ff6b35;
+	border-radius: 10px;
+	background: #fff;
+	color: #333;
+	font-family: -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 16px;
+	white-space: nowrap;
+}
