@@ -67,7 +67,7 @@ if (!self.define) {
     });
   };
 }
-define(['./workbox-9c89b58b'], (function (workbox) { 'use strict';
+define(['./workbox-0615ca64'], (function (workbox) { 'use strict';
 
   self.skipWaiting();
   workbox.clientsClaim();
@@ -82,17 +82,19 @@ define(['./workbox-9c89b58b'], (function (workbox) { 'use strict';
     "revision": "3ca0b8505b4bec776b69afdba2768812"
   }, {
     "url": "index.html",
-    "revision": "0.3fe68hlvnek"
+    "revision": "0.0cpacjok1i8"
   }], {});
   workbox.cleanupOutdatedCaches();
   workbox.registerRoute(new workbox.NavigationRoute(workbox.createHandlerBoundToURL("index.html"), {
-    allowlist: [/^\/$/]
+    allowlist: [/^\/$/],
+    denylist: [/^\/api\//, /\.[^/]*$/]
   }));
-  workbox.registerRoute(/\/api\/schedule$/, new workbox.StaleWhileRevalidate({
+  workbox.registerRoute(/\/api\/schedule$/, new workbox.NetworkFirst({
     "cacheName": "schedule-api",
+    "networkTimeoutSeconds": 3,
     plugins: [new workbox.ExpirationPlugin({
       maxEntries: 1,
-      maxAgeSeconds: 86400
+      maxAgeSeconds: 604800
     })]
   }), 'GET');
 

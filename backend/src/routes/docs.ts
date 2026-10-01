@@ -94,6 +94,11 @@ const spec = {
         type: 'object',
         properties: {
           liveTracking: { type: 'boolean', default: true, description: 'Показывать live-позицию автобуса на карте' },
+          liveDirection: {
+            type: 'boolean',
+            default: false,
+            description: 'Фоновый опрос перевозчика, чтобы направление автобуса считалось без открытой карты',
+          },
         },
       },
       BannerMessage: {

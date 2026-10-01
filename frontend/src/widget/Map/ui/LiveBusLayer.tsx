@@ -157,7 +157,8 @@ export const LiveBusLayer: React.FC<{ map: TMap }> = ({ map }) => {
 	const dispatch = useDispatch()
 	const liveTrackingEnabled = useSelector(liveTrackingEnabledSelector)
 	const showLiveBus = useSelector(showLiveBusSelector)
-	const showBusDirection = useSelector(showBusDirectionSelector)
+	// Бета: тогл «Направление автобуса» в настройках, по умолчанию выключен
+	const showDirection = useSelector(showBusDirectionSelector)
 	const shouldPoll = liveTrackingEnabled && showLiveBus
 
 	const animFrameRef = useRef<number | null>(null)
@@ -166,8 +167,6 @@ export const LiveBusLayer: React.FC<{ map: TMap }> = ({ map }) => {
 	const lastFrameTimeRef = useRef<number>(0)
 
 	const { data: features } = useGetFeaturesQuery()
-	// Бета: бэкенд-флаг liveDirection + тогл «Направление автобуса» в настройках
-	const showDirection = features?.liveDirection === true && showBusDirection
 	const showDirectionRef = useRef(showDirection)
 	showDirectionRef.current = showDirection
 

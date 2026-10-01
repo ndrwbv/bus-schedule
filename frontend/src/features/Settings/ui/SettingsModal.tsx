@@ -53,9 +53,7 @@ export const SettingsModal: React.FC<Props> = ({ onClose }) => {
 	const showBusDirection = useSelector(showBusDirectionSelector)
 	const liveTrackingEnabled = useSelector(liveTrackingEnabledSelector)
 
-	const { data: features } = useGetFeaturesQuery()
-	// Бета-переключатель виден, только пока на бэке включён флаг liveDirection
-	const liveDirectionAvailable = features?.liveDirection === true
+	useGetFeaturesQuery()
 
 	const handleLiveBusToggle = (): void => {
 		if (!liveTrackingEnabled) return
@@ -83,15 +81,13 @@ export const SettingsModal: React.FC<Props> = ({ onClose }) => {
 				onToggle={handleLiveBusToggle}
 			/>
 
-			{liveDirectionAvailable && (
-				<ToggleRow
-					title="Направление автобуса (бета)"
-					subtitle="Стрелка и подпись «в город» / «из города»"
-					checked={!directionDisabled && showBusDirection}
-					disabled={directionDisabled}
-					onToggle={handleDirectionToggle}
-				/>
-			)}
+			<ToggleRow
+				title="Направление автобуса (бета)"
+				subtitle="Стрелка и подпись «в город» / «из города»"
+				checked={!directionDisabled && showBusDirection}
+				disabled={directionDisabled}
+				onToggle={handleDirectionToggle}
+			/>
 		</Modal>
 	)
 }
