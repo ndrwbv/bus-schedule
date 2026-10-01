@@ -109,7 +109,8 @@ and recorded in the `anomalies` field — do not "fix" them.
 01: backend + deploy, 02: schedule parser (Word — now disabled), 03: complaints, 04: live tracking,
 05: directions rework, 06: monitoring, 07: ads, 08: donations, 09: local business outreach,
 10: community channels, 11: authentication, 12: yandex maps analysis,
-13: schedule from photos (current way the schedule gets updated).
+13: schedule from photos (current way the schedule gets updated), 14: live bus direction
+(arrow + «в город / из города», behind the `liveDirection` flag and a settings toggle).
 
 ## Package Managers
 - Frontend: **Yarn 3.4.1**

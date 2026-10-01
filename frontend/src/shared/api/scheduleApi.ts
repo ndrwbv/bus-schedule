@@ -53,6 +53,12 @@ export interface LiveBusPosition {
 	lat: number
 	lng: number
 	description: string
+	/** Стабильный между опросами id (нет у старого бэкенда) */
+	id?: string
+	/** `out` — «в город», `inLB` — «из города», null — не определено */
+	direction?: 'out' | 'inLB' | null
+	/** Курс 0..360, 0 = север; null — автобус давно стоит */
+	bearing?: number | null
 }
 
 export interface LiveResponse {

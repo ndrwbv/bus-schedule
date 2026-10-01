@@ -21,6 +21,7 @@ import { bannerMessagesRouter } from './routes/bannerMessages';
 import { startComplainsCron } from './services/complains/cron';
 import { startLogsCron } from './services/logs/cron';
 import { initTelegramSubscribers, pollSubscribers } from './services/telegram/alerter';
+import { startLivePoller } from './services/liveProxy';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -35,6 +36,7 @@ pollSubscribers().catch((err) => logger.error({ err }, '[telegram] Ошибка 
 // startScheduleCron(); // см. комментарий к импорту выше
 startComplainsCron();
 startLogsCron();
+startLivePoller();
 
 app.use('/api', healthRouter);
 app.use('/api', scheduleRouter);

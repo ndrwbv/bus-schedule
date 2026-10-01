@@ -42,14 +42,15 @@
 │   ├── src/
 │   │   ├── index.ts       — точка входа
 │   │   ├── routes/        — роуты (health)
-│   │   ├── data/          — schedule-seed.json (сид для пустой БД)
-│   │   └── services/      — сервисы (db)
+│   │   ├── data/          — schedule-seed.json (сид для пустой БД), route-112s.json (линия маршрута)
+│   │   └── services/      — сервисы (db, live/ — трекер и направление live-автобусов)
 │   ├── package.json
 │   ├── tsconfig.json
 │   ├── Dockerfile
 │   └── .env.example
 ├── docker-compose.yml     ← backend + shared-proxy network
 ├── scripts/
+│   ├── build-route-112s.mjs — линия маршрута из OSM/OSRM для направления live
 │   ├── deploy.sh          — ручной деплой
 │   └── push-schedule.sh   — заливка расписания JSON'ом в прод
 ├── specs/                 ← спецификации фич + JSON расписания
@@ -282,7 +283,8 @@ Reverse-proxy nginx видит их по имени контейнера.
 | Метод | Эндпоинт | Описание |
 |-------|----------|----------|
 | GET | `/api/schedule` | Расписание в формате `ISchedule` |
-| GET | `/api/live` | Прокси live-позиции автобусов с пассажир-онлайн |
+| GET | `/api/live` | Live-позиции автобусов (прокси перевозчика) + стабильный `id`, `direction` (`out`/`inLB`/null), `bearing` — spec 14 |
+| GET / PUT | `/api/features` | Фича-флаги: `liveTracking`, `liveDirection` (фоновый опрос + тогл направления в настройках) |
 | GET | `/api/complains` | Список жалоб за сегодня |
 | POST | `/api/complains` | Создать жалобу |
 | POST | `/api/schedule/refresh` | Триггер ручного обновления расписания |

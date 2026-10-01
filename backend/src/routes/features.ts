@@ -8,6 +8,9 @@ const ADMIN_TOKEN = process.env.ADMIN_TOKEN;
 /** All known feature flags with defaults */
 const FEATURE_DEFAULTS: Record<string, boolean> = {
   liveTracking: true,
+  // Направление live-автобуса (specs/14-live-bus-direction.md): фоновый опрос перевозчика
+  // и переключатель «Направление автобуса» в настройках. Выключен, пока тестируем.
+  liveDirection: false,
 };
 
 /** GET /api/features — public, returns all feature flags */

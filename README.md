@@ -24,14 +24,15 @@
 │   ├── src/
 │   │   ├── index.ts       — точка входа
 │   │   ├── routes/        — роуты (health)
-│   │   ├── data/          — schedule-seed.json (сид для пустой БД)
-│   │   └── services/      — сервисы (db)
+│   │   ├── data/          — schedule-seed.json (сид для пустой БД), route-112s.json (линия маршрута)
+│   │   └── services/      — сервисы (db, live/ — трекер и направление live-автобусов)
 │   ├── package.json
 │   ├── tsconfig.json
 │   ├── Dockerfile
 │   └── .env.example
 ├── docker-compose.yml     ← backend + shared-proxy network
 ├── scripts/
+│   ├── build-route-112s.mjs — линия маршрута из OSM/OSRM для направления live
 │   ├── deploy.sh          — ручной деплой
 │   └── push-schedule.sh   — заливка расписания JSON'ом в прод
 ├── specs/                 ← спецификации фич + JSON расписания
