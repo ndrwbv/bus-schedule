@@ -25,6 +25,12 @@ export function bearing(a: LatLng, b: LatLng): number {
   return ((Math.atan2(y, x) * 180) / Math.PI + 360) % 360;
 }
 
+/** Разница двух курсов, 0..180 */
+export function angleDiff(a: number, b: number): number {
+  const d = Math.abs(a - b) % 360;
+  return d > 180 ? 360 - d : d;
+}
+
 // Локальная равнопромежуточная проекция вокруг Томска: на масштабе маршрута ошибка — сантиметры
 const M_PER_DEG_LAT = 110_540;
 const M_PER_DEG_LNG = 111_320 * Math.cos(toRad(56.47));
@@ -51,11 +57,12 @@ export function buildPolyline(latLngs: [number, number][]): Polyline {
 
 /**
  * Проекция точки на ломаную.
- * `dist` — расстояние до линии, `along` — сколько метров от начала линии до проекции.
+ * `dist` — расстояние до линии, `along` — сколько метров от начала линии до проекции,
+ * `heading` — куда идёт линия в этом месте (курс отрезка, 0 = север).
  */
-export function project(p: LatLng, line: Polyline): { dist: number; along: number } {
+export function project(p: LatLng, line: Polyline): { dist: number; along: number; heading: number } {
   const [px, py] = toXY(p);
-  let best = { dist: Infinity, along: 0 };
+  let best = { dist: Infinity, along: 0, heading: 0 };
 
   for (let i = 0; i < line.points.length - 1; i++) {
     const [ax, ay] = line.points[i];
@@ -65,7 +72,10 @@ export function project(p: LatLng, line: Polyline): { dist: number; along: numbe
     const len2 = dx * dx + dy * dy;
     const t = len2 === 0 ? 0 : Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / len2));
     const dist = Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
-    if (dist < best.dist) best = { dist, along: line.cum[i] + t * Math.sqrt(len2) };
+    if (dist < best.dist) {
+      const heading = ((Math.atan2(dx, dy) * 180) / Math.PI + 360) % 360;
+      best = { dist, along: line.cum[i] + t * Math.sqrt(len2), heading };
+    }
   }
 
   return best;

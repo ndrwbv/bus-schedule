@@ -137,11 +137,6 @@ export class LiveTracker {
     track.lastSeenAt = now;
     track.fixes = track.fixes.filter(f => now - f.t <= HISTORY_MS);
 
-    // Не нашли точку в 150 м — берём самую старую в окне: автобус стоит, detectDirection оставит прошлое
-    const window = track.fixes.filter(f => now - f.t <= BEFORE_MAX_MS);
-    const before = [...window].reverse().find(f => haversine(f, cur) >= BEFORE_MIN_MOVE_M) ?? window[0] ?? null;
-    track.direction = detectDirection(cur, before, track.direction);
-
     for (let i = track.fixes.length - 1; i >= 0; i--) {
       const f = track.fixes[i];
       if (now - f.t > BEARING_WINDOW_MS) break;
@@ -152,6 +147,12 @@ export class LiveTracker {
       }
     }
     if (now - track.bearingAt > BEARING_TTL_MS) track.bearing = null;
+
+    // Не нашли точку в 150 м — берём самую старую в окне: автобус стоит, detectDirection решит по
+    // конечной, курсу или прошлому направлению
+    const window = track.fixes.filter(f => now - f.t <= BEFORE_MAX_MS);
+    const before = [...window].reverse().find(f => haversine(f, cur) >= BEFORE_MIN_MOVE_M) ?? window[0] ?? null;
+    track.direction = detectDirection(cur, before, track.direction, track.bearing);
 
     track.fixes.push(cur);
   }

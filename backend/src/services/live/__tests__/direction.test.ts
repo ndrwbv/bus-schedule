@@ -43,9 +43,29 @@ test('участки одного плеча — по одной позиции,
   assert.equal(detectDirection(OUT.naberezhnaya, null, null), 'out');
 });
 
-test('общий участок без истории — не угадываем', () => {
+test('общий участок без истории и без курса — не угадываем', () => {
   assert.equal(detectDirection(OUT.tgu, null, null), null);
   assert.equal(detectDirection(OUT.tgu, null, 'inLB'), 'inLB');
+});
+
+test('стоит на общем участке, но курс известен — плечо по курсу', () => {
+  assert.equal(detectDirection(OUT.tgu, null, null, 2), 'out');
+  assert.equal(detectDirection(OUT.tgu, null, null, 178), 'inLB');
+  // Курс сильнее прошлого направления: автобус развернулся, а сдвинуться ещё не успел
+  assert.equal(detectDirection(OUT.tgu, null, 'out', 178), 'inLB');
+  // Курс поперёк улицы ничего не говорит — остаётся прошлое
+  assert.equal(detectDirection(OUT.tgu, null, 'out', 90), 'out');
+  // С прода 2026-10-01: стоит у Автопарка, курс 221° — «из города»
+  assert.equal(detectDirection({ lat: 56.5167, lng: 84.9788 }, null, null, 221), 'inLB');
+});
+
+test('стоит на конечной — показываем, куда поедет', () => {
+  // С прода 2026-10-01: после рестарта бэка автобусы стояли на конечных без направления
+  assert.equal(detectDirection({ lat: 56.5133, lng: 84.9893 }, null, null), 'inLB');
+  assert.equal(detectDirection({ lat: 56.4593, lng: 84.906 }, null, null), 'out');
+  // Приехал «в город» и встал на конечной — дальше поедет «из города»
+  const parked = { lat: IN_LB.internatsionalistov.lat + 0.0001, lng: IN_LB.internatsionalistov.lng };
+  assert.equal(detectDirection(parked, IN_LB.internatsionalistov, 'out'), 'inLB');
 });
 
 test('стоит на остановке — прошлое направление', () => {
@@ -58,16 +78,17 @@ test('далеко от маршрута — нет направления', () 
   assert.equal(detectDirection(DEPOT, null, 'out'), null);
 });
 
-test('конечная Серебряный бор: приехал из Левобережного, уехал к Ахматовой', () => {
-  assert.equal(detectDirection(OUT.serBor, IN_LB.triElementa, null), 'inLB');
+test('конечная Серебряный бор: приехал из Левобережного — уже «в город», уехал к Ахматовой', () => {
+  assert.equal(detectDirection(OUT.serBor, IN_LB.triElementa, 'inLB'), 'out');
   assert.equal(detectDirection(OUT.akhmatovoy, OUT.serBor, 'inLB'), 'out');
 });
 
-test('конечная Интернационалистов: приехал в город, уехал из города', () => {
-  assert.equal(detectDirection(IN_LB.internatsionalistov, OUT.sberbank, null), 'out');
+test('конечная Интернационалистов: подъезжает в город, уехал из города', () => {
+  const litsey7 = { lat: 56.5150115, lng: 84.9846535 };
+  assert.equal(detectDirection(litsey7, OUT.sberbank, null), 'out');
   assert.equal(detectDirection(IN_LB.avtopark, IN_LB.internatsionalistov, 'out'), 'inLB');
 });
 
 test('без геометрии маршрута — всегда null', () => {
-  assert.equal(detectDirection(IN_LB.levitana, null, 'out', null), null);
+  assert.equal(detectDirection(IN_LB.levitana, null, 'out', null, null), null);
 });
