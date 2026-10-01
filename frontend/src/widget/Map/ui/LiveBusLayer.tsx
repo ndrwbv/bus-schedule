@@ -42,12 +42,14 @@ function angleDelta(from: number, to: number): number {
 
 function createBus(map: maplibregl.Map, bus: LiveBusPosition): BusState {
 	const root = document.createElement(`div`)
-	root.className = styles.bus
+	root.className = styles.marker
 	root.innerHTML =
+		`<div class="${styles.bus}">` +
 		`<div class="${styles.pulse}"></div>` +
 		`<div class="${styles.arrow}" hidden>${ARROW_SVG}</div>` +
 		`<img class="${styles.icon}" src="${BUS_ICON_URL}" alt="">` +
-		`<div class="${styles.label}" hidden></div>`
+		`<div class="${styles.label}" hidden></div>` +
+		`</div>`
 
 	const marker = new maplibregl.Marker({ element: root, anchor: `center` }).setLngLat([bus.lng, bus.lat]).addTo(map)
 	// Маркер сам выставляет стили элементу — z-index ставим после addTo
