@@ -10,7 +10,7 @@ export const Footer: React.FC = () => (
 		<ContainerStyled>
 			<div>
 				<GrayTextStyled>
-					Расписание на сайте набрано с фотографий расписания от перевозчика ({SCHEDULE_SOURCE_DATE}). Открыть
+					Расписание до 6 ноября включительно: фотографии перевозчика ({SCHEDULE_SOURCE_DATE}). Открыть
 					первоисточник:
 				</GrayTextStyled>
 

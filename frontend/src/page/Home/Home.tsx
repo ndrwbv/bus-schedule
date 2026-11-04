@@ -6,6 +6,7 @@ import { BottomSheetCustom } from 'features/BottomSheet/BottomSheet'
 import { DonateProvider } from 'features/Donate'
 import { FavoriteStops } from 'features/FavoriteStops'
 import { Info } from 'features/Info'
+import { RouteSchedule } from 'features/RouteSchedule/RouteSchedule'
 import { SettingsButton } from 'features/Settings'
 import { TripStopsModal } from 'features/TripStops'
 import useSchedule from 'shared/store/schedule/useSchedule'
@@ -18,16 +19,14 @@ import { TodaysBuses } from 'widget/TodaysBuses'
 
 import { HomeContainerStyled } from './Home.styled'
 
-const Map = lazy(() => import('widget/Map/ui/Map').then(m => ({ default: m.Map })))
-const NearestStops = lazy(() =>
-	import('features/NearestStops/NearestStops').then(m => ({ default: m.NearestStops })),
-)
-const Complains = lazy(() => import('features/Complains/ui/Complains').then(m => ({ default: m.Complains })))
-const YandexAd = lazy(() => import('features/YandexAd/YandexAd').then(m => ({ default: m.YandexAd })))
+const Map = lazy(() => import(`widget/Map/ui/Map`).then(m => ({ default: m.Map })))
+const NearestStops = lazy(() => import(`features/NearestStops/NearestStops`).then(m => ({ default: m.NearestStops })))
+const Complains = lazy(() => import(`features/Complains/ui/Complains`).then(m => ({ default: m.Complains })))
+const YandexAd = lazy(() => import(`features/YandexAd/YandexAd`).then(m => ({ default: m.YandexAd })))
 const OtherTimeBusses = lazy(() =>
-	import('features/OtherTimeBuses/OtherTimeBuses').then(m => ({ default: m.OtherTimeBusses })),
+	import(`features/OtherTimeBuses/OtherTimeBuses`).then(m => ({ default: m.OtherTimeBusses })),
 )
-const DonateCard = lazy(() => import('features/Donate/ui/Donate').then(m => ({ default: m.DonateCard })))
+const DonateCard = lazy(() => import(`features/Donate/ui/Donate`).then(m => ({ default: m.DonateCard })))
 
 export const Home: React.FC = () => {
 	useSchedule()
@@ -45,13 +44,14 @@ export const Home: React.FC = () => {
 					</HeaderInnerStyled>
 				</HeaderContainerBetaStyled>
 
-				<Suspense fallback={<div style={{ height: '40vh', background: '#e8e8e6' }} />}>
+				<Suspense fallback={<div style={{ height: `40vh`, background: `#e8e8e6` }} />}>
 					<Map />
 				</Suspense>
 
 				<BottomSheetCustom header={<BottomSheetHeader />}>
 					<BottomSheetBgStyled>
 						<MainLayoutBetaStyled>
+							<RouteSchedule />
 							<Info />
 							<Suspense fallback={null}>
 								<NearestStops />

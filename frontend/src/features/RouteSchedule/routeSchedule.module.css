@@ -1,0 +1,67 @@
+.notice {
+	margin: 12px;
+	padding: 16px;
+	border-radius: 16px;
+	background: #eef7ff;
+	color: #182d46;
+	font-size: 14px;
+	line-height: 1.5;
+}
+.notice h2 {
+	font-size: 20px;
+	margin: 0 0 12px;
+}
+.notice h3 {
+	font-size: 17px;
+}
+.notice p {
+	margin: 8px 0;
+}
+.notice a {
+	color: #1754a0;
+	text-decoration: underline;
+}
+.notice button,
+.notice select {
+	padding: 10px;
+	border: 1px solid #9bb8d5;
+	border-radius: 8px;
+	background: white;
+	color: #182d46;
+	font: inherit;
+	max-width: 100%;
+}
+.notice label {
+	display: block;
+	margin: 12px 0;
+}
+.scroll {
+	overflow-x: auto;
+	max-width: 100%;
+}
+.scroll table {
+	border-collapse: collapse;
+	font-variant-numeric: tabular-nums;
+	font-size: 13px;
+}
+.scroll th,
+.scroll td {
+	padding: 8px;
+	border: 1px solid #ccd9e6;
+	white-space: nowrap;
+	text-align: left;
+}
+.scroll th {
+	background: #e1edfa;
+}
+.scroll th:first-child {
+	position: sticky;
+	left: 0;
+	white-space: normal;
+	min-width: 130px;
+	max-width: 180px;
+}
+.scroll small {
+	display: block;
+	font-weight: normal;
+}

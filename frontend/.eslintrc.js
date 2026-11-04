@@ -7,7 +7,7 @@ module.exports = {
 		`plugin:prettier/recommended`,
 	],
 	plugins: [`optimize-regex`, `simple-import-sort`],
-	ignorePatterns: [`**/dist/**/*.*`, `src/page/Game/*`, `vite.config.ts`, `dev-dist`],
+	ignorePatterns: [`**/dist/**/*.*`, `src/page/Game/*`, `vite.config.ts`, `vitest.config.ts`, `dev-dist`],
 	rules: {
 		'react/prop-types': `off`,
 		'sonarjs/prefer-single-boolean-return': `off`,
@@ -147,6 +147,8 @@ module.exports = {
 			files: [`**/*.spec.ts`, `**/*.spec.tsx`, `**/dsl/**`],
 			extends: [`plugin:jest/recommended`],
 			rules: {
+				// Vitest supplies Jest-compatible assertions; do not autodetect an uninstalled Jest.
+				'jest/no-deprecated-functions': `off`,
 				'jest/no-focused-tests': `error`,
 				'jest/no-identical-title': `error`,
 

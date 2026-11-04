@@ -81,14 +81,15 @@ interface MapLoaderProps {
 	loading: boolean
 	error: string | null
 	onRetry?: () => void
+	partial?: boolean
 }
 
-export const MapLoader: React.FC<MapLoaderProps> = ({ loading, error, onRetry }) => {
+export const MapLoader: React.FC<MapLoaderProps> = ({ loading, error, onRetry, partial }) => {
 	if (!loading && !error) return null
 
 	if (error) {
 		return (
-			<div style={overlayStyle} role="alert">
+			<div style={partial ? { ...overlayStyle, bottom: `auto`, padding: 12 } : overlayStyle} role="alert">
 				<div style={errorIconStyle} aria-hidden>
 					⚠️
 				</div>

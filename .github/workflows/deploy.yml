@@ -35,6 +35,10 @@ jobs:
         run: yarn install --frozen-lockfile
         working-directory: frontend
 
+      - name: Test frontend
+        run: yarn test
+        working-directory: frontend
+
       - name: Build frontend
         run: yarn build
         working-directory: frontend
@@ -110,4 +114,4 @@ jobs:
         run: |
           echo "Waiting for server to start..."
           sleep 10
-          curl -sf https://severbus.ru/api/health || echo "Health check failed (may need DNS/SSL setup)"
+          curl --fail --show-error --retry 5 --retry-delay 5 --retry-all-errors --max-time 15 https://severbus.ru/api/schedule -o /dev/null

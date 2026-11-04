@@ -7,7 +7,8 @@ import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&ur
 import { Protocol } from 'pmtiles'
 
 import 'maplibre-gl/dist/maplibre-gl.css'
-import { MAP_STYLE_URL } from '../mapProvider'
+import { watchMapLoading } from '../mapLoading'
+import { MAP_FALLBACK_STYLE_URL, MAP_STYLE_URL } from '../mapProvider'
 import { TMap } from '../TMap'
 import { MapContainerStyled } from './Map.styled'
 import { MapContent } from './MapContent'
@@ -17,9 +18,7 @@ maplibregl.setWorkerUrl(maplibreWorkerUrl)
 
 // Register PMTiles protocol for self-hosted vector tiles
 const pmtilesProtocol = new Protocol()
-maplibregl.addProtocol('pmtiles', pmtilesProtocol.tile)
-
-const LOAD_TIMEOUT_MS = 15000
+maplibregl.addProtocol(`pmtiles`, pmtilesProtocol.tile)
 
 const isWebGLSupported = (): boolean => {
 	try {
@@ -37,12 +36,16 @@ export const Map: React.FC = () => {
 	const [mapExt, setMapExt] = useState<TMap>(undefined)
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
+	const [usingFallback, setUsingFallback] = useState(false)
+	const [styleReady, setStyleReady] = useState(false)
 	const [reloadKey, setReloadKey] = useState(0)
 	const mapRef = useRef<maplibregl.Map | null>(null)
 
 	const handleRetry = useCallback(() => {
 		setError(null)
 		setLoading(true)
+		setUsingFallback(false)
+		setStyleReady(false)
 		setReloadKey(k => k + 1)
 	}, [])
 
@@ -61,12 +64,14 @@ export const Map: React.FC = () => {
 			return undefined
 		}
 
-		let loaded = false
+		setStyleReady(false)
+		setLoading(true)
+		setError(null)
 
 		let map: maplibregl.Map
 		try {
 			map = new maplibregl.Map({
-				style: MAP_STYLE_URL,
+				style: usingFallback ? MAP_FALLBACK_STYLE_URL : MAP_STYLE_URL,
 				center: [84.899966, 56.47177],
 				zoom: 15.5,
 				// Self-hosted pmtiles содержит только bbox Томска (84.75-85.10, 56.35-56.55).
@@ -83,7 +88,7 @@ export const Map: React.FC = () => {
 				pitch: 45,
 				bearing: 60,
 				container: `map`,
-				attributionControl: false,
+				attributionControl: { compact: true },
 				// Since maplibre 5 WebGL context options live here (the defaults are the same, kept explicit)
 				canvasContextAttributes: { antialias: false, failIfMajorPerformanceCaveat: false },
 			})
@@ -97,56 +102,46 @@ export const Map: React.FC = () => {
 			return undefined
 		}
 
-		map.on(`load`, () => {
-			loaded = true
-			// Hide all map text labels (street names, POIs, etc.)
-			const keepLayers = new Set(['ad-banner-layer'])
-			for (const layer of map.getStyle().layers) {
-				if (layer.type === 'symbol' && !keepLayers.has(layer.id)) {
-					map.setLayoutProperty(layer.id, 'visibility', 'none')
+		const stopWatching = watchMapLoading(map, !usingFallback && MAP_STYLE_URL !== MAP_FALLBACK_STYLE_URL, {
+			onStyleReady: () => {
+				setStyleReady(true)
+				setLoading(false)
+				setError(null)
+				// Hide basemap labels before adding our own symbol layers.
+				for (const layer of map.getStyle().layers) {
+					if (layer.type === `symbol`) map.setLayoutProperty(layer.id, `visibility`, `none`)
 				}
-			}
-
-			setError(null)
-			setLoading(false)
+			},
+			onLoaded: () => {
+				setError(null)
+				setLoading(false)
+			},
+			onFallback: () => {
+				setStyleReady(false)
+				setLoading(true)
+				setError(null)
+				setUsingFallback(true)
+			},
+			onError: message => {
+				setError(message)
+				setLoading(false)
+			},
 		})
-
-		map.on(`error`, e => {
-			const err = e as unknown as { error?: Error; message?: string }
-			// eslint-disable-next-line no-console
-			console.error(`[Map] error event:`, err.error ?? err)
-
-			// Tile-level errors shouldn't block the whole map if it already rendered
-			if (loaded) return
-
-			const raw = err.error?.message || err.message || `неизвестная ошибка`
-			setError(raw)
-			setLoading(false)
-		})
-
-		// Fallback: on some mobile browsers load event doesn't fire in a timely manner
-		const timeout = setTimeout(() => {
-			if (loaded) return
-			// eslint-disable-next-line no-console
-			console.error(`[Map] load timeout after ${LOAD_TIMEOUT_MS}ms`)
-			setError(`Превышено время ожидания (${LOAD_TIMEOUT_MS / 1000} с). Проверьте подключение к интернету.`)
-			setLoading(false)
-		}, LOAD_TIMEOUT_MS)
 
 		mapRef.current = map
 		setMapExt(map)
 
 		return () => {
-			clearTimeout(timeout)
+			stopWatching()
 			map.remove()
 			mapRef.current = null
 		}
-	}, [reloadKey])
+	}, [reloadKey, usingFallback])
 
 	return (
 		<MapContainerStyled id="map">
-			<MapLoader loading={loading} error={error} onRetry={handleRetry} />
-			<MapContent map={mapExt} mapLoaded={!loading && !error} />
+			<MapLoader loading={loading} error={error} onRetry={handleRetry} partial={styleReady} />
+			{styleReady && <MapContent key={`${reloadKey}-${usingFallback}`} map={mapExt} mapLoaded={styleReady} />}
 		</MapContainerStyled>
 	)
 }
