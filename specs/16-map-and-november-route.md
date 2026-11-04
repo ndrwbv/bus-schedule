@@ -48,7 +48,12 @@ https://xn--80aasi5akda.online/112s (дата начала 2026-11-07).
   восстановлены HTTPS, SSH, API и карта. Причина исходной паузы не установлена.
 - Docker и deploy проверяли закрытый `/api/health` и получали 401. Проверка
   переведена на публичный `/api/schedule`; ошибка deploy теперь завершает workflow.
-- Новые изменения готовятся к выкладке на основе production main.
+- Изменения выложены из production main: commit `956ec4e`, успешный Deploy
+  https://github.com/ndrwbv/bus-schedule/actions/runs/41850371067 .
+- В Chrome владельца проверены версия 956ec4e, карта, объявление, раскрытие
+  таблиц и переключение на выходные (8 и 7 рейсов).
+- Диагностика через reverse-proxy прошла:
+  https://github.com/ndrwbv/reverse-proxy/actions/runs/41850330824 .
 
 ## Проверка
 
