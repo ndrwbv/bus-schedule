@@ -10,8 +10,9 @@ import * as maplibregl from 'maplibre-gl'
 import { GeoJSONSource } from 'maplibre-gl'
 import { AndrewLytics } from 'shared/lib'
 import { busStopNewSelector, setBusStopNew } from 'shared/store/busStop/busStopInfoSlice'
-import { STOPS } from 'shared/store/busStop/const/stops'
+import { getActiveStops, STOPS } from 'shared/store/busStop/const/stops'
 import { DirectionsNew, IStops } from 'shared/store/busStop/Stops'
+import { ISchedule } from 'shared/store/schedule/ISchedule'
 import { currentDaySelector, scheduleSelector } from 'shared/store/schedule/scheduleSlice'
 
 import { TMap } from '../TMap'
@@ -32,13 +33,19 @@ const PIN_REFRESH_MS = 30_000
 const STOPS_BY_ID = new Map(STOPS.map(stop => [stop.id, stop]))
 
 /** Every stop but the selected one — the selected stop is drawn separately and never clustered */
-const stopsFeatureCollection = (excludeId: string | null): GeoJSON.FeatureCollection<GeoJSON.Point> => ({
+const stopsFeatureCollection = (
+	excludeId: string | null,
+	schedule: ISchedule,
+	dayKey: number,
+): GeoJSON.FeatureCollection<GeoJSON.Point> => ({
 	type: `FeatureCollection`,
-	features: STOPS.filter(stop => stop.id !== excludeId).map(stop => ({
-		type: `Feature`,
-		properties: { id: stop.id, direction: stop.direction },
-		geometry: { type: `Point`, coordinates: [stop.latLon[1], stop.latLon[0]] },
-	})),
+	features: getActiveStops(schedule, dayKey)
+		.filter(stop => stop.id !== excludeId)
+		.map(stop => ({
+			type: `Feature`,
+			properties: { id: stop.id, direction: stop.direction },
+			geometry: { type: `Point`, coordinates: [stop.latLon[1], stop.latLon[0]] },
+		})),
 })
 
 interface PinEntry {
@@ -164,7 +171,7 @@ export const MapContent: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map, m
 
 			map.addSource(STOPS_SOURCE_ID, {
 				type: `geojson`,
-				data: stopsFeatureCollection(selectedIdRef.current),
+				data: stopsFeatureCollection(selectedIdRef.current, scheduleRef.current, dayRef.current),
 				cluster: true,
 				clusterMaxZoom: 14,
 				clusterRadius: 50,
@@ -338,7 +345,7 @@ export const MapContent: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map, m
 
 		const source = map.getSource<GeoJSONSource>(STOPS_SOURCE_ID)
 		// maplibre 6: setData is async; a newer call supersedes this one, nothing to handle
-		source?.setData(stopsFeatureCollection(busStop?.id ?? null)).catch(() => undefined)
+		source?.setData(stopsFeatureCollection(busStop?.id ?? null, schedule, currentDayKey)).catch(() => undefined)
 
 		if (!busStop) return undefined
 
@@ -353,7 +360,7 @@ export const MapContent: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map, m
 			entry?.marker.remove()
 			selectedPinRef.current = null
 		}
-	}, [busStop, createPin, map, mapLoaded])
+	}, [busStop, createPin, map, mapLoaded, schedule, currentDayKey])
 
 	useEffect(() => {
 		if (!map) return undefined

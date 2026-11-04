@@ -1,9 +1,14 @@
+/* Cached payloads can be from older app versions without complete metadata. */
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { getCachedSchedule, setCachedSchedule, useGetScheduleQuery } from 'shared/api/scheduleApi'
 import { ISchedule } from 'shared/store/schedule/ISchedule'
 
-import { setScheduleFromApi } from './scheduleSlice'
+import { busStopSelector, setBusStop } from '../busStop/busStopInfoSlice'
+import { holidaysSelector } from '../holidays/holidaysSlice'
+import { serviceDateSelector, setScheduleFromApi, setServiceDate } from './scheduleSlice'
+import { scheduleDay, tomskDate } from './serviceDate'
 
 /** Defensive check: only accept payloads with the expected 3-direction shape. */
 function isValidSchedule(s: unknown): s is ISchedule {
@@ -32,6 +37,20 @@ function isValidSchedule(s: unknown): s is ISchedule {
  */
 export function useScheduleLoader(): void {
 	const dispatch = useDispatch()
+	const holidays = useSelector(holidaysSelector)
+	const serviceDate = useSelector(serviceDateSelector)
+	const busStop = useSelector(busStopSelector)
+	useEffect(() => {
+		const refreshDate = (): void => {
+			const date = tomskDate()
+			dispatch(setServiceDate({ date, dayKey: scheduleDay(date, holidays) }))
+			if (date !== serviceDate && busStop) dispatch(setBusStop(busStop))
+		}
+		refreshDate()
+		const timer = setInterval(refreshDate, 30_000)
+
+		return () => clearInterval(timer)
+	}, [dispatch, holidays, serviceDate, busStop])
 
 	// Step 1: Load from cache immediately on mount
 	useEffect(() => {

@@ -5,6 +5,7 @@ import { busStopNewSelector, setBusStopNew } from 'shared/store/busStop/busStopI
 import { findLinkedLeg, getTrip, TripRef, userDirectionFromInternal } from 'shared/store/busStop/const/stops'
 import { UserDirection } from 'shared/store/busStop/Stops'
 import { currentDaySelector, scheduleSelector } from 'shared/store/schedule/scheduleSlice'
+import { tomskDate } from 'shared/store/schedule/serviceDate'
 import { Modal } from 'shared/ui/Modal'
 
 import { nowMinutesInTomsk, timeToMinutes } from '../lib/nowInTomsk'
@@ -30,14 +31,14 @@ const TripStops: React.FC<{ trip: TripRef }> = ({ trip }) => {
 	const mineRef = useRef<HTMLButtonElement>(null)
 
 	const stops = useMemo(
-		() => getTrip(schedule, trip.direction, trip.dayKey, trip.tripIndex),
-		[schedule, trip.dayKey, trip.direction, trip.tripIndex],
+		() => getTrip(schedule, trip.direction, trip.dayKey, trip.tripIndex, trip.tripId),
+		[schedule, trip.dayKey, trip.direction, trip.tripIndex, trip.tripId],
 	)
 	const nextLeg = useMemo(() => findLinkedLeg(schedule, trip, `next`), [schedule, trip])
 	const prevLeg = useMemo(() => findLinkedLeg(schedule, trip, `prev`), [schedule, trip])
 
 	const userDirection = userDirectionFromInternal(trip.direction)
-	const isToday = trip.dayKey === currentDayKey
+	const isToday = trip.serviceDate ? trip.serviceDate === tomskDate() : trip.dayKey === currentDayKey
 	const now = nowMinutesInTomsk()
 	const hasInterpolated = stops.some(s => s.interpolated)
 
@@ -59,7 +60,7 @@ const TripStops: React.FC<{ trip: TripRef }> = ({ trip }) => {
 	const renderLinked = (leg: TripRef | null, kind: 'next' | 'prev'): JSX.Element | null => {
 		if (!leg) return null
 
-		const legStops = getTrip(schedule, leg.direction, leg.dayKey, leg.tripIndex)
+		const legStops = getTrip(schedule, leg.direction, leg.dayKey, leg.tripIndex, leg.tripId)
 		if (legStops.length === 0) return null
 
 		const legDirection = USER_DIRECTION_SHORT[userDirectionFromInternal(leg.direction)]
@@ -100,12 +101,13 @@ const TripStops: React.FC<{ trip: TripRef }> = ({ trip }) => {
 			{renderLinked(prevLeg, `prev`)}
 
 			<ol className={styles.list} style={prevLeg ? { marginTop: 12 } : undefined}>
-				{stops.map(({ stop, time, interpolated }) => {
-					const isMine = myStop?.id === stop.id
+				{stops.map(({ stop, time, interpolated }, visitIndex) => {
+					const isMine =
+						trip.visitIndex === undefined ? myStop?.label === stop.label : visitIndex === trip.visitIndex
 					const isPassed = isToday && timeToMinutes(time) < now
 
 					return (
-						<li key={stop.id}>
+						<li key={`${stop.id}-${time}`}>
 							<button
 								ref={isMine ? mineRef : undefined}
 								className={rowClassName(isMine, isPassed)}
@@ -147,8 +149,10 @@ export const TripStopsModal: React.FC = () => {
 	const handleClose = (): void => {
 		dispatch(closeTrip())
 	}
-	const stops = getTrip(schedule, trip.direction, trip.dayKey, trip.tripIndex)
-	const title = stops.length > 0 ? `Рейс в ${stops[0].time}` : `Рейс`
+	const stops = getTrip(schedule, trip.direction, trip.dayKey, trip.tripIndex, trip.tripId)
+	const formattedDate = trip.serviceDate?.split(`-`).reverse().join(`.`)
+	const dayLabel = trip.serviceDate && trip.serviceDate !== tomskDate() ? ` · ${formattedDate}` : ``
+	const title = stops.length > 0 ? `Рейс в ${stops[0].time}${dayLabel}` : `Рейс`
 
 	return (
 		<Modal title={title} onClose={handleClose}>

@@ -18,6 +18,7 @@ export type StopKeysInSP =
 	| 'Cеребряный бор'
 
 export type StopKeysInLB =
+	| 'ГОАР'
 	| 'Интернационалистов'
 	| 'Автопарк'
 	| '10-я поликлиника'
@@ -45,6 +46,8 @@ export type StopKeysInLB =
 	| 'Cеребряный бор'
 
 export type StopKeysOut =
+	| 'ГОАР'
+	| 'Почта'
 	| 'Левитана'
 	| 'Синее небо'
 	| 'Этюд'
@@ -101,6 +104,10 @@ export interface TaggedTime {
 	dayKey: number
 	/** Index of the trip in the direction's per-stop time arrays (trips are aligned by index) */
 	tripIndex: number
+	tripId?: string
+	serviceDate?: string
+	visitIndex?: number
+	visitLabel?: string
 	interpolated?: boolean
 	/** Human-readable label of the stops used for interpolation, e.g. "Набережная и В. Маяковского" */
 	interpolatedFrom?: string

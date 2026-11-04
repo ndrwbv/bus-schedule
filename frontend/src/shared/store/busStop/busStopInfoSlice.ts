@@ -1,10 +1,12 @@
 // eslint-disable no-nested-ternary
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'shared/store/app/configureStore'
 
+import { usesCircuits } from '../schedule/circuitTrips'
 import {
 	AllStopsOptions,
 	findStopForUserDirection,
+	getScheduleTimes,
 	getUserDirectionsForLabel,
 	STOPS,
 	userDirectionFromInternal,
@@ -107,7 +109,24 @@ export const busStopNewSelector = (state: RootState): IStops<DirectionsNew> | nu
 export const directionSelector = (state: RootState): DirectionsNew => state.busStopInfo.direction
 export const userDirectionSelector = (state: RootState): UserDirection => state.busStopInfo.userDirection
 export const stopsOptionsSelector = (state: RootState): IOption<StopKeys | null>[] => state.busStopInfo.stopsOptions
-export const availableUserDirectionsSelector = (state: RootState): UserDirection[] =>
-	state.busStopInfo.availableUserDirections
+export const availableUserDirectionsSelector = createSelector(
+	[(state: RootState) => state.busStopInfo, (state: RootState) => state.scheduleSlice],
+	(busStopInfo, scheduleState): UserDirection[] => {
+		const stopLabel = busStopInfo.busStop
+		if (!stopLabel || !usesCircuits(scheduleState.schedule, scheduleState.serviceDate))
+			return busStopInfo.availableUserDirections
+
+		return [UserDirection.fromCity, UserDirection.toCity].filter(
+			direction =>
+				getScheduleTimes(
+					scheduleState.schedule,
+					direction,
+					scheduleState.currentDayKey,
+					stopLabel,
+					scheduleState.serviceDate,
+				).length > 0,
+		)
+	},
+)
 
 export default busStopInfoSlice.reducer

@@ -22,7 +22,7 @@ export const TodaysBuses: React.FC = () => {
 		return closestTimeArray.length === 0
 			? t(`No basses`)
 			: closestTimeArray.map(d => {
-					const key = `${d.direction}-${d.tripIndex}`
+					const key = `${d.direction}-${d.tripId ?? d.tripIndex}-${d.visitIndex ?? 0}`
 
 					return <TripTimeRow key={key} item={d} />
 			  })

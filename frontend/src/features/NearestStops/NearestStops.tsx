@@ -3,8 +3,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { userLocationSelector } from 'features/MyLocation/model/myLocationSlice'
 import L from 'leaflet'
 import { setBusStopNew } from 'shared/store/busStop/busStopInfoSlice'
-import { STOPS, userDirectionFromInternal } from 'shared/store/busStop/const/stops'
+import { getActiveStops, userDirectionFromInternal } from 'shared/store/busStop/const/stops'
 import { DirectionsNew, IStops, UserDirection } from 'shared/store/busStop/Stops'
+import { currentDaySelector, scheduleSelector } from 'shared/store/schedule/scheduleSlice'
 import { CardStyled, ContainerStyled } from 'shared/ui'
 
 import {
@@ -39,11 +40,13 @@ const NearestStop: React.FC<INearestStopProps> = ({ direction, label, id, onClic
 export const NearestStops: React.FC = () => {
 	const userLocation = useSelector(userLocationSelector)
 	const dispatch = useDispatch()
+	const schedule = useSelector(scheduleSelector)
+	const dayKey = useSelector(currentDaySelector)
 	const [stops, setStops] = useState<IStops<DirectionsNew>[]>([])
 
 	useEffect(() => {
 		if (userLocation) {
-			const nearestStops = STOPS.filter(
+			const nearestStops = getActiveStops(schedule, dayKey).filter(
 				stop =>
 					L.latLng([userLocation.coords.latitude, userLocation.coords.longitude]).distanceTo(stop.latLon) <
 					MAX_DISTANCE,
@@ -51,7 +54,7 @@ export const NearestStops: React.FC = () => {
 
 			setStops(nearestStops)
 		}
-	}, [userLocation])
+	}, [userLocation, schedule, dayKey])
 
 	const onStopClick = useCallback(
 		(id: string) => {

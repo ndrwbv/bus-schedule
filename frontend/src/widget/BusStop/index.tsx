@@ -44,6 +44,11 @@ export const BusStop: React.FC = () => {
 	const availableUserDirections = useSelector(availableUserDirectionsSelector)
 	const nextBus = useSelector(closestTimeArraySelector)[0] as TaggedTime | undefined
 
+	useEffect(() => {
+		if (availableUserDirections.length && !availableUserDirections.includes(userDirection))
+			dispatch(setUserDirection(availableUserDirections[0]))
+	}, [availableUserDirections, userDirection, dispatch])
+
 	const handleChangeBusStop = useCallback(
 		(busStopToChange: StopKeys) => {
 			dispatch(setBusStop(busStopToChange))
@@ -64,7 +69,16 @@ export const BusStop: React.FC = () => {
 
 	const handleNextBusClick = useCallback(() => {
 		if (!nextBus) return
-		dispatch(openTrip({ direction: nextBus.direction, dayKey: nextBus.dayKey, tripIndex: nextBus.tripIndex }))
+		dispatch(
+			openTrip({
+				direction: nextBus.direction,
+				dayKey: nextBus.dayKey,
+				tripIndex: nextBus.tripIndex,
+				tripId: nextBus.tripId,
+				visitIndex: nextBus.visitIndex,
+				serviceDate: nextBus.serviceDate,
+			}),
+		)
 		AndrewLytics(`trip:open-next`)
 	}, [dispatch, nextBus])
 

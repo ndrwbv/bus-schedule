@@ -15,7 +15,16 @@ export const TripTimeRow: React.FC<{ item: TaggedTime }> = ({ item }) => {
 	const dispatch = useDispatch()
 
 	const handleClick = (): void => {
-		dispatch(openTrip({ direction: item.direction, dayKey: item.dayKey, tripIndex: item.tripIndex }))
+		dispatch(
+			openTrip({
+				direction: item.direction,
+				dayKey: item.dayKey,
+				tripIndex: item.tripIndex,
+				tripId: item.tripId,
+				visitIndex: item.visitIndex,
+				serviceDate: item.serviceDate,
+			}),
+		)
 		AndrewLytics(`trip:open`)
 	}
 
@@ -25,6 +34,7 @@ export const TripTimeRow: React.FC<{ item: TaggedTime }> = ({ item }) => {
 				{item.interpolated ? `~` : ``}
 				{item.time}
 			</span>
+			{item.visitLabel && <span className={styles.via}>{item.visitLabel}</span>}
 			{item.via && <span className={styles.via}>{VIA_LABELS[item.via]}</span>}
 			{item.interpolated && item.interpolatedFrom && (
 				<span className={styles.approx}>(на основе: {item.interpolatedFrom})</span>

@@ -1,6 +1,7 @@
 import crypto from 'crypto'
 import { Router, Request, Response } from 'express'
 import multer from 'multer'
+import circuits from '../data/schedule-2026-11.json'
 import { getDb } from '../services/db'
 import {
   buildDiff,
@@ -39,7 +40,8 @@ scheduleRouter.get('/schedule', (_req: Request, res: Response) => {
       )
       .get() as { created_at: string } | undefined
 
-    const etag = `"${row.file_hash}"`
+    const fileHash = crypto.createHash('sha256').update(row.file_hash).update(JSON.stringify(circuits)).digest('hex')
+    const etag = `"${fileHash}"`
 
     // no-cache — это не «не кешируй», а «кешируй, но каждый раз перепроверяй».
     // Раньше стояло max-age=3600: браузер час вообще не спрашивал сервер, поэтому
@@ -63,12 +65,12 @@ scheduleRouter.get('/schedule', (_req: Request, res: Response) => {
     }
 
     res.json({
-      schedule: JSON.parse(row.data),
+      schedule: { ...JSON.parse(row.data), circuits },
       meta: {
         updatedAt: row.updated_at,
         lastCheckedAt: lastRun?.created_at ?? row.updated_at,
         parseMethod: row.parse_method,
-        fileHash: row.file_hash,
+        fileHash,
       },
     })
   } catch (err) {

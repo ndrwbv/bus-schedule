@@ -3,9 +3,11 @@ import { RootState } from 'shared/store/app/configureStore'
 
 import { getNextDay } from './getNextDay'
 import { ISchedule } from './ISchedule'
+import { dayOfWeek, tomskDate } from './serviceDate'
 
 export interface BusStopInfoState {
 	schedule: ISchedule
+	serviceDate: string
 	currentDayKey: number
 	nextDayKey: number
 	scheduleSource: 'empty' | 'api' | 'cache'
@@ -18,8 +20,9 @@ const EMPTY_SCHEDULE: ISchedule = { inSP: {}, out: {}, inLB: {} }
 
 const initialState: BusStopInfoState = {
 	schedule: EMPTY_SCHEDULE,
-	currentDayKey: new Date().getDay(),
-	nextDayKey: getNextDay(new Date().getDay()),
+	serviceDate: tomskDate(),
+	currentDayKey: dayOfWeek(tomskDate()),
+	nextDayKey: getNextDay(dayOfWeek(tomskDate())),
 	scheduleSource: `empty`,
 	lastUpdatedAt: null,
 	lastCheckedAt: null,
@@ -49,6 +52,11 @@ export const busStopInfoSlice = createSlice({
 			state.lastCheckedAt = action.payload.lastCheckedAt
 			state.parseMethod = action.payload.parseMethod
 		},
+		setServiceDate: (state, action: PayloadAction<{ date: string; dayKey: number }>) => {
+			state.serviceDate = action.payload.date
+			state.currentDayKey = action.payload.dayKey
+			state.nextDayKey = getNextDay(dayOfWeek(action.payload.date))
+		},
 		setCurrentDayKey: (state, action: PayloadAction<number>) => {
 			state.currentDayKey = action.payload
 			state.nextDayKey = getNextDay(action.payload)
@@ -56,7 +64,7 @@ export const busStopInfoSlice = createSlice({
 	},
 })
 
-export const { setSchedule, setScheduleFromApi, setCurrentDayKey } = busStopInfoSlice.actions
+export const { setSchedule, setScheduleFromApi, setCurrentDayKey, setServiceDate } = busStopInfoSlice.actions
 
 export const scheduleSelector = (state: RootState): ISchedule => state.scheduleSlice.schedule
 export const currentDaySelector = (state: RootState): number => state.scheduleSlice.currentDayKey
@@ -67,3 +75,5 @@ export const lastUpdatedAtSelector = (state: RootState): string | null => state.
 export const lastCheckedAtSelector = (state: RootState): string | null => state.scheduleSlice.lastCheckedAt
 
 export default busStopInfoSlice.reducer
+
+export const serviceDateSelector = (state: RootState): string => state.scheduleSlice.serviceDate

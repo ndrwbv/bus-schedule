@@ -1,7 +1,10 @@
 import { interpolateStopTimes } from 'shared/lib/time/interpolateStopTimes'
 
+import { getCircuitTimes, getCircuitTrip, linkedCircuitLeg, usesCircuits } from '../../schedule/circuitTrips'
 import { ISchedule } from '../../schedule/ISchedule'
+import { tomskDate } from '../../schedule/serviceDate'
 import { DirectionsNew, IOption, IStops, StopKeys, TaggedTime, UserDirection } from '../Stops'
+import { NOVEMBER_STOPS } from './novemberStops'
 import { STOPS_IN_LB } from './stopsInLbOptions'
 import { STOPS_IN_SP } from './stopsInSpOptions'
 import { STOPS_OUT } from './stopsOutOptions'
@@ -81,9 +84,26 @@ export const getStopTimes = (
 	direction: DirectionsNew,
 	dayKey: number,
 	stopLabel: string,
-): StopTimesResult => getDirectionTimes(schedule?.[direction], dayKey, stopLabel, direction)
+): StopTimesResult => {
+	if (schedule && usesCircuits(schedule)) {
+		const times = getCircuitTimes(
+			schedule,
+			direction === DirectionsNew.out ? UserDirection.toCity : UserDirection.fromCity,
+			dayKey,
+			stopLabel,
+		)
 
-export const STOPS = [...STOPS_IN_SP, ...STOPS_IN_LB, ...STOPS_OUT]
+		return {
+			times: times.map(item => item.time),
+			interpolated: times.some(item => item.interpolated),
+			fromStops: ``,
+		}
+	}
+
+	return getDirectionTimes(schedule?.[direction], dayKey, stopLabel, direction)
+}
+
+export const STOPS = [...STOPS_IN_SP, ...STOPS_IN_LB, ...STOPS_OUT, ...NOVEMBER_STOPS]
 
 const seen = new Set<string>()
 export const AllStopsOptions: IOption<StopKeys | null>[] = [
@@ -96,12 +116,14 @@ export const AllStopsOptions: IOption<StopKeys | null>[] = [
 	}).map(s => ({ label: s.label, value: s.label as StopKeys })),
 ]
 
-export const getUserDirectionsForLabel = (label: StopKeys): UserDirection[] => {
+export const getUserDirectionsForLabel = (label: StopKeys, serviceDate = tomskDate()): UserDirection[] => {
+	const legacy = STOPS.filter(stop => !stop.id.startsWith(`nov-`))
+	const available = serviceDate >= `2026-11-07` || !legacy.some(stop => stop.label === label) ? STOPS : legacy
 	const dirs: UserDirection[] = []
-	const hasFromCity = STOPS.some(
+	const hasFromCity = available.some(
 		s => s.label === label && (s.direction === DirectionsNew.inSP || s.direction === DirectionsNew.inLB),
 	)
-	const hasToCity = STOPS.some(s => s.label === label && s.direction === DirectionsNew.out)
+	const hasToCity = available.some(s => s.label === label && s.direction === DirectionsNew.out)
 	if (hasFromCity) dirs.push(UserDirection.fromCity)
 	if (hasToCity) dirs.push(UserDirection.toCity)
 
@@ -128,9 +150,11 @@ function mapToTagged(
 	via: 'park' | 'lb' | null,
 	direction: DirectionsNew,
 	dayKey: number,
+	serviceDate: string,
 ): TaggedTime[] {
 	return result.times.map((t, tripIndex) => ({
 		time: t,
+		serviceDate,
 		via,
 		direction,
 		dayKey,
@@ -154,11 +178,14 @@ export const getScheduleTimes = (
 	userDirection: UserDirection,
 	dayKey: number,
 	stopLabel: string,
+	serviceDate = tomskDate(),
 ): TaggedTime[] => {
+	if (schedule && usesCircuits(schedule, serviceDate))
+		return getCircuitTimes(schedule, userDirection, dayKey, stopLabel, serviceDate)
 	if (userDirection === UserDirection.toCity) {
 		const result = getDirectionTimes(schedule?.out, dayKey, stopLabel, DirectionsNew.out)
 
-		return mapToTagged(result, null, DirectionsNew.out, dayKey)
+		return mapToTagged(result, null, DirectionsNew.out, dayKey, serviceDate)
 	}
 
 	// fromCity: merge inSP + inLB (with interpolation fallback for each)
@@ -179,8 +206,8 @@ export const getScheduleTimes = (
 	const lbVia = hasBothBranches ? (`lb` as const) : null
 
 	const tagged: TaggedTime[] = [
-		...mapToTagged(inSpResult, spVia, DirectionsNew.inSP, dayKey),
-		...mapToTagged(inLbResult, lbVia, DirectionsNew.inLB, dayKey),
+		...mapToTagged(inSpResult, spVia, DirectionsNew.inSP, dayKey, serviceDate),
+		...mapToTagged(inLbResult, lbVia, DirectionsNew.inLB, dayKey, serviceDate),
 	]
 
 	return sortTaggedTimes(tagged)
@@ -201,13 +228,17 @@ export const getTrip = (
 	direction: DirectionsNew,
 	dayKey: number,
 	tripIndex: number,
-): TripStop[] =>
-	STOPS_BY_DIRECTION[direction].flatMap(stop => {
-		const result = getStopTimes(schedule, direction, dayKey, stop.label)
+	tripId?: string,
+): TripStop[] => {
+	if (schedule && tripId) return getCircuitTrip(schedule, tripId, direction)
+
+	return STOPS_BY_DIRECTION[direction].flatMap(stop => {
+		const result = getDirectionTimes(schedule?.[direction], dayKey, stop.label, direction)
 		const time = result.times[tripIndex] as string | undefined
 
 		return time ? [{ stop, time, interpolated: result.interpolated }] : []
 	})
+}
 
 const toMinutes = (time: string): number => {
 	const [h, m] = time.split(`:`).map(Number)
@@ -223,6 +254,9 @@ const toMinutes = (time: string): number => {
 const MAX_LAYOVER_MINUTES = 10
 
 export interface TripRef {
+	visitIndex?: number
+	tripId?: string
+	serviceDate?: string
 	direction: DirectionsNew
 	dayKey: number
 	tripIndex: number
@@ -249,6 +283,11 @@ export const findLinkedLeg = (
 ): TripRef | null => {
 	const isToCity = trip.direction === DirectionsNew.out
 	if ((kind === `next`) === isToCity) return null
+	if (schedule && trip.tripId) {
+		const direction = linkedCircuitLeg(schedule, trip.tripId, trip.direction)
+
+		return direction ? { ...trip, direction, visitIndex: undefined } : null
+	}
 
 	const stops = getTrip(schedule, trip.direction, trip.dayKey, trip.tripIndex)
 	if (stops.length === 0) return null
@@ -268,10 +307,15 @@ export const findLinkedLeg = (
 					: edge - toMinutes(candidate[candidate.length - 1].time)
 
 			if (gap >= 0 && gap <= MAX_LAYOVER_MINUTES && (!best || gap < best.gap)) {
-				best = { ref: { direction, dayKey: trip.dayKey, tripIndex }, gap }
+				best = { ref: { direction, dayKey: trip.dayKey, tripIndex, serviceDate: trip.serviceDate }, gap }
 			}
 		}
 	})
 
 	return (best as { ref: TripRef } | null)?.ref ?? null
 }
+
+export const getActiveStops = (schedule: ISchedule, dayKey: number): IStops<DirectionsNew>[] =>
+	usesCircuits(schedule)
+		? STOPS.filter(stop => getStopTimes(schedule, stop.direction, dayKey, stop.label).times.length > 0)
+		: STOPS.filter(stop => !stop.id.startsWith(`nov-`))
