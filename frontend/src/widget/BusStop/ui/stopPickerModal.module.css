@@ -8,9 +8,22 @@
 	cursor: pointer;
 	max-width: 200px;
 	text-align: left;
+	color: inherit;
+}
+
+.triggerLabel {
+	display: block;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+}
+
+.triggerDirection {
+	display: block;
+	margin-top: 2px;
+	color: #6b7075;
+	font-size: 12px;
+	font-weight: 400;
 }
 
 @media (hover: hover) {
@@ -74,10 +87,6 @@
 }
 
 .item {
-	display: flex;
-	align-items: baseline;
-	justify-content: space-between;
-	gap: 12px;
 	width: 100%;
 	border: none;
 	background: transparent;
@@ -93,19 +102,30 @@
 	border-top: 1px solid #f2f4f4;
 }
 
-.itemLabel {
-	min-width: 0;
+.directions {
+	display: flex;
+	gap: 4px;
+	margin: 12px 20px 0;
+	padding: 4px;
+	border-radius: 12px;
+	background: #f2f4f4;
 }
 
-.itemHint {
-	flex-shrink: 0;
-	color: #a5a5a5;
-	font-size: 13px;
-	font-weight: 400;
+.directions button {
+	flex: 1;
+	padding: 8px;
+	border: none;
+	border-radius: 8px;
+	background: transparent;
+	color: inherit;
+	font: inherit;
+	font-weight: 600;
+	cursor: pointer;
 }
 
-.itemActive .itemHint {
-	color: rgba(255, 255, 255, 0.8);
+.directions button[aria-pressed='true'] {
+	background: var(--accent-blue);
+	color: #101820;
 }
 
 .searchWrap {
@@ -126,7 +146,7 @@
 }
 
 .search:focus {
-	box-shadow: 0 0 0 2px #336cff;
+	box-shadow: 0 0 0 2px var(--accent-blue);
 }
 
 .sectionTitle {
@@ -155,13 +175,13 @@
 }
 
 .itemActive {
-	background: #336cff;
-	color: #fff;
+	background: var(--accent-blue);
+	color: #101820;
 	font-weight: 600;
 }
 
 @media (hover: hover) {
 	.itemActive:hover {
-		background: #336cff;
+		background: var(--accent-blue);
 	}
 }

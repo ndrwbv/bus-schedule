@@ -44,10 +44,3 @@
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
-
-.more {
-	margin-left: auto;
-	color: #336cff;
-	font-size: 13px;
-	white-space: nowrap;
-}

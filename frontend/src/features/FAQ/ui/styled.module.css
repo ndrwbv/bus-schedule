@@ -18,7 +18,7 @@
 	text-align: left;
 	display: flex;
 	justify-content: space-between;
-	color: #336cff;
+	color: var(--accent-blue);
 }
 
 .copyFieldClicked {
@@ -37,7 +37,7 @@
 }
 
 .qaBlock a {
-	color: #336cff;
+	color: var(--accent-blue);
 }
 
 .qaBlock a:visited {

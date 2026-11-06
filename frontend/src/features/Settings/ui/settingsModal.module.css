@@ -39,7 +39,7 @@
 }
 
 .switchChecked {
-	background: #336CFF;
+	background: var(--accent-blue);
 }
 
 .switchDisabled {

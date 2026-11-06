@@ -26,7 +26,7 @@ const spinnerStyle: React.CSSProperties = {
 	width: 36,
 	height: 36,
 	border: `3px solid #e0e0e0`,
-	borderTopColor: `#47daff`,
+	borderTopColor: `var(--accent-blue)`,
 	borderRadius: `50%`,
 	animation: `map-loader-spin 0.8s linear infinite`,
 }
@@ -71,7 +71,7 @@ const retryButtonStyle: React.CSSProperties = {
 	fontFamily: `Roboto, sans-serif`,
 	fontWeight: 500,
 	color: `#fff`,
-	backgroundColor: `#47daff`,
+	backgroundColor: `var(--accent-blue)`,
 	border: `none`,
 	borderRadius: 6,
 	cursor: `pointer`,

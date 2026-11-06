@@ -11,8 +11,8 @@
 }
 
 .inlineOptionsItemActive {
-	background-color: #336cff;
-	color: white;
+	background-color: var(--accent-blue);
+	color: #101820;
 }
 
 .inlineOptionsItemInactive {

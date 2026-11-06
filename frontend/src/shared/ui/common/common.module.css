@@ -79,8 +79,8 @@
 }
 
 .customButtonPrimary {
-	background-color: #1191fb;
-	color: white;
+	background-color: var(--accent-blue);
+	color: #101820;
 }
 
 .customButtonDanger {
@@ -93,7 +93,7 @@
 	font-weight: 600;
 	font-size: 16px;
 	padding: 8px 17px;
-	background: #1191fb;
+	background: var(--accent-blue);
 	border-radius: 14px;
 	color: white;
 }

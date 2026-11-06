@@ -1,8 +1,8 @@
+import { getArrivalStatus } from 'shared/lib/time/getArrivalStatus'
 import { DirectionsNew, IStops } from 'shared/store/busStop/Stops'
 import { ITime } from 'shared/store/timeLeft/ITime'
 
 import { pinIcon } from '../assets/icon'
-import { colorDecider } from './colorDecider'
 import { getLeftString } from './getLeftString'
 
 const DIRECTION_TEXT: Record<DirectionsNew, string> = {
@@ -19,7 +19,7 @@ const escapeHtml = (value: string): string => value.replace(/["&'<>]/g, ch => `&
  */
 export const getPinContent = (timeLeft: ITime, stop: IStops<DirectionsNew>, selected: boolean): string => {
 	const leftString = getLeftString(timeLeft)
-	const color = colorDecider(timeLeft)
+	const status = getArrivalStatus(timeLeft)
 	const dirClass = stop.direction === DirectionsNew.out ? `pin-label--to-city` : `pin-label--from-city`
 	const label = escapeHtml(stop.label)
 	const name = selected ? `<span class="pin-label__name">${label}</span>` : ``
@@ -37,7 +37,7 @@ export const getPinContent = (timeLeft: ITime, stop: IStops<DirectionsNew>, sele
 					${leftString.unit !== null ? `<p class="pin-text__unit">${leftString.unit}</p>` : ``}
 				</div>
 
-				${pinIcon(color, stop.id)}
+				${pinIcon(status, stop.id)}
 			</div>
 		</div>
 	`

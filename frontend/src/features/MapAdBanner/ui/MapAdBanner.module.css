@@ -38,7 +38,7 @@
   padding: 4px;
   display: flex;
   align-items: center;
-  color: #1191fb;
+  color: var(--accent-blue);
   font-size: 18px;
   border-radius: 8px;
   transition: background 0.15s;
@@ -56,7 +56,7 @@
 
 .copiedTooltip {
   font-size: 12px;
-  color: #1191fb;
+  color: var(--accent-blue);
   font-weight: 500;
 }
 
@@ -72,7 +72,7 @@
 .howItWorksTitle {
   font-size: 14px;
   font-weight: 600;
-  color: #336CFF;
+  color: var(--accent-blue);
   margin-bottom: 8px;
 }
 
@@ -112,7 +112,7 @@
 .messageAuthor {
   font-size: 13px;
   font-weight: 600;
-  color: #336CFF;
+  color: var(--accent-blue);
   margin-bottom: 4px;
 }
 

@@ -43,5 +43,5 @@ export const useTimeLeftUpdater = (): void => {
 		const left = calculateHowMuchIsLeft(closestTime)
 
 		dispatch(setLeft(left))
-	}, [closestTime, dispatch])
+	}, [closestTime, everySecondUpdate, dispatch])
 }

@@ -3,8 +3,9 @@ import { ITime } from 'shared/store/timeLeft/ITime'
 import { TIME_ZONE } from '../../configs/TIME_ZONE'
 
 export const getTimeFromMins = (mins: number): ITime => {
-	const hours = Math.trunc(mins / 60)
-	const minutes = Math.round(mins % 60)
+	const roundedMinutes = Math.round(mins)
+	const hours = Math.trunc(roundedMinutes / 60)
+	const minutes = roundedMinutes % 60
 
 	return {
 		hours,

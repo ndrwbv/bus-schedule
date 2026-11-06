@@ -24,10 +24,10 @@
 	position: absolute;
 	top: 22px;
 	bottom: 22px;
-	left: 67px;
+	left: 71px;
 	width: 3px;
 	border-radius: 2px;
-	background: var(--trip-line, #336cff);
+	background: var(--accent-blue);
 	opacity: 0.25;
 }
 
@@ -69,16 +69,17 @@
 .dot {
 	position: relative;
 	z-index: 1;
+	box-sizing: border-box;
 	flex: 0 0 11px;
 	height: 11px;
 	margin: 0 14px 0 11px;
-	border: 3px solid var(--trip-line, #336cff);
+	border: 3px solid var(--accent-blue);
 	border-radius: 50%;
 	background: #fff;
 }
 
 .dotPrinted {
-	background: var(--trip-line, #336cff);
+	background: var(--accent-blue);
 }
 
 .name {
@@ -90,15 +91,15 @@
 	margin-left: 8px;
 	padding: 3px 8px;
 	border-radius: 8px;
-	background: #336cff;
-	color: #fff;
+	background: var(--accent-blue);
+	color: #101820;
 	font-size: 12px;
 	font-weight: 600;
 	white-space: nowrap;
 }
 
 .rowMine {
-	background: #eef3ff;
+	background: var(--accent-blue-tint);
 }
 
 .rowMine .name {
@@ -109,8 +110,8 @@
 	flex-basis: 15px;
 	height: 15px;
 	margin: 0 12px 0 9px;
-	background: var(--trip-line, #336cff);
-	box-shadow: 0 0 0 4px rgba(51, 108, 255, 0.2);
+	background: var(--accent-blue);
+	box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-blue) 20%, transparent);
 }
 
 .rowPassed {
@@ -121,7 +122,7 @@
 	color: #a5a5a5;
 }
 
-.rowPassed .dot {
+.rowPassed:not(.rowMine) .dot {
 	border-color: #c9ccd0;
 	background: #fff;
 }
@@ -142,7 +143,7 @@
 	padding: 14px 16px;
 	border: none;
 	border-radius: 14px;
-	background: #f2f4f4;
+	background: var(--accent-blue-tint);
 	color: #1d1d1f;
 	font: inherit;
 	font-weight: 600;

@@ -36,6 +36,7 @@
 │   ├── deploy.sh          — ручной деплой
 │   └── push-schedule.sh   — заливка расписания JSON'ом в прод
 ├── specs/                 ← спецификации фич + JSON расписания
+│   └── 18-schedule-ui-cleanup.md — критерии для выбора направления и карточки рейса
 ├── .github/workflows/     ← CI/CD
 │   ├── ci.yml             — lint + build на PR
 │   └── deploy.yml         — деплой на push в main

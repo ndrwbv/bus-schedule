@@ -38,7 +38,7 @@
 }
 
 .complainsStopCurrent {
-	color: #1191FB;
+	color: var(--accent-blue);
 }
 
 .complainsDirection {

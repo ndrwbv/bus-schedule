@@ -213,6 +213,19 @@ export const getScheduleTimes = (
 	return sortTaggedTimes(tagged)
 }
 
+export const getScheduledUserDirections = (
+	schedule: ISchedule,
+	dayKey: number,
+	label: StopKeys,
+	serviceDate: string,
+): UserDirection[] => {
+	if (!usesCircuits(schedule, serviceDate)) return getUserDirectionsForLabel(label, serviceDate)
+
+	return [UserDirection.fromCity, UserDirection.toCity].filter(
+		direction => getScheduleTimes(schedule, direction, dayKey, label, serviceDate).length > 0,
+	)
+}
+
 export const userDirectionFromInternal = (direction: DirectionsNew): UserDirection =>
 	direction === DirectionsNew.out ? UserDirection.toCity : UserDirection.fromCity
 

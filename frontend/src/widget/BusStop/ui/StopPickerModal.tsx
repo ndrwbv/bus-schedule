@@ -1,51 +1,52 @@
 import { useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setModalOpen } from 'features/BottomSheet/model/bottomSheetSlice'
-import { getUserDirectionsForLabel } from 'shared/store/busStop/const/stops'
+import { AndrewLytics } from 'shared/lib'
+import {
+	busStopNewSelector,
+	setBusStopNew,
+	setUserDirection,
+	stopsOptionsSelector,
+	userDirectionSelector,
+} from 'shared/store/busStop/busStopInfoSlice'
+import { findStopForUserDirection, getScheduledUserDirections } from 'shared/store/busStop/const/stops'
 import { IOption, StopKeys, UserDirection } from 'shared/store/busStop/Stops'
 import { getFrequentStops } from 'shared/store/busStop/stopUsage'
+import { currentDaySelector, scheduleSelector, serviceDateSelector } from 'shared/store/schedule/scheduleSlice'
 
 import styles from './stopPickerModal.module.css'
 
-interface StopPickerModalProps {
-	options: IOption<StopKeys | null>[]
-	value: StopKeys | null
-	onChange: (stop: StopKeys) => void
-	placeholder?: string
-}
-
 const FREQUENT_LIMIT = 5
 
-const DIRECTION_HINT: Record<UserDirection, string> = {
-	[UserDirection.fromCity]: `из города`,
-	[UserDirection.toCity]: `в город`,
-}
+const DIRECTIONS = [
+	{ value: UserDirection.fromCity, label: `Из города` },
+	{ value: UserDirection.toCity, label: `В город` },
+]
 
 const getItemClassName = (isActive: boolean): string => (isActive ? `${styles.item} ${styles.itemActive}` : styles.item)
 
-const directionHint = (label: StopKeys): string =>
-	getUserDirectionsForLabel(label)
-		.map(d => DIRECTION_HINT[d])
-		.join(` · `)
-
-export const StopPickerModal: React.FC<StopPickerModalProps> = ({
-	options,
-	value,
-	onChange,
-	placeholder = `Выберите остановку`,
-}) => {
+export const StopPickerModal: React.FC = () => {
+	const options = useSelector(stopsOptionsSelector)
+	const value = useSelector(busStopNewSelector)?.label ?? null
+	const userDirection = useSelector(userDirectionSelector)
+	const schedule = useSelector(scheduleSelector)
+	const dayKey = useSelector(currentDaySelector)
+	const serviceDate = useSelector(serviceDateSelector)
 	const [isOpen, setIsOpen] = useState(false)
+	const [direction, setDirection] = useState(userDirection)
 	const [query, setQuery] = useState(``)
 	// read on every open: the order follows what the user picked since the last time
 	const [frequent, setFrequent] = useState<StopKeys[]>([])
 	const dispatch = useDispatch()
 
 	const displayLabel = options.find(o => o.value === value)?.label
+	const directionLabel = DIRECTIONS.find(option => option.value === userDirection)?.label
 
 	const open = (): void => {
 		setFrequent(getFrequentStops(FREQUENT_LIMIT))
 		setQuery(``)
+		setDirection(userDirection)
 		setIsOpen(true)
 		dispatch(setModalOpen(true))
 	}
@@ -55,9 +56,13 @@ export const StopPickerModal: React.FC<StopPickerModalProps> = ({
 		dispatch(setModalOpen(false))
 	}
 
-	const handleSelect = (stop: StopKeys | null): void => {
+	const handleSelect = (label: StopKeys): void => {
+		const stop = findStopForUserDirection(label, direction)
 		if (!stop) return
-		onChange(stop)
+
+		dispatch(setBusStopNew(stop.id))
+		if (direction !== userDirection) AndrewLytics(`changeDirection`)
+		AndrewLytics(`selectBusStop`)
 		close()
 	}
 
@@ -65,13 +70,32 @@ export const StopPickerModal: React.FC<StopPickerModalProps> = ({
 		if (e.key === `Enter` || e.key === ` `) close()
 	}
 
-	const stopsOnly = useMemo(() => options.filter((o): o is IOption<StopKeys> => o.value !== null), [options])
+	const stopsByDirection = useMemo(() => {
+		if (!isOpen) return []
+
+		return options
+			.filter((option): option is IOption<StopKeys> => option.value !== null)
+			.map(option => ({
+				...option,
+				directions: getScheduledUserDirections(schedule, dayKey, option.value, serviceDate),
+			}))
+	}, [options, schedule, dayKey, serviceDate, isOpen])
+	const stopsOnly = stopsByDirection.filter(option => option.directions.includes(direction))
+
+	const handleDirectionChange = (nextDirection: UserDirection): void => {
+		setDirection(nextDirection)
+		if (nextDirection === userDirection) return
+
+		const currentStop = stopsByDirection.find(option => option.value === value)
+		if (currentStop && !currentStop.directions.includes(nextDirection)) return
+
+		dispatch(setUserDirection(nextDirection))
+		AndrewLytics(`changeDirection`)
+	}
 
 	const needle = query.trim().toLowerCase()
 	const matches = needle ? stopsOnly.filter(o => o.label.toLowerCase().includes(needle)) : stopsOnly
-	const frequentOptions = needle
-		? []
-		: frequent.map(label => stopsOnly.find(o => o.value === label)).filter((o): o is IOption<StopKeys> => !!o)
+	const frequentOptions = needle ? [] : frequent.flatMap(label => stopsOnly.filter(o => o.value === label))
 
 	const renderItem = (option: IOption<StopKeys>, keyPrefix: string): JSX.Element => (
 		<button
@@ -80,15 +104,15 @@ export const StopPickerModal: React.FC<StopPickerModalProps> = ({
 			type="button"
 			onClick={(): void => handleSelect(option.value)}
 		>
-			<span className={styles.itemLabel}>{option.label}</span>
-			<span className={styles.itemHint}>{directionHint(option.value)}</span>
+			{option.label}
 		</button>
 	)
 
 	return (
 		<>
-			<button className={styles.triggerButton} type="button" onClick={open}>
-				{displayLabel ?? placeholder}
+			<button className={styles.triggerButton} type="button" aria-haspopup="dialog" onClick={open}>
+				<span className={styles.triggerLabel}>{displayLabel ?? `Выберите остановку`}</span>
+				{displayLabel && <span className={styles.triggerDirection}>{directionLabel}</span>}
 			</button>
 
 			{isOpen &&
@@ -114,6 +138,18 @@ export const StopPickerModal: React.FC<StopPickerModalProps> = ({
 								<button className={styles.closeButton} type="button" onClick={close}>
 									&times;
 								</button>
+							</div>
+							<div className={styles.directions} role="group" aria-label="Направление">
+								{DIRECTIONS.map(option => (
+									<button
+										key={option.value}
+										type="button"
+										aria-pressed={option.value === direction}
+										onClick={(): void => handleDirectionChange(option.value)}
+									>
+										{option.label}
+									</button>
+								))}
 							</div>
 							<div className={styles.searchWrap}>
 								<input

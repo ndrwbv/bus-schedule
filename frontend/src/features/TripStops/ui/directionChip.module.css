@@ -8,14 +8,6 @@
 	font-weight: 600;
 	line-height: 18px;
 	white-space: nowrap;
-}
-
-.toCity {
-	background: #e8efff;
-	color: #2451c7;
-}
-
-.fromCity {
-	background: #fff0e3;
-	color: #b64a00;
+	background: var(--accent-blue-tint);
+	color: #101820;
 }

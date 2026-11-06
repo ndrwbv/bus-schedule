@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AndrewLytics } from 'shared/lib'
 import { busStopNewSelector, setBusStopNew } from 'shared/store/busStop/busStopInfoSlice'
 import { findLinkedLeg, getTrip, TripRef, userDirectionFromInternal } from 'shared/store/busStop/const/stops'
-import { UserDirection } from 'shared/store/busStop/Stops'
 import { currentDaySelector, scheduleSelector } from 'shared/store/schedule/scheduleSlice'
 import { tomskDate } from 'shared/store/schedule/serviceDate'
 import { Modal } from 'shared/ui/Modal'
@@ -12,11 +11,6 @@ import { nowMinutesInTomsk, timeToMinutes } from '../lib/nowInTomsk'
 import { closeTrip, openedTripSelector, openTrip } from '../model/tripStopsSlice'
 import { DirectionChip, USER_DIRECTION_SHORT } from './DirectionChip'
 import styles from './tripStops.module.css'
-
-const LINE_COLORS: Record<UserDirection, string> = {
-	[UserDirection.toCity]: `#336cff`,
-	[UserDirection.fromCity]: `#f07314`,
-}
 
 const cx = (...names: (string | false)[]): string => names.filter(Boolean).join(` `)
 
@@ -35,7 +29,9 @@ const TripStops: React.FC<{ trip: TripRef }> = ({ trip }) => {
 		[schedule, trip.dayKey, trip.direction, trip.tripIndex, trip.tripId],
 	)
 	const nextLeg = useMemo(() => findLinkedLeg(schedule, trip, `next`), [schedule, trip])
-	const prevLeg = useMemo(() => findLinkedLeg(schedule, trip, `prev`), [schedule, trip])
+	const nextDeparture = nextLeg
+		? getTrip(schedule, nextLeg.direction, nextLeg.dayKey, nextLeg.tripIndex, nextLeg.tripId)[0]
+		: null
 
 	const userDirection = userDirectionFromInternal(trip.direction)
 	const isToday = trip.serviceDate ? trip.serviceDate === tomskDate() : trip.dayKey === currentDayKey
@@ -57,50 +53,16 @@ const TripStops: React.FC<{ trip: TripRef }> = ({ trip }) => {
 		AndrewLytics(`trip:stopclick`)
 	}
 
-	const renderLinked = (leg: TripRef | null, kind: 'next' | 'prev'): JSX.Element | null => {
-		if (!leg) return null
-
-		const legStops = getTrip(schedule, leg.direction, leg.dayKey, leg.tripIndex, leg.tripId)
-		if (legStops.length === 0) return null
-
-		const legDirection = USER_DIRECTION_SHORT[userDirectionFromInternal(leg.direction)]
-		const title =
-			kind === `next` ? `Дальше этот автобус едет ${legDirection}` : `До этого автобус ехал ${legDirection}`
-		const hint =
-			kind === `next`
-				? `${legStops[0].stop.label}, ${legStops[0].time}`
-				: `${legStops[0].stop.label}, ${legStops[0].time} → ${legStops[legStops.length - 1].time}`
-
-		return (
-			<button
-				className={styles.linked}
-				type="button"
-				onClick={(): void => {
-					dispatch(openTrip(leg))
-					AndrewLytics(`trip:linked`)
-				}}
-			>
-				<span>
-					{title}
-					<span className={styles.linkedHint}>{hint}</span>
-				</span>
-				<span aria-hidden>→</span>
-			</button>
-		)
-	}
-
 	return (
-		<div style={{ '--trip-line': LINE_COLORS[userDirection] } as React.CSSProperties}>
+		<>
 			<div className={styles.summary}>
 				<DirectionChip direction={userDirection} />
 				<span className={styles.route}>
-					{first.stop.label} → {last.stop.label}
+					{first.stop.label} — {last.stop.label}
 				</span>
 			</div>
 
-			{renderLinked(prevLeg, `prev`)}
-
-			<ol className={styles.list} style={prevLeg ? { marginTop: 12 } : undefined}>
+			<ol className={styles.list}>
 				{stops.map(({ stop, time, interpolated }, visitIndex) => {
 					const isMine =
 						trip.visitIndex === undefined ? myStop?.label === stop.label : visitIndex === trip.visitIndex
@@ -133,8 +95,25 @@ const TripStops: React.FC<{ trip: TripRef }> = ({ trip }) => {
 				</p>
 			)}
 
-			{renderLinked(nextLeg, `next`)}
-		</div>
+			{nextLeg && nextDeparture && (
+				<button
+					className={styles.linked}
+					type="button"
+					onClick={(): void => {
+						dispatch(openTrip(nextLeg))
+						AndrewLytics(`trip:linked`)
+					}}
+				>
+					<span>
+						Дальше этот автобус едет {USER_DIRECTION_SHORT[userDirectionFromInternal(nextLeg.direction)]}
+						<span className={styles.linkedHint}>
+							{nextDeparture.stop.label}, {nextDeparture.time}
+						</span>
+					</span>
+					<span aria-hidden>→</span>
+				</button>
+			)}
+		</>
 	)
 }
 

@@ -4,27 +4,13 @@
 	flex-direction: column;
 	padding: 18px 17px;
 	border-radius: 13px;
-}
-
-.fancy {
-	background: linear-gradient(93.72deg, #5020CA 9.83%, #5020CA 9.84%, #8365E0 96.15%);
-	color: white;
-}
-
-.notFancy {
-	color: black;
-}
-
-.colorDefault {
-	background: #e7edec;
-}
-
-.colorSoon {
-	background: #e4f5d6;
-}
-
-.colorImminent {
-	background: #fbdcdc;
+	background: #f2f4f4;
+	background: linear-gradient(
+		105deg,
+		color-mix(in srgb, var(--arrival-color) 8%, white),
+		color-mix(in srgb, var(--arrival-color) 22%, white)
+	);
+	color: #101820;
 }
 
 .nextBusContainer {

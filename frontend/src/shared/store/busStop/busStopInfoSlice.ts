@@ -2,11 +2,10 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'shared/store/app/configureStore'
 
-import { usesCircuits } from '../schedule/circuitTrips'
 import {
 	AllStopsOptions,
 	findStopForUserDirection,
-	getScheduleTimes,
+	getScheduledUserDirections,
 	getUserDirectionsForLabel,
 	STOPS,
 	userDirectionFromInternal,
@@ -113,18 +112,13 @@ export const availableUserDirectionsSelector = createSelector(
 	[(state: RootState) => state.busStopInfo, (state: RootState) => state.scheduleSlice],
 	(busStopInfo, scheduleState): UserDirection[] => {
 		const stopLabel = busStopInfo.busStop
-		if (!stopLabel || !usesCircuits(scheduleState.schedule, scheduleState.serviceDate))
-			return busStopInfo.availableUserDirections
+		if (!stopLabel) return busStopInfo.availableUserDirections
 
-		return [UserDirection.fromCity, UserDirection.toCity].filter(
-			direction =>
-				getScheduleTimes(
-					scheduleState.schedule,
-					direction,
-					scheduleState.currentDayKey,
-					stopLabel,
-					scheduleState.serviceDate,
-				).length > 0,
+		return getScheduledUserDirections(
+			scheduleState.schedule,
+			scheduleState.currentDayKey,
+			stopLabel,
+			scheduleState.serviceDate,
 		)
 	},
 )

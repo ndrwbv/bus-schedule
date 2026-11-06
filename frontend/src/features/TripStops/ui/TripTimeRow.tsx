@@ -39,7 +39,6 @@ export const TripTimeRow: React.FC<{ item: TaggedTime }> = ({ item }) => {
 			{item.interpolated && item.interpolatedFrom && (
 				<span className={styles.approx}>(на основе: {item.interpolatedFrom})</span>
 			)}
-			<span className={styles.more}>остановки ›</span>
 		</button>
 	)
 }

@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { SelectBusStopText } from 'entities/SelectBusStopText'
-import { FavoriteButton } from 'features/FavoriteStops'
 import { TripTimeRow } from 'features/TripStops'
 import { DefaultTFuncReturn } from 'i18next'
 import { busStopSelector } from 'shared/store/busStop/busStopInfoSlice'
@@ -34,8 +33,6 @@ export const TodaysBuses: React.FC = () => {
 				<Header text={t(`Buses for today`)} />
 
 				<OtherTimeStyled>{renderTodaysBusContent()}</OtherTimeStyled>
-
-				<FavoriteButton />
 			</CardStyled>
 		</ContainerStyled>
 	)

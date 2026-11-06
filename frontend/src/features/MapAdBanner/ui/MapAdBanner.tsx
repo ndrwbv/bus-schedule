@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import * as maplibregl from 'maplibre-gl'
-import { AndrewLytics } from 'shared/lib'
 import { BannerMessage, useGetBannerMessagesQuery } from 'shared/api/scheduleApi'
-
+import { AndrewLytics } from 'shared/lib'
+import { MAIN_BLUE } from 'shared/theme'
 import { TMap } from 'widget/Map/TMap'
 
 import { MapAdBannerModal } from './MapAdBannerModal'
@@ -46,7 +46,7 @@ function renderBannerImage(text: string, opacity: number): { width: number; heig
 	ctx.closePath()
 	ctx.fillStyle = '#ffffff'
 	ctx.fill()
-	ctx.strokeStyle = '#336CFF'
+	ctx.strokeStyle = MAIN_BLUE
 	ctx.lineWidth = 4
 	ctx.stroke()
 
@@ -75,7 +75,7 @@ function renderBannerImage(text: string, opacity: number): { width: number; heig
 	// Pole
 	const poleW = 6
 	const poleX = (CANVAS_W - poleW) / 2
-	ctx.fillStyle = '#336CFF'
+	ctx.fillStyle = MAIN_BLUE
 	ctx.fillRect(poleX, boardH, poleW, 28)
 
 	// Foot
@@ -85,7 +85,7 @@ function renderBannerImage(text: string, opacity: number): { width: number; heig
 	const footY = boardH + 28
 	ctx.beginPath()
 	ctx.roundRect(footX, footY, footW, footH, 4)
-	ctx.fillStyle = '#336CFF'
+	ctx.fillStyle = MAIN_BLUE
 	ctx.fill()
 
 	const imageData = ctx.getImageData(0, 0, CANVAS_W, CANVAS_H)

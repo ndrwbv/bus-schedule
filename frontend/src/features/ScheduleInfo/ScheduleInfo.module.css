@@ -11,7 +11,7 @@
 }
 
 .updatedDate {
-	color: #1191fb;
+	color: var(--accent-blue);
 	font-weight: bold;
 }
 
@@ -33,8 +33,8 @@
 
 @media (hover: hover) {
 	.toggleButton:hover {
-		border-color: #1191fb;
-		color: #1191fb;
+		border-color: var(--accent-blue);
+		color: var(--accent-blue);
 	}
 }
 

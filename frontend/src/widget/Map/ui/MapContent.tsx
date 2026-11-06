@@ -14,8 +14,11 @@ import { getActiveStops, STOPS } from 'shared/store/busStop/const/stops'
 import { DirectionsNew, IStops } from 'shared/store/busStop/Stops'
 import { ISchedule } from 'shared/store/schedule/ISchedule'
 import { currentDaySelector, scheduleSelector } from 'shared/store/schedule/scheduleSlice'
+import { leftSelector } from 'shared/store/timeLeft/timeLeftSlice'
+import { MAIN_BLUE } from 'shared/theme'
 
 import { TMap } from '../TMap'
+import { getPinContent } from './getPinContent'
 import { GlobalStyle } from './GlobalStyle'
 import { LiveBusLayer } from './LiveBusLayer'
 import { stopPinHtml } from './stopPin'
@@ -61,21 +64,28 @@ export const MapContent: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map, m
 	const userLocation = useSelector(userLocationSelector)
 	const currentDayKey = useSelector(currentDaySelector)
 	const schedule = useSelector(scheduleSelector)
+	const left = useSelector(leftSelector)
 	const [tick, setTick] = useState(0)
 
 	// Marker handlers live in map event callbacks — refs keep them reading fresh data without re-subscribing
 	const scheduleRef = useRef(schedule)
 	const dayRef = useRef(currentDayKey)
+	const leftRef = useRef(left)
 	const selectedIdRef = useRef<string | null>(busStop?.id ?? null)
 	scheduleRef.current = schedule
 	dayRef.current = currentDayKey
+	leftRef.current = left
 	selectedIdRef.current = busStop?.id ?? null
 
 	const pinsRef = useRef(new Map<string, PinEntry>())
 	const selectedPinRef = useRef<PinEntry | null>(null)
 
 	const renderPin = useCallback((entry: PinEntry): void => {
-		entry.el.innerHTML = stopPinHtml(scheduleRef.current, entry.stop, dayRef.current, entry.selected).trim()
+		entry.el.innerHTML = (
+			entry.selected
+				? getPinContent(leftRef.current, entry.stop, true)
+				: stopPinHtml(scheduleRef.current, entry.stop, dayRef.current)
+		).trim()
 	}, [])
 
 	const flyToStop = useCallback(
@@ -152,8 +162,11 @@ export const MapContent: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map, m
 
 	useEffect(() => {
 		pinsRef.current.forEach(renderPin)
-		if (selectedPinRef.current) renderPin(selectedPinRef.current)
 	}, [tick, schedule, currentDayKey, renderPin])
+
+	useEffect(() => {
+		if (selectedPinRef.current) renderPin(selectedPinRef.current)
+	}, [left, renderPin])
 
 	// Source + layers: dots and clusters for every stop except the selected one
 	useEffect(() => {
@@ -183,7 +196,7 @@ export const MapContent: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map, m
 				source: STOPS_SOURCE_ID,
 				filter: [`has`, `point_count`],
 				paint: {
-					'circle-color': [`step`, [`get`, `point_count`], `#47daff`, 100, `#f1f075`, 750, `#f28cb1`],
+					'circle-color': [`step`, [`get`, `point_count`], MAIN_BLUE, 100, `#f1f075`, 750, `#f28cb1`],
 					'circle-radius': [`step`, [`get`, `point_count`], 20, 100, 30, 750, 40],
 				},
 			})
@@ -207,7 +220,7 @@ export const MapContent: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map, m
 				filter: [`!`, [`has`, `point_count`]],
 				maxzoom: PINS_MIN_ZOOM,
 				paint: {
-					'circle-color': `#47daff`,
+					'circle-color': MAIN_BLUE,
 					'circle-radius': 6,
 					'circle-stroke-width': 2,
 					'circle-stroke-color': `#fff`,

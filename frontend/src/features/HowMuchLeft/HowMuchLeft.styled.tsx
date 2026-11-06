@@ -1,24 +1,15 @@
 import React from 'react'
+import { ArrivalStatus } from 'shared/lib/time/getArrivalStatus'
 
 import styles from './HowMuchLeft.module.css'
 
-export type TimeColor = 'default' | 'soon' | 'imminent'
-
-const TIME_COLOR_MAP: Record<TimeColor, string> = {
-	default: styles.colorDefault,
-	soon: styles.colorSoon,
-	imminent: styles.colorImminent,
-}
-
 export const HowMuchLeftContainerStyled: React.FC<{
-	$isFancy: boolean
-	$timeColor?: TimeColor
+	$status: ArrivalStatus
 	children?: React.ReactNode
-}> = ({ $isFancy, $timeColor = `default`, children }) => (
+}> = ({ $status, children }) => (
 	<div
-		className={`${styles.howMuchLeftContainer} ${
-			$isFancy ? styles.fancy : `${styles.notFancy} ${TIME_COLOR_MAP[$timeColor]}`
-		}`}
+		className={styles.howMuchLeftContainer}
+		style={{ '--arrival-color': `var(--arrival-${$status})` } as React.CSSProperties}
 	>
 		{children}
 	</div>
