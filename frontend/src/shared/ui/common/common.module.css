@@ -80,12 +80,21 @@
 
 .customButtonPrimary {
 	background-color: var(--accent-blue);
-	color: #101820;
+	color: white;
 }
 
 .customButtonDanger {
 	background-color: #ffb2b2;
 	color: #9b2727;
+}
+
+.customButtonLink {
+	width: auto;
+	padding: 0;
+	background: none;
+	color: var(--accent-blue);
+	font: inherit;
+	text-decoration: underline;
 }
 
 .miniButton {

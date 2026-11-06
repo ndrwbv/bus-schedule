@@ -39,7 +39,13 @@ export const CardHeaderStyled: React.FC<{
 	className?: string
 }> = ({ children, className }) => <p className={[styles.cardHeader, className].filter(Boolean).join(` `)}>{children}</p>
 
-export type ButtonType = 'primary' | 'danger'
+export type ButtonType = 'primary' | 'danger' | 'link'
+
+const BUTTON_STYLES: Record<ButtonType, string> = {
+	primary: styles.customButtonPrimary,
+	danger: styles.customButtonDanger,
+	link: styles.customButtonLink,
+}
 
 export const CustomButtonStyled: React.FC<{
 	$status: ButtonType
@@ -51,13 +57,7 @@ export const CustomButtonStyled: React.FC<{
 }> = ({ $status, $mt, children, className, disabled, onClick }) => (
 	<button
 		type="button"
-		className={[
-			styles.customButton,
-			$status === `primary` ? styles.customButtonPrimary : styles.customButtonDanger,
-			className,
-		]
-			.filter(Boolean)
-			.join(` `)}
+		className={[styles.customButton, BUTTON_STYLES[$status], className].filter(Boolean).join(` `)}
 		style={$mt ? { marginTop: $mt } : undefined}
 		disabled={disabled}
 		onClick={onClick}

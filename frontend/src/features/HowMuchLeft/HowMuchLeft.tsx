@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux'
 import { Holiday } from 'entities/Holiday'
 import { SelectBusStopText } from 'entities/SelectBusStopText'
 import { useTypedSelector } from 'shared/lib'
-import { getArrivalStatus } from 'shared/lib/time/getArrivalStatus'
 import { isHalloween } from 'shared/store/app/selectors/isHalloween'
 import { StopKeys } from 'shared/store/busStop/Stops'
 import { IHoliday } from 'shared/store/holidays/IHolidays'
@@ -23,6 +22,7 @@ import {
 	HowMuchLeftContainerStyled,
 	NextBusContainerStyled,
 	TextWrapperStyled,
+	TimeColor,
 } from './HowMuchLeft.styled'
 import Dead from './img/dead.svg'
 import EvilFace from './img/evil-face.svg'
@@ -76,8 +76,18 @@ interface ILeftProps {
 
 export const HowMuchLeft: React.FC<ILeftProps> = ({ left, busStopLabel, holiday }) => {
 	const isHalloweenMode = useTypedSelector(isHalloween)
+	const isFancy = isHalloweenMode || !!holiday
 	const [currentIcon, setIcon] = useState(isHalloweenMode ? Pumpkin : NextBus)
 	const [iconClickCounter, setIconClickCounter] = useState(0)
+
+	const getTimeColor = (): TimeColor => {
+		if (left.hours === null || left.minutes === null || left.hours >= 1) return `default`
+
+		if (left.minutes > 15 && left.minutes < 35) return `soon`
+		if (left.minutes <= 15) return `imminent`
+
+		return `default`
+	}
 
 	const handleIconClick = (): void => {
 		setIconClickCounter(prev => prev + 1)
@@ -100,7 +110,7 @@ export const HowMuchLeft: React.FC<ILeftProps> = ({ left, busStopLabel, holiday 
 
 	return (
 		<>
-			<HowMuchLeftContainerStyled $status={getArrivalStatus(left)}>
+			<HowMuchLeftContainerStyled $isFancy={isFancy} $timeColor={getTimeColor()}>
 				<NextBusContainerStyled>
 					<ImageWrapperStyled $w={SIZE} $h={SIZE}>
 						<SVG src={currentIcon} width={SIZE} height={SIZE} uniquifyIDs onClick={handleIconClick} />

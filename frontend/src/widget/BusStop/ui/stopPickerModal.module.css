@@ -125,7 +125,7 @@
 
 .directions button[aria-pressed='true'] {
 	background: var(--accent-blue);
-	color: #101820;
+	color: white;
 }
 
 .searchWrap {
@@ -176,7 +176,7 @@
 
 .itemActive {
 	background: var(--accent-blue);
-	color: #101820;
+	color: white;
 	font-weight: 600;
 }
 

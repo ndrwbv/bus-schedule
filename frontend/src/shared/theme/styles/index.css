@@ -4,11 +4,6 @@
 
 :root {
   --accent-blue: #1191fb;
-  --accent-blue-tint: color-mix(in srgb, var(--accent-blue) 12%, white);
-  --arrival-imminent: #d80000;
-  --arrival-soon: #1ca338;
-  --arrival-scheduled: var(--accent-blue);
-  --arrival-unavailable: #4b5158;
 
   --rsbs-backdrop-bg: rgba(0, 0, 0, 0.6);
   --rsbs-bg: transparant;

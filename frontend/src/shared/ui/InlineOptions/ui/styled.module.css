@@ -12,7 +12,7 @@
 
 .inlineOptionsItemActive {
 	background-color: var(--accent-blue);
-	color: #101820;
+	color: white;
 }
 
 .inlineOptionsItemInactive {

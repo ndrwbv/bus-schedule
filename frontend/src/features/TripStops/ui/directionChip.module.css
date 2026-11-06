@@ -8,6 +8,6 @@
 	font-weight: 600;
 	line-height: 18px;
 	white-space: nowrap;
-	background: var(--accent-blue-tint);
-	color: #101820;
+	background: var(--accent-blue);
+	color: white;
 }

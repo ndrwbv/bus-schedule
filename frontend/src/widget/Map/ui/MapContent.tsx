@@ -17,6 +17,7 @@ import { currentDaySelector, scheduleSelector } from 'shared/store/schedule/sche
 import { leftSelector } from 'shared/store/timeLeft/timeLeftSlice'
 import { MAIN_BLUE } from 'shared/theme'
 
+import { CLUSTER_PIXEL_RATIO, CLUSTER_RADIUS, getClusterImage } from '../assets/clusterIcon'
 import { TMap } from '../TMap'
 import { getPinContent } from './getPinContent'
 import { GlobalStyle } from './GlobalStyle'
@@ -26,6 +27,7 @@ import { stopPinHtml } from './stopPin'
 type Stop = IStops<DirectionsNew>
 
 const STOPS_SOURCE_ID = `stopssource`
+const CLUSTER_IMAGE_ID = `severbus-stop-cluster`
 const LAYER_CLUSTERS = `clusters`
 const LAYER_CLUSTER_COUNT = `cluster-count`
 const LAYER_POINTS = `unclustered-point`
@@ -177,10 +179,13 @@ export const MapContent: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map, m
 				if (map.getLayer(id)) map.removeLayer(id)
 			})
 			if (map.getSource(STOPS_SOURCE_ID)) map.removeSource(STOPS_SOURCE_ID)
+			if (map.hasImage(CLUSTER_IMAGE_ID)) map.removeImage(CLUSTER_IMAGE_ID)
 		}
 
 		try {
 			removeLayers()
+			const clusterImage = getClusterImage()
+			if (clusterImage) map.addImage(CLUSTER_IMAGE_ID, clusterImage, { pixelRatio: CLUSTER_PIXEL_RATIO })
 
 			map.addSource(STOPS_SOURCE_ID, {
 				type: `geojson`,
@@ -196,8 +201,8 @@ export const MapContent: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map, m
 				source: STOPS_SOURCE_ID,
 				filter: [`has`, `point_count`],
 				paint: {
-					'circle-color': [`step`, [`get`, `point_count`], MAIN_BLUE, 100, `#f1f075`, 750, `#f28cb1`],
-					'circle-radius': [`step`, [`get`, `point_count`], 20, 100, 30, 750, 40],
+					'circle-color': MAIN_BLUE,
+					'circle-radius': [`step`, [`get`, `point_count`], CLUSTER_RADIUS, 100, 30, 750, 40],
 				},
 			})
 
@@ -207,10 +212,18 @@ export const MapContent: React.FC<{ map: TMap; mapLoaded: boolean }> = ({ map, m
 				source: STOPS_SOURCE_ID,
 				filter: [`has`, `point_count`],
 				layout: {
-					'text-field': `{point_count_abbreviated}`,
+					...(clusterImage && {
+						'icon-image': CLUSTER_IMAGE_ID,
+						'icon-size': [`step`, [`get`, `point_count`], 1, 100, 1.5, 750, 2],
+						'icon-allow-overlap': true,
+						'text-optional': true,
+					}),
+					'text-field': [`to-string`, [`get`, `point_count_abbreviated`]],
+					'text-allow-overlap': true,
 					'text-font': [`Noto Sans Regular`],
 					'text-size': 12,
 				},
+				paint: { 'text-color': `#fff` },
 			})
 
 			map.addLayer({

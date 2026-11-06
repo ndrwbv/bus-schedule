@@ -1,8 +1,8 @@
-import { getArrivalStatus } from 'shared/lib/time/getArrivalStatus'
 import { DirectionsNew, IStops } from 'shared/store/busStop/Stops'
 import { ITime } from 'shared/store/timeLeft/ITime'
 
-import { pinIcon } from '../assets/icon'
+import { PinColors, pinIcon } from '../assets/icon'
+import { colorDecider } from './colorDecider'
 import { getLeftString } from './getLeftString'
 
 const DIRECTION_TEXT: Record<DirectionsNew, string> = {
@@ -19,16 +19,15 @@ const escapeHtml = (value: string): string => value.replace(/["&'<>]/g, ch => `&
  */
 export const getPinContent = (timeLeft: ITime, stop: IStops<DirectionsNew>, selected: boolean): string => {
 	const leftString = getLeftString(timeLeft)
-	const status = getArrivalStatus(timeLeft)
-	const dirClass = stop.direction === DirectionsNew.out ? `pin-label--to-city` : `pin-label--from-city`
+	const color = colorDecider(timeLeft)
 	const label = escapeHtml(stop.label)
 	const name = selected ? `<span class="pin-label__name">${label}</span>` : ``
 
 	return `
 		<div class="pin-wrap${selected ? ` pin-wrap--selected` : ``}" title="${label} · ${DIRECTION_TEXT[stop.direction]}">
-			<div class="pin-label ${dirClass}">
+			<div class="pin-label" style="background-color:${PinColors[color].mainGradientStop}">
 				${name}
-				<span class="pin-label__dir">${DIRECTION_TEXT[stop.direction]} →</span>
+				<span class="pin-label__dir">${DIRECTION_TEXT[stop.direction]}</span>
 			</div>
 
 			<div class="pin">
@@ -37,7 +36,7 @@ export const getPinContent = (timeLeft: ITime, stop: IStops<DirectionsNew>, sele
 					${leftString.unit !== null ? `<p class="pin-text__unit">${leftString.unit}</p>` : ``}
 				</div>
 
-				${pinIcon(status, stop.id)}
+				${pinIcon(color, stop.id)}
 			</div>
 		</div>
 	`

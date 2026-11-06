@@ -10,7 +10,7 @@
 │   ├── src/
 │   │   ├── App/           — точка входа, роутинг
 │   │   ├── page/          — страницы (Home, Dev, Game)
-│   │   ├── widget/        — составные UI-блоки (Map, BusStop, TodaysBuses)
+│   │   ├── widget/        — карта с пинами и кластерами, выбор остановки, рейсы на сегодня
 │   │   ├── features/      — функциональные модули
 │   │   ├── entities/      — базовые UI-сущности
 │   │   └── shared/        — api, common, configs, lib, store, theme, ui
