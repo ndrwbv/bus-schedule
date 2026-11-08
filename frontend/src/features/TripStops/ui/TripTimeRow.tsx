@@ -1,14 +1,10 @@
 import { useDispatch } from 'react-redux'
+import { TRIP_VIA_LABELS } from 'shared/common'
 import { AndrewLytics } from 'shared/lib'
 import { TaggedTime } from 'shared/store/busStop/Stops'
 
 import { openTrip } from '../model/tripStopsSlice'
 import styles from './tripTimeRow.module.css'
-
-const VIA_LABELS: Record<string, string> = {
-	park: `через парк`,
-	lb: `через ЛБ`,
-}
 
 /** One departure in a time list. Tap → the whole trip with every stop */
 export const TripTimeRow: React.FC<{ item: TaggedTime }> = ({ item }) => {
@@ -35,7 +31,7 @@ export const TripTimeRow: React.FC<{ item: TaggedTime }> = ({ item }) => {
 				{item.time}
 			</span>
 			{item.visitLabel && <span className={styles.via}>{item.visitLabel}</span>}
-			{item.via && <span className={styles.via}>{VIA_LABELS[item.via]}</span>}
+			{item.via && <span className={styles.via}>{TRIP_VIA_LABELS[item.via]}</span>}
 			{item.interpolated && item.interpolatedFrom && (
 				<span className={styles.approx}>(на основе: {item.interpolatedFrom})</span>
 			)}

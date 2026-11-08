@@ -4,6 +4,7 @@ import SVG from 'react-inlinesvg'
 import { useSelector } from 'react-redux'
 import { Holiday } from 'entities/Holiday'
 import { SelectBusStopText } from 'entities/SelectBusStopText'
+import { TRIP_VIA_LABELS } from 'shared/common'
 import { useTypedSelector } from 'shared/lib'
 import { isHalloween } from 'shared/store/app/selectors/isHalloween'
 import { StopKeys } from 'shared/store/busStop/Stops'
@@ -31,11 +32,6 @@ import Pumpkin from './img/pumpkin.svg'
 
 const SIZE = 45
 
-const VIA_LABELS: Record<string, string> = {
-	park: `через парк`,
-	lb: `через ЛБ`,
-}
-
 export const LeftToString: React.FC<{ left: ITime; busStop: StopKeys | null }> = ({ busStop, left }) => {
 	const { t } = useTranslation()
 	const via = useSelector(closestTimeViaSelector)
@@ -60,7 +56,7 @@ export const LeftToString: React.FC<{ left: ITime; busStop: StopKeys | null }> =
 			{t(`Next bus arriving in`)}
 			{` `}
 			<HighLightedStyled>{[hours, minutes].filter(Boolean).join(` `)}</HighLightedStyled>
-			{via && <span style={{ color: `#a5a5a5`, fontSize: 13, marginLeft: 4 }}>{VIA_LABELS[via]}</span>}
+			{via && <span style={{ color: `#a5a5a5`, fontSize: 13, marginLeft: 4 }}>{TRIP_VIA_LABELS[via]}</span>}
 			{isInterpolated && interpolatedFrom && (
 				<span style={{ color: `#c4a02c`, fontSize: 11, marginLeft: 4 }}>(на основе: {interpolatedFrom})</span>
 			)}

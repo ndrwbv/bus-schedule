@@ -5,3 +5,8 @@ export const FEEDBACK_LINK = `https://docs.google.com/forms/d/1CIuACPCB373hVzxHd
 export const AVTOTRANS_LINK = `https://tomskavtotrans.ru`
 export const ABOUT_LINK = `https://ndrwbv.notion.site/C-9205a033327440b797956717f9fca366`
 export const BETA_TESTER_LINK = `https://forms.gle/YsVTg9UHLAB5UEN47`
+
+export const TRIP_VIA_LABELS = {
+	park: `через Северный парк`,
+	lb: `через Левобережный лайф`,
+}
