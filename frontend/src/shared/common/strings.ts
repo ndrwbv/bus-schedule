@@ -7,6 +7,6 @@ export const ABOUT_LINK = `https://ndrwbv.notion.site/C-9205a033327440b797956717
 export const BETA_TESTER_LINK = `https://forms.gle/YsVTg9UHLAB5UEN47`
 
 export const TRIP_VIA_LABELS = {
-	park: `через парк`,
+	park: `через Набережную и Маяк`,
 	lb: `через ЛБ`,
 }
