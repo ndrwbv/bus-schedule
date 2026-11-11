@@ -1,6 +1,17 @@
+import { setTimeout as delay } from 'node:timers/promises'
 import { getDb } from '../db'
+import { logger } from '../logger'
 
 const TELEGRAM_API = 'https://api.telegram.org'
+const POLL_TIMEOUT_MS = 5_000
+const POLL_RETRY_DELAYS_MS = [0, 1_000, 2_000]
+
+interface TelegramUpdate {
+  update_id: number
+  message?: {
+    chat?: { id: number; username?: string; first_name?: string }
+  }
+}
 
 function getToken(): string | undefined {
   return process.env.TELEGRAM_BOT_TOKEN
@@ -19,6 +30,39 @@ export function initTelegramSubscribers(): void {
       subscribed_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
   `)
+}
+
+async function fetchSubscriberUpdates(token: string, offset: number): Promise<TelegramUpdate[] | undefined> {
+  const url = `${TELEGRAM_API}/bot${token}/getUpdates?offset=${offset}&timeout=0`
+  let failure: { status?: number; cause?: string } = {}
+
+  for (const retryDelay of POLL_RETRY_DELAYS_MS) {
+    if (retryDelay) await delay(retryDelay)
+    try {
+      const res = await fetch(url, { signal: AbortSignal.timeout(POLL_TIMEOUT_MS) })
+      if (res.ok) {
+        const data = (await res.json()) as { ok?: boolean; result?: TelegramUpdate[] } | null
+        if (data?.ok === true && Array.isArray(data.result)) return data.result
+        failure = { cause: 'invalid_response' }
+        continue
+      }
+
+      void res.body?.cancel().catch(() => undefined)
+      failure = { status: res.status }
+      if (res.status === 408 || res.status >= 500) continue
+      if (res.status === 429) {
+        logger.warn(failure, '[telegram] Лимит запросов при опросе подписчиков')
+      } else {
+        logger.error(failure, '[telegram] Telegram отклонил опрос подписчиков')
+      }
+      return
+    } catch (err) {
+      const code = err instanceof Error ? (err.cause as NodeJS.ErrnoException | undefined)?.code : undefined
+      failure = { cause: code ?? (err instanceof Error ? err.name : 'unknown') }
+    }
+  }
+
+  logger.warn({ ...failure, attempts: POLL_RETRY_DELAYS_MS.length }, '[telegram] Опрос подписчиков недоступен')
 }
 
 /**
@@ -43,25 +87,12 @@ export async function pollSubscribers(): Promise<void> {
     .get() as { value: string } | undefined
   const offset = offsetRow ? parseInt(offsetRow.value, 10) : 0
 
+  const updates = await fetchSubscriberUpdates(token, offset)
+  if (!updates) return
+
   try {
-    const url = `${TELEGRAM_API}/bot${token}/getUpdates?offset=${offset}&timeout=0`
-    const res = await fetch(url)
-    if (!res.ok) return
-
-    const data = (await res.json()) as {
-      result?: Array<{
-        update_id: number
-        message?: {
-          text?: string
-          chat?: { id: number; username?: string; first_name?: string }
-        }
-      }>
-    }
-
-    if (!data.result?.length) return
-
     let maxUpdateId = offset
-    for (const update of data.result) {
+    for (const update of updates) {
       if (update.update_id >= maxUpdateId) {
         maxUpdateId = update.update_id + 1
       }
@@ -77,12 +108,16 @@ export async function pollSubscribers(): Promise<void> {
     }
 
     // Persist offset so we don't reprocess updates
-    db.prepare(
-      `INSERT INTO telegram_state (key, value) VALUES ('update_offset', ?)
-       ON CONFLICT(key) DO UPDATE SET value = ?`,
-    ).run(String(maxUpdateId), String(maxUpdateId))
+    if (maxUpdateId > offset) {
+      db.prepare(
+        `INSERT INTO telegram_state (key, value) VALUES ('update_offset', ?)
+         ON CONFLICT(key) DO UPDATE SET value = excluded.value
+         WHERE CAST(telegram_state.value AS INTEGER) < CAST(excluded.value AS INTEGER)`,
+      ).run(String(maxUpdateId))
+    }
+    logger.info('[telegram] Опрос подписчиков завершён')
   } catch (err) {
-    console.error(`[telegram] Ошибка при опросе подписчиков: ${err}`)
+    logger.error({ err }, '[telegram] Не удалось сохранить подписчиков')
   }
 }
 
