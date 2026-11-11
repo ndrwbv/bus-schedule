@@ -2,10 +2,15 @@ import { getDb } from './db';
 import { logger } from './logger';
 import type { TrackedBus } from './live/tracker';
 
-const LIVE_API_URL = new URL('https://map.xn--80aasi5akda.online/api/units');
-const LIVE_ROUTE_IDS = process.env.LIVE_ROUTE_IDS?.replace(/\s/g, '');
-if (LIVE_ROUTE_IDS) LIVE_API_URL.searchParams.set('groups', LIVE_ROUTE_IDS);
 export const MAIN_LIVE_ROUTE = '112С';
+const LIVE_ROUTES_BY_GROUP = new Map([
+  [97941, MAIN_LIVE_ROUTE],
+  [97942, MAIN_LIVE_ROUTE],
+  [793, '112Д'],
+]);
+const LIVE_API_URL = new URL('https://map.xn--80aasi5akda.online/api/units');
+const LIVE_ROUTE_IDS = process.env.LIVE_ROUTE_IDS?.replace(/\s/g, '') || [...LIVE_ROUTES_BY_GROUP.keys()].join(',');
+LIVE_API_URL.searchParams.set('groups', LIVE_ROUTE_IDS);
 // Чуть меньше интервала фонового опроса, чтобы каждый тик поллера доходил до перевозчика
 const CACHE_TTL_MS = 9_000;
 const WARNING_INTERVAL_MS = 60_000;
@@ -31,7 +36,6 @@ interface PassengerOnlineUnit {
   lon: number | null;
   online: boolean;
   group?: unknown;
-  line_assign?: unknown;
   dir?: unknown;
   hdg?: unknown;
   course?: unknown;
@@ -91,11 +95,6 @@ function directionFromDestination(destination: unknown): BusPosition['direction'
   }
 }
 
-function routeFromUnit({ group, line_assign }: PassengerOnlineUnit): string {
-  if (group === 97941 || group === 97942) return MAIN_LIVE_ROUTE;
-  return typeof line_assign === 'string' ? line_assign.trim() : '';
-}
-
 function isBearing(value: unknown): value is number {
   return typeof value === 'number' && value >= 0 && value < 360;
 }
@@ -144,9 +143,9 @@ async function fetchUpstream(): Promise<BusPosition[]> {
     }
 
     const buses = units.flatMap((unit): BusPosition[] => {
-      const { id, lat, lon, online, dir } = unit;
-      if (!online || lat === null || lon === null) return [];
-      const route = routeFromUnit(unit);
+      const { id, lat, lon, online, group, dir } = unit;
+      if (!online || lat === null || lon === null || typeof group !== 'number') return [];
+      const route = LIVE_ROUTES_BY_GROUP.get(group);
       if (!route) return [];
       const isMainRoute = route === MAIN_LIVE_ROUTE;
       return [{

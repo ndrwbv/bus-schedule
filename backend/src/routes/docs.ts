@@ -367,7 +367,7 @@ const spec = {
           name: 'routes',
           in: 'query',
           schema: { type: 'string', enum: ['all'] },
-          description: 'Все автобусы с назначенным номером маршрута',
+          description: 'Автобусы 112С и 112Д',
         }],
         responses: {
           '200': {

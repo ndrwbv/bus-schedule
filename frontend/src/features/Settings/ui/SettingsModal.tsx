@@ -75,7 +75,7 @@ export const SettingsModal: React.FC<Props> = ({ onClose }) => {
 		<Modal title="Настройки" onClose={onClose}>
 			<ToggleRow
 				title="Автобусы на карте"
-				subtitle={liveTrackingEnabled ? `Показывать позиции и номера маршрутов` : `Временно недоступно`}
+				subtitle={liveTrackingEnabled ? `Показывать 112С и 112Д в реальном времени` : `Временно недоступно`}
 				checked={liveTrackingEnabled && showLiveBus}
 				disabled={!liveTrackingEnabled}
 				onToggle={handleLiveBusToggle}
