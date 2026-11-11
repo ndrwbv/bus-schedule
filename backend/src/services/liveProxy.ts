@@ -1,6 +1,6 @@
 import { getDb } from './db';
 import { logger } from './logger';
-import { liveTracker, TrackedBus } from './live/tracker';
+import type { TrackedBus } from './live/tracker';
 
 const LIVE_API_URL = new URL('https://map.xn--80aasi5akda.online/api/units');
 const LIVE_ROUTE_IDS = process.env.LIVE_ROUTE_IDS || '97941,97942';
@@ -23,9 +23,14 @@ interface CacheEntry {
 }
 
 interface PassengerOnlineUnit {
+  id: number;
   lat: number | null;
   lon: number | null;
   online: boolean;
+  dir?: unknown;
+  hdg?: unknown;
+  course?: unknown;
+  speed?: unknown;
 }
 
 interface PassengerOnlineResponse {
@@ -65,10 +70,32 @@ function upstreamUnavailable(reason: string, details: Record<string, unknown> = 
 
 function isUnit(unit: unknown): unit is PassengerOnlineUnit {
   if (!unit || typeof unit !== 'object') return false;
-  const { lat, lon, online } = unit as Partial<PassengerOnlineUnit>;
-  return typeof online === 'boolean'
+  const { id, lat, lon, online } = unit as Partial<PassengerOnlineUnit>;
+  return Number.isSafeInteger(id)
+    && typeof online === 'boolean'
     && (lat === null || (typeof lat === 'number' && Number.isFinite(lat) && Math.abs(lat) <= 90))
     && (lon === null || (typeof lon === 'number' && Number.isFinite(lon) && Math.abs(lon) <= 180));
+}
+
+function directionFromDestination(destination: unknown): BusPosition['direction'] {
+  if (typeof destination !== 'string') return null;
+  switch (destination.trim().toLowerCase()) {
+    case 'томск': return 'out';
+    case 'северный парк': return 'inLB';
+    default: return null;
+  }
+}
+
+function isBearing(value: unknown): value is number {
+  return typeof value === 'number' && value >= 0 && value < 360;
+}
+
+function bearingFromUnit({ hdg, speed, course }: PassengerOnlineUnit): number | null {
+  if (isBearing(hdg)) return hdg;
+  if (typeof speed === 'number' && Number.isFinite(speed) && speed >= 10 && isBearing(course)) {
+    return course;
+  }
+  return null;
 }
 
 async function fetchUpstream(): Promise<BusPosition[]> {
@@ -101,14 +128,18 @@ async function fetchUpstream(): Promise<BusPosition[]> {
       return upstreamUnavailable('invalid_payload', { status });
     }
 
-    // Трекер добавляет стабильный id, направление и курс (specs/14-live-bus-direction.md)
-    const buses = liveTracker.ingest(
-      data.units.flatMap(({ lat, lon, online }) =>
-        online && lat !== null && lon !== null
-          ? [{ lat, lng: lon, description: '112С (Томск - Северный парк)' }]
-          : [],
-      ),
-    );
+    const buses = data.units.flatMap((unit): BusPosition[] => {
+      const { id, lat, lon, online, dir } = unit;
+      if (!online || lat === null || lon === null) return [];
+      return [{
+        id: String(id),
+        lat,
+        lng: lon,
+        description: '112С (Томск - Северный парк)',
+        direction: directionFromDestination(dir),
+        bearing: bearingFromUnit(unit),
+      }];
+    });
 
     cache = { buses, fetchedAt: Date.now() };
     return buses;
@@ -130,8 +161,7 @@ function flagEnabled(key: string): boolean {
 }
 
 /**
- * Фоновый опрос перевозчика в часы работы маршрута: направление считается по истории
- * позиций, а без фона история копилась бы только пока кто-то смотрит карту.
+ * Фоновый опрос перевозчика в часы работы маршрута обновляет кеш позиций.
  * К перевозчику — не чаще раза в 10 с, как и их собственная страница.
  * Работает только при включённом флаге `liveDirection`; без него позиции, как и раньше,
  * запрашиваются только когда кто-то смотрит карту.

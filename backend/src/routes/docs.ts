@@ -97,7 +97,7 @@ const spec = {
           liveDirection: {
             type: 'boolean',
             default: false,
-            description: 'Фоновый опрос перевозчика, чтобы направление автобуса считалось без открытой карты',
+            description: 'Фоновое обновление кеша позиций автобусов',
           },
         },
       },
@@ -362,7 +362,7 @@ const spec = {
       get: {
         tags: ['Live Tracking'],
         summary: 'Позиции автобусов в реальном времени',
-        description: 'Проксирует данные от перевозчика. Кеширует ответ на 10 секунд. Возвращает 404 если feature flag `liveTracking` выключен.',
+        description: 'Проксирует позиции, направление и курс автобусов от перевозчика. Кеширует ответ на 9 секунд. Возвращает 404, если флаг `liveTracking` выключен.',
         responses: {
           '200': {
             description: 'Позиции автобусов',
@@ -376,9 +376,12 @@ const spec = {
                       items: {
                         type: 'object',
                         properties: {
+                          id: { type: 'string', example: '259' },
                           lat: { type: 'number', example: 56.474916 },
                           lng: { type: 'number', example: 84.950243 },
-                          description: { type: 'string', example: '112Д (Томск - Дзержинское)' },
+                          description: { type: 'string', example: '112С (Томск - Северный парк)' },
+                          direction: { type: 'string', nullable: true, enum: ['out', 'inLB', null] },
+                          bearing: { type: 'number', nullable: true, example: 155 },
                         },
                       },
                     },

@@ -284,7 +284,7 @@ Reverse-proxy nginx видит их по имени контейнера.
 |-------|----------|----------|
 | GET | `/api/schedule` | Расписание в формате `ISchedule` |
 | GET | `/api/live` | Live-позиции автобусов (прокси перевозчика) + стабильный `id`, `direction` (`out`/`inLB`/null), `bearing` — spec 14 |
-| GET / PUT | `/api/features` | Фича-флаги: `liveTracking`, `liveDirection` (фоновый опрос перевозчика для направления) |
+| GET / PUT | `/api/features` | Фича-флаги: `liveTracking`, `liveDirection` (фоновое обновление кеша позиций) |
 | GET | `/api/complains` | Список жалоб за сегодня |
 | POST | `/api/complains` | Создать жалобу |
 | POST | `/api/schedule/refresh` | Триггер ручного обновления расписания |
