@@ -15,6 +15,7 @@ const LERP_SPEED = 2.5 // exponential lerp speed (units/sec)
 /** Выше пинов остановок (выбранный пин — 10), иначе автобус у остановки прячется под пином */
 const BUS_Z_INDEX = `20`
 const BUS_ICON_URL = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(BUS_ICON_SVG)}`
+const MAIN_ROUTE = `112С`
 
 const DIRECTION_LABEL = { out: `в город`, inLB: `из города` } as const
 /** Направление ещё не определено — подпись всё равно есть, чтобы было видно, что фича работает */
@@ -22,6 +23,7 @@ const UNKNOWN_DIRECTION_LABEL = `направление неясно`
 
 interface BusState {
 	id?: string
+	isMainRoute: boolean
 	curLng: number
 	curLat: number
 	tgtLng: number
@@ -48,17 +50,16 @@ function createBus(map: maplibregl.Map, bus: LiveBusPosition): BusState {
 		`<div class="${styles.pulse}"></div>` +
 		`<div class="${styles.arrow}" hidden>${ARROW_SVG}</div>` +
 		`<img class="${styles.icon}" src="${BUS_ICON_URL}" alt="">` +
-		`<div class="${styles.label}" hidden></div>` +
+		`<div class="${styles.label}"></div>` +
 		`</div>`
 
 	const marker = new maplibregl.Marker({ element: root, anchor: `center` }).setLngLat([bus.lng, bus.lat]).addTo(map)
-	// Маркер сам выставляет стили элементу — z-index ставим после addTo
-	root.style.zIndex = BUS_Z_INDEX
 
 	const bearing = bus.bearing ?? null
 
 	return {
 		id: bus.id,
+		isMainRoute: false,
 		curLng: bus.lng,
 		curLat: bus.lat,
 		tgtLng: bus.lng,
@@ -72,14 +73,28 @@ function createBus(map: maplibregl.Map, bus: LiveBusPosition): BusState {
 	}
 }
 
-/** Стрелка и подпись — только под тоглом «Направление автобуса» */
-function renderDirection(s: BusState, bus: LiveBusPosition, showDirection: boolean): void {
-	s.label.hidden = !showDirection
-	if (showDirection) s.label.textContent = bus.direction ? DIRECTION_LABEL[bus.direction] : UNKNOWN_DIRECTION_LABEL
+function renderBus(s: BusState, bus: LiveBusPosition, showDirection: boolean): void {
+	const route = bus.route ?? MAIN_ROUTE
+	s.isMainRoute = route === MAIN_ROUTE
+	const root = s.marker.getElement()
+	root.classList.toggle(styles.secondary, !s.isMainRoute)
+	// Маркер сам выставляет стили элементу — z-index ставим после addTo
+	root.style.zIndex = s.isMainRoute ? BUS_Z_INDEX : `1`
 
-	const showArrow = showDirection && s.curBearing !== null
+	const showMainDirection = s.isMainRoute && showDirection
+	const direction = bus.direction ? DIRECTION_LABEL[bus.direction] : UNKNOWN_DIRECTION_LABEL
+	s.label.textContent = showMainDirection ? `${route} · ${direction}` : route
+
+	const showArrow = showMainDirection && s.curBearing !== null
 	if (!showArrow) s.shownRotation = null
 	s.arrow.hidden = !showArrow
+
+	if (!s.isMainRoute) {
+		s.curLng = bus.lng
+		s.curLat = bus.lat
+		s.curBearing = bus.bearing ?? null
+		s.marker.setLngLat([bus.lng, bus.lat])
+	}
 }
 
 export const LiveBusLayer: React.FC<{ map: TMap }> = ({ map }) => {
@@ -118,6 +133,7 @@ export const LiveBusLayer: React.FC<{ map: TMap }> = ({ map }) => {
 			const mapBearing = map.getBearing()
 
 			for (const s of busStatesRef.current) {
+				if (!s.isMainRoute) continue
 				const newLng = s.curLng + (s.tgtLng - s.curLng) * alpha
 				const newLat = s.curLat + (s.tgtLat - s.curLat) * alpha
 
@@ -159,13 +175,12 @@ export const LiveBusLayer: React.FC<{ map: TMap }> = ({ map }) => {
 
 		const incoming = shouldPoll ? liveData?.buses ?? [] : []
 		const prev = busStatesRef.current
-		// С тоглом направления сопоставляем по id: перевозчик может переставить автобусы в ответе.
-		// Без тогла (или со старым бэком без id) — по индексу, как раньше.
+		// Перевозчик может переставить автобусы в ответе. Старый бэкенд без id сопоставляем по индексу.
 		const prevById = new Map(prev.map(s => [s.id, s]))
 		const kept = new Set<BusState>()
 
 		busStatesRef.current = incoming.map((bus, i) => {
-			const candidate = showDirection && bus.id !== undefined ? prevById.get(bus.id) : prev[i]
+			const candidate = bus.id !== undefined ? prevById.get(bus.id) : prev[i]
 			const existing = candidate && !kept.has(candidate) ? candidate : undefined
 			const bearing = bus.bearing ?? null
 			let state: BusState
@@ -184,7 +199,7 @@ export const LiveBusLayer: React.FC<{ map: TMap }> = ({ map }) => {
 				state = createBus(map, bus)
 			}
 
-			renderDirection(state, bus, showDirection)
+			renderBus(state, bus, showDirection)
 			kept.add(state)
 
 			return state

@@ -362,7 +362,13 @@ const spec = {
       get: {
         tags: ['Live Tracking'],
         summary: 'Позиции автобусов в реальном времени',
-        description: 'Проксирует позиции, направление и курс автобусов от перевозчика. Кеширует ответ на 9 секунд. Возвращает 404, если флаг `liveTracking` выключен.',
+        description: 'Проксирует позиции, направление и курс автобусов от перевозчика. Кеширует ответ на 9 секунд. По умолчанию отдаёт 112С. Возвращает 404, если флаг `liveTracking` выключен.',
+        parameters: [{
+          name: 'routes',
+          in: 'query',
+          schema: { type: 'string', enum: ['all'] },
+          description: 'Все автобусы с назначенным номером маршрута',
+        }],
         responses: {
           '200': {
             description: 'Позиции автобусов',
@@ -377,6 +383,7 @@ const spec = {
                         type: 'object',
                         properties: {
                           id: { type: 'string', example: '259' },
+                          route: { type: 'string', example: '112С' },
                           lat: { type: 'number', example: 56.474916 },
                           lng: { type: 'number', example: 84.950243 },
                           description: { type: 'string', example: '112С (Томск - Северный парк)' },

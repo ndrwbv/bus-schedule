@@ -3,8 +3,9 @@ import { logger } from './logger';
 import type { TrackedBus } from './live/tracker';
 
 const LIVE_API_URL = new URL('https://map.xn--80aasi5akda.online/api/units');
-const LIVE_ROUTE_IDS = process.env.LIVE_ROUTE_IDS || '97941,97942';
-LIVE_API_URL.searchParams.set('groups', LIVE_ROUTE_IDS.replace(/\s/g, ''));
+const LIVE_ROUTE_IDS = process.env.LIVE_ROUTE_IDS?.replace(/\s/g, '');
+if (LIVE_ROUTE_IDS) LIVE_API_URL.searchParams.set('groups', LIVE_ROUTE_IDS);
+export const MAIN_LIVE_ROUTE = '112С';
 // Чуть меньше интервала фонового опроса, чтобы каждый тик поллера доходил до перевозчика
 const CACHE_TTL_MS = 9_000;
 const WARNING_INTERVAL_MS = 60_000;
@@ -15,7 +16,9 @@ const TOMSK_UTC_OFFSET_MIN = 7 * 60;
 const QUIET_FROM_MIN = 30;
 const QUIET_TO_MIN = 5 * 60 + 30;
 
-export type BusPosition = TrackedBus;
+export interface BusPosition extends TrackedBus {
+  route: string;
+}
 
 interface CacheEntry {
   buses: BusPosition[];
@@ -27,6 +30,8 @@ interface PassengerOnlineUnit {
   lat: number | null;
   lon: number | null;
   online: boolean;
+  group?: unknown;
+  line_assign?: unknown;
   dir?: unknown;
   hdg?: unknown;
   course?: unknown;
@@ -86,6 +91,11 @@ function directionFromDestination(destination: unknown): BusPosition['direction'
   }
 }
 
+function routeFromUnit({ group, line_assign }: PassengerOnlineUnit): string {
+  if (group === 97941 || group === 97942) return MAIN_LIVE_ROUTE;
+  return typeof line_assign === 'string' ? line_assign.trim() : '';
+}
+
 function isBearing(value: unknown): value is number {
   return typeof value === 'number' && value >= 0 && value < 360;
 }
@@ -124,19 +134,28 @@ async function fetchUpstream(): Promise<BusPosition[]> {
     if (data?.demo || data?.stale || (state !== undefined && state !== 'ok')) {
       return upstreamUnavailable('data_unavailable', { status });
     }
-    if (!Array.isArray(data?.units) || !data.units.every(isUnit)) {
+    if (!Array.isArray(data?.units)) {
       return upstreamUnavailable('invalid_payload', { status });
     }
 
-    const buses = data.units.flatMap((unit): BusPosition[] => {
+    const units = data.units.filter(isUnit);
+    if (data.units.length > 0 && units.length === 0) {
+      return upstreamUnavailable('invalid_payload', { status });
+    }
+
+    const buses = units.flatMap((unit): BusPosition[] => {
       const { id, lat, lon, online, dir } = unit;
       if (!online || lat === null || lon === null) return [];
+      const route = routeFromUnit(unit);
+      if (!route) return [];
+      const isMainRoute = route === MAIN_LIVE_ROUTE;
       return [{
         id: String(id),
         lat,
         lng: lon,
-        description: '112С (Томск - Северный парк)',
-        direction: directionFromDestination(dir),
+        route,
+        description: isMainRoute ? '112С (Томск - Северный парк)' : route,
+        direction: isMainRoute ? directionFromDestination(dir) : null,
         bearing: bearingFromUnit(unit),
       }];
     });

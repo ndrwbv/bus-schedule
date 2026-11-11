@@ -74,8 +74,8 @@ export const SettingsModal: React.FC<Props> = ({ onClose }) => {
 	return (
 		<Modal title="Настройки" onClose={onClose}>
 			<ToggleRow
-				title="Автобус на карте"
-				subtitle={liveTrackingEnabled ? `Показывать позицию 112С в реальном времени` : `Временно недоступно`}
+				title="Автобусы на карте"
+				subtitle={liveTrackingEnabled ? `Показывать позиции и номера маршрутов` : `Временно недоступно`}
 				checked={liveTrackingEnabled && showLiveBus}
 				disabled={!liveTrackingEnabled}
 				onToggle={handleLiveBusToggle}
@@ -83,7 +83,7 @@ export const SettingsModal: React.FC<Props> = ({ onClose }) => {
 
 			<ToggleRow
 				title="Направление автобуса (бета)"
-				subtitle="Стрелка и подпись «в город» / «из города»"
+				subtitle="Стрелка и подпись «в город» / «из города» для 112С"
 				checked={!directionDisabled && showBusDirection}
 				disabled={directionDisabled}
 				onToggle={handleDirectionToggle}

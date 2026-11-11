@@ -81,3 +81,20 @@
 	line-height: 16px;
 	white-space: nowrap;
 }
+
+.secondary .pulse,
+.secondary .icon {
+	display: none;
+}
+
+.secondary .label {
+	top: 50%;
+	transform: translate(-50%, -50%);
+	padding: 1px 6px;
+	border-color: #fff;
+	border-radius: 6px;
+	background: #47647d;
+	color: #fff;
+	font-size: 11px;
+	line-height: 14px;
+}

@@ -1,11 +1,11 @@
 import { Router, Request, Response } from 'express';
 import { getDb } from '../services/db';
-import { fetchLiveBuses } from '../services/liveProxy';
+import { fetchLiveBuses, MAIN_LIVE_ROUTE } from '../services/liveProxy';
 
 export const liveRouter = Router();
 
 /** GET /api/live — live bus positions (proxied from upstream) */
-liveRouter.get('/live', async (_req: Request, res: Response) => {
+liveRouter.get('/live', async (req: Request, res: Response) => {
   try {
     // Check feature flag
     const db = getDb();
@@ -17,9 +17,12 @@ liveRouter.get('/live', async (_req: Request, res: Response) => {
     }
 
     const buses = await fetchLiveBuses();
+    const visibleBuses = req.query.routes === 'all'
+      ? buses
+      : buses.filter(bus => bus.route === MAIN_LIVE_ROUTE);
 
     res.set('Cache-Control', 'no-cache');
-    res.json({ buses, cachedAt: Date.now() });
+    res.json({ buses: visibleBuses, cachedAt: Date.now() });
   } catch (err) {
     console.error('[live] Error:', err);
     res.status(503).json({ error: 'Данные временно недоступны', buses: [] });

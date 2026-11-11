@@ -53,6 +53,8 @@ export interface LiveBusPosition {
 	lat: number
 	lng: number
 	description: string
+	/** Номер маршрута (нет у старого бэкенда) */
+	route?: string
 	/** Стабильный между опросами id (нет у старого бэкенда) */
 	id?: string
 	/** `out` — «в город», `inLB` — «из города», null — не определено */
@@ -96,7 +98,7 @@ export const scheduleApi = createApi({
 			},
 		}),
 		getLive: builder.query<LiveResponse, void>({
-			query: () => `/live`,
+			query: () => `/live?routes=all`,
 		}),
 		getFeatures: builder.query<FeaturesResponse, void>({
 			query: () => `/features`,
