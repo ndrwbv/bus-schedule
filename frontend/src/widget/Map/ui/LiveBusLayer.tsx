@@ -12,9 +12,6 @@ import { TMap } from '../TMap'
 import styles from './liveBus.module.css'
 
 const LERP_SPEED = 2.5 // exponential lerp speed (units/sec)
-/** Выше пинов остановок (выбранный пин — 10), иначе автобус у остановки прячется под пином */
-const BUS_Z_INDEX = `20`
-const BUS_ICON_URL = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(BUS_ICON_SVG)}`
 const MAIN_ROUTE = `112С`
 
 const DIRECTION_LABEL = { out: `в город`, inLB: `из города` } as const
@@ -23,7 +20,6 @@ const UNKNOWN_DIRECTION_LABEL = `направление неясно`
 
 interface BusState {
 	id?: string
-	isMainRoute: boolean
 	curLng: number
 	curLat: number
 	tgtLng: number
@@ -49,7 +45,7 @@ function createBus(map: maplibregl.Map, bus: LiveBusPosition): BusState {
 		`<div class="${styles.bus}">` +
 		`<div class="${styles.pulse}"></div>` +
 		`<div class="${styles.arrow}" hidden>${ARROW_SVG}</div>` +
-		`<img class="${styles.icon}" src="${BUS_ICON_URL}" alt="">` +
+		`<div class="${styles.icon}" aria-hidden="true">${BUS_ICON_SVG}</div>` +
 		`<div class="${styles.label}"></div>` +
 		`</div>`
 
@@ -59,7 +55,6 @@ function createBus(map: maplibregl.Map, bus: LiveBusPosition): BusState {
 
 	return {
 		id: bus.id,
-		isMainRoute: false,
 		curLng: bus.lng,
 		curLat: bus.lat,
 		tgtLng: bus.lng,
@@ -75,26 +70,19 @@ function createBus(map: maplibregl.Map, bus: LiveBusPosition): BusState {
 
 function renderBus(s: BusState, bus: LiveBusPosition, showDirection: boolean): void {
 	const route = bus.route ?? MAIN_ROUTE
-	s.isMainRoute = route === MAIN_ROUTE
+	const isMainRoute = route === MAIN_ROUTE
 	const root = s.marker.getElement()
-	root.classList.toggle(styles.secondary, !s.isMainRoute)
-	// Маркер сам выставляет стили элементу — z-index ставим после addTo
-	root.style.zIndex = s.isMainRoute ? BUS_Z_INDEX : `1`
+	root.classList.toggle(styles.secondary, !isMainRoute)
+	// Оба маршрута выше пинов остановок, 112С — выше 112Д при пересечении.
+	root.style.zIndex = isMainRoute ? `20` : `19`
 
-	const showMainDirection = s.isMainRoute && showDirection
+	const showMainDirection = isMainRoute && showDirection
 	const direction = bus.direction ? DIRECTION_LABEL[bus.direction] : UNKNOWN_DIRECTION_LABEL
 	s.label.textContent = showMainDirection ? `${route} · ${direction}` : route
 
 	const showArrow = showMainDirection && s.curBearing !== null
 	if (!showArrow) s.shownRotation = null
 	s.arrow.hidden = !showArrow
-
-	if (!s.isMainRoute) {
-		s.curLng = bus.lng
-		s.curLat = bus.lat
-		s.curBearing = bus.bearing ?? null
-		s.marker.setLngLat([bus.lng, bus.lat])
-	}
 }
 
 export const LiveBusLayer: React.FC<{ map: TMap }> = ({ map }) => {
@@ -133,7 +121,6 @@ export const LiveBusLayer: React.FC<{ map: TMap }> = ({ map }) => {
 			const mapBearing = map.getBearing()
 
 			for (const s of busStatesRef.current) {
-				if (!s.isMainRoute) continue
 				const newLng = s.curLng + (s.tgtLng - s.curLng) * alpha
 				const newLat = s.curLat + (s.tgtLat - s.curLat) * alpha
 

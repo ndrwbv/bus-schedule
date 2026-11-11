@@ -7,8 +7,14 @@
    Ничего, что сдвигает элемент, сюда класть нельзя: с position: relative маркеры вставали
    в поток друг под другом и съезжали от своих точек на 40 px × номер. */
 .marker {
+	--live-bus-color: #ff6b35;
+
 	/* не мешает тапать по пинам и таскать карту */
 	pointer-events: none;
+}
+
+.marker.secondary {
+	--live-bus-color: #47647d;
 }
 
 /* Иконка 40×40, остальное позиционируется от её центра */
@@ -27,7 +33,7 @@
 	height: 44px;
 	margin: -22px 0 0 -22px;
 	border-radius: 50%;
-	background: #ff6b35;
+	background: var(--live-bus-color);
 	opacity: 0;
 	animation: livebus-pulse 2s linear infinite;
 }
@@ -63,6 +69,7 @@
 	top: 0;
 	width: 40px;
 	height: 40px;
+	color: var(--live-bus-color);
 }
 
 .label {
@@ -71,7 +78,7 @@
 	left: 50%;
 	transform: translateX(-50%);
 	padding: 1px 8px;
-	border: 1px solid #ff6b35;
+	border: 1px solid var(--live-bus-color);
 	border-radius: 10px;
 	background: #fff;
 	color: #333;
@@ -80,21 +87,4 @@
 	font-weight: 600;
 	line-height: 16px;
 	white-space: nowrap;
-}
-
-.secondary .pulse,
-.secondary .icon {
-	display: none;
-}
-
-.secondary .label {
-	top: 50%;
-	transform: translate(-50%, -50%);
-	padding: 1px 6px;
-	border-color: #fff;
-	border-radius: 6px;
-	background: #47647d;
-	color: #fff;
-	font-size: 11px;
-	line-height: 14px;
 }
