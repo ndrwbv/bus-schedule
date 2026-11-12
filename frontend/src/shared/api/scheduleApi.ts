@@ -73,7 +73,7 @@ export const LIVE_BUS_POLL_INTERVAL_MS = 15_000
 export interface BannerMessage {
 	id: number
 	author_name: string
-	message: string
+	message?: string
 	amount: number | null
 	created_at: string
 }

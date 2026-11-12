@@ -106,7 +106,7 @@ const spec = {
         properties: {
           id:         { type: 'integer', example: 1 },
           author_name: { type: 'string', example: 'Иван' },
-          message:    { type: 'string', example: 'Спасибо за сервис!' },
+          message:    { type: 'string', example: 'Спасибо за сервис!', description: 'Пустая строка для доната без комментария' },
           amount:     { type: 'integer', nullable: true, example: 500, description: 'Сумма доната в рублях' },
           is_approved: { type: 'boolean', example: true },
           created_at: { type: 'string', format: 'date-time' },
@@ -445,7 +445,7 @@ const spec = {
       get: {
         tags: ['Banner Messages'],
         summary: 'Получить одобренные сообщения доноров',
-        description: 'Публичный эндпоинт. Возвращает список одобренных сообщений для отображения на баннере.',
+        description: 'Публичный эндпоинт. Возвращает одобренные записи от новых к старым.',
         responses: {
           '200': {
             description: 'Список одобренных сообщений',
@@ -468,8 +468,8 @@ const spec = {
       },
       post: {
         tags: ['Banner Messages'],
-        summary: 'Добавить сообщение донора',
-        description: 'Admin-only. Добавляет новое сообщение. По умолчанию `is_approved = true`.',
+        summary: 'Добавить донат',
+        description: 'Admin-only. Добавляет донат с комментарием или без него. По умолчанию `is_approved = true`.',
         security: [{ bearerAuth: [] }],
         requestBody: {
           required: true,
@@ -477,10 +477,10 @@ const spec = {
             'application/json': {
               schema: {
                 type: 'object',
-                required: ['author_name', 'message'],
+                required: ['author_name'],
                 properties: {
                   author_name: { type: 'string', example: 'Иван' },
-                  message:     { type: 'string', example: 'Спасибо за сервис!' },
+                  message:     { type: 'string', default: '', example: 'Спасибо за сервис!' },
                   amount:      { type: 'integer', example: 500, description: 'Сумма доната в рублях' },
                   is_approved: { type: 'boolean', default: true },
                 },
@@ -497,7 +497,7 @@ const spec = {
               },
             },
           },
-          '400': { description: 'Не указан author_name или message' },
+          '400': { description: 'Не указан author_name или message не является строкой' },
           '401': { description: 'Неверный токен' },
           '500': { description: 'Ошибка сервера' },
         },

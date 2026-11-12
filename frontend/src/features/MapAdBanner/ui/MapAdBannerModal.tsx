@@ -37,8 +37,7 @@ export const MapAdBannerModal: React.FC<Props> = ({ isOpen, onClose, messages })
 				расписании 112С.
 				<br />
 				<br />
-				Если сервис полезен — поддержите проект донатом! За это ваше сообщение появится на рекламном щите прямо
-				на карте.
+				Если сервис полезен, поддержите проект донатом! На щите на карте появляются пять последних донатов.
 			</p>
 
 			<div className={styles.howItWorks}>
@@ -46,9 +45,9 @@ export const MapAdBannerModal: React.FC<Props> = ({ isOpen, onClose, messages })
 				<div className={styles.howItWorksText}>
 					1. Переведите от 100 руб. на номер ниже (Т-Банк)
 					<br />
-					2. Напишите в комментарии к переводу ваше имя и текст для щита
+					2. Оставьте в комментарии к переводу ваше имя и, если хотите, текст для щита
 					<br />
-					3. Я добавлю вашу надпись вручную — она будет крутиться на щите на карте
+					3. Я добавлю донат вручную. Если вы оставите только имя, на щите появится благодарность с сердечком
 					<br />
 					<br />
 					Нецензурные надписи буду корректировать на свой вкус :)
@@ -68,7 +67,7 @@ export const MapAdBannerModal: React.FC<Props> = ({ isOpen, onClose, messages })
 
 			<div className={styles.divider} />
 
-			<div className={styles.messagesTitle}>Сообщения на щите ({messages.length})</div>
+			<div className={styles.messagesTitle}>Донаты ({messages.length})</div>
 
 			{messages.length > 0 ? (
 				<div className={styles.messagesList}>
@@ -77,7 +76,9 @@ export const MapAdBannerModal: React.FC<Props> = ({ isOpen, onClose, messages })
 							<div className={styles.messageAuthor}>
 								{msg.author_name}
 								{msg.amount != null && (
-									<span className={styles.messageAmount}> — {msg.amount} руб.</span>
+									<span className={styles.messageAmount}>
+										{` `}— {msg.amount.toLocaleString(`ru-RU`)} ₽
+									</span>
 								)}
 							</div>
 							<div className={styles.messageBody}>{msg.message}</div>
@@ -85,7 +86,7 @@ export const MapAdBannerModal: React.FC<Props> = ({ isOpen, onClose, messages })
 					))}
 				</div>
 			) : (
-				<div className={styles.emptyMessages}>Пока нет сообщений. Станьте первым!</div>
+				<div className={styles.emptyMessages}>Пока нет донатов. Станьте первым!</div>
 			)}
 		</Modal>
 	)

@@ -14,7 +14,7 @@ bannerMessagesRouter.get('/banner-messages', (_req: Request, res: Response) => {
         `SELECT id, author_name, message, amount, created_at
          FROM banner_messages
          WHERE is_approved = 1
-         ORDER BY created_at DESC`
+         ORDER BY created_at DESC, id DESC`
       )
       .all();
 
@@ -38,17 +38,19 @@ bannerMessagesRouter.post('/banner-messages', (req: Request, res: Response) => {
     return;
   }
 
-  const { author_name, message, amount, is_approved } = req.body as {
+  const { author_name, message = '', amount, is_approved } = req.body as {
     author_name?: string;
     message?: string;
     amount?: number;
     is_approved?: boolean;
   };
 
-  if (!author_name || !message) {
-    res.status(400).json({ error: 'Bad request', message: 'author_name and message are required' });
+  if (typeof author_name !== 'string' || !author_name.trim() || typeof message !== 'string') {
+    res.status(400).json({ error: 'Bad request', message: 'author_name is required and message must be a string if provided' });
     return;
   }
+
+  const storedMessage = message.trim() ? message : '';
 
   try {
     const db = getDb();
@@ -57,9 +59,9 @@ bannerMessagesRouter.post('/banner-messages', (req: Request, res: Response) => {
         `INSERT INTO banner_messages (author_name, message, amount, is_approved)
          VALUES (?, ?, ?, ?)`
       )
-      .run(author_name, message, amount ?? null, is_approved !== false ? 1 : 0);
+      .run(author_name, storedMessage, amount ?? null, is_approved !== false ? 1 : 0);
 
-    res.status(201).json({ id: result.lastInsertRowid, author_name, message, amount: amount ?? null, is_approved: is_approved !== false });
+    res.status(201).json({ id: result.lastInsertRowid, author_name, message: storedMessage, amount: amount ?? null, is_approved: is_approved !== false });
   } catch (err) {
     console.error('[banner-messages] Error creating:', err);
     res.status(500).json({ error: 'Internal error' });
