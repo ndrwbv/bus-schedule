@@ -1,8 +1,12 @@
-.toggleRow {
+.toggleRow,
+.infoRow {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	padding: 14px 0;
+}
+
+.toggleRow {
 	cursor: pointer;
 	opacity: 1;
 }
@@ -26,6 +30,15 @@
 .toggleSubtitle {
 	font-size: 12px;
 	color: #999;
+}
+
+.infoRow {
+	gap: 12px;
+}
+
+.infoValue {
+	flex-shrink: 0;
+	font-size: 15px;
 }
 
 .switch {

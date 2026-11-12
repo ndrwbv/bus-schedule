@@ -68,6 +68,8 @@ export interface LiveResponse {
 	cachedAt: number
 }
 
+export const LIVE_BUS_POLL_INTERVAL_MS = 15_000
+
 export interface BannerMessage {
 	id: number
 	author_name: string

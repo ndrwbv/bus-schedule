@@ -2,7 +2,12 @@ import { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { showBusDirectionSelector, showLiveBusSelector } from 'features/Settings/model/settingsSlice'
 import * as maplibregl from 'maplibre-gl'
-import { LiveBusPosition, useGetFeaturesQuery, useGetLiveQuery } from 'shared/api/scheduleApi'
+import {
+	LIVE_BUS_POLL_INTERVAL_MS,
+	LiveBusPosition,
+	useGetFeaturesQuery,
+	useGetLiveQuery,
+} from 'shared/api/scheduleApi'
 import { setLiveTracking } from 'shared/store/app/featureToggleSlice'
 import { liveTrackingEnabledSelector } from 'shared/store/app/selectors/liveTracking'
 
@@ -102,7 +107,7 @@ export const LiveBusLayer: React.FC<{ map: TMap }> = ({ map }) => {
 	}, [features, dispatch])
 
 	const { data: liveData } = useGetLiveQuery(undefined, {
-		pollingInterval: 15_000,
+		pollingInterval: LIVE_BUS_POLL_INTERVAL_MS,
 		skip: !shouldPoll,
 	})
 

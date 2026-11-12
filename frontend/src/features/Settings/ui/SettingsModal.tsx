@@ -1,8 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useGetFeaturesQuery } from 'shared/api/scheduleApi'
+import { LIVE_BUS_POLL_INTERVAL_MS, useGetFeaturesQuery, useGetLiveQuery } from 'shared/api/scheduleApi'
 import { AndrewLytics } from 'shared/lib'
-import { liveTrackingEnabledSelector } from 'shared/store/app/selectors/liveTracking'
 import { Modal } from 'shared/ui/Modal'
 
 import {
@@ -51,9 +50,15 @@ export const SettingsModal: React.FC<Props> = ({ onClose }) => {
 	const dispatch = useDispatch()
 	const showLiveBus = useSelector(showLiveBusSelector)
 	const showBusDirection = useSelector(showBusDirectionSelector)
-	const liveTrackingEnabled = useSelector(liveTrackingEnabledSelector)
+	const { data: features } = useGetFeaturesQuery()
+	const liveTrackingEnabled = Boolean(features?.liveTracking)
 
-	useGetFeaturesQuery()
+	const { busCount } = useGetLiveQuery(undefined, {
+		pollingInterval: LIVE_BUS_POLL_INTERVAL_MS,
+		refetchOnMountOrArgChange: LIVE_BUS_POLL_INTERVAL_MS / 1_000,
+		skip: !liveTrackingEnabled,
+		selectFromResult: ({ currentData, error }) => ({ busCount: error ? undefined : currentData?.buses.length }),
+	})
 
 	const handleLiveBusToggle = (): void => {
 		if (!liveTrackingEnabled) return
@@ -88,6 +93,11 @@ export const SettingsModal: React.FC<Props> = ({ onClose }) => {
 				disabled={directionDisabled}
 				onToggle={handleDirectionToggle}
 			/>
+
+			<div className={styles.infoRow}>
+				<span className={styles.toggleTitle}>Автобусов по данным API</span>
+				<span className={styles.infoValue}>{busCount ?? `Нет данных`}</span>
+			</div>
 		</Modal>
 	)
 }
