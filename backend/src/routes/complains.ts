@@ -42,11 +42,12 @@ complainsRouter.post('/complains', (req: Request, res: Response) => {
     }
   }
 
-  const result = db.prepare(
-    `INSERT INTO complains (stop, direction, type, user_id) VALUES (?, ?, ?, ?)`
-  ).run(stop, direction, type, user_id ?? null);
+  const complaint = db.prepare(
+    `INSERT INTO complains (stop, direction, type, user_id) VALUES (?, ?, ?, ?)
+     RETURNING id, stop, direction, type, datetime(created_at, '+7 hours') AS date`
+  ).get(stop, direction, type, user_id ?? null);
 
-  res.status(201).json({ id: result.lastInsertRowid });
+  res.status(201).json(complaint);
 });
 
 /**
@@ -59,7 +60,7 @@ complainsRouter.get('/complains', (_req: Request, res: Response) => {
     `SELECT id, stop, direction, type, datetime(created_at, '+7 hours') as date
      FROM complains
      WHERE created_at > datetime('now', '-1 day')
-     ORDER BY created_at DESC
+     ORDER BY created_at DESC, id DESC
      LIMIT 100`
   ).all();
 

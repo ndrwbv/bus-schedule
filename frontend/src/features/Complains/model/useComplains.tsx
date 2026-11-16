@@ -83,6 +83,15 @@ export const useComplains = (): ComplainsState => {
 				if (response.status === 429) return `rateLimited`
 				if (response.status !== 201) throw new Error(`HTTP ${response.status}`)
 
+				const created = (await response.json()) as IComplainsResponse | { id: number }
+				// Accept the previous API's ID-only response during deployment.
+				if (`date` in created) {
+					setComplains(prev =>
+						[created, ...prev.filter(item => item.id !== created.id)].sort(
+							(a, b) => b.date.localeCompare(a.date) || b.id - a.id,
+						),
+					)
+				}
 				void fetchComplains()
 
 				return `sent`
