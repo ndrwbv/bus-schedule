@@ -78,7 +78,7 @@ src/
 │   └── BottomSheetHeader/
 ├── features/      — функциональные модули
 │   ├── DirectionChanger/  — переключение в СП / в город / в ЛБ
-│   ├── Complains/         — жалобы (GraphQL → popooga.ru)
+│   ├── Complains/         — быстрые жалобы и список из `/api/complains`
 │   ├── HowMuchLeft/       — «через сколько автобус»
 │   ├── NearestStops/      — ближайшие остановки
 │   ├── FavoriteStops/     — ранее сохранённые остановки
@@ -99,7 +99,7 @@ src/
     ├── api/       — scheduleApi.ts (RTK Query к /api), Contentful (инфо, праздники)
     ├── common/    — строки и константы
     ├── configs/   — base.ts (токены Contentful, MapTiler)
-    ├── lib/       — утилиты (время, аналитика, запросы, redux хелперы)
+    ├── lib/       — утилиты (время, аналитика, запросы, redux хелперы, getUserId.ts)
     ├── store/     — Redux slices
     │   ├── schedule/     — scheduleSlice + ISchedule
     │   ├── busStop/      — busStopInfoSlice + направления/остановки, stopUsage (частые остановки)

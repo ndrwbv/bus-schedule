@@ -21,7 +21,7 @@ import {
 export const Complains: React.FC = () => {
 	const [isOpen, setIsOpen] = useState(false)
 
-	const { complains: allComplains } = useComplainsContext()
+	const { complains: allComplains, loadFailed } = useComplainsContext()
 
 	const complains = useMemo(() => allComplains.filter(c => c.type !== `arrived`), [allComplains])
 
@@ -51,8 +51,7 @@ export const Complains: React.FC = () => {
 					<BottomSheetBgStyled $bg="#fff">
 						<PopupContentStyled>
 							<InfoTextStyled>
-								Жалобы попадают автоматически после выбора опции «Приехал раньше» или «Приехал позже».
-								Кнопки появляются в секции «Остановка» при выбранной остановке.
+								Выберите остановку и нажмите «Не приехал» или «Проехал мимо», чтобы отправить жалобу.
 							</InfoTextStyled>
 							{complains.map(c => (
 								<ComplainsMessage {...c} key={c.id} />
@@ -67,7 +66,9 @@ export const Complains: React.FC = () => {
 							<ComplainsBlockTextStyled>
 								Жалобы <ComplainCountStyled>{complains.length}</ComplainCountStyled>
 							</ComplainsBlockTextStyled>
-							<ComplainsLabelStyled>{latestTime}</ComplainsLabelStyled>
+							<ComplainsLabelStyled>
+								{loadFailed ? `Не удалось обновить жалобы` : latestTime}
+							</ComplainsLabelStyled>
 						</ComplainsBlockContainerStyled>
 
 						<HeaderTextStyled />

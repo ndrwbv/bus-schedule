@@ -14,6 +14,7 @@
 │   │   ├── features/      — функциональные модули
 │   │   ├── entities/      — базовые UI-сущности
 │   │   └── shared/        — api, common, configs, lib, store, theme, ui
+│   │       └── lib/getUserId.ts — общий анонимный ID для посещений и жалоб
 │   ├── public/
 │   │   └── schedule/      — фото расписания от перевозчика (первоисточник)
 │   ├── package.json

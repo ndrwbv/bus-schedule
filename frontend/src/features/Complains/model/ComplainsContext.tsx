@@ -1,30 +1,26 @@
 import React, { createContext, useContext, useMemo } from 'react'
 
-import { IComplains, IComplainsResponse, useComplains } from './useComplains'
+import { ComplainsState, useComplains } from './useComplains'
 
-const DEFAULT_PROPS = {
+const DEFAULT_PROPS: ComplainsState = {
 	complains: [],
-	addComplain: () => {},
+	loadFailed: false,
+	addComplain: () => Promise.resolve(`failed`),
 }
 
-export const ComplainsContext = createContext<ContextProps>(DEFAULT_PROPS)
-
-interface ContextProps {
-	complains: IComplainsResponse[]
-	addComplain: (data: IComplains) => void
-}
+export const ComplainsContext = createContext<ComplainsState>(DEFAULT_PROPS)
 
 interface IProviderProps {
 	children: React.ReactElement
 }
 export const ComplainsProvider = ({ children }: IProviderProps): JSX.Element => {
-	const { complains, addComplain } = useComplains()
+	const { complains, loadFailed, addComplain } = useComplains()
 
-	const values = useMemo(() => ({ complains, addComplain }), [addComplain, complains])
+	const values = useMemo(() => ({ complains, loadFailed, addComplain }), [addComplain, complains, loadFailed])
 
 	return <ComplainsContext.Provider value={values}>{children}</ComplainsContext.Provider>
 }
 
-export const useComplainsContext = (): ContextProps => {
+export const useComplainsContext = (): ComplainsState => {
 	return useContext(ComplainsContext)
 }

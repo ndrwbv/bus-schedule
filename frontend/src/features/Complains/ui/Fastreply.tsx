@@ -1,7 +1,8 @@
-import { useCallback, useRef, useState } from 'react'
+import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { AndrewLytics } from 'shared/lib'
 import { busStopNewSelector, directionSelector } from 'shared/store/busStop/busStopInfoSlice'
+import { StopKeys } from 'shared/store/busStop/Stops'
 import { InlineOptions } from 'shared/ui/InlineOptions'
 
 import { ComplainType } from '../model/Complains'
@@ -9,6 +10,23 @@ import { useComplainsContext } from '../model/ComplainsContext'
 import fastreplyStyles from './fastreply.module.css'
 
 const COOLDOWN_MS = 2 * 60 * 1000 // 2 minutes
+
+type ReplyState = { status: 'sent'; type: ComplainType } | { status: 'sending' | 'rateLimited' | 'failed' }
+
+function getReplyMessage(reply?: ReplyState): string {
+	switch (reply?.status) {
+		case `sending`:
+			return `Отправляем…`
+		case `sent`:
+			return reply.type === ComplainType.arrived ? `Отметка отправлена` : `Жалоба отправлена`
+		case `rateLimited`:
+			return `Вы уже отправили отметку для этой остановки. Попробуйте чуть позже.`
+		case `failed`:
+			return `Не удалось отправить. Попробуйте ещё раз.`
+		default:
+			return ``
+	}
+}
 
 const ComplainsOptions = [
 	{
@@ -30,64 +48,46 @@ export const ComplainOptionContainerStyled: React.FC<{ children?: React.ReactNod
 )
 
 export const Fastreply: React.FC = () => {
-	const [activeComplain, setActiveComplain] = useState<ComplainType | null>(null)
-	const cooldownsRef = useRef<Record<string, number>>({})
-	const [, forceUpdate] = useState(0)
+	const [replies, setReplies] = useState<Partial<Record<StopKeys, ReplyState>>>({})
 
 	const busStopNew = useSelector(busStopNewSelector)
 	const direction = useSelector(directionSelector)
 
 	const { addComplain } = useComplainsContext()
 
-	const isOnCooldown = useCallback((stopLabel: string): boolean => {
-		const until = cooldownsRef.current[stopLabel]
-		if (!until) return false
-		if (Date.now() >= until) {
-			delete cooldownsRef.current[stopLabel]
+	if (!busStopNew) return null
+	const stop = busStopNew.label
+	const reply = replies[stop]
+	const disabled = reply?.status === `sending` || reply?.status === `sent`
 
-			return false
+	const handleFastReplyClick = async (type: ComplainType | null): Promise<void> => {
+		if (!type || disabled) return
+
+		setReplies(prev => ({ ...prev, [stop]: { status: `sending` } }))
+		const status = await addComplain({ stop, direction, type })
+		setReplies(prev => ({ ...prev, [stop]: status === `sent` ? { status, type } : { status } }))
+
+		if (status === `sent`) {
+			setTimeout(() => setReplies(prev => ({ ...prev, [stop]: undefined })), COOLDOWN_MS)
 		}
 
-		return true
-	}, [])
-
-	const handleFastReplyClick = (key: ComplainType | null): void => {
-		if (!key || !busStopNew) return
-		if (isOnCooldown(busStopNew.label)) return
-
-		setActiveComplain(key)
-
-		cooldownsRef.current[busStopNew.label] = Date.now() + COOLDOWN_MS
-		setTimeout(() => {
-			forceUpdate(n => n + 1)
-		}, COOLDOWN_MS)
-
-		addComplain({
-			stop: busStopNew.label,
-			direction,
-			date: new Date().toISOString(),
-			type: key,
-		})
-
+		AndrewLytics(`addComplainMethod`)
 		AndrewLytics(`fastReply`)
-
-		setTimeout(() => {
-			setActiveComplain(null)
-		}, 3000)
 	}
-
-	if (!busStopNew) return null
-
-	const onCooldown = isOnCooldown(busStopNew.label)
 
 	return (
 		<ComplainOptionContainerStyled>
 			<InlineOptions<ComplainType>
 				list={ComplainsOptions}
-				onClick={handleFastReplyClick}
-				activeId={activeComplain}
-				disabled={onCooldown}
+				onClick={type => {
+					void handleFastReplyClick(type)
+				}}
+				activeId={reply?.status === `sent` ? reply.type : null}
+				disabled={disabled}
 			/>
+			<div className={fastreplyStyles.submissionStatus} role="status">
+				{getReplyMessage(reply)}
+			</div>
 		</ComplainOptionContainerStyled>
 	)
 }

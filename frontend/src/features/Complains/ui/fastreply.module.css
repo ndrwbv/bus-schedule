@@ -1,3 +1,8 @@
 .complainOptionContainer {
 	margin-top: 12px;
 }
+
+.submissionStatus:not(:empty) {
+	margin-top: 8px;
+	font-size: 14px;
+}
